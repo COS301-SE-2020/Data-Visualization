@@ -7,8 +7,6 @@ It proves to be extremely valuable for companies and governments to be able to e
 This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc. 
 
 
-
-
 <details>
   <summary><b>Documentation</b></summary> <br>
    <a href="#">SRS Document</a><br>
