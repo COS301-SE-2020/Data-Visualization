@@ -1,0 +1,19 @@
+{
+  "name": "data-visualisation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/COS301-SE-2020/Data-Visualisation.git"
+  },
+  "author": "Doofenshmirtz Evil Incorporated",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/COS301-SE-2020/Data-Visualisation/issues"
+  },
+  "homepage": "https://github.com/COS301-SE-2020/Data-Visualisation#readme"
+}
