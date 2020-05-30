@@ -20,21 +20,19 @@ This repository represents the visualisation of Big Data. However, the catch com
 <details>
   <summary><b>Installation Instructions</b></summary> <br>
    The React-App that can be found in the <b>data-visualisation-app/</b> directory.<br/>
-   The Node.js server that serves the React-App and can be found in the <b>root (/)</b> directory.
-
-Installing dependecies:
-
-1.  Install the Node.js server dependencies: <b>npm install</b>
-2.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
-3.  Install the React-App dependencies: <b>npm install</b>
+   The Node.js server that serves the React-App and can be found in the <b>root (/)</b> directory.<br/>
+  <br/>
+ 
+To install dependecies:
+  1.  Install the Node.js server dependencies: <b>npm install</b>
+  2.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
+  3.  Install the React-App dependencies: <b>npm install</b>
 
 To run the React-App:
-
-1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
-2.  View the React-App in development mode with live reloading: <b>npm start</b>
+  1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
+  2.  View the React-App in development mode with live reloading: <b>npm start</b>
 
 To run the Node.js server:
-
 1.  Build React-App into production mode, and start the Node.js server: <b>npm start</b>
 
 </details>
@@ -42,17 +40,18 @@ To run the Node.js server:
 <details>
   <summary><b>Testing Instructions</b></summary> <br>
   The React-App that can be found in the <b>data-visualisation-app/</b> directory.<br/>
-  The Node.js server that serves the React-App and can be found in the <b>root (/)</b> directory.
+  The Node.js server that serves the React-App and can be found in the <b>root (/)</b> directory.<br/>
+<br/>
 
 To test the React-App: (currently no tests for the react-app)
 
-1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
-2.  View the React-App in development mode with live reloading: <b>npm test</b>
+  1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
+  2.  View the React-App in development mode with live reloading: <b>npm test</b>
 
-To test the Node.js server: (Currently no tests for the server
-)
+To test the Node.js server: (Currently no tests for the server)
 
-1.  Build React-App into production mode, and start the Node.js server: <b>npm test</b>
+  1.  Build React-App into production mode, and start the Node.js server: <b>npm test</b>
+
 </details>
 
 <details>
@@ -71,19 +70,19 @@ To test the Node.js server: (Currently no tests for the server
    <br>
    </details>
 > <b> Marco Lombaard </b>
-* <a href="FlameReynard.github.io"> Individual github.io profile </a>
+* <a href="https://FlameReynard.github.io"> Individual github.io profile </a>
 * <details>
    <summary><b>What I Did </b></summary>
    <br>
    </details>
 > <b> Phillip Shulze </b>
-* <a href="phillipstemmlar.github.io"> Individual github.io profile </a>
+* <a href="https://phillipstemmlar.github.io"> Individual github.io profile </a>
 * <details>
    <summary><b>What I Did </b></summary>
    <br>
    </details>
 > <b> Gian Uys </b>
- * <a href="mruys.github.io"> Individual github.io profile </a>
+ * <a href="https://mruys.github.io"> Individual github.io profile </a>
   * <details>
      <summary><b>What I Did </b></summary>
      <br>
