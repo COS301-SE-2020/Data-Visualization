@@ -1,6 +1,23 @@
-.env
-.vscode
+# Linux
+*~
 
+# MacOS
+.DS_Store
+
+# Dependency directories
+node_modules/
 package-lock.json
 
-node_modules/
+# Optional npm cache directory
+.npm/
+
+# Environment variables file
+.env
+.env.test
+
+# Logs
+*.log
+
+.idea/
+
+.vscode/
