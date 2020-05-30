@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "(cd data-visualisation-app/ && npm run build) && node server.js",
+    "test": "(cd data-visualisation-app/ && npm test) && echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/COS301-SE-2020/Data-Visualisation/issues"
   },
-  "homepage": "https://github.com/COS301-SE-2020/Data-Visualisation#readme"
+  "homepage": "https://github.com/COS301-SE-2020/Data-Visualisation#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "finalhandler": "^1.1.2",
+    "serve-static": "^1.14.1"
+  }
 }
