@@ -4,9 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && run build"
+    "start": "(cd data-visualisation-app/ && npm run build) && node server.js",
+    "test": "(cd data-visualisation-app/ && npm test) && echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

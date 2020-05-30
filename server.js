@@ -6,7 +6,7 @@ const { PORT } = process.env;
 const finalhandler = require('finalhandler');
 const serveStatic = require('serve-static');
 
-const serve = serveStatic('./data-visualisation-app/build/static/');
+const serve = serveStatic('./data-visualisation-app/build/');
 
 var server = http.createServer(function (req, res) {
   var done = finalhandler(req, res);
