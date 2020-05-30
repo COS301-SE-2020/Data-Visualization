@@ -1,11 +1,11 @@
 # Data-Visualisation
 
 ## Description
-Big Data is an ever-growing source of information, with governments and corporations generating more Big Data than ever. 
-It proves to be extremely valuable for companies and governments to be able to extract trends and patterns from this data and use this information to better prepare and/or optimize any services they offer. 
 
-This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc. 
+Big Data is an ever-growing source of information, with governments and corporations generating more Big Data than ever.
+It proves to be extremely valuable for companies and governments to be able to extract trends and patterns from this data and use this information to better prepare and/or optimize any services they offer.
 
+This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc.
 
 <details>
   <summary><b>Documentation</b></summary> <br>
@@ -19,8 +19,42 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 <details>
   <summary><b>Installation Instructions</b></summary> <br>
+   The React-App that can be found in the <b>data-visualisation-app/</b> directory.<br/>
+   The Node.js server that serves the React-App and can be found in the <b>root (/)</b> directory.
+
+Installing dependecies:
+
+1.  Install the Node.js server dependencies: <b>npm install</b>
+2.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
+3.  Install the React-App dependencies: <b>npm install</b>
+
+To run the React-App:
+
+1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
+2.  View the React-App in development mode with live reloading: <b>npm start</b>
+
+To run the Node.js server:
+
+1.  Build React-App into production mode, and start the Node.js server: <b>npm start</b>
+
 </details>
   
+<details>
+  <summary><b>Testing Instructions</b></summary> <br>
+  The React-App that can be found in the <b>data-visualisation-app/</b> directory.<br/>
+  The Node.js server that serves the React-App and can be found in the <b>root (/)</b> directory.
+
+To test the React-App: (currently no tests for the react-app)
+
+1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
+2.  View the React-App in development mode with live reloading: <b>npm test</b>
+
+To test the Node.js server: (Currently no tests for the server
+)
+
+1.  Build React-App into production mode, and start the Node.js server: <b>npm test</b>
+</details>
+
 <details>
   <summary><b>Collaborators</b></summary> <br>
   
@@ -55,7 +89,4 @@ This repository represents the visualisation of Big Data. However, the catch com
      <br>
 </details>
 
-</details>
-<details>
-  <summary><b>Testing Instructions</b></summary> <br>
 </details>
