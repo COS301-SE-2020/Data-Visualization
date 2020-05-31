@@ -1,7 +1,7 @@
 require('dotenv').config();
 const http = require('http');
 
-const { PORT } = process.env;
+const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
 
 const finalhandler = require('finalhandler');
 const serveStatic = require('serve-static');
@@ -13,4 +13,8 @@ var server = http.createServer(function (req, res) {
   serve(req, res, done);
 });
 
-server.listen(8000);
+server.listen(PORT, () => {
+  console.log(
+    `Data-Visualisation hosting server running at http://${HOST}:${PORT}`
+  );
+});
