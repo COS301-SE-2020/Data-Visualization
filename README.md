@@ -7,6 +7,9 @@ It proves to be extremely valuable for companies and governments to be able to e
 
 This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc.
 
+Developmet-Staging App: https://data-visualisation-dev.herokuapp.com/
+Production App: https://data-visualisation-prod.herokuapp.com/
+
 <details>
   <summary><b>Documentation</b></summary> <br>
    <a href="#">SRS Document</a><br>
@@ -29,10 +32,12 @@ To install dependecies:
   3.  Install the React-App dependencies: <b>npm install</b>
 
 To run the React-App:
-  1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
-  2.  View the React-App in development mode with live reloading: <b>npm start</b>
+
+1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
+2.  View the React-App in development mode with live reloading: <b>npm start</b>
 
 To run the Node.js server:
+
 1.  Build React-App into production mode, and start the Node.js server: <b>npm start</b>
 
 </details>
@@ -45,12 +50,12 @@ To run the Node.js server:
 
 To test the React-App: (currently no tests for the react-app)
 
-  1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
-  2.  View the React-App in development mode with live reloading: <b>npm test</b>
+1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
+2.  View the React-App in development mode with live reloading: <b>npm test</b>
 
 To test the Node.js server: (Currently no tests for the server)
 
-  1.  Build React-App into production mode, and start the Node.js server: <b>npm test</b>
+1.  Build React-App into production mode, and start the Node.js server: <b>npm test</b>
 
 </details>
 
