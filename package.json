@@ -4,8 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "(cd data-visualisation-app/ && npm run build) && node server.js",
-    "test": "(cd data-visualisation-app/ && npm test) && echo \"Error: no test specified\" && exit 1"
+    "postinstall": "npm install --prefix ./data-visualisation-app",
+    "start": "node server.js",
+    "build": "npm run build --prefix ./data-visualisation-app",
+    "test": "npm test --prefix ./data-visualisation-app && echo \"Error: no test specified for server\" && exit 1"
   },
   "repository": {
     "type": "git",
