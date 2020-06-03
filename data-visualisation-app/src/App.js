@@ -1,55 +1,31 @@
-<<<<<<< HEAD
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import DataSources from './data-source/data-sources.comp';
+
+import { requestDataSourceList } from './network';
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [dataSrc, setDataSrc] = useState('');
+  const [srcList, setSrcList] = useState([]);
+
+  useEffect(() => {
+    //API call is made here to ge the available data sources
+    requestDataSourceList()
+      .then((list) => setSrcList(list))
+      .catch((err) => console.error(err));
+  }, []); //NOTE: Empty array [] indicates that useEffect will only be called once, after the initial render.
+
+  const renderBody = () => {
+    if (dataSrc.length > 0) {
+      return <div>Data Source: {dataSrc}</div>;
+    } else {
+      return <DataSources setSrc={setDataSrc} SrcList={srcList} />;
+    }
+  };
+
+  return <div className='App'>{renderBody()}</div>;
 }
 
 export default App;
-=======
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
->>>>>>> develop
