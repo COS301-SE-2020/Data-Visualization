@@ -1,8 +1,8 @@
 body {
-  height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 50px;
 }
 
 .panel {
@@ -11,4 +11,29 @@ body {
   border-radius: 5px;
   box-shadow: 2px 2px rgba(150, 150, 150, 0.2);
   user-select: none;
+}
+
+.graph-selector-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.Graph-Select-Item {
+  flex: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.Graph-Select-Item > .title {
+  font-weight: bold;
+}
+
+.Graph-Select-Item > .img {
+  cursor: pointer;
+
+  width: 322px;
+  height: 200px;
 }

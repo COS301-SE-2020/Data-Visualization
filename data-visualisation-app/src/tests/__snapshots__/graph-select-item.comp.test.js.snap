@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders List Item representing a Graph-Type, and that sets the selected graph type once clicked 1`] = `
+<div
+  className="Graph-Select-Item"
+>
+  <div
+    className="title"
+  >
+    Bar Chart
+  </div>
+  <img
+    alt="bar-chart"
+    className="img"
+    onClick={[Function]}
+    src="./graph-images/bar-chart-1.png"
+  />
+</div>
+`;
