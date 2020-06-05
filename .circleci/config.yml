@@ -16,10 +16,10 @@ jobs:
           path: test_results
 workflows:
     build-and-test:
-      filters:
-        branches:
-          only:
-            - develop
-            - master
       jobs:
         - build-and-test
+        filters:
+          branches:
+            only:
+              - develop
+              - master
