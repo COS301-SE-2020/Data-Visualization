@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-import DataSources from './data-source/data-sources.comp';
+import DataSources from '../DataSource/DataSource';
 
-import { requestDataSourceList } from './network';
+import { requestDataSourceList } from '../../helpers/requestDataSourceList';
 
 function App() {
   const [dataSrc, setDataSrc] = useState('');
@@ -12,8 +12,8 @@ function App() {
   useEffect(() => {
     //API call is made here to ge the available data sources
     requestDataSourceList()
-      .then((list) => setSrcList(list))
-      .catch((err) => console.error(err));
+        .then((list) => setSrcList(list))
+        .catch((err) => console.error(err));
   }, []); //NOTE: Empty array [] indicates that useEffect will only be called once, after the initial render.
 
   const renderBody = () => {
