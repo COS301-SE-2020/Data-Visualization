@@ -3,7 +3,7 @@
 
 ## File Organization
 
-The following shows the file structure of the complete react application:
+The following shows the file structure of the complete React application:
 
 ```
 ├── public
@@ -49,7 +49,7 @@ All test files should have the name of the file on which tests are conducted alo
 
 All coding standards are enforced with ESLint. These standards are listed here for completeness.
 
-## Naming Conventions
+### Naming Conventions
 
 All standard React conventions are in place. E.g. all components start with a capital letter hook functions start with `use` prefix.
 Only single quotes are used.
