@@ -51,5 +51,5 @@ All coding standards are enforced with ESLint. These standards are listed here f
 
 ### Naming Conventions
 
-All standard React conventions are in place. E.g. all components start with a capital letter and hook functions start with `use` prefix.
+All standard React conventions are in place. E.g. all components start with a capital letter and hook functions start with a `use` prefix.
 Only single quotes are used.
