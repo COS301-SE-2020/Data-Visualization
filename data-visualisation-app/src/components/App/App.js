@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import AddDashboard from "../AddDashboard";
 
 function App() {
   const [DashboardIndex, setDashboardIndex] = useState(-1);
@@ -8,18 +9,25 @@ function App() {
   useEffect(() => {
     //API get Dashboard list
 
-    setDashboardList(['Bank', 'Healthcare']);
+    setDashboardList([{name: "Bank"}, {name: "Healthcare"}]);
   }, []);
+
+
+  const GoToHome = () => {
+    setDashboardIndex(-1);
+  }
+
+  const AddNewDashboard = (NewDash) => {
+    setDashboardList([...DashboardList, NewDash])
+  }
+
 
   return (
     <div className='App'>
-      <MockComp />
+      <AddDashboard list={DashboardList}  add={AddNewDashboard} home={GoToHome}/>
     </div>
   );
 }
 
-function MockComp() {
-  return <div>Some body stuff...</div>;
-}
 
 export default App;

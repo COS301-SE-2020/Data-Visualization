@@ -1,0 +1,16 @@
+
+h1{
+    margin: auto;
+    display: block;
+    text-align: center;
+}
+
+#adderField{
+    margin: auto;
+    display: block;
+}
+
+#submitButton{
+    margin: auto;
+    display: block;
+}
