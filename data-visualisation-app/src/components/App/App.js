@@ -4,6 +4,7 @@ import './App.css';
 import HomePage from '../../pages/HomePage';
 import DisplayDashboard from '../../pages/DisplayDashboard';
 import AddDashboard from '../../pages/AddDashboard';
+import EditDashboard from '../../pages/EditDashboard';
 
 function App() {
   const [DashboardIndex, setDashboardIndex] = useState(-1);
@@ -27,6 +28,7 @@ function App() {
   const deleteDashboard = () => {
     DashboardList.splice(DashboardIndex, 1);
     setDashboardList(DashboardList);
+    backToHome();
   };
   const AddNewDashboard = (newDash) => {
     if ('name' in newDash && newDash.name !== '') {
@@ -38,11 +40,7 @@ function App() {
     if (isSelected()) {
       if (IsAddingDashboard) {
         return (
-          <MockEditDashboard
-            backClicked={setIsAddingDashboard}
-            deleteDash={deleteDashboard}
-            backToHome={backToHome}
-          />
+          <EditDashboard Back={setIsAddingDashboard} Delete={deleteDashboard} />
         );
       } else {
         return (
