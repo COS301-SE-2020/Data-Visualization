@@ -16,6 +16,7 @@ Production App: https://data-visualisation-prod.herokuapp.com/
 </details>
 
 <details>
+  <summary><b>Details</b></summary> <br>
   
   [Project Management Tool](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939) ![ZenHub](https://i.imgur.com/Qqg8JhO.png)
   
