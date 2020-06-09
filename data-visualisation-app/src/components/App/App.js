@@ -3,6 +3,7 @@ import './App.css';
 
 import HomePage from '../../pages/HomePage';
 import DisplayDashboard from '../../pages/DisplayDashboard';
+import AddDashboard from '../../pages/AddDashboard';
 
 function App() {
   const [DashboardIndex, setDashboardIndex] = useState(-1);
@@ -54,12 +55,7 @@ function App() {
       }
     } else {
       if (IsAddingDashboard) {
-        return (
-          <MockAddDashboard
-            addListItem={AddNewDashboard}
-            backToHome={backToHome}
-          />
-        );
+        return <AddDashboard add={AddNewDashboard} home={backToHome} />;
       } else {
         return (
           <HomePage
@@ -74,21 +70,6 @@ function App() {
 
   return <div className='App'>{router()}</div>;
 }
-
-// function MockDisplay({ dashboard, backToHome, editClicked }) {
-//   return (
-//     <div>
-//       <h1>Dashboard: {dashboard.name}</h1>
-//       <article>{dashboard.content}</article>
-//       <div>
-//         <button onClick={backToHome}>View All Dashboards</button>
-//       </div>
-//       <div>
-//         <button onClick={() => editClicked(true)}>Edit Dashboard</button>
-//       </div>
-//     </div>
-//   );
-// }
 
 function MockAddDashboard({ backToHome, addListItem }) {
   const [curDash, setCurDash] = useState('');
