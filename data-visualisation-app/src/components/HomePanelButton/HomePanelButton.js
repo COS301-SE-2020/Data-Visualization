@@ -1,6 +1,5 @@
 import React from 'react';
 import './HomePanelButton.css';
-import CloseIcon from '../../assets/img/close.png';
 
 function HomePanelButton(props) {
   const sizeStyles = {

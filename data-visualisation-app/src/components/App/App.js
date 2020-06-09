@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+
 import HomePage from '../../pages/HomePage';
+import DisplayDashboard from '../../pages/DisplayDashboard';
 
 function App() {
   const [DashboardIndex, setDashboardIndex] = useState(-1);
@@ -33,13 +35,23 @@ function App() {
 
   function router() {
     if (isSelected()) {
-      return (
-        <MockDisplay
-          dashboard={DashboardList[DashboardIndex]}
-          backToHome={backToHome}
-          deleteDash={deleteDashboard}
-        />
-      );
+      if (IsAddingDashboard) {
+        return (
+          <MockEditDashboard
+            backClicked={setIsAddingDashboard}
+            deleteDash={deleteDashboard}
+            backToHome={backToHome}
+          />
+        );
+      } else {
+        return (
+          <DisplayDashboard
+            dashboard={DashboardList[DashboardIndex]}
+            backFunc={backToHome}
+            editDashboard={setIsAddingDashboard}
+          />
+        );
+      }
     } else {
       if (IsAddingDashboard) {
         return (
@@ -63,57 +75,20 @@ function App() {
   return <div className='App'>{router()}</div>;
 }
 
-// function MockSelection({ list, setActive, addClicked }) {
+// function MockDisplay({ dashboard, backToHome, editClicked }) {
 //   return (
 //     <div>
+//       <h1>Dashboard: {dashboard.name}</h1>
+//       <article>{dashboard.content}</article>
 //       <div>
-//         {list.map((dash, i) => (
-//           <div
-//             key={i}
-//             style={{
-//               border: '1px solid black',
-//               margin: '5px',
-//               cursor: 'pointer',
-//               userSelect: 'none',
-//             }}
-//             onClick={() => setActive(i)}>
-//             {dash.name}
-//           </div>
-//         ))}
+//         <button onClick={backToHome}>View All Dashboards</button>
 //       </div>
-//       <div
-//         style={{
-//           border: '1px solid black',
-//           margin: '5px',
-//           cursor: 'pointer',
-//           userSelect: 'none',
-//         }}
-//         onClick={() => addClicked(true)}>
-//         +
+//       <div>
+//         <button onClick={() => editClicked(true)}>Edit Dashboard</button>
 //       </div>
 //     </div>
 //   );
 // }
-
-function MockDisplay({ dashboard, backToHome, deleteDash }) {
-  const deleteMe = () => {
-    deleteDash();
-    backToHome();
-  };
-
-  return (
-    <div>
-      <h1>Dashboard: {dashboard.name}</h1>
-      <article>{dashboard.content}</article>
-      <div>
-        <button onClick={backToHome}>View All Dashboards</button>
-      </div>
-      <div>
-        <button onClick={deleteMe}>Delete Dashboard</button>
-      </div>
-    </div>
-  );
-}
 
 function MockAddDashboard({ backToHome, addListItem }) {
   const [curDash, setCurDash] = useState('');
@@ -137,6 +112,20 @@ function MockAddDashboard({ backToHome, addListItem }) {
         <button onClick={Add}>Add</button>
         <button onClick={backToHome}>Cancel</button>
       </div>
+    </div>
+  );
+}
+
+function MockEditDashboard({ backClicked, deleteDash, backToHome }) {
+  const deleteMe = () => {
+    deleteDash();
+    backToHome();
+  };
+
+  return (
+    <div>
+      <button onClick={deleteMe}>Delete Dashboard</button>
+      <button onClick={() => backClicked(false)}>Back</button>
     </div>
   );
 }

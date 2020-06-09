@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import HomePanelButton from '../../components/HomePanelButton/HomePanelButton';
 
 function HomePage(props) {
