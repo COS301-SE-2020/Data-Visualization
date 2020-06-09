@@ -1,30 +1,112 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-import DataSources from '../DataSource/DataSource';
-
-import { requestDataSourceList } from '../../helpers/requestDataSourceList';
+import HomePage from '../../pages/HomePage';
+import DisplayDashboard from '../../pages/DisplayDashboard';
+import AddDashboard from '../../pages/AddDashboard';
+import EditDashboard from '../../pages/EditDashboard';
 
 function App() {
-  const [dataSrc, setDataSrc] = useState('');
-  const [srcList, setSrcList] = useState([]);
+  const [DashboardIndex, setDashboardIndex] = useState(-1);
+  const [DashboardList, setDashboardList] = useState([]);
+  const [IsAddingDashboard, setIsAddingDashboard] = useState(false);
 
   useEffect(() => {
-    //API call is made here to ge the available data sources
-    requestDataSourceList()
-        .then((list) => setSrcList(list))
-        .catch((err) => console.error(err));
-  }, []); //NOTE: Empty array [] indicates that useEffect will only be called once, after the initial render.
+    //API get Dashboard list
 
-  const renderBody = () => {
-    if (dataSrc.length > 0) {
-      return <div>Data Source: {dataSrc}</div>;
-    } else {
-      return <DataSources setSrc={setDataSrc} SrcList={srcList} />;
+    setDashboardList([
+      { name: 'Bank', content: '', id: 0 },
+      { name: 'Healthcare', content: '', id: 1 },
+    ]);
+  }, []);
+
+  const isSelected = () => DashboardIndex >= 0;
+  const backToHome = () => {
+    setDashboardIndex(-1);
+    setIsAddingDashboard(false);
+  };
+  const deleteDashboard = () => {
+    DashboardList.splice(DashboardIndex, 1);
+    setDashboardList(DashboardList);
+    backToHome();
+  };
+  const AddNewDashboard = (newDash) => {
+    if ('name' in newDash && newDash.name !== '') {
+      setDashboardList([...DashboardList, newDash]);
     }
   };
 
-  return <div className='App'>{renderBody()}</div>;
+  function router() {
+    if (isSelected()) {
+      if (IsAddingDashboard) {
+        return (
+          <EditDashboard Back={setIsAddingDashboard} Delete={deleteDashboard} />
+        );
+      } else {
+        return (
+          <DisplayDashboard
+            dashboard={DashboardList[DashboardIndex]}
+            backFunc={backToHome}
+            editDashboard={setIsAddingDashboard}
+          />
+        );
+      }
+    } else {
+      if (IsAddingDashboard) {
+        return <AddDashboard add={AddNewDashboard} home={backToHome} />;
+      } else {
+        return (
+          <HomePage
+            dashboardList={DashboardList}
+            setDashboardIndex={setDashboardIndex}
+            onAddButtonClick={setIsAddingDashboard}
+          />
+        );
+      }
+    }
+  }
+
+  return <div className='App'>{router()}</div>;
+}
+
+function MockAddDashboard({ backToHome, addListItem }) {
+  const [curDash, setCurDash] = useState('');
+
+  function Add() {
+    addListItem({ name: curDash, content: '', id: -1 });
+    backToHome();
+  }
+
+  return (
+    <div>
+      <div>
+        <input
+          type='test'
+          placeholder='Dashboard Name'
+          value={curDash}
+          onChange={(e) => setCurDash(e.target.value)}
+        />
+      </div>
+      <div>
+        <button onClick={Add}>Add</button>
+        <button onClick={backToHome}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
+function MockEditDashboard({ backClicked, deleteDash, backToHome }) {
+  const deleteMe = () => {
+    deleteDash();
+    backToHome();
+  };
+
+  return (
+    <div>
+      <button onClick={deleteMe}>Delete Dashboard</button>
+      <button onClick={() => backClicked(false)}>Back</button>
+    </div>
+  );
 }
 
 export default App;

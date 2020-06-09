@@ -1,0 +1,1 @@
+const SOME_CONSTANT = 25;
