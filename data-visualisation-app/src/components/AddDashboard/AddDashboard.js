@@ -26,14 +26,18 @@ function AddDashboard(props) {
 
         return (
           <form onSubmit={mySubmitHandler}>
-          <h1>Dashboard name:</h1>
-          <input id = "adderField"
-            type='text'
-            onChange={myChangeHandler}
-          />
-          <input id = "submitButton"
-            type='submit'
-          />
+            <div>
+              <h1>Dashboard name:</h1>
+              <br></br>
+              <input id = "adderField"
+                type='text'
+                onChange={myChangeHandler}
+              />
+              <br></br>
+              <input id = "submitButton"
+                type='submit'
+              />
+              </div>
           </form>
         );
       
