@@ -9,10 +9,24 @@ function EditDashboard(props) {
 
     return (
         <div className="EditDashboard">
-            <button type="Submit" onClick={() => alert("Functionality not ready yet")}>Add Connection</button>
-            <button type="Submit" onClick={() => alert("Functionality not ready yet")}>Filter</button>
+            <button
+                type='Submit'
+                onClick={() => alert("Functionality not ready yet")}
+            >Add Connection</button>
+
+            <button
+                type='Submit'
+                onClick={() => alert("Functionality not ready yet")}
+            >Filter</button>
+
             <Suggestions/>
-            <button type="Submit" style="float: right" onClick={() => this.state.delete}>Delete Dashboard</button>
+
+            <button
+                type='Submit'
+                style={ {float: 'right'} }
+                onClick={() => this.state.delete}
+            >Delete Dashboard</button>
+            
         </div>
     );
 }
