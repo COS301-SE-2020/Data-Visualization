@@ -4,6 +4,11 @@ orbs:
   
 jobs:
   build-and-test:
+    filters:
+      branches:
+        only:
+          - master
+          - develop
     executor:
       name: node/default
     steps:
@@ -23,5 +28,5 @@ workflows:
           filters:
             branches:
               only:
-                - /develop/
-                - /master/
+                - develop
+                - master
