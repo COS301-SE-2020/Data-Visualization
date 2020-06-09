@@ -1,0 +1,25 @@
+
+h1{
+    margin: auto;
+    display: block;
+    text-align: center;
+}
+
+#adderField{
+    margin: auto;
+    display: block;
+}
+
+#submitButton{
+    margin: auto;
+    display: block;
+}
+
+form{
+    position: relative;
+    top: 120px;
+    width: 50%;
+    margin: auto;
+    border: 5px solid #B14E6B;
+    padding: 40px;
+}
