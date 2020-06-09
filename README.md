@@ -17,7 +17,7 @@ Production App: https://data-visualisation-prod.herokuapp.com/
 
 <details>
   <summary><b>Project Managements</b></summary> <br>
-  <a href="https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939">Project Management tool (Accessed via ZenHub) ![ZenHub](https://i.imgur.com/Qqg8JhO.png)</a><br>
+  <a href="https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939">Project Management tool (Accessed via ZenHub) </a>![ZenHub](https://i.imgur.com/Qqg8JhO.png)
   
 </details>
 
@@ -29,16 +29,17 @@ Production App: https://data-visualisation-prod.herokuapp.com/
  
 To install dependecies:
   1.  Install the Node.js server dependencies: 
-  ```
-  npm install
-  ```
+```
+npm install
+```
   2.  Change directory to data-visualisation-app: 
-  ```
-  cd data-visualisation-app
-  ```
-  3.  Install the React-App dependencies: ```
-  npm install
-  ```
+```
+cd data-visualisation-app
+```
+  3.  Install the React-App dependencies: 
+```
+npm install
+```
 
 To run the React-App:
 
