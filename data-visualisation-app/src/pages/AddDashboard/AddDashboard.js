@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
 import './AddDashboard.css';
 
 function AddDashboard(props) {
@@ -33,7 +32,7 @@ function AddDashboard(props) {
                 id = "adderField"
                 data-testid = "add-field"
                 type='text'
-                placeholder = "dashboardname"
+                placeholder = "Consumer"
                 onChange={myChangeHandler}
               />
               <br></br>
