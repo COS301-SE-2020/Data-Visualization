@@ -23,10 +23,9 @@ function EditDashboard(props) {
 
             <button
                 type='Submit'
-                style={ {float: 'right'} }
+                style={ {float: 'right'} } 
                 onClick={() => this.state.delete}
             >Delete Dashboard</button>
-            
         </div>
     );
 }
