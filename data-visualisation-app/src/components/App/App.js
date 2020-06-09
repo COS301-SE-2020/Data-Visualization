@@ -13,12 +13,12 @@ function App() {
   }, []);
 
 
-  const GoToHome = () => {
-    setDashboardIndex(-1);
-  }
-
   const AddNewDashboard = (NewDash) => {
     setDashboardList([...DashboardList, NewDash])
+  }
+
+  const GoToHome = () => {
+    setDashboardIndex(-1);
   }
 
 
