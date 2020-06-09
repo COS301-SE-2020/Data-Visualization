@@ -1,30 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-
-import DataSources from '../DataSource/DataSource';
-
-import { requestDataSourceList } from '../../helpers/requestDataSourceList';
+import HomePage from '../../pages/HomePage';
 
 function App() {
-  const [dataSrc, setDataSrc] = useState('');
-  const [srcList, setSrcList] = useState([]);
+  const [DashboardIndex, setDashboardIndex] = useState(-1);
+  const [DashboardList, setDashboardList] = useState([]);
 
   useEffect(() => {
-    //API call is made here to ge the available data sources
-    requestDataSourceList()
-        .then((list) => setSrcList(list))
-        .catch((err) => console.error(err));
-  }, []); //NOTE: Empty array [] indicates that useEffect will only be called once, after the initial render.
+    //API get Dashboard list
 
-  const renderBody = () => {
-    if (dataSrc.length > 0) {
-      return <div>Data Source: {dataSrc}</div>;
-    } else {
-      return <DataSources setSrc={setDataSrc} SrcList={srcList} />;
-    }
-  };
+    setDashboardList(['Bank', 'Healthcare']);
+  }, []);
 
-  return <div className='App'>{renderBody()}</div>;
+  return (
+    <div className='App'>
+      <HomePage dashboardList={DashboardList} />
+    </div>
+  );
 }
 
 export default App;
