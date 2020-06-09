@@ -20,6 +20,8 @@ form{
     top: 120px;
     width: 50%;
     margin: auto;
-    border: 5px solid #B14E6B;
+    -webkit-box-shadow: 3px 3px 5px 6px #ccc;  
+    -moz-box-shadow:    3px 3px 5px 6px #ccc;  
+    box-shadow:         3px 3px 5px 6px #ccc;
     padding: 40px;
 }
