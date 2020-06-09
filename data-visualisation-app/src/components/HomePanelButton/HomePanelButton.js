@@ -29,7 +29,7 @@ function HomePanelButton(props) {
                 </div> :
                 <React.Fragment>
                     <div className='closeButton' onClick={() => props.action(props.panel.id)}><img src={CloseIcon} className='closeSize' alt='' /></div>
-                    <div style={getContentPositionStyle()}>{props.panel.content}</div>
+                    <div style={getContentPositionStyle()}>{props.panel.name}</div>
                 </React.Fragment>
             }
         </div>

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import HomePanelButton from '../../components/HomePanelButton/HomePanelButton';
 
 function HomePage(props) {
-    const [currentDashboards, setCurrentDashboards] = useState( [{content: 'Bank', id: 0}, {content: 'Healthcare', id: 1}]);
+    const [currentDashboards, setCurrentDashboards] = useState( [{name: 'Bank', id: 0}, {name: 'Healthcare', id: 1}]);
 
     function onCloseButtonClick(__id) {
         let newpanels = [];
@@ -17,7 +17,7 @@ function HomePage(props) {
         for (n = 0; n < currentDashboards.length; n++)
             newpanels.push(currentDashboards[n]);
         newpanels.push({
-            content: 'new dashboard',
+            name: 'new dashboard',
             id: n
         });
 
