@@ -14,10 +14,7 @@ jobs:
             - run: npm test
       - store_test_results:
           path: test_results
-    branches:
-      only:
-        - master
-        - develop
+          
 workflows:
     build-and-test:
       jobs:
