@@ -18,6 +18,8 @@ class DisplayDashboard extends React.Component {
             <button type="Submit" style="float: right" onClick = {() => this.state.backFunc}>Back</button>
             <br/>
             <article>{this.state.content}</article>
+            <br/>
+            <button type="Submit" style="float: right" onClick={() => alert("Editing not implemented yet - take me to Edit Dashboard please")}>Edit</button>
         </div>
         );
     }
