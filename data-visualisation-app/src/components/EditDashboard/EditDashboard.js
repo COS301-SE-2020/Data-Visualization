@@ -4,6 +4,7 @@ function EditDashboard(props) {
     this.state = {
         //add: props.AddConnection,
         //filter: props.Filter,
+        back: props.Back,
         delete: props.Delete,
     };
 
@@ -19,6 +20,12 @@ function EditDashboard(props) {
                 onClick={() => alert("Functionality not ready yet")}
             >Filter</button>
 
+            <button
+                type='Submit'
+                onClick={() => this.state.back(false)}
+                style={ {float: 'right'} }
+                >Back</button>
+            
             <Suggestions/>
 
             <button
