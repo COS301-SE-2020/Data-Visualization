@@ -19,6 +19,8 @@ Production App: https://data-visualisation-prod.herokuapp.com/
   <summary><b>Project Managements</b></summary> <br>
   <a href="https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939">Project Management tool (Accessed via ZenHub) [ZenHub](https://i.imgur.com/Qqg8JhO.png)</a><br>
   
+  ![alt text](https://i.imgur.com/Qqg8JhO.png)
+  
   [![An old rock in the desert](/assets/images/shiprock.jpg "Shiprock, New Mexico by Beau Rogers")](https://i.imgur.com/Qqg8JhO.png)
 
   
@@ -32,18 +34,18 @@ Production App: https://data-visualisation-prod.herokuapp.com/
   <br/>
  
 To install dependecies:
-  1.  Install the Node.js server dependencies: <b>npm install</b>
-  2.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
-  3.  Install the React-App dependencies: <b>npm install</b>
+  1.  Install the Node.js server dependencies: ```npm install```
+  2.  Change directory to data-visualisation-app: ```cd data-visualisation-app```
+  3.  Install the React-App dependencies: ```npm install```
 
 To run the React-App:
 
-1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
-2.  View the React-App in development mode with live reloading: <b>npm start</b>
+1.  Change directory to data-visualisation-app: ```cd data-visualisation-app```
+2.  View the React-App in development mode with live reloading: ```npm start```
 
 To run the Node.js server:
 
-1.  Build React-App into production mode, and start the Node.js server: <b>npm start</b>
+1.  Build React-App into production mode, and start the Node.js server: ```npm start```
 
 </details>
   
@@ -55,12 +57,12 @@ To run the Node.js server:
 
 To test the React-App: (currently no tests for the react-app)
 
-1.  Change directory to data-visualisation-app: <b>cd data-visualisation-app</b>
-2.  View the React-App in development mode with live reloading: <b>npm test</b>
+1.  Change directory to data-visualisation-app: ```cd data-visualisation-app```
+2.  View the React-App in development mode with live reloading: ```npm test```
 
 To test the Node.js server: (Currently no tests for the server)
 
-1.  Build React-App into production mode, and start the Node.js server: <b>npm test</b>
+1.  Build React-App into production mode, and start the Node.js server: ```npm test```
 
 </details>
 
@@ -100,7 +102,7 @@ To test the Node.js server: (Currently no tests for the server)
 
 </details>
 
-# Data Visualization Generator Development Specifics
+# Development Specifics
 
 
 ## File Organization
