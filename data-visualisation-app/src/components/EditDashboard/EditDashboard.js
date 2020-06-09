@@ -21,3 +21,5 @@ class EditDashboard extends React.Component{
         );
     }
 }
+
+export default EditDashboard;
