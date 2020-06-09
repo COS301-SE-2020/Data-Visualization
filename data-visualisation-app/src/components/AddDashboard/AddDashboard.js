@@ -29,12 +29,17 @@ function AddDashboard(props) {
             <div>
               <h1>Dashboard name:</h1>
               <br></br>
-              <input id = "adderField"
+              <input 
+                id = "adderField"
+                data-testid = "add-field"
                 type='text'
+                placeholder = "dashboardname"
                 onChange={myChangeHandler}
               />
               <br></br>
-              <input id = "submitButton"
+              <input 
+                id = "submitButton" 
+                data-testid = "add-button"
                 type='submit'
               />
               </div>
