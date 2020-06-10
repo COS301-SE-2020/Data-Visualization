@@ -1,0 +1,24 @@
+.graphSuggestions-flex-container {
+    float: right;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    padding: 2px;
+    margin: 20px 20px;
+    width: 70%;
+    list-style: none;
+    border: 1px solid black;
+}
+
+.graphSuggestions-flex-item {
+    background: tomato;
+    padding: 5px;
+    width: 200px;
+    height: 150px;
+    margin-top: 10px;
+    line-height: 150px;
+    color: white;
+    font-weight: bold;
+    font-size: 3em;
+    text-align: center;
+}

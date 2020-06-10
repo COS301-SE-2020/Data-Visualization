@@ -1,5 +1,8 @@
 import React from 'react';
-
+import './EditDashboard.css';
+import GraphSuggestions from "../../components/GraphSuggestions";
+import AddGraphs from "../../components/AddGraphs";
+import DashboardPreview from "../../components/DashboardPreview";
 function EditDashboard(props) {
   return (
     <div className='EditDashboard'>
@@ -21,18 +24,14 @@ function EditDashboard(props) {
         style={{ float: 'right' }}>
         Back
       </button>
-
-      <Suggestions />
-
+      <DashboardPreview/>
+      <AddGraphs/>
+      <GraphSuggestions/>
       <button type='Submit' style={{ float: 'right' }} onClick={props.Delete}>
         Delete Dashboard
       </button>
     </div>
   );
-}
-
-function Suggestions() {
-  return <div>Suggestions Here...</div>;
 }
 
 export default EditDashboard;

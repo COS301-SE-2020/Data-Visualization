@@ -1,0 +1,18 @@
+.dashboard-flex-container {
+    float:left;
+    font-size: 40px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: content-box;
+    width: 20%;
+    height: 100%;
+    padding: 30px;
+    border: 1px solid black;
+}
+
+.dashboard-flex-item {
+    height: 100%;
+    width: 50%;
+    object-fit: cover;
+    z-index: 5;
+}

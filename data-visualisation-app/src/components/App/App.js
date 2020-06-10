@@ -18,6 +18,9 @@ function App() {
       { name: 'Bank', content: '', id: 0 },
       { name: 'Healthcare', content: '', id: 1 },
     ]);
+    //TODO: Remove line 22-23
+    setDashboardIndex(0);
+    setIsAddingDashboard(true);
   }, []);
 
   const isSelected = () => DashboardIndex >= 0;
