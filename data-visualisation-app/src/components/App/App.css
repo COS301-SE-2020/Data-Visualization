@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  color: #272727;
+  margin: 0;
+  padding: 0;
 }
 
 .App-logo {
@@ -14,8 +17,8 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background: #747474;
+  min-height: 200vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,4 +38,74 @@
   to {
     transform: rotate(360deg);
   }
+}
+body {
+  margin: 0;
+  background: #222222;
+  font-family: "Courier New", Courier, monospace;;
+  font-weight: 800;
+  min-height: 100vh;
+  justify-content: space-around;
+}
+header {
+  width: 90%;
+  padding: 1% 5%;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: #303030;
+  top:0;
+  z-index: 1000;
+}
+header::after {
+  display: table;
+  clear: both;
+}
+
+header h1 {
+  color: white;
+  display: inline-block;
+  margin-left: 0;
+  padding-top: 5px;
+  position: relative;
+}
+
+header nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+header nav li {
+  display: inline-block;
+  margin-left: 30px;
+  padding-top: 5px;
+  position: relative;
+}
+header nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 250ms ease-in-out;
+  padding: 5px 10px;
+  position: relative;
+  border: none !important;
+}
+header nav a:hover {
+  color: #d6883e;
+}
+header nav a::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background-color: #d6883e;
+
+  position: absolute;
+  bottom: 0;
+  width: 0%;
+
+  transition: all 250ms ease-in-out;
+}
+header nav a:hover::before {
+  width: 100%;
 }

@@ -19,13 +19,12 @@ function HomePanelButton(props) {
       height: sizeStyles.height + 'px',
     };
   }
-
   function comp() {
     if (props.isAddButton) {
       return (
         <div
           className='panelLayout panelStyling'
-          style={getSizeStyle()}
+          style={{...getSizeStyle(),  backgroundColor : props.colour}}
           onClick={() => props.action()}>
           <div onClick={() => props.action()}>
             <div style={getContentPositionStyle()}>+</div>
@@ -36,7 +35,7 @@ function HomePanelButton(props) {
       return (
         <div
           className='panelLayout panelStyling'
-          style={getSizeStyle()}
+          style={{...getSizeStyle(),  backgroundColor : props.colour}}
           onClick={() => props.action(props.id)}>
           <div>
             <div style={getContentPositionStyle()}>{props.panel.name}</div>

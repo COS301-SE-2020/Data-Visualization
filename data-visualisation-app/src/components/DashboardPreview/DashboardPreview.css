@@ -1,7 +1,6 @@
 .dashboard-flex-container {
     font-size: 40px;
-
-    margin: 10px;
+    color: #d6883e;
     float:left;
     display: flex;
     flex-direction: column;
@@ -9,7 +8,7 @@
     width: 19%;
     height: 100%;
     padding: 30px;
-    border: 1px solid black;
+    border: 1px solid #747474;
 }
 
 .dashboard-flex-container .dashboard-flex-item {

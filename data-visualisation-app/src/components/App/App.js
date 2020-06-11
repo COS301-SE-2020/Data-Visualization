@@ -68,8 +68,17 @@ function App() {
   return <div className='App'><Header/>{router()}</div>;
 }
 function Header(){
-  return <div>Temp</div>;
-  }
+  return <header>
+    <h1>Data Visualization</h1>
+    <nav>
+      <ul>
+        <li><a href="/">My Dashboards</a></li>
+        <li><a href="/">About</a></li>
+        <li><a href="/">Home</a></li>
+      </ul>
+    </nav>
+  </header>;
+}
 
 function MockAddDashboard({ backToHome, addListItem }) {
   const [curDash, setCurDash] = useState('');
