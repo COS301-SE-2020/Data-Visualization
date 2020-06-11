@@ -9,7 +9,12 @@ function HomePanelButton(props) {
 
   function getContentPositionStyle() {
     return {
-      marginTop: sizeStyles.height / 2 - 10,
+      marginTop: sizeStyles.height / 5 - 10,
+    };
+  }
+  function getContentPositionStyle1() {
+    return {
+      marginTop: sizeStyles.height / 16,
     };
   }
 
@@ -39,6 +44,7 @@ function HomePanelButton(props) {
           onClick={() => props.action(props.id)}>
           <div>
             <div style={getContentPositionStyle()}>{props.panel.name}</div>
+            <div style={getContentPositionStyle1()}>{props.panel.description}</div>
           </div>
         </div>
       );

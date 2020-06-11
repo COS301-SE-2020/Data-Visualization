@@ -15,8 +15,8 @@ function App() {
     //API get Dashboard list
 
     setDashboardList([
-      { name: 'Bank', content: '', id: 0 },
-      { name: 'Healthcare', content: '', id: 1 },
+      { name: 'Banking', description: 'This is a banking business intelligence dashboard that analytically displays different banking data sets across multiple systems. ', id: 0 },
+      { name: 'Health Care', description: 'This is a health care dashboard that is a modern analytics tool to monitor health care KPIs in a dynamic and interactive way.', id: 1 },
     ]);
   }, []);
 
@@ -82,6 +82,7 @@ function Header(){
 
 function MockAddDashboard({ backToHome, addListItem }) {
   const [curDash, setCurDash] = useState('');
+
 
   function Add() {
     addListItem({ name: curDash, content: '', id: -1 });

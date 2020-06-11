@@ -22,6 +22,6 @@
     z-index: 5;
 }
 .graphSuggestions-flex-container .graphSuggestions-flex-item img:hover{
-    transform: scale(1.5) !important;
+    transform: scale(1.1) !important;
     box-shadow: 0 25px 60px rgba(0,0,0,8) ;
 }
