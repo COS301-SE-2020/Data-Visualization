@@ -65,9 +65,11 @@ function App() {
       }
     }
   }
-
-  return <div className='App'>{router()}</div>;
+  return <div className='App'><Header/>{router()}</div>;
 }
+function Header(){
+  return <div>Temp</div>;
+  }
 
 function MockAddDashboard({ backToHome, addListItem }) {
   const [curDash, setCurDash] = useState('');
