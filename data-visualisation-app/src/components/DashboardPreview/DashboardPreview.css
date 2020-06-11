@@ -1,18 +1,27 @@
 .dashboard-flex-container {
-    float:left;
     font-size: 40px;
+
+    margin: 10px;
+    float:left;
     display: flex;
     flex-direction: column;
     box-sizing: content-box;
-    width: 20%;
+    width: 19%;
     height: 100%;
     padding: 30px;
     border: 1px solid black;
 }
 
-.dashboard-flex-item {
+.dashboard-flex-container .dashboard-flex-item {
+    margin: 10px;
+}
+.dashboard-flex-container .dashboard-flex-item img{
     height: 100%;
-    width: 50%;
+    width: 100%;
     object-fit: cover;
     z-index: 5;
+}
+.dashboard-flex-container .dashboard-flex-item img:hover{
+    transform: scale(1.5) !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,8) ;
 }

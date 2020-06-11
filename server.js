@@ -8,8 +8,8 @@ const serveStatic = require('serve-static');
 
 const serve = serveStatic('./data-visualisation-app/build/');
 
-var server = http.createServer(function (req, res) {
-  var done = finalhandler(req, res);
+let server = http.createServer(function (req, res) {
+  let done = finalhandler(req, res);
   serve(req, res, done);
 });
 

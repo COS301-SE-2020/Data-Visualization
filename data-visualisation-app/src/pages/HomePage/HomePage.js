@@ -1,6 +1,6 @@
 import React from 'react';
 import HomePanelButton from '../../components/HomePanelButton/HomePanelButton';
-
+import './HomePage.css';
 function HomePage(props) {
   return (
     <div>

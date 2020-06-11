@@ -1,24 +1,27 @@
 .graphSuggestions-flex-container {
+    font-size: 40px;
+
     float: right;
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    padding: 2px;
-    margin: 20px 20px;
+    flex-direction: row;
+    box-sizing: content-box;
     width: 70%;
-    list-style: none;
+    height: 50%;
+    padding: 30px;
     border: 1px solid black;
+    margin-top: 20px;
 }
 
-.graphSuggestions-flex-item {
-    background: tomato;
-    padding: 5px;
-    width: 200px;
-    height: 150px;
-    margin-top: 10px;
-    line-height: 150px;
-    color: white;
-    font-weight: bold;
-    font-size: 3em;
-    text-align: center;
+.graphSuggestions-flex-container .graphSuggestions-flex-item {
+    margin: 10px;
+}
+.graphSuggestions-flex-container .graphSuggestions-flex-item img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: 5;
+}
+.graphSuggestions-flex-container .graphSuggestions-flex-item img:hover{
+    transform: scale(1.5) !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,8) ;
 }
