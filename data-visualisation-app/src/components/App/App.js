@@ -34,8 +34,8 @@ function App() {
         id: 1,
       },
     ]);
-    setDashboardIndex(1);
-    setIsAddingDashboard(false);
+    // setDashboardIndex(1);
+    // setIsAddingDashboard(false);
   }, []);
 
   const isSelected = () => DashboardIndex >= 0;
