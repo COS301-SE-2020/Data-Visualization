@@ -1,4 +1,6 @@
-# Data Visualisation Generator
+# Data Visualization Generator
+
+![Data Visualization Generator](https://octodex.github.com/images/yaktocat.png)
 
 ## Description
 
@@ -7,24 +9,24 @@ It proves to be extremely valuable for companies and governments to be able to e
 
 This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc.
 
-Developmet-Staging App: https://data-visualisation-dev.herokuapp.com/ <br />
-Production App: https://data-visualisation-prod.herokuapp.com/
+##### Links:
 
-### Demo 1 Video Link
-
+[Development Stage](https://data-visualisation-dev.herokuapp.com)
+[Production Application](https://data-visualisation-dev.herokuapp.com)
+[Demo 1 Video Link](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ## Documentation
 
-A link to our Software Requirements Specification document (SRS) can be found [here](https://www.overleaf.com/2568579182cndcvskgwdnr) ![Overleaf](https://i.imgur.com/7ru8XMc.png).
+A link to our Software Requirements Specification document (SRS) can be found [here](https://www.overleaf.com/2568579182cndcvskgwdnr). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
 
 ## Project Management
 
-A link to our Project Management tool can be found [here](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939) ![ZenHub](https://i.imgur.com/EQ663Fn.png).
+A link to our Project Management tool can be found [here](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939). ![ZenHub](https://i.imgur.com/EQ663Fn.png)
 
 ## Installation Instruction
 
 The React-App that can be found in the *data-visualisation-app/* directory.
-The Node.js server that serves the React-App and can be found in the *root(/)* directory.
+The Node.js server that serves the React-App and can be found in the *root/* directory.
  
 To install dependecies:
   1.  Install the Node.js server dependencies: 
@@ -61,7 +63,7 @@ npm start
 ## Testing Instructions
 
 The React-App that can be found in the *data-visualisation-app/* directory.
-The Node.js server that serves the React-App and can be found in the *root (/)* directory.
+The Node.js server that serves the React-App and can be found in the *root/* directory.
 
 To test the React-App: (currently no tests for the react-app)
 
@@ -84,30 +86,35 @@ npm test
 ## Collaborators
 
 > **Elna Pistorius**
+
 [Profile Page](https://elnapistorius.github.io/my-website/index.html)
 #### What I Did 
 * todo
 * todo
 
 > **Byron Tomkinson**
+
 [Profile Page](https://byrongt12.github.io/profile/)
 #### What I Did 
 * todo
 * todo
 
 > **Marco Lombaard**
+
 [Profile Page](https://FlameReynard.github.io)
 #### What I Did 
 * todo
 * todo
 
 > **Phillip Shulze**
+
 [Profile Page](https://phillipstemmlar.github.io)
 #### What I Did 
 * todo
 * todo
 
 > **Gian Uys**
+
 [Profile Page](https://mruys.github.io)
 #### What I Did 
 * todo
