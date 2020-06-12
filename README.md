@@ -1,6 +1,6 @@
 # Data Visualization Generator
 
-![Data Visualization Generator](https://octodex.github.com/images/yaktocat.png)
+![Data Visualization Generator](https://raw.githubusercontent.com/COS301-SE-2020/Data-Visualisation/master/img/com.png)
 
 ## Description
 
@@ -12,7 +12,9 @@ This repository represents the visualisation of Big Data. However, the catch com
 ##### Links:
 
 [Development Stage](https://data-visualisation-dev.herokuapp.com)
+
 [Production Application](https://data-visualisation-dev.herokuapp.com)
+
 [Demo 1 Video Link](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ## Documentation
@@ -85,35 +87,35 @@ npm test
 
 ## Collaborators
 
-> **Elna Pistorius**
+### Elna Pistorius
 
 [Profile Page](https://elnapistorius.github.io/my-website/index.html)
 #### What I Did 
 * todo
 * todo
 
-> **Byron Tomkinson**
+### Byron Tomkinson
 
 [Profile Page](https://byrongt12.github.io/profile/)
 #### What I Did 
 * todo
 * todo
 
-> **Marco Lombaard**
+### Marco Lombaard
 
 [Profile Page](https://FlameReynard.github.io)
 #### What I Did 
 * todo
 * todo
 
-> **Phillip Shulze**
+### Phillip Shulze
 
 [Profile Page](https://phillipstemmlar.github.io)
 #### What I Did 
 * todo
 * todo
 
-> **Gian Uys**
+### Gian Uys
 
 [Profile Page](https://mruys.github.io)
 #### What I Did 
