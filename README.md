@@ -10,23 +10,21 @@ This repository represents the visualisation of Big Data. However, the catch com
 Developmet-Staging App: https://data-visualisation-dev.herokuapp.com/ <br />
 Production App: https://data-visualisation-prod.herokuapp.com/
 
-<details>
-  <summary><b>Documentation</b></summary> <br>
-   <a href="#">SRS Document</a><br>
-</details>
+### Demo 1 Video Link
 
-<details>
-  <summary><b>Details</b></summary> <br>
-  
-  [Project Management Tool](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939) ![ZenHub](https://i.imgur.com/Qqg8JhO.png)
-  
-</details>
 
-<details>
-  <summary><b>Installation Instructions</b></summary> <br>
-   The React-App that can be found in the <b>data-visualisation-app/</b> directory.<br/>
-   The Node.js server that serves the React-App and can be found in the <b>root (/)</b> directory.<br/>
-  <br/>
+## Documentation
+
+A link to our Software Requirements Specification document (SRS) can be found [here](https://www.overleaf.com/2568579182cndcvskgwdnr) ![Overleaf](https://i.imgur.com/7ru8XMc.png).
+
+## Project Management
+
+A link to our Project Management tool can be found [here](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939) ![ZenHub](https://i.imgur.com/EQ663Fn.png).
+
+## Installation Instruction
+
+The React-App that can be found in the *data-visualisation-app/* directory.
+The Node.js server that serves the React-App and can be found in the *root(/)* directory.
  
 To install dependecies:
   1.  Install the Node.js server dependencies: 
@@ -60,13 +58,10 @@ To run the Node.js server:
 npm start
 ```
 
-</details>
-  
-<details>
-  <summary><b>Testing Instructions</b></summary> <br>
-  The React-App that can be found in the <b>data-visualisation-app/</b> directory.<br/>
-  The Node.js server that serves the React-App and can be found in the <b>root (/)</b> directory.<br/>
-<br/>
+## Testing Instructions
+
+The React-App that can be found in the *data-visualisation-app/* directory.
+The Node.js server that serves the React-App and can be found in the *root (/)* directory.
 
 To test the React-App: (currently no tests for the react-app)
 
@@ -86,46 +81,39 @@ To test the Node.js server: (Currently no tests for the server)
 npm test
 ```
 
-</details>
+## Collaborators
 
-<details>
-  <summary><b>Collaborators</b></summary> <br>
-  
-> <b> Elna Pistorius</b>
-* <a href="https://elnapistorius.github.io/my-website/index.html"> Individual github.io profile </a>
-* <details>
-   <summary><b>What I Did </b></summary>
-   <br>
-   </details>
-> <b> Byron Tomkinson </b>
-* <a href="https://byrongt12.github.io/profile/"> Individual github.io profile </a>
-* <details>
-   <summary><b>What I Did </b></summary>
-   <br>
-   </details>
-> <b> Marco Lombaard </b>
-* <a href="https://FlameReynard.github.io"> Individual github.io profile </a>
-* <details>
-   <summary><b>What I Did </b></summary>
-   <br>
-   </details>
-> <b> Phillip Shulze </b>
-* <a href="https://phillipstemmlar.github.io"> Individual github.io profile </a>
-* <details>
-   <summary><b>What I Did </b></summary>
-   <br>
-   </details>
-> <b> Gian Uys </b>
- * <a href="https://mruys.github.io"> Individual github.io profile </a>
-  * <details>
-     <summary><b>What I Did </b></summary>
-     <br>
-</details>
+> **Elna Pistorius**
+[Profile Page](https://elnapistorius.github.io/my-website/index.html)
+#### What I Did 
+* todo
+* todo
 
-</details>
+> **Byron Tomkinson**
+[Profile Page](https://byrongt12.github.io/profile/)
+#### What I Did 
+* todo
+* todo
+
+> **Marco Lombaard**
+[Profile Page](https://FlameReynard.github.io)
+#### What I Did 
+* todo
+* todo
+
+> **Phillip Shulze**
+[Profile Page](https://phillipstemmlar.github.io)
+#### What I Did 
+* todo
+* todo
+
+> **Gian Uys**
+[Profile Page](https://mruys.github.io)
+#### What I Did 
+* todo
+* todo
 
 # Development Specifics
-
 
 ## File Organization
 
