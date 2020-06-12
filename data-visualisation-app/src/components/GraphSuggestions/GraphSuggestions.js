@@ -1,16 +1,23 @@
 import React from 'react';
-import './GraphSuggestions.css';
-import graph2 from '../../assets/img/Graphs/ScatterPlot2.png';
-const graphs = ["BarChart", "PieChart", "ScatterPlot"];
-function GraphSuggestions() {
-    return (
-    <div>
-        <div className="graphSuggestions-flex-container">Suggested Graphs{graphs.map((g,i)=>
-            <div key={i} className="graphSuggestions-flex-item" onClick={() => alert('Added To Dashboard')}>
-                <img src={graph2} alt={g} /></div>)}
-        </div>
+import GraphPreview from '../GraphPreview';
+
+import graph1 from '../../assets/img/Graphs/Barchart.png';
+import graph2 from '../../assets/img/Graphs/PieChart.jpg';
+import graph3 from '../../assets/img/Graphs/ScatterPlot2.png';
+
+const graphs = [graph1, graph2, graph3];
+
+function GraphSuggestions({ data, add }) {
+  return (
+    <div className='graph-flex-container'>
+      Suggested Graphs
+      <div className='list'>
+        {graphs.map((graph, i) => (
+          <GraphPreview key={i} data={graph} onClick={() => add(graph)} />
+        ))}
+      </div>
     </div>
-    );
+  );
 }
 
 export default GraphSuggestions;

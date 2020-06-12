@@ -1,17 +1,15 @@
 import React from 'react';
-import "./DashboardPreview.css"
-import graph1 from '../../assets/img/Graphs/Barchart.png';
-const graphs = ["BarChart", "PieChart", "ScatterPlot"];
-function DashboardPreview() {
-    return (
-    <div>
-        <div className="dashboard-flex-container">Dashboard{graphs.map((g,i)=>
-            <div className="dashboard-flex-item" key={i} onClick={() => alert('Added To Dashboard')}>
-                <img src={graph1} alt={g}/>
-            </div>)}
-        </div>
+
+import GraphPreview from '../GraphPreview';
+
+function DashboardPreview({ dashboard, remove }) {
+  return (
+    <div className='graph-flex-container'>
+      Dashboard
+      {dashboard.graphs &&
+        dashboard.graphs.map((graph, i) => <GraphPreview key={i} data={graph} onClick={() => remove(i)} />)}
     </div>
-    );
+  );
 }
 
 export default DashboardPreview;

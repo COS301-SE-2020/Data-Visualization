@@ -1,17 +1,24 @@
 import React from 'react';
-import './AddGraphs.css';
-import graph3 from '../../assets/img/Graphs/PieChart.jpg';
 
-const graphs = ["BarChart", "PieChart", "ScatterPlot"];
-function AddGraphs() {
-    return (
-    <div>
-        <div className="addGraphs-flex-container">Add Graphs{graphs.map((g,i)=>
-            <div key={i} className="addGraphs-flex-item" onClick={() => alert('Added To Dashboard')}>
-                <img src={graph3} alt={g} /></div>)}
-        </div>
+import GraphPreview from '../GraphPreview';
+
+import graph1 from '../../assets/img/Graphs/Barchart.png';
+import graph2 from '../../assets/img/Graphs/PieChart.jpg';
+import graph3 from '../../assets/img/Graphs/ScatterPlot2.png';
+
+const graphs = [graph1, graph2, graph3, graph1];
+
+function AddGraphs({ add }) {
+  return (
+    <div className='graph-flex-container'>
+      Add Graphs
+      <div className='list'>
+        {graphs.map((graph, i) => (
+          <GraphPreview key={i} data={graph} onClick={() => add(graph)} />
+        ))}
+      </div>
     </div>
-    );
+  );
 }
 
 export default AddGraphs;

@@ -42,7 +42,7 @@
 body {
   margin: 0;
   background: #222222;
-  font-family: "Courier New", Courier, monospace;;
+  font-family: 'Courier New', Courier, monospace;
   font-weight: 800;
   min-height: 100vh;
   justify-content: space-around;
@@ -50,13 +50,14 @@ body {
 header {
   width: 90%;
   padding: 1% 5%;
-  display:flex;
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   background: #303030;
-  top:0;
+  top: 0;
   z-index: 1000;
+  margin-bottom: 10px;
 }
 header::after {
   display: table;
@@ -108,4 +109,38 @@ header nav a::before {
 }
 header nav a:hover::before {
   width: 100%;
+}
+
+.DisplayGraph-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.DisplayGraph {
+  flex: 0;
+  width: 200px;
+  height: 200px;
+  margin: 10px;
+}
+
+.DisplayGraph > img {
+  width: 200px;
+  height: 200px;
+}
+
+.NoContent {
+  color: rgb(150, 150, 150);
+}
+
+.display-header {
+  display: flex;
+}
+
+.display-header > h1 {
+  flex: 1;
+}
+
+.display-header > buttone {
+  flex: 0;
 }

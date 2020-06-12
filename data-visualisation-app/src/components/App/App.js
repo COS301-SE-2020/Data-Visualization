@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import update from 'react-addons-update';
 import './App.css';
 
+import Header from '../Header/Header';
 import HomePage from '../../pages/HomePage';
 import DisplayDashboard from '../../pages/DisplayDashboard';
 import AddDashboard from '../../pages/AddDashboard';
 import EditDashboard from '../../pages/EditDashboard';
+
+import graph1 from '../../assets/img/Graphs/Barchart.png';
+import graph2 from '../../assets/img/Graphs/PieChart.jpg';
 
 function App() {
   const [DashboardIndex, setDashboardIndex] = useState(-1);
@@ -15,9 +20,22 @@ function App() {
     //API get Dashboard list
 
     setDashboardList([
-      { name: 'Banking', description: 'This is a banking business intelligence dashboard that analytically displays different banking data sets across multiple systems. ', id: 0 },
-      { name: 'Health Care', description: 'This is a health care dashboard that is a modern analytics tool to monitor health care KPIs in a dynamic and interactive way.', id: 1 },
+      {
+        name: 'Banking',
+        description:
+          'This is a banking business intelligence dashboard that analytically displays different banking data sets across multiple systems. ',
+        id: 0,
+        graphs: [graph1, graph2, graph1],
+      },
+      {
+        name: 'Health Care',
+        description:
+          'This is a health care dashboard that is a modern analytics tool to monitor health care KPIs in a dynamic and interactive way.',
+        id: 1,
+      },
     ]);
+    setDashboardIndex(1);
+    setIsAddingDashboard(false);
   }, []);
 
   const isSelected = () => DashboardIndex >= 0;
@@ -35,12 +53,46 @@ function App() {
       setDashboardList([...DashboardList, newDash]);
     }
   };
+  const setDashboard = (dash) => {
+    setDashboardList(
+      update(DashboardList, {
+        [DashboardIndex]: dash,
+      })
+    );
+  };
+
+  const addGraphToDashboard = (newGraph) => {
+    setDashboardList(
+      update(DashboardList, {
+        [DashboardIndex]: {
+          graphs: { $push: [newGraph] },
+        },
+      })
+    );
+  };
+
+  const removeGraphFromDashboard = (index) => {
+    setDashboardList(
+      update(DashboardList, {
+        [DashboardIndex]: {
+          graphs: { $splice: [[index, 1]] },
+        },
+      })
+    );
+  };
 
   function router() {
     if (isSelected()) {
       if (IsAddingDashboard) {
         return (
-          <EditDashboard Back={setIsAddingDashboard} Delete={deleteDashboard} />
+          <EditDashboard
+            dashboard={DashboardList[DashboardIndex]}
+            Back={setIsAddingDashboard}
+            Delete={deleteDashboard}
+            Update={setDashboard}
+            addGraph={addGraphToDashboard}
+            removeGraph={removeGraphFromDashboard}
+          />
         );
       } else {
         return (
@@ -65,58 +117,10 @@ function App() {
       }
     }
   }
-  return <div className='App'><Header/>{router()}</div>;
-}
-function Header(){
-  return <header>
-    <h1>Data Visualization</h1>
-    <nav>
-      <ul>
-        <li><a href="/">My Dashboards</a></li>
-        <li><a href="/">About</a></li>
-        <li><a href="/">Home</a></li>
-      </ul>
-    </nav>
-  </header>;
-}
-
-function MockAddDashboard({ backToHome, addListItem }) {
-  const [curDash, setCurDash] = useState('');
-
-
-  function Add() {
-    addListItem({ name: curDash, content: '', id: -1 });
-    backToHome();
-  }
-
   return (
-    <div>
-      <div>
-        <input
-          type='test'
-          placeholder='Dashboard Name'
-          value={curDash}
-          onChange={(e) => setCurDash(e.target.value)}
-        />
-      </div>
-      <div>
-        <button onClick={Add}>Add</button>
-        <button onClick={backToHome}>Cancel</button>
-      </div>
-    </div>
-  );
-}
-
-function MockEditDashboard({ backClicked, deleteDash, backToHome }) {
-  const deleteMe = () => {
-    deleteDash();
-    backToHome();
-  };
-
-  return (
-    <div>
-      <button onClick={deleteMe}>Delete Dashboard</button>
-      <button onClick={() => backClicked(false)}>Back</button>
+    <div className='App'>
+      <Header />
+      {router()}
     </div>
   );
 }

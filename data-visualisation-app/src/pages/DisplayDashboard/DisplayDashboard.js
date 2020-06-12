@@ -1,34 +1,31 @@
 import React from 'react';
 
-class DisplayDashboard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: props.dashboard.name,
-      content: props.dashboard.content,
-      backFunc: props.backFunc,
-      editDashboard: props.editDashboard,
-    };
-  }
+import DisplayGraph from './DisplayGraph';
+import graph2 from '../../assets/img/Graphs/PieChart.jpg';
 
-  render() {
-    return (
-      <div className='DisplayDashboard'>
-        <h1>{this.state.name}</h1>
-        <button style={{ float: 'right' }} onClick={this.state.editDashboard}>
+function DisplayDashboard({ backFunc, editDashboard, dashboard }) {
+  return (
+    <div className='DisplayDashboard'>
+      <div className='display-header'>
+        <h1>{dashboard.name}</h1>
+        <button style={{ float: 'right' }} onClick={editDashboard}>
           Edit
         </button>
-        <button
-          type='Submit'
-          style={{ float: 'right' }}
-          onClick={this.state.backFunc}>
+        <button type='Submit' style={{ float: 'right' }} onClick={backFunc}>
           Back
         </button>
-        <br />
-        <article>{this.state.content}</article>
       </div>
-    );
-  }
+      <article className='DisplayGraph-container'>
+        {dashboard.graphs && dashboard.graphs.length > 0
+          ? dashboard.graphs.map((graph, i) => <DisplayGraph key={i} data={graph} />)
+          : NoGraphs()}
+      </article>
+    </div>
+  );
+}
+
+function NoGraphs() {
+  return <div className='NoContent'>Edit the dashboard to add some graphs...</div>;
 }
 
 export default DisplayDashboard;

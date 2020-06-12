@@ -1,42 +1,29 @@
 import React from 'react';
+import GraphSuggestions from '../../components/GraphSuggestions';
+import AddGraphs from '../../components/AddGraphs';
+import DashboardPreview from '../../components/DashboardPreview';
 import './EditDashboard.css';
-import GraphSuggestions from "../../components/GraphSuggestions";
-import AddGraphs from "../../components/AddGraphs";
-import DashboardPreview from "../../components/DashboardPreview";
-function EditDashboard(props) {
-    return (
+
+function EditDashboard({ dashboard, Back, Delete, Update, addGraph, removeGraph }) {
+  return (
     <div className='EditDashboard'>
-        <button
-        type='Submit'
-        onClick={() => alert('Functionality not ready yet')}>
-        Add Connection
-        </button>
-
-        <button
-        type='Submit'
-        onClick={() => alert('Functionality not ready yet')}>
-        Filter
-        </button>
-
-        <button
-        type='Submit'
-        onClick={() => props.Back(false)}
-        style={{ float: 'right' }}>
-        Back
-        </button>
-
-        <button type='Submit' style={{ float: 'right' }} onClick={props.Delete}>
-            Delete Dashboard
-        </button>
-
-        <div className = "dashBoardWrapper">
-            <DashboardPreview/>
-            <AddGraphs/>
-            <GraphSuggestions/>
+      <div className='controls'>
+        <button onClick={() => alert(noFuncYet)}>Add Connection</button>
+        <button onClick={() => alert(noFuncYet)}>Filter</button>
+        <button onClick={Delete}>Delete Dashboard</button>
+        <button onClick={() => Back(false)}>Back</button>
+      </div>
+      <div className='dashBoardWrapper'>
+        <DashboardPreview dashboard={dashboard} remove={removeGraph} />
+        <div>
+          <AddGraphs add={addGraph} />
+          <GraphSuggestions add={addGraph} />
         </div>
-
+      </div>
     </div>
-    );
+  );
 }
+
+const noFuncYet = 'Functionality not ready yet';
 
 export default EditDashboard;
