@@ -12,7 +12,9 @@ class Database {
       host: params.hostname,
       port: params.port,
       database: params.pathname.split('/')[1],
-      ssl: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     };
 
     this.pg_pool = new Pool(config);
@@ -21,89 +23,71 @@ class Database {
   sendQuery(SQL_query) {
     // console.log(SQL_query);
     return new Promise((conResolve, conReject) => {
-      this.pg_pool.connect().then((client) => {
-        client
-          .query(SQL_query)
-          .then((res) => {
-            client.release();
-            if (typeof res === 'undefined') {
-              conReject(new Error('DB Response is undefined! Query Sent: ' + SQL_query));
-            }
-            conResolve(res);
-          })
-          .catch((error) => {
-            client.release();
-            // conReject(new Error('DB Error: ' + error));
-            conReject(error);
-          });
-      });
+      this.pg_pool
+        .connect()
+        .then((client) => {
+          client
+            .query(SQL_query)
+            .then((res) => {
+              client.release();
+              if (typeof res === 'undefined') {
+                conReject(new Error('DB Response is undefined! Query Sent: ' + SQL_query));
+              }
+              conResolve(res);
+            })
+            .catch((error) => {
+              client.release();
+              // conReject(new Error('DB Error: ' + error));
+              conReject(error);
+            });
+        })
+        .catch((err) => conReject(err));
     });
   }
 
   async getDashboardList() {
-    return ['AAA', 'CCC', 'BBB'];
-
-    // var query = `Select * from Dashboards;`;
-    // var result = await this.sendQuery(query);
-    // if (result && result.command === 'SELECT') {
-    //   return new Promise((resolve, reject) => {
-    //     resolve(this.formatRooms(result.rows));
-    //   });
-    // } else {
-    //   return new Promise((resolve, reject) => {
-    //     reject(result);
-    //   });
-    // }
+    var query = `SELECT * FROM Dashboard;`;
+    var result = await this.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'SELECT') resolve(result.rows);
+      else reject(result);
+    });
   }
 
-  async addDashboard(data) {
-    return true;
-    // var result = await this.sendQuery(
-    //   `Insert into bookedtimeslots (datetime, roomnumber, studentnumber) values('${this.catDateTime(
-    //     date,
-    //     time
-    //   )}','${roomNumber}','${studentNumber}');`
-    // );
-    // if (result && result.command === 'INSERT') {
-    //   return new Promise((resolve, reject) => {
-    //     this.getDashboardList(date)
-    //       .then((select) => resolve(select))
-    //       .catch((err) => reject(err));
-    //   });
-    // } else {
-    //   return new Promise((resolve, reject) => {
-    //     reject(result);
-    //   });
-    // }
+  async addDashboard(name, desc) {
+    var query = `INSERT INTO Dashboard (Name,Description) VALUES ('${name}','${desc}');`;
+    var result = await this.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'INSERT') resolve(result);
+      else reject(result);
+    });
   }
 
-  async removeDashbaord(dashboardID) {
-    return true;
-    //   var result = await this.sendQuery(
-    //     `Delete from bookedtimeslots Where (studentnumber = '${studentNumber}') AND (roomnumber = '${roomNumber}') AND (datetime = '${this.catDateTime(
-    //       date,
-    //       time
-    //     )}')`
-    //   );
-    //   if (result && result.command === 'DELETE') {
-    //     return new Promise((resolve, reject) => {
-    //       this.getDashboardList(date)
-    //         .then((select) => resolve(select))
-    //         .catch((err) => reject(err));
-    //     });
-    //   } else {
-    //     return new Promise((resolve, reject) => {
-    //       reject(result);
-    //     });
-    //   }
+  async removeDashboard(dashboardID) {
+    var query = `DELETE FROM Dashboard WHERE ( ID = '${dashboardID}');`;
+    var result = await this.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'DELETE') resolve(result);
+      else reject(result);
+    });
   }
 
-  async updateDashbaord(dashboardID, fields, data) {
-    return true;
+  async updateDashboard(dashboardID, fields, data) {
+    var query = `UPDATE Dashboard SET ${fieldUpdates(fields, data)} WHERE ( ID = '${dashboardID}');`;
+    var result = await this.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'UPDATE') resolve(result);
+      else reject(result);
+    });
   }
 
   async getGraphList(dashboardID) {
-    return ['g1', 'g2', 'g3'];
+    // var query = `SELECT * FROM Graph;`;
+    // var result = await this.sendQuery(query);
+    // return new Promise((resolve, reject) => {
+    //   if (result && result.command === 'SELECT') resolve(result.rows);
+    //   else reject(result);
+    // });
   }
 
   async addGraph(data) {
@@ -119,18 +103,12 @@ class Database {
   }
 }
 
-function q(value) {
-  if (Array.isArray(value) && value.length > 0) {
-    var array = [];
-    for (var i = 0; i < value.length; i++) {
-      array[i] = "'" + value[i] + "'";
-    }
-    return array;
-  } else if (typeof value === 'string' || value instanceof String) {
-    return "'" + value + "'";
-  } else {
-    return value;
+function fieldUpdates(fields, data) {
+  var output = '';
+  for (var i = 0; i < fields.length; i++) {
+    output = output + ` ${fields[i]} = '${data[i]}'${i < fields.length - 1 ? ', ' : ''}`;
   }
+  return output;
 }
 
 module.exports = Database;

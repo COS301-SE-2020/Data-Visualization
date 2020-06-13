@@ -20,12 +20,32 @@ app.get('/', function (req, res) {
     .then((list) => {
       res.json(list);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      console.error(err);
+      res.json(err);
+    });
 
   // res.sendFile(path.join(__dirname + static_path + '/index.html'));
 });
 
+app.get('/update', function (req, res) {
+  console.log(req.query);
+
+  db.updateDashboard(req.query.id, req.query.fields, req.query.data)
+    .then((response) => {
+      res.redirect('/');
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(400).json(err);
+    });
+});
+
 let server = app.listen(PORT, function () {
+  let port = server.address().port;
+  console.log('Server started at http://localhost:%s', port);
+});
+
 /*Request types
  POST -> ADD
  PUT -> UPDATE
@@ -41,8 +61,3 @@ let server = app.listen(PORT, function () {
 // 5. UPDATE_DASHBOARD_NAME => PUT(dashboardNewName, dashboardId)
 // 6. UPDATE_DASHBOARD_DESCRIPTION => PUT(dashboardDescription, dashboardID)
 // 7. UPDATE_GRAPH_TYPE => PUT(graphType, graphID)
-
-let server = app.listen( PORT, function(){
-  let port = server.address().port;
-  console.log('Server started at http://localhost:%s', port);
-});
