@@ -1,20 +1,20 @@
 require('dotenv').config();
 const http = require('http');
-
 const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
 
-const finalhandler = require('finalhandler');
-const serveStatic = require('serve-static');
+const express = require('express');
+const app = express();
+const path = require('path');
+const static_path = '/data-visualisation-app/build/';
 
-const serve = serveStatic('./data-visualisation-app/build/');
+app.use(express.static( __dirname + static_path ));
 
-let server = http.createServer(function (req, res) {
-  let done = finalhandler(req, res);
-  serve(req, res, done);
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname + static_path +'/index.html'))
 });
 
-server.listen(PORT, () => {
-  console.log(
-    `Data-Visualisation hosting server running at http://${HOST}:${PORT}`
-  );
+let server = app.listen( PORT, function(){
+  let port = server.address().port;
+  console.log("Server started at http://localhost:%s", port);
 });
+
