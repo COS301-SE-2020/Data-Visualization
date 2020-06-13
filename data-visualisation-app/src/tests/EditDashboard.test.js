@@ -1,22 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import DisplayDashboard from "../pages/DisplayDashboard";
-import DisplayGraph from "../pages/DisplayDashboard/DisplayGraph";
 import renderer from 'react-test-renderer';
 import graph1 from "../assets/img/Graphs/Barchart.png";
 import graph2 from "../assets/img/Graphs/PieChart.jpg";
+import EditDashboard from "../pages/EditDashboard";
 
-describe( 'Renders the dashboard display', () => {
+describe( 'Renders the dashboard edit screen', () => {
     it('displays graph', () => {
-        const comp = renderer.create(
-            <DisplayGraph data={"test"}/>
-        );
-
-        let tree = comp.toJSON();
-        expect(tree).toMatchSnapshot();
-    });
-
-    it('displays dashboard', () => {
         const dashboard = {
             name: 'Banking',
             description:
@@ -25,7 +15,7 @@ describe( 'Renders the dashboard display', () => {
             graphs: [graph1, graph2, graph1],
         }
         const comp = renderer.create(
-            <DisplayDashboard backFunc={null} editDashboard={null} dashboard={dashboard}/>
+            <EditDashboard dashboard={dashboard} Back={null} addGraph={null} Delete={null} removeGraph={null} Update={null}/>
         );
 
         let tree = comp.toJSON();
