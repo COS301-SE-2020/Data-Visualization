@@ -7,7 +7,7 @@ function DashboardPreview({ dashboard, remove }) {
     <div className='graph-flex-container'>
       Dashboard
       {dashboard.graphs &&
-        dashboard.graphs.map((graph, i) => <GraphPreview key={i} data={graph} onClick={() => remove(i)} />)}
+        dashboard.graphs.map((graph, i) => <GraphPreview key={i} data={graph} onClick={() => remove(graph.id)} />)}
     </div>
   );
 }

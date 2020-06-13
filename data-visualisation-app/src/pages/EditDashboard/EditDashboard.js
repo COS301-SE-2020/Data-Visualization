@@ -16,7 +16,7 @@ function EditDashboard({ dashboard, Back, Delete, Update, addGraph, removeGraph 
       <div className='dashBoardWrapper'>
         <DashboardPreview dashboard={dashboard} remove={removeGraph} />
         <div>
-          <AddGraphs add={addGraph} />
+          <AddGraphs add={addGraph} dashboardID={dashboard.id} />
           <GraphSuggestions add={addGraph} />
         </div>
       </div>

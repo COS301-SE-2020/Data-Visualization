@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import update from 'react-addons-update';
 import './App.css';
+import API from '../../helpers/apiRequests';
 
 import Header from '../Header/Header';
 import HomePage from '../../pages/HomePage';
@@ -8,9 +9,6 @@ import AboutPage from '../../pages/AboutPage';
 import DisplayDashboard from '../../pages/DisplayDashboard';
 import AddDashboard from '../../pages/AddDashboard';
 import EditDashboard from '../../pages/EditDashboard';
-
-import graph1 from '../../assets/img/Graphs/Barchart.png';
-import graph2 from '../../assets/img/Graphs/PieChart.jpg';
 
 function App() {
   const [DashboardIndex, setDashboardIndex] = useState(-1);
@@ -20,25 +18,7 @@ function App() {
   const [IsAbout, setIsAbout] = useState(false);
 
   useEffect(() => {
-    //API get Dashboard list
-
-    setDashboardList([
-      {
-        name: 'Banking',
-        description:
-          'This is a banking business intelligence dashboard that analytically displays different banking data sets across multiple systems. ',
-        id: 0,
-        graphs: [graph1, graph2, graph1],
-      },
-      {
-        name: 'Health Care',
-        description:
-          'This is a health care dashboard that is a modern analytics tool to monitor health care KPIs in a dynamic and interactive way.',
-        id: 1,
-      },
-    ]);
-    // setDashboardIndex(1);
-    // setIsAddingDashboard(false);
+    reqDashboardList();
   }, []);
 
   //Boolean Checks
@@ -51,14 +31,22 @@ function App() {
     backToHome();
   };
   const AddNewDashboard = (newDash) => {
-    if ('name' in newDash && newDash.name !== '') {
-      setDashboardList(update(DashboardList, { $push: [newDash] }));
-    }
+    setDashboardList(update(DashboardList, { $push: [newDash] }));
   };
   const setDashboard = (dash) => {
     setDashboardList(
       update(DashboardList, {
         [DashboardIndex]: dash,
+      })
+    );
+  };
+  const setGraphList = (list) => {
+    console.log(list);
+    setDashboardList(
+      update(DashboardList, {
+        [DashboardIndex]: {
+          graphs: { $set: list },
+        },
       })
     );
   };
@@ -73,14 +61,92 @@ function App() {
     );
   };
 
-  const removeGraphFromDashboard = (index) => {
+  const removeGraphFromDashboard = (gID) => {
     setDashboardList(
       update(DashboardList, {
         [DashboardIndex]: {
-          graphs: { $splice: [[index, 1]] },
+          graphs: { $splice: [[gID, 1]] },
         },
       })
     );
+  };
+
+  //Network Reqeust procedures
+  const reqDashboardList = () => {
+    API.dashboard
+      .list()
+      .then((res) => {
+        console.log(res);
+        setDashboardList(res.data);
+      })
+      .catch((err) => console.error(err));
+  };
+  const reqDashboardAdd = (newDash) => {
+    API.dashboard
+      .add(newDash.name, newDash.description)
+      .then((res) => {
+        console.log(res);
+        reqDashboardList();
+        backToHome();
+      })
+      .catch((err) => console.error(err));
+  };
+  const reqDashboardDelete = () => {
+    API.dashboard
+      .delete(DashboardList[DashboardIndex].id)
+      .then((res) => {
+        console.log(res);
+        reqDashboardList();
+        backToHome();
+      })
+      .catch((err) => console.error(err));
+  };
+  const reqDashboardUpdate = () => {
+    API.dashboard
+      .update()
+      .then((res) => {
+        console.log(res);
+        // setDashboardList(res.data);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const reqGraphList = () => {
+    console.log(DashboardList[DashboardIndex].id);
+    API.graph
+      .list(DashboardList[DashboardIndex].id)
+      .then((res) => {
+        console.log(res);
+        setGraphList(res.data);
+      })
+      .catch((err) => console.error(err));
+  };
+  const reqGraphAdd = (newGraph) => {
+    API.graph
+      .add(newGraph.dashboardID, newGraph.graphtypeid)
+      .then((res) => {
+        console.log(res);
+        reqGraphList();
+      })
+      .catch((err) => console.error(err));
+  };
+  const reqGraphDelete = (gID) => {
+    API.graph
+      .delete(gID)
+      .then((res) => {
+        console.log(res);
+        reqGraphList();
+      })
+      .catch((err) => console.error(err));
+  };
+  const reqGraphUpdate = () => {
+    API.graph
+      .update()
+      .then((res) => {
+        console.log(res);
+        // setGraphList(res.data);
+      })
+      .catch((err) => console.error(err));
   };
 
   //Navigation procedures
@@ -102,16 +168,17 @@ function App() {
           <EditDashboard
             dashboard={DashboardList[DashboardIndex]}
             Back={setIsAddingDashboard}
-            Delete={deleteDashboard}
+            Delete={reqDashboardDelete}
             Update={setDashboard}
-            addGraph={addGraphToDashboard}
-            removeGraph={removeGraphFromDashboard}
+            addGraph={reqGraphAdd}
+            removeGraph={reqGraphDelete}
           />
         );
       } else {
         return (
           <DisplayDashboard
             dashboard={DashboardList[DashboardIndex]}
+            reqGraphList={reqGraphList}
             backFunc={backToHome}
             editDashboard={setIsAddingDashboard}
           />
@@ -119,7 +186,7 @@ function App() {
       }
     } else {
       if (IsAddingDashboard) {
-        return <AddDashboard add={AddNewDashboard} home={backToHome} />;
+        return <AddDashboard add={reqDashboardAdd} home={backToHome} />;
       } else {
         return (
           <HomePage

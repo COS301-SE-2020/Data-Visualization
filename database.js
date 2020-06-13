@@ -82,7 +82,9 @@ class Database {
   }
 
   async getGraphList(dashboardID) {
-    let query = `SELECT * FROM Graph WHERE ( dashboardID = '${dashboardID}');`;
+    let query = `SELECT g.id, g.dashboardID, g.graphtypeid, t.source 
+    FROM graph as g join graphtype as t on (g.graphtypeid=t.id)
+    WHERE ( g.dashboardID = '${dashboardID}');`;
     let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'SELECT') resolve(result.rows);

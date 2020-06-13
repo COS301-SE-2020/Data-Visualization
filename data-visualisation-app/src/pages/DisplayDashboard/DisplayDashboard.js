@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { requestGraphList } from '../../helpers/apiRequests';
 
 import DisplayGraph from './DisplayGraph';
-import graph2 from '../../assets/img/Graphs/PieChart.jpg';
+// import graph2 from '../../assets/img/Graphs/PieChart.jpg';
 
-function DisplayDashboard({ backFunc, editDashboard, dashboard }) {
+function DisplayDashboard({ backFunc, editDashboard, dashboard, reqGraphList }) {
+  useEffect(() => {
+    reqGraphList();
+  }, []);
+
   return (
     <div className='DisplayDashboard'>
       <div className='display-header'>

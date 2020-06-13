@@ -14,6 +14,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(__dirname + static_path));
 
+app.use((req, res, next) => {
+  console.log(req.body, req.query);
+  next();
+});
+
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname + static_path + '/index.html'));
 });
@@ -42,7 +47,7 @@ app.get('/dashboard', (req, res) => {
 
 //  1. GET_GRAPHS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 app.get('/graph', (req, res) => {
-  const dashboardID = req.body.dashboardID || -1;
+  const dashboardID = req.query.dashboardID || req.body.dashboardID || -1;
   db.getGraphList(dashboardID)
     .then((list) => {
       res.status(200);
