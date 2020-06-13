@@ -108,7 +108,6 @@ app.delete('/dashboard', (req,res)=>{
         res.status(400).send(toSend);
     });
 });
-
 /*PUT REQUESTS*/
 
 //  6. UPDATE_DASHBOARD_NAME
