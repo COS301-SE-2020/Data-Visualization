@@ -1,20 +1,24 @@
 import React from 'react';
 
-function Header() {
+function Header({ home, about }) {
   return (
     <header>
       <h1>Data Visualization</h1>
       <nav>
         <ul>
           <li>
-            <a href='/'>My Dashboards</a>
+            <div className='nav' onClick={home}>
+              My Dashboards
+            </div>
           </li>
           <li>
-            <a href='/'>About</a>
+            <div className='nav' onClick={about}>
+              About
+            </div>
           </li>
-          <li>
-            <a href='/'>Home</a>
-          </li>
+          <li>{/* <div className='nav' onClick={home}>
+              Home
+            </div> */}</li>
         </ul>
       </nav>
     </header>

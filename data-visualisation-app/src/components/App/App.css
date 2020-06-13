@@ -83,7 +83,7 @@ header nav li {
   padding-top: 5px;
   position: relative;
 }
-header nav a {
+header nav .nav {
   color: white;
   text-decoration: none;
   font-size: 16px;
@@ -92,10 +92,11 @@ header nav a {
   position: relative;
   border: none !important;
 }
-header nav a:hover {
+header nav .nav:hover {
   color: #d6883e;
+  cursor: pointer;
 }
-header nav a::before {
+header nav .nav::before {
   content: '';
   display: block;
   height: 2px;
@@ -107,7 +108,7 @@ header nav a::before {
 
   transition: all 250ms ease-in-out;
 }
-header nav a:hover::before {
+header nav .nav:hover::before {
   width: 100%;
 }
 
@@ -143,4 +144,10 @@ header nav a:hover::before {
 
 .display-header > buttone {
   flex: 0;
+}
+
+.title {
+  font-size: 3vw;
+  color: #d6883e;
+  padding-bottom: 10px;
 }
