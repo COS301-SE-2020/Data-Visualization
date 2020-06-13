@@ -56,7 +56,7 @@ class Database {
     // }
   }
 
-  async addDashboard() {
+  async addDashboard(data) {
     return true;
     // var result = await this.sendQuery(
     //   `Insert into bookedtimeslots (datetime, roomnumber, studentnumber) values('${this.catDateTime(
@@ -77,7 +77,7 @@ class Database {
     // }
   }
 
-  async removeDashbaord() {
+  async removeDashbaord(dashboardID) {
     return true;
     //   var result = await this.sendQuery(
     //     `Delete from bookedtimeslots Where (studentnumber = '${studentNumber}') AND (roomnumber = '${roomNumber}') AND (datetime = '${this.catDateTime(
@@ -96,6 +96,26 @@ class Database {
     //       reject(result);
     //     });
     //   }
+  }
+
+  async updateDashbaord(dashboardID, fields, data) {
+    return true;
+  }
+
+  async getGraphList(dashboardID) {
+    return ['g1', 'g2', 'g3'];
+  }
+
+  async addGraph(data) {
+    return true;
+  }
+
+  async removeGraph(GraphID) {
+    return true;
+  }
+
+  async updateGraph(GraphID, fields, data) {
+    return true;
   }
 }
 
