@@ -46,8 +46,8 @@ class Database {
   }
 
   async getDashboardList() {
-    var query = `SELECT * FROM Dashboard;`;
-    var result = await this.sendQuery(query);
+    let query = `SELECT * FROM Dashboard;`;
+    let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'SELECT') resolve(result.rows);
       else reject(result);
@@ -55,8 +55,8 @@ class Database {
   }
 
   async addDashboard(name, desc) {
-    var query = `INSERT INTO Dashboard (Name,Description) VALUES ('${name}','${desc}');`;
-    var result = await this.sendQuery(query);
+    let query = `INSERT INTO Dashboard (Name,Description) VALUES ('${name}','${desc}');`;
+    let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'INSERT') resolve(result);
       else reject(result);
@@ -64,8 +64,8 @@ class Database {
   }
 
   async removeDashboard(dashboardID) {
-    var query = `DELETE FROM Dashboard WHERE ( ID = '${dashboardID}');`;
-    var result = await this.sendQuery(query);
+    let query = `DELETE FROM Dashboard WHERE ( ID = '${dashboardID}');`;
+    let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'DELETE') resolve(result);
       else reject(result);
@@ -73,8 +73,8 @@ class Database {
   }
 
   async updateDashboard(dashboardID, fields, data) {
-    var query = `UPDATE Dashboard SET ${fieldUpdates(fields, data)} WHERE ( ID = '${dashboardID}');`;
-    var result = await this.sendQuery(query);
+    let query = `UPDATE Dashboard SET ${fieldUpdates(fields, data)} WHERE ( ID = '${dashboardID}');`;
+    let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'UPDATE') resolve(result);
       else reject(result);
@@ -82,8 +82,8 @@ class Database {
   }
 
   async getGraphList(dashboardID) {
-    var query = `SELECT * FROM Graph;`;
-    var result = await this.sendQuery(query);
+    let query = `SELECT * FROM Graph;`;
+    let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'SELECT') resolve(result.rows);
       else reject(result);
@@ -91,8 +91,8 @@ class Database {
   }
 
   async addGraph(dashboardID, GraphTypeID) {
-    var query = `INSERT INTO Graph (dashboardID, GraphTypeID) VALUES ('${dashboardID}','${GraphTypeID}');`;
-    var result = await this.sendQuery(query);
+    let query = `INSERT INTO Graph (dashboardID, GraphTypeID) VALUES ('${dashboardID}','${GraphTypeID}');`;
+    let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'INSERT') resolve(result);
       else reject(result);
@@ -100,8 +100,8 @@ class Database {
   }
 
   async removeGraph(GraphID) {
-    var query = `DELETE FROM Graph WHERE ( ID = '${GraphID}');`;
-    var result = await this.sendQuery(query);
+    let query = `DELETE FROM Graph WHERE ( ID = '${GraphID}');`;
+    let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'DELETE') resolve(result);
       else reject(result);
@@ -109,8 +109,8 @@ class Database {
   }
 
   async updateGraph(GraphID, fields, data) {
-    var query = `UPDATE Graph SET ${fieldUpdates(fields, data)} WHERE ( ID = '${GraphID}');`;
-    var result = await this.sendQuery(query);
+    let query = `UPDATE Graph SET ${fieldUpdates(fields, data)} WHERE ( ID = '${GraphID}');`;
+    let result = await this.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'UPDATE') resolve(result);
       else reject(result);
@@ -119,8 +119,8 @@ class Database {
 }
 
 function fieldUpdates(fields, data) {
-  var output = '';
-  for (var i = 0; i < fields.length; i++) {
+  let output = '';
+  for (let i = 0; i < fields.length; i++) {
     output = output + ` ${fields[i]} = '${data[i]}'${i < fields.length - 1 ? ', ' : ''}`;
   }
   return output;

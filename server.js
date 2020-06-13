@@ -38,40 +38,46 @@ app.get('/dashboard', (req, res) =>{
   .catch((err) => console.error(err));
 });
 
-/*POST REQUESTS*/
+//  1. GET_GRAPHS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
+app.get('/graphs', (req, res) =>{
+    const dashboardID = req.query.dashboardID;
+    db.getGraphList(dashboardID)
+        .then((list) => {
+            res.status(200);
+            res.json(list);
+        })
+        .catch((err) => console.error(err));
+});
 
+/*POST REQUESTS*/
 //  2. ADD_DASHBOARDS (THIS WILL JUST ADD A DASHBOARD TO THE PANEL PAGE)
 // => POST (nameOfDashboard, descriptionOfDashboard,dashColour)
 app.post('/dashboard', (req,res)=>{
   const name = req.query.name;
   const description = req.query.description;
   const colour = req.query.colour;
-  db.addDashboard({name: name, description: description, colour: colour})
+  db.addDashboard(name,description)
   .then(() => {
-      let toSend = {"message": "Successfully Added Dashboard"};
-      res.status(200).send(toSend);
+      res.status(200).json({"message": "Successfully Added Dashboard"});
   })
   .catch((err) => {
       console.error(err);
-      let toSend = {"message": "Error Occurred"};
-      res.status(400).send(toSend);
+      res.status(400).json({"message": "Error Occurred"});
   });
 });
 
 //  3. ADD_GRAPH_TO_DASHBOARD
 // => POST (dashboardID, graphID)
 app.post('/graph', (req,res)=>{
-    const graphID = req.query.graphID;
+    const graphTypeID = req.query.graphTypeID;
     const dashboardID = req.query.dashboardID;
-    db.addGraph({graphID: graphID, dashboardID: dashboardID})
+    db.addGraph(dashboardID,graphTypeID)
     .then(() => {
-        let toSend = {"message": "Successfully Added To Dashboard"};
-        res.status(200).send(toSend);
+        res.status(200).json({"message": "Successfully Added To Dashboard"});
     })
     .catch((err) => {
         console.error(err);
-        let toSend = {"message": "Error Occurred"};
-        res.status(400).send(toSend);
+        res.status(400).json({"message": "Error Occurred"});
     });
 });
 
@@ -81,15 +87,13 @@ app.post('/graph', (req,res)=>{
 //  => DELETE (graphID)
 app.delete('/graph', (req,res)=>{
     const id = req.query.graphID;
-    db.removeGraph({graphID: id})
+    db.removeGraph(id)
     .then(() => {
-        let toSend = {"message": "Successfully Removed Graph"};
-        res.status(200).send(toSend);
+        res.status(200).json({"message": "Successfully Removed Graph"});
     })
     .catch((err) => {
         console.error(err);
-        let toSend = {"message": "Error Occurred"};
-        res.status(400).send(toSend);
+        res.status(400).json({"message": "Error Occurred"});
     });
 });
 
@@ -97,15 +101,13 @@ app.delete('/graph', (req,res)=>{
 //  => DELETE (dashboardID)
 app.delete('/dashboard', (req,res)=>{
     const id = req.query.dashboardID;
-    db.removeGraph({dashboardID: id})
+    db.removeDashboard(id)
     .then(() => {
-        let toSend = {"message": "Successfully Removed Dashboard"};
-        res.status(200).send(toSend);
+        res.status(200).json({"message": "Successfully Removed Dashboard"});
     })
     .catch((err) => {
         console.error(err);
-        let toSend = {"message": "Error Occurred"};
-        res.status(400).send(toSend);
+        res.status(400).json({"message": "Error Occurred"});
     });
 });
 /*PUT REQUESTS*/
@@ -116,24 +118,13 @@ app.delete('/dashboard', (req,res)=>{
 //  => PUT(dashboardDescription, dashboardID)
 app.put('/dashboard', (req,res)=>{
     const id = req.query.dashboardID;
-    let fields = [];
-    for (let i of req.query.fields){
-        fields.push(i);
-    }
-    let data = [];
-    for (let i of req.query.data){
-        fields.push(i);
-    }
-
-    db.updateDashbaord({dashboardID: id}, fields, data )
+    db.updateDashboard(id, req.query.fields, req.query.data )
     .then(() => {
-        let toSend = {"message": "Successfully Updated Dashboard"};
-        res.status(200).send(toSend);
+        res.status(200).json({"message": "Successfully Updated Dashboard"});
     })
     .catch((err) => {
         console.error(err);
-        let toSend = {"message": "Error Occurred"};
-        res.status(400).send(toSend);
+        res.status(400).json({"message": "Error Occurred"});
     });
 });
 
@@ -141,18 +132,15 @@ app.put('/dashboard', (req,res)=>{
 //  => PUT(graphType, graphID)
 app.put('/graph', (req,res)=>{
     const id = req.query.graphID;
-    db.updateGraph({graphID: id})
+    db.updateGraph( id, req.query.fields, req.query.data)
     .then(() => {
-        let toSend = {"message": "Successfully Updated Graph"};
-        res.status(200).send(toSend);
+        res.status(200).json({"message": "Successfully Updated Graph"});
     })
     .catch((err) => {
         console.error(err);
-        let toSend = {"message": "Error Occurred"};
-        res.status(400).send(toSend);
+        res.status(400).json({"message": "Error Occurred"});
     });
 });
-
 
 /* PHILLIP EXAMPLE OF DATABASE CALL
  db.getDashboardList()
