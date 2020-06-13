@@ -12,7 +12,7 @@ describe( 'Renders the dashboard display', () => {
             <DisplayGraph data={"test"}/>
         );
 
-        let tree = comp.toJSON();
+        const tree = comp.toJSON();
         expect(tree).toMatchSnapshot();
     });
 
@@ -22,13 +22,13 @@ describe( 'Renders the dashboard display', () => {
             description:
                 'This is a banking business intelligence dashboard that analytically displays different banking data sets across multiple systems. ',
             id: 0,
-            graphs: [graph1, graph2, graph1],
+            graphs: [{source: graph1, graphtypeid: 1}, {source: graph2, graphtypeid: 2}, {source: graph1, graphtypeid: 1}],
         }
         const comp = renderer.create(
-            <DisplayDashboard backFunc={null} editDashboard={null} dashboard={dashboard}/>
+            <DisplayDashboard backFunc={() => {}} editDashboard={() => {}} dashboard={dashboard} reqGraphList={() => {}}/>
         );
 
-        let tree = comp.toJSON();
+        const tree = comp.toJSON();
         expect(tree).toMatchSnapshot();
     });
 

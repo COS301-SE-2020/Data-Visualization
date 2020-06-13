@@ -39,28 +39,19 @@ exports[`Renders the dashboard edit screen displays graph 1`] = `
         className="graph-flex-item"
         onClick={[Function]}
       >
-        <img
-          alt="Barchart.png"
-          src="Barchart.png"
-        />
+        <img />
       </div>
       <div
         className="graph-flex-item"
         onClick={[Function]}
       >
-        <img
-          alt="PieChart.jpg"
-          src="PieChart.jpg"
-        />
+        <img />
       </div>
       <div
         className="graph-flex-item"
         onClick={[Function]}
       >
-        <img
-          alt="Barchart.png"
-          src="Barchart.png"
-        />
+        <img />
       </div>
     </div>
     <div>
@@ -75,37 +66,19 @@ exports[`Renders the dashboard edit screen displays graph 1`] = `
             className="graph-flex-item"
             onClick={[Function]}
           >
-            <img
-              alt="Barchart.png"
-              src="Barchart.png"
-            />
+            <img />
           </div>
           <div
             className="graph-flex-item"
             onClick={[Function]}
           >
-            <img
-              alt="PieChart.jpg"
-              src="PieChart.jpg"
-            />
+            <img />
           </div>
           <div
             className="graph-flex-item"
             onClick={[Function]}
           >
-            <img
-              alt="ScatterPlot2.png"
-              src="ScatterPlot2.png"
-            />
-          </div>
-          <div
-            className="graph-flex-item"
-            onClick={[Function]}
-          >
-            <img
-              alt="Barchart.png"
-              src="Barchart.png"
-            />
+            <img />
           </div>
         </div>
       </div>
@@ -120,28 +93,19 @@ exports[`Renders the dashboard edit screen displays graph 1`] = `
             className="graph-flex-item"
             onClick={[Function]}
           >
-            <img
-              alt="Barchart.png"
-              src="Barchart.png"
-            />
+            <img />
           </div>
           <div
             className="graph-flex-item"
             onClick={[Function]}
           >
-            <img
-              alt="PieChart.jpg"
-              src="PieChart.jpg"
-            />
+            <img />
           </div>
           <div
             className="graph-flex-item"
             onClick={[Function]}
           >
-            <img
-              alt="ScatterPlot2.png"
-              src="ScatterPlot2.png"
-            />
+            <img />
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ exports[`Renders the dashboard display displays dashboard 1`] = `
       Banking
     </h1>
     <button
-      onClick={null}
+      onClick={[Function]}
       style={
         Object {
           "float": "right",
@@ -21,7 +21,7 @@ exports[`Renders the dashboard display displays dashboard 1`] = `
       Edit
     </button>
     <button
-      onClick={null}
+      onClick={[Function]}
       style={
         Object {
           "float": "right",
@@ -67,9 +67,6 @@ exports[`Renders the dashboard display displays graph 1`] = `
 <div
   className="DisplayGraph"
 >
-  <img
-    alt="test"
-    src="test"
-  />
+  <img />
 </div>
 `;
