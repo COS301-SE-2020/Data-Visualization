@@ -4,6 +4,7 @@ import './App.css';
 
 import Header from '../Header/Header';
 import HomePage from '../../pages/HomePage';
+import AboutPage from '../../pages/AboutPage';
 import DisplayDashboard from '../../pages/DisplayDashboard';
 import AddDashboard from '../../pages/AddDashboard';
 import EditDashboard from '../../pages/EditDashboard';
@@ -15,6 +16,8 @@ function App() {
   const [DashboardIndex, setDashboardIndex] = useState(-1);
   const [DashboardList, setDashboardList] = useState([]);
   const [IsAddingDashboard, setIsAddingDashboard] = useState(false);
+  const [about, setAbout] = useState('ASFKSADNFKAS FKNDSAKNFKDSAN FKNSDAKFN SKDAN FKSADNFNSDAKNF KSADNF ANSD');
+  const [IsAbout, setIsAbout] = useState(false);
 
   useEffect(() => {
     //API get Dashboard list
@@ -38,11 +41,10 @@ function App() {
     // setIsAddingDashboard(false);
   }, []);
 
+  //Boolean Checks
   const isSelected = () => DashboardIndex >= 0;
-  const backToHome = () => {
-    setDashboardIndex(-1);
-    setIsAddingDashboard(false);
-  };
+
+  //State Mutators
   const deleteDashboard = () => {
     DashboardList.splice(DashboardIndex, 1);
     setDashboardList(DashboardList);
@@ -50,7 +52,7 @@ function App() {
   };
   const AddNewDashboard = (newDash) => {
     if ('name' in newDash && newDash.name !== '') {
-      setDashboardList([...DashboardList, newDash]);
+      setDashboardList(update(DashboardList, { $push: [newDash] }));
     }
   };
   const setDashboard = (dash) => {
@@ -81,8 +83,20 @@ function App() {
     );
   };
 
+  //Navigation procedures
+  const backToHome = () => {
+    setDashboardIndex(-1);
+    setIsAddingDashboard(false);
+    setIsAbout(false);
+  };
+  const goToAbout = () => {
+    setIsAbout(true);
+  };
+
   function router() {
-    if (isSelected()) {
+    if (IsAbout) {
+      return <AboutPage about={about} />;
+    } else if (isSelected()) {
       if (IsAddingDashboard) {
         return (
           <EditDashboard
@@ -119,7 +133,7 @@ function App() {
   }
   return (
     <div className='App'>
-      <Header />
+      <Header home={backToHome} about={goToAbout} />
       {router()}
     </div>
   );
