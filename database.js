@@ -82,24 +82,39 @@ class Database {
   }
 
   async getGraphList(dashboardID) {
-    // var query = `SELECT * FROM Graph;`;
-    // var result = await this.sendQuery(query);
-    // return new Promise((resolve, reject) => {
-    //   if (result && result.command === 'SELECT') resolve(result.rows);
-    //   else reject(result);
-    // });
+    var query = `SELECT * FROM Graph;`;
+    var result = await this.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'SELECT') resolve(result.rows);
+      else reject(result);
+    });
   }
 
-  async addGraph(data) {
-    return true;
+  async addGraph(dashboardID, GraphTypeID) {
+    var query = `INSERT INTO Graph (dashboardID, GraphTypeID) VALUES ('${dashboardID}','${GraphTypeID}');`;
+    var result = await this.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'INSERT') resolve(result);
+      else reject(result);
+    });
   }
 
   async removeGraph(GraphID) {
-    return true;
+    var query = `DELETE FROM Graph WHERE ( ID = '${GraphID}');`;
+    var result = await this.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'DELETE') resolve(result);
+      else reject(result);
+    });
   }
 
   async updateGraph(GraphID, fields, data) {
-    return true;
+    var query = `UPDATE Graph SET ${fieldUpdates(fields, data)} WHERE ( ID = '${GraphID}');`;
+    var result = await this.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'UPDATE') resolve(result);
+      else reject(result);
+    });
   }
 }
 

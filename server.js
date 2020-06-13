@@ -16,7 +16,7 @@ app.use(express.static(__dirname + static_path));
 app.get('/', function (req, res) {
   let result = '';
 
-  db.getDashboardList()
+  db.getGraphList()
     .then((list) => {
       res.json(list);
     })
@@ -28,10 +28,10 @@ app.get('/', function (req, res) {
   // res.sendFile(path.join(__dirname + static_path + '/index.html'));
 });
 
-app.get('/update', function (req, res) {
+app.get('/opt', function (req, res) {
   console.log(req.query);
 
-  db.updateDashboard(req.query.id, req.query.fields, req.query.data)
+  db.updateGraph(req.query.id, req.query.f, req.query.d)
     .then((response) => {
       res.redirect('/');
     })
