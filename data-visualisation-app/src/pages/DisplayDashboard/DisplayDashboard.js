@@ -18,7 +18,6 @@ function DisplayDashboard({ backFunc, editDashboard, dashboard, reqGraphList }) 
         </button>
         <button type='Submit' style={{ float: 'right' }} onClick={backFunc}>
           Back
-        </button>
       </div>
       <article className='DisplayGraph-container'>
         {dashboard.graphs && dashboard.graphs.length > 0
