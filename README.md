@@ -15,19 +15,11 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 [Production Application](https://data-visualisation-dev.herokuapp.com)
 
-<<<<<<< HEAD
-[Demo 1 Video Link](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-
-## Documentation
-
-A link to our Software Requirements Specification document (SRS) can be found [here](https://www.overleaf.com/2568579182cndcvskgwdnr). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
-=======
 [Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
 
 ## Documentation
 
 A link to our Software Requirements Specification (SRS) document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
->>>>>>> develop
 
 ## Project Management
 
@@ -95,14 +87,6 @@ npm test
 
 ## Collaborators
 
-<<<<<<< HEAD
-### Elna Pistorius
-
-[Profile Page](https://elnapistorius.github.io/my-website/index.html)
-#### What I Did 
-* todo
-* todo
-=======
 ### Phillip Shulze
 
 [Profile Page](https://phillipstemmlar.github.io)
@@ -127,16 +111,10 @@ npm test
 * The edit suggestions page.
 * The express node server to set up our endpoints.
 * Application styling.
->>>>>>> develop
 
 ### Byron Tomkinson
 
 [Profile Page](https://byrongt12.github.io/profile/)
-<<<<<<< HEAD
-#### What I Did 
-* todo
-* todo
-=======
 
  > I am student at the University of Pretoria, currently studying in my final year of Computer Science. Some of my skills include conflict resolution, problem solving, rapport building and reliability. I am open minded when it comes to different ideas that are shared and helpful wherever I can be. I have a passion for learning new things, especially in the field of human anatomy and physiology. I am crazy about Jesus and my hobbies include running, gymming and football.
 
@@ -144,30 +122,11 @@ npm test
 * Add dashboard functionality.
 * Add dashboard unit testing.
 * Assist in the writing of the SRS such as the traceability matrix. 
->>>>>>> develop
 
 ### Marco Lombaard
 
 [Profile Page](https://FlameReynard.github.io)
-<<<<<<< HEAD
-#### What I Did 
-* todo
-* todo
 
-### Phillip Shulze
-
-[Profile Page](https://phillipstemmlar.github.io)
-#### What I Did 
-* todo
-* todo
-
-### Gian Uys
-
-[Profile Page](https://mruys.github.io)
-#### What I Did 
-* todo
-* todo
-=======
 
 > I am currently studying third year Computer Science at the University of Pretoria. Our work provided many challenges, requiring us to come up with effective and efficient solutions to different problems - developing our critical thinking and problem-solving abilities. We have also been exposed to a variety of programming languages which we were expected to code in fluently, which allowed me to build a collection of programming languages.
 
@@ -185,7 +144,6 @@ npm test
 * Assist in the writting of the readme.
 * Assist in the writting of the SRS such as the use cases. 
 * Compiling the video and the creation of graphics such as the logo.
->>>>>>> develop
 
 # Development Specifics
 
