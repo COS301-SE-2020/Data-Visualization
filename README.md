@@ -15,11 +15,19 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 [Production Application](https://data-visualisation-dev.herokuapp.com)
 
+<<<<<<< HEAD
 [Demo 1 Video Link](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ## Documentation
 
 A link to our Software Requirements Specification document (SRS) can be found [here](https://www.overleaf.com/2568579182cndcvskgwdnr). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
+=======
+[Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
+
+## Documentation
+
+A link to our Software Requirements Specification (SRS) document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
+>>>>>>> develop
 
 ## Project Management
 
@@ -87,23 +95,61 @@ npm test
 
 ## Collaborators
 
+<<<<<<< HEAD
 ### Elna Pistorius
 
 [Profile Page](https://elnapistorius.github.io/my-website/index.html)
 #### What I Did 
 * todo
 * todo
+=======
+### Phillip Shulze
+
+[Profile Page](https://phillipstemmlar.github.io)
+
+> I was born in Dundee, KwaZulu Natal, where I lived for 15 years.​ In 2014 I moved to Brits, North‑West.​ I graduated matric in 2017 from Brits Hoërskool with 6 distinctions. In 2018 I started studying BSc Computer Science at the University of Pretoria and I am currently (2020) in my final year. I am also a resident of the Republic of Kollegetehuis, where I have been elected to the Executive Council for the 2019/2020 term.
+
+#### What I Did 
+* Integration of react page-components and state management.
+* Edit Dashboard functionality. 
+* Client-Side requests to REST-endpoint 
+* Database Setup
+* Heroku Setup.
+
+### Elna Pistorius
+
+[Profile Page](https://elnapistorius.github.io/my-website/index.html)
+
+> I am an adaptive software engineer in the making, I like to learn new things. I am interested in Artificial Intelligence, in particular Genetic Algorithms.
+
+#### What I Did 
+* SRS documentations.
+* The edit suggestions page.
+* The express node server to set up our endpoints.
+* Application styling.
+>>>>>>> develop
 
 ### Byron Tomkinson
 
 [Profile Page](https://byrongt12.github.io/profile/)
+<<<<<<< HEAD
 #### What I Did 
 * todo
 * todo
+=======
+
+ > I am student at the University of Pretoria, currently studying in my final year of Computer Science. Some of my skills include conflict resolution, problem solving, rapport building and reliability. I am open minded when it comes to different ideas that are shared and helpful wherever I can be. I have a passion for learning new things, especially in the field of human anatomy and physiology. I am crazy about Jesus and my hobbies include running, gymming and football.
+
+#### What I Did 
+* Add dashboard functionality.
+* Add dashboard unit testing.
+* Assist in the writing of the SRS such as the traceability matrix. 
+>>>>>>> develop
 
 ### Marco Lombaard
 
 [Profile Page](https://FlameReynard.github.io)
+<<<<<<< HEAD
 #### What I Did 
 * todo
 * todo
@@ -121,6 +167,25 @@ npm test
 #### What I Did 
 * todo
 * todo
+=======
+
+> I am currently studying third year Computer Science at the University of Pretoria. Our work provided many challenges, requiring us to come up with effective and efficient solutions to different problems - developing our critical thinking and problem-solving abilities. We have also been exposed to a variety of programming languages which we were expected to code in fluently, which allowed me to build a collection of programming languages.
+
+#### What I Did 
+* Display dashboard functionality and a bit of EditDashboard + unit tests for both and a unit test for DisplayGraph.
+* CircleCI setup.
+
+### Gian Uys
+
+> Confident and ambitious third-year student from the University of Pretoria. I align myself with positive, exuberant people that can challenge my way of thought. I, however, enjoy all different types of people from different backgrounds, religion and culture. I believe human interaction is the most effective way to enrich one’s personality. My duties are done with extreme care and attention to detail. I thrive for perfection, orderliness and quality. Alongside my candid attributes, I am also a very good-humored person and kind heart. Very open minded and supportive of social issues.
+
+[Profile Page](https://mruys.github.io)
+#### What I Did 
+* Select dashboard functionality as well as the unit testing.
+* Assist in the writting of the readme.
+* Assist in the writting of the SRS such as the use cases. 
+* Compiling the video and the creation of graphics such as the logo.
+>>>>>>> develop
 
 # Development Specifics
 
