@@ -19,7 +19,7 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 ## Documentation
 
-A link to our Software Requirements Specification document (SRS) can be found [here](https://www.overleaf.com/2568579182cndcvskgwdnr). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
+A link to our Software Requirements Specification (SRS) document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
 
 ## Project Management
 
@@ -134,6 +134,8 @@ npm test
 * CircleCI setup.
 
 ### Gian Uys
+
+> Confident and ambitious third-year student from the University of Pretoria. I align myself with positive, exuberant people that can challenge my way of thought. I, however, enjoy all different types of people from different backgrounds, religion and culture. I believe human interaction is the most effective way to enrich one’s personality. My duties are done with extreme care and attention to detail. I thrive for perfection, orderliness and quality. Alongside my candid attributes, I am also a very good-humored person and kind heart. Very open minded and supportive of social issues.
 
 [Profile Page](https://mruys.github.io)
 #### What I Did 
