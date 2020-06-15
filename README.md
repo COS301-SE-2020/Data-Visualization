@@ -15,7 +15,7 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 [Production Application](https://data-visualisation-dev.herokuapp.com)
 
-[Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
+[Doofenshmirtz Evil Inc Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
 
 ## Documentation
 
@@ -136,9 +136,10 @@ npm test
 
 ### Gian Uys
 
+[Profile Page](https://mruys.github.io)
+
 > Confident and ambitious third-year student from the University of Pretoria. I align myself with positive, exuberant people that can challenge my way of thought. I, however, enjoy all different types of people from different backgrounds, religion and culture. I believe human interaction is the most effective way to enrich one’s personality. My duties are done with extreme care and attention to detail. I thrive for perfection, orderliness and quality. Alongside my candid attributes, I am also a very good-humored person and kind heart. Very open minded and supportive of social issues.
 
-[Profile Page](https://mruys.github.io)
 #### What I Did 
 * Select dashboard functionality as well as the unit testing.
 * Assist in the writting of the readme.
