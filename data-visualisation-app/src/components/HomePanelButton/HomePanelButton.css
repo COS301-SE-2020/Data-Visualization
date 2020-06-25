@@ -1,19 +1,33 @@
 .panelLayout {
-    margin: 40px;
+    margin: 20px;
     padding: 20px;
     float: left;
     overflow: hidden;
 }
-.panelLayout:hover{
-    transform: scale(1) !important;
-    box-shadow: 0 25px 60px rgba(0,0,0,8) ;
+
+.home-panel-add {
+    border: 3px dashed #ececec;
+    font-size: 100px;
+    color: #ececec;
+    text-align: center;
+    padding-top: -20px;
 }
 
 .panelStyling {
-    border: 1px solid #e8e8e8;
+    /*border: 1px solid #e8e8e8;*/
     border-radius: 2%;
     background: #D83864;
+    color: white;
+    box-shadow: 0 0px 20px #b4b4b4;
+
+    transition: box-shadow 0.3s ease-in-out;
+    animation-play-state: paused;
 }
+
+.panelStyling:hover{
+    box-shadow: 0 0px 30px #848484;
+}
+
 .closeSize {
     width: 12px;
     height: 12px;

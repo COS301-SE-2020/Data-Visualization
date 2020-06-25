@@ -1,5 +1,8 @@
 import React from 'react';
 import './HomePanelButton.css';
+import {Typography } from 'antd';
+
+const { Title } = Typography;
 
 function HomePanelButton(props) {
   const sizeStyles = {
@@ -28,11 +31,11 @@ function HomePanelButton(props) {
     if (props.isAddButton) {
       return (
         <div
-          className='panelLayout panelStyling'
-          style={{...getSizeStyle(),  backgroundColor : props.colour}}
+          className='panelLayout home-panel-add'
+          style={{...getSizeStyle()}}
           onClick={() => props.action()}>
           <div onClick={() => props.action()}>
-            <div style={getContentPositionStyle()}>+</div>
+            <div style={{marginTop: '35px'}}>+</div>
           </div>
         </div>
       );
@@ -40,10 +43,10 @@ function HomePanelButton(props) {
       return (
         <div
           className='panelLayout panelStyling'
-          style={{...getSizeStyle(),  backgroundColor : props.colour}}
+          style={{...getSizeStyle(),  ...props.colour}}
           onClick={() => props.action(props.id)}>
           <div>
-            <div style={getContentPositionStyle()}>{props.panel.name}</div>
+            <Title level={2} style={{...getContentPositionStyle(), color: 'white'}}>{props.panel.name}</Title>
             <div style={getContentPositionStyle1()}>{props.panel.description}</div>
           </div>
         </div>

@@ -8,7 +8,7 @@ const imgs = [graph1, graph2, graph3];
 
 function DisplayGraph({ data }) {
   return (
-    <div className='DisplayGraph'>
+    <div className='graph-flex-item'>
       <img src={imgs[data.graphtypeid - 1]} alt={data.source} />
     </div>
   );
