@@ -10,7 +10,6 @@
     "antd": "^4.3.5",
     "axios": "^0.19.2",
     "craco": "0.0.3",
-    "craco-less": "^1.17.0",
     "react": "^16.13.1",
     "react-addons-update": "^15.6.2",
     "react-dom": "^16.13.1",
@@ -19,7 +18,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "react-scripts build",
+    "build": "craco build",
     "test": "craco test",
     "eject": "craco eject"
   },
@@ -49,6 +48,6 @@
     ]
   },
   "devDependencies": {
-    "eslint-plugin-react": "^7.20.1"
+    "craco-less": "^1.17.0"
   }
 }
