@@ -2,6 +2,9 @@
   "name": "data-visualisation-app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+	"node" : "6.14.4"
+  },
   "dependencies": {
     "@material-ui/core": "^4.10.1",
     "@testing-library/jest-dom": "^4.2.4",
