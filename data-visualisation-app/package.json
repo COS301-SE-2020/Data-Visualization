@@ -11,14 +11,11 @@
     "axios": "^0.19.2",
     "craco": "0.0.3",
     "craco-less": "^1.17.0",
-    "echarts": "^4.8.0",
-    "echarts-for-react": "^2.0.16",
     "react": "^16.13.1",
     "react-addons-update": "^15.6.2",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "react-test-renderer": "^16.13.1",
-    "victory": "^34.3.12"
+    "react-test-renderer": "^16.13.1"
   },
   "scripts": {
     "start": "craco start",
@@ -51,5 +48,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint-plugin-react": "^7.20.1"
+  }
 }
