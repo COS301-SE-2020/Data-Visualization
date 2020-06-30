@@ -13,13 +13,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(__dirname + static_path));
 
-app.use('/users', users);
-app.use('/graphs', graphs);
-app.use('/dashboards', dashboards);
 app.use((req, res, next) => {
   console.log(req.body, req.query);
   next();
 });
+
+app.use('/users', users);
+app.use('/graphs', graphs);
+app.use('/dashboards', dashboards);
 
 let server = app.listen(PORT, function () {
   let port = server.address().port;
