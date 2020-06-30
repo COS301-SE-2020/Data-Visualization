@@ -26,6 +26,7 @@ import Collapse from '@material-ui/core/Collapse';
 import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
+
 //pages
 import Dashboard from '../../pages/Dashboard';
 import About from '../../pages/About';
@@ -82,7 +83,8 @@ const useStyles = makeStyles((theme) => ({
 	
   },
   nested: {
-	paddingLeft: theme.spacing(4),
+	paddingLeft: theme.spacing(11),
+	color : "#3C6A7F",
   },
   nestedNoIcon: {
 	paddingLeft: theme.spacing(9),
@@ -161,10 +163,10 @@ function App(props) {
 
 
           <ListItem button className={classes.nested}>
-            <ListItemIcon  classes={classes.icon} style={{ color: '#70D3FF' }}>
+            <ListItemIcon  classes={classes.icon} style={{ color: '#3C6A7F' }}>
               <AddIcon />
             </ListItemIcon>
-            <ListItemText primary="Add Connection" />
+            
           </ListItem>
          </Collapse>
 
