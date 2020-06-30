@@ -25,8 +25,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import AddIcon from '@material-ui/icons/Add';
 
-import Dashboard from '../../components/Dashboard';
-import About from '../../components/About';
+import Dashboard from '../../pages/Dashboard';
+import About from '../../pages/About';
 
 const drawerWidth = 240;
 
@@ -67,7 +67,10 @@ const useStyles = makeStyles((theme) => ({
   },
   nestedNoIcon: {
     paddingLeft: theme.spacing(9),
-    fontSize:'0.7em',
+  },
+  listItemText: {
+	fontSize:'0.9em',
+	paddingLeft: theme.spacing(9),
   },
   
 }));
@@ -114,7 +117,7 @@ function ResponsiveDrawer(props) {
           <List component="div" disablePadding>
             {['Northwind', 'SouthWind', 'Oracle', 'GoogleDataCentre'].map((text, index) => (
               <ListItem button key={text} >
-                <ListItemText primary={text} className={classes.nestedNoIcon}/>
+                <ListItemText classes={{primary:classes.listItemText}} primary={text}/>
               </ListItem>
             ))}
           </List>
@@ -157,7 +160,7 @@ function ResponsiveDrawer(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
 
-  const [component, setComponent] = React.useState('dasboard')
+  const [component, setComponent] = React.useState('dashboard')
 
   return (
     <div className={classes.root}>

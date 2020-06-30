@@ -3,25 +3,19 @@ import update from 'react-addons-update';
 import './Dashboard.less';
 import API from '../../helpers/apiRequests';
 import * as Constants from '../../globals/constants';
-import HomePage from '../../pages/HomePage/HomePage';
-import AboutPage from '../../pages/AboutPage/AboutPage';
-import DisplayDashboard from '../../pages/DisplayDashboard/DisplayDashboard';
-import AddDashboard from '../../pages/AddDashboard/AddDashboard';
-import EditDashboard from '../../pages/EditDashboard/EditDashboard';
+import HomePage from '../../components/HomePage/HomePage';
+import DisplayDashboard from '../../components/DisplayDashboard/DisplayDashboard';
+import AddDashboard from '../../components/AddDashboard/AddDashboard';
+import EditDashboard from '../../components/EditDashboard/EditDashboard';
 import {Layout, Menu} from 'antd';
 
 
 
-const {Header} = Layout;
-
-function Other() {
+function Dashboard() {
 	const [DashboardIndex, setDashboardIndex] = useState(-1);
 	const [DashboardList, setDashboardList] = useState([]);
 	const [IsAddingDashboard, setIsAddingDashboard] = useState(false);
-	const [about, setAbout] = useState('ASFKSADNFKAS FKNDSAKNFKDSAN FKNSDAKFN SKDAN FKSADNFNSDAKNF KSADNF ANSD');
-	const [IsAbout, setIsAbout] = useState(false);
 
-	const [drawer] = useState([]);
 
 	useEffect(() => {
 		reqDashboardList();
@@ -52,7 +46,6 @@ function Other() {
 			update(DashboardList, {
 				[DashboardIndex]: {
 					graphs: { $set: list },
-
 				},
 			})
 		);
@@ -160,16 +153,12 @@ function Other() {
 	const backToHome = () => {
 		setDashboardIndex(-1);
 		setIsAddingDashboard(false);
-		setIsAbout(false);
-	};
-	const goToAbout = () => {
-		setIsAbout(true);
 	};
 
+
 	function router() {
-		if (IsAbout) {
-			return <AboutPage about={about} />;
-		} else if (isSelected()) {
+	
+		if (isSelected()) {
 			if (IsAddingDashboard) {
 				return (
 					<EditDashboard
@@ -207,9 +196,8 @@ function Other() {
 	}
 
 	return (
+
 		<Fragment>
-
-
 
 		<Layout style={{ height: '100vh' }} >
 			{router()}
@@ -219,4 +207,4 @@ function Other() {
 	);
 }
 
-export default Other;
+export default Dashboard;
