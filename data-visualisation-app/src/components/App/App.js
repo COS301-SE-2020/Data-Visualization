@@ -27,10 +27,12 @@ import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 
+
 //pages
 import Dashboard from '../../pages/Dashboard';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
+import LoginDialog from '../../pages/LoginDialog/LoginDialog';
 
 const drawerWidth = 240;
 
@@ -63,9 +65,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	display: 'flex', 
 	justifyContent: 'flex-end',
-	maxWidth: '200px',
+	maxWidth: '210px',
 	marginLeft: "auto",
-    marginRight: -12
+    marginRight: -20
 
   },
   
@@ -106,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   drawerListCollapse : {
 	color : "#3C6A7F",
   },
- 
+
   //05192F primary -> 3C6A7F//lighter
   //70D3FF secondary
   //8D66E3 tertiary
@@ -124,10 +126,12 @@ function App(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  const [open, setOpen] = React.useState(false);
-  const handleClick = () => {
-    setOpen(!open);
+  const [openIcon, setopenIcon] = React.useState(false);
+  const handleOpenIcon = () => {
+    setopenIcon(!openIcon);
   };
+  const [loginNameState, setLoginNameState] = React.useState('Login/Sign up');
+
   //handle page state
   const [pageType, setPageType] = React.useState('dashboard')
 
@@ -144,15 +148,15 @@ function App(props) {
           </ListItemIcon>
           <ListItemText primary="My Dashboards" />
         </ListItem>
-        <ListItem button onClick= {handleClick}>
+        <ListItem button onClick= {handleOpenIcon}>
           <ListItemIcon className={classes.icon}>
             <InputIcon/>
           </ListItemIcon>
           <ListItemText primary="Connections" />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          {openIcon ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
 
-         <Collapse in={open} timeout="auto" unmountOnExit>
+         <Collapse in={openIcon} timeout="auto" unmountOnExit>
           <List component="div" disablePadding className= {classes.drawerListCollapse}>
             {['Northwind', 'SouthWind', 'Oracle', 'GoogleDataCentre'].map((text, index) => (
               <ListItem button key={text} >
@@ -163,15 +167,16 @@ function App(props) {
 
 
           <ListItem button className={classes.nested}>
-            <ListItemIcon  classes={classes.icon} style={{ color: '#3C6A7F' }}>
+            <ListItemIcon  className={classes.icon}>
               <AddIcon />
             </ListItemIcon>
-            
           </ListItem>
+
+
          </Collapse>
 
         <ListItem button >
-          <ListItemIcon classes={classes.icon} style={{ color: '#70D3FF' }}>
+          <ListItemIcon className={classes.icon}>
             <LockIcon />
           </ListItemIcon>
           <ListItemText primary="Lock" />
@@ -197,6 +202,8 @@ function App(props) {
     </div>
   );
 
+ 
+
   const container = window !== undefined ? () => window().document.body : undefined;
 
 
@@ -218,7 +225,7 @@ function App(props) {
           </IconButton>
 
 	
-			<Typography variant="h6" class = {classes.typographyHeading} noWrap children={
+			<Typography variant="h6" className = {classes.typographyHeading} noWrap children={
 				pageType === 'dashboard' ? 'Dashbaords' 
 				: 
 				pageType === 'about' ? 'About' 
@@ -231,8 +238,8 @@ function App(props) {
 			</Typography>
     
 
-		  <ListItem button className={classes.userButton}>
-		  <ListItemText primary="Login/Sign up" className = {classes.drawerListCollapse}/>
+		  <ListItem button className={classes.userButton} onClick={() => setPageType('loginDialog')}>
+		  <ListItemText primary={loginNameState} className = {classes.drawerListCollapse}/>
            <ListItemIcon className = {classes.icon}>
              <AccountCircleIcon />
            </ListItemIcon>
@@ -285,6 +292,9 @@ function App(props) {
 			:
 			pageType === 'trash' ?
 			<Trash/>
+			:
+			pageType === 'loginDialog' ?
+			<LoginDialog pType= {pageType}  setpType= {setPageType} setNameState = {setLoginNameState}/>
 			:
 			<Dashboard />
 		

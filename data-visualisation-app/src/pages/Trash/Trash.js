@@ -2,9 +2,9 @@ import React from 'react';
 
 function Trash() {
   return (
-    <p1>
+    <p>
      This is the trash page :(
-    </p1>
+    </p>
   );
 }
 
