@@ -25,8 +25,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import AddIcon from '@material-ui/icons/Add';
 
-import Dashboard from '../../components/Dashboard';
-import About from '../../components/About';
 
 const drawerWidth = 240;
 
@@ -95,8 +93,8 @@ function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-       <ListItem button onClick={() => setComponent('dashboards')}>
-          <ListItemIcon className={classes.icon} >
+       <ListItem button>
+          <ListItemIcon className={classes.icon}>
             <DashboardIcon/>
           </ListItemIcon>
           <ListItemText primary="My Dashboards" />
@@ -144,7 +142,7 @@ function ResponsiveDrawer(props) {
       </List>
       <Divider />
       <List component="nav">
-        <ListItem button onClick={() => setComponent('about')}>
+        <ListItem button>
           <ListItemIcon className={classes.icon}>
             <InfoIcon />
           </ListItemIcon>
@@ -157,7 +155,7 @@ function ResponsiveDrawer(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
 
-  const [component, setComponent] = React.useState('dasboard')
+
 
   return (
     <div className={classes.root}>
@@ -209,24 +207,7 @@ function ResponsiveDrawer(props) {
           </Drawer>
         </Hidden>
       </nav>
-	  <main className={classes.content}>
-        <div className={classes.toolbar} />
-		{
-			
-			component === 'dashboard' ?
-			<Dashboard />
-			:
-			component === 'about' ?
-			<About />
-			:
-			<Dashboard />
-          
-        }	
-		 
-
-        
-      </main>
-
+      
     </div>
   );
 }

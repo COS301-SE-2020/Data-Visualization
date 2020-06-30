@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.10.1",
+    "@material-ui/core": "latest",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -12,7 +12,9 @@
     "react-addons-update": "^15.6.2",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "prop-types": "latest",
+    "@material-ui/icons": "latest"
   },
   "scripts": {
     "start": "craco start",
@@ -48,6 +50,7 @@
   "devDependencies": {
     "antd": "^4.3.3",
     "craco": "0.0.3",
-    "craco-less": "^1.17.0"
+    "craco-less": "^1.17.0",
+    "tailwindcss": "^1.1.3"
   }
 }
