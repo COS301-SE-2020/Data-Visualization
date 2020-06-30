@@ -48,7 +48,6 @@ router.delete('/', (req, res) => {
 //     UPDATE_DASHBOARD_DESCRIPTION
 //  => PUT(dashboardDescription, dashboardID)
 router.put('/', (req, res) => {
-    console.log(req);
     const id = req.body.dashboardID;
     db.updateDashboard(id, req.body.fields, req.body.data)
         .then(() => {
