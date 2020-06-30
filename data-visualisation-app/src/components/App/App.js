@@ -101,8 +101,13 @@ const useStyles = makeStyles((theme) => ({
   icon: {
 	color : '#70D3FF',
   },
-
-  
+  drawerListCollapse : {
+	color : "#3C6A7F",
+  },
+ 
+  //05192F primary -> 3C6A7F//lighter
+  //70D3FF secondary
+  //8D66E3 tertiary
 }));
 
 
@@ -146,7 +151,7 @@ function App(props) {
         </ListItem>
 
          <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
+          <List component="div" disablePadding className= {classes.drawerListCollapse}>
             {['Northwind', 'SouthWind', 'Oracle', 'GoogleDataCentre'].map((text, index) => (
               <ListItem button key={text} >
                 <ListItemText classes={{primary:classes.listItemText}} primary={text}/>
@@ -204,7 +209,8 @@ function App(props) {
             edge="start"
             onClick={handleDrawerToggle}
 			className={classes.menuButton}
-			style={{ color: '#70D3FF' }}
+			style={{ color: '#3C6A7F' }}
+			
           >
             <MenuIcon />
           </IconButton>
@@ -224,7 +230,7 @@ function App(props) {
     
 
 		  <ListItem button className={classes.userButton}>
-		  <ListItemText primary="Login/Sign up" className = {classes.drawerList}/>
+		  <ListItemText primary="Login/Sign up" className = {classes.drawerListCollapse}/>
            <ListItemIcon className = {classes.icon}>
              <AccountCircleIcon />
            </ListItemIcon>
