@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -24,9 +24,12 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import AddIcon from '@material-ui/icons/Add';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
+//pages
 import Dashboard from '../../pages/Dashboard';
 import About from '../../pages/About';
+import Trash from '../../pages/Trash';
 
 const drawerWidth = 240;
 
@@ -37,15 +40,14 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
-      flexShrink: 0,
-    },
+	  flexShrink: 0,
+	},
   },
   appBar: {
     [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
-      background: '#4BC8D0',
-    },
+	},
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -53,31 +55,59 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  userButton: {
+
+   // marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+	},
+	display: 'flex', 
+	justifyContent: 'flex-end',
+	maxWidth: '200px',
+	marginLeft: "auto",
+    marginRight: -12
+
+  },
+  
   // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
+  toolbar: {
+	  ...theme.mixins.toolbar,
+  },
   drawerPaper: {
-    width: drawerWidth,
+	width: drawerWidth,
+	background : '#05192F',
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+	padding: theme.spacing(3),
+	
   },
   nested: {
-    paddingLeft: theme.spacing(4),
+	paddingLeft: theme.spacing(4),
   },
   nestedNoIcon: {
-    paddingLeft: theme.spacing(9),
+	paddingLeft: theme.spacing(9),
   },
   listItemText: {
 	fontSize:'0.9em',
 	paddingLeft: theme.spacing(9),
   },
+  typographyHeading : {
+	color : "#70D3FF",
+	fontSize:'1.5em',
+  },
+  drawerList : {
+	color : "#70D3FF",
+  },
+  icon: {
+	color : '#70D3FF',
+  },
+
   
 }));
 
 
 
-function ResponsiveDrawer(props) {
+function App(props) {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -87,18 +117,21 @@ function ResponsiveDrawer(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const handleClick = () => {
     setOpen(!open);
   };
+  //handle page state
+  const [pageType, setPageType] = React.useState('dashboard')
+
 
 
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <Divider />
-      <List>
-       <ListItem button onClick={() => setComponent('dashboards')}>
+      <List  className= {classes.drawerList}>
+       <ListItem button onClick={() => setPageType('dashboards')}>
           <ListItemIcon className={classes.icon} >
             <DashboardIcon/>
           </ListItemIcon>
@@ -111,9 +144,8 @@ function ResponsiveDrawer(props) {
           <ListItemText primary="Connections" />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
+
          <Collapse in={open} timeout="auto" unmountOnExit>
-
-
           <List component="div" disablePadding>
             {['Northwind', 'SouthWind', 'Oracle', 'GoogleDataCentre'].map((text, index) => (
               <ListItem button key={text} >
@@ -124,20 +156,21 @@ function ResponsiveDrawer(props) {
 
 
           <ListItem button className={classes.nested}>
-            <ListItemIcon>
+            <ListItemIcon  classes={classes.icon} style={{ color: '#70D3FF' }}>
               <AddIcon />
-              </ListItemIcon>
-              <ListItemText primary="Add Connection" />
+            </ListItemIcon>
+            <ListItemText primary="Add Connection" />
           </ListItem>
-
          </Collapse>
-        <ListItem button>
-          <ListItemIcon classes={classes.icon}>
+
+        <ListItem button >
+          <ListItemIcon classes={classes.icon} style={{ color: '#70D3FF' }}>
             <LockIcon />
           </ListItemIcon>
           <ListItemText primary="Lock" />
         </ListItem>
-        <ListItem button>
+		
+        <ListItem button onClick={() => setPageType('trash')}>
           <ListItemIcon className={classes.icon}>
             <DeleteIcon />
           </ListItemIcon>
@@ -146,12 +179,12 @@ function ResponsiveDrawer(props) {
         
       </List>
       <Divider />
-      <List component="nav">
-        <ListItem button onClick={() => setComponent('about')}>
+      <List component="nav" className= {classes.drawerList}>
+        <ListItem button onClick={() => setPageType('about')}>
           <ListItemIcon className={classes.icon}>
             <InfoIcon />
           </ListItemIcon>
-          <ListItemText primary="About" />
+          <ListItemText primary="About"/>
         </ListItem>
       </List>
     </div>
@@ -160,25 +193,44 @@ function ResponsiveDrawer(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
 
-  const [component, setComponent] = React.useState('dashboard')
-
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position="fixed" className={classes.appBar} style={{ background: '#05192F' }}>
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            className={classes.menuButton}
+			className={classes.menuButton}
+			style={{ color: '#70D3FF' }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Data viualization
-          </Typography>
+
+	
+			<Typography variant="h6" class = {classes.typographyHeading} noWrap children={
+				pageType === 'dashboard' ? 'Dashbaords' 
+				: 
+				pageType === 'about' ? 'About' 
+				:  
+				pageType === 'trash' ? 'Trash'
+				:
+				'Dashbaords' 
+				} >
+            
+			</Typography>
+    
+
+		  <ListItem button className={classes.userButton}>
+		  <ListItemText primary="Login/Sign up" className = {classes.drawerList}/>
+           <ListItemIcon className = {classes.icon}>
+             <AccountCircleIcon />
+           </ListItemIcon>
+          </ListItem>
+		  
+		
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
@@ -213,28 +265,31 @@ function ResponsiveDrawer(props) {
         </Hidden>
       </nav>
 	  <main className={classes.content}>
-        <div className={classes.toolbar} />
+	  
+        <div className ={classes.toolbar} />
 		{
 			
-			component === 'dashboard' ?
+			pageType === 'dashboard' ?
 			<Dashboard />
 			:
-			component === 'about' ?
-			<About />
+			pageType === 'about' ?
+			<About /> 
+			:
+			pageType === 'trash' ?
+			<Trash/>
 			:
 			<Dashboard />
-          
-        }	
+		
+		}
+		
 		 
-
-        
       </main>
 
     </div>
   );
 }
 
-ResponsiveDrawer.propTypes = {
+App.propTypes = {
   /**
    * Injected by the documentation to work in an iframe.
    * You won't need it on your project.
@@ -242,5 +297,5 @@ ResponsiveDrawer.propTypes = {
   window: PropTypes.func,
 };
 
-export default ResponsiveDrawer;
+export default App;
 
