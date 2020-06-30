@@ -1,9 +1,9 @@
 import React from 'react';
-import '../../globals/globals.less';
+import '../../globals/globals.css';
 import HomePanelButton from '../../components/HomePanelButton/HomePanelButton';
 import './HomePage.css';
-import {Layout} from 'antd';
-import {FooterGlobal} from '../../globals/globals';
+import { Layout } from 'antd';
+import { FooterGlobal } from '../../globals/globals';
 import PageTitle from '../../components/PageTitle';
 
 function HomePage(props) {
@@ -22,37 +22,37 @@ function HomePage(props) {
         background: 'linear-gradient(16deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 79%)'
     }];
 
-  return (
-      <React.Fragment>
-          <Layout.Content className='content-padding content-colors' >
+    return (
+        <React.Fragment>
+            <Layout.Content className='content-padding content-colors' >
 
-              <PageTitle>Dashboards</PageTitle>
+                <PageTitle>Dashboards</PageTitle>
 
-              {(() => {
-                  return props.dashboardList.map((dashboard, i, content) => {
-                      return (
-                          <HomePanelButton
-                              colour={backgrounds[Math.floor(Math.random() * Math.floor(backgrounds.length))]}
-                              panel={dashboard}
-                              description={dashboard.description}
-                              key={i}
-                              id={i}
-                              isAddButton={false}
-                              action={(index) => props.setDashboardIndex(index)}
-                          />
-                      );
-                  });
-              })()}
-              <HomePanelButton
-                  colour={backgrounds[Math.floor(Math.random() * Math.floor(backgrounds.length))]}
-                  isAddButton={true}
-                  action={() => props.onAddButtonClick(true)}
-              />
+                {(() => {
+                    return props.dashboardList.map((dashboard, i, content) => {
+                        return (
+                            <HomePanelButton
+                                colour={backgrounds[Math.floor(Math.random() * Math.floor(backgrounds.length))]}
+                                panel={dashboard}
+                                description={dashboard.description}
+                                key={i}
+                                id={i}
+                                isAddButton={false}
+                                action={(index) => props.setDashboardIndex(index)}
+                            />
+                        );
+                    });
+                })()}
+                <HomePanelButton
+                    colour={backgrounds[Math.floor(Math.random() * Math.floor(backgrounds.length))]}
+                    isAddButton={true}
+                    action={() => props.onAddButtonClick(true)}
+                />
 
-          </Layout.Content>
-          {FooterGlobal()}
-      </React.Fragment>
-  );
+            </Layout.Content>
+            {FooterGlobal()}
+        </React.Fragment>
+    );
 }
 
 export default HomePage;

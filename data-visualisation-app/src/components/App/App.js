@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import update from 'react-addons-update';
-import './App.less';
+import './App.css';
 import API from '../../helpers/apiRequests';
 import * as Constants from '../../globals/constants';
 import HomePage from '../../pages/HomePage';
@@ -8,9 +8,9 @@ import AboutPage from '../../pages/AboutPage';
 import DisplayDashboard from '../../pages/DisplayDashboard';
 import AddDashboard from '../../pages/AddDashboard';
 import EditDashboard from '../../pages/EditDashboard';
-import {Layout, Menu} from 'antd';
+import { Layout, Menu } from 'antd';
 
-const {Header} = Layout;
+const { Header } = Layout;
 
 function App() {
 	const [DashboardIndex, setDashboardIndex] = useState(-1);
