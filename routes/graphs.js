@@ -6,55 +6,44 @@ const rest = require('../rest-controller/restController');
 
 //  1. GET_GRAPHS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.get('/', (req, res) => {
-  const dashboardID = req.query.dashboardID || req.body.dashboardID || -1;
   rest.getGraphList(
-    id,
+    req.query.dashboardID || req.body.dashboardID || -1,
     (list) => res.status(200).json(list),
     (err) => error(res, err)
   );
 });
 
-//  2. UPDATE_GRAPH_TYPE
+//  2. UPDATE_GRAPH
 //  => PUT(graphType, graphID)
 router.put('/', (req, res) => {
-  const id = req.body.graphID;
-  db.updateGraph(id, req.body.fields, req.body.data)
-    .then(() => {
-      res.status(200).json({ message: 'Successfully Updated Graph' });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(400).json({ message: 'Error Occurred' });
-    });
+  rest.updateGraph(
+      req.body.graphID || req.body.graphID || -1,
+      req.body.fields,
+      req.body.data,
+      () => res.status(200).json({ message: 'Successfully Updated Graph' }),
+      (err) => error(res, err)
+  );
 });
 
 //  3. ADD_GRAPH_TO_DASHBOARD
 // => POST (dashboardID, graphID)
 router.post('/', (req, res) => {
-  const graphTypeID = req.body.graphTypeID;
-  const dashboardID = req.body.dashboardID;
-  db.addGraph(dashboardID, graphTypeID)
-    .then(() => {
-      res.status(200).json({ message: 'Successfully Added To Dashboard' });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(400).json({ message: 'Error Occurred' });
-    });
+  rest.addGraph(
+      req.body.graphTypeID,
+      req.body.dashboardID,
+      () => res.status(200).json({ message: 'Successfully Added To Dashboard' }),
+      (err) => error(res, err)
+  );
 });
 
 //  4. DELETE_GRAPH_FROM_DASHBOARD
 //  => DELETE (graphID)
 router.delete('/', (req, res) => {
-  const id = req.body.graphID;
-  db.removeGraph(id)
-    .then(() => {
-      res.status(200).json({ message: 'Successfully Removed Graph' });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(400).json({ message: 'Error Occurred' });
-    });
+  rest.removeGraph(
+      req.body.graphID,
+      () => res.status(200).json({ message: 'Successfully Removed Graph' }),
+      (err) => error(res, err)
+  );
 });
 
 function error(res, err) {

@@ -55,11 +55,23 @@ class RestController {
       .catch((err) => error && error(err));
   }
 
-  static addGraph() {}
+  static updateGraph(id, fields, data, done, error) {
+    db.updateGraph(id, fields, data)
+      .then(() => done())
+      .catch((err) => error && error(err));
+  }
 
-  static updateGrap() {}
+  static addGraph(graphTypeID,dashboardID,done,error) {
+    db.addGraph(dashboardID, graphTypeID)
+        .then(() => done())
+        .catch((err) => error && error(err));
+  }
 
-  static removeGrap() {}
+  static removeGraph(id, done,error) {
+    db.removeGraph(id)
+        .then(() => done())
+        .catch((err) => error && error(err));
+  }
 }
 
 module.exports = RestController;
