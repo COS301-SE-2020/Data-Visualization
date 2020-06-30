@@ -42,10 +42,10 @@ let graphSuggesterControllerMaker = ( function () {
          * This function passes the data that suggestions need to be generated for, to the graph
          * suggester in graphSuggester.js.
          * @param jsonData the data that suggestions need to be generated for, passed in JSON format
-         * @return suggestions the suggestions that were generated, in JSON format.
+         * @returns the suggestions that were generated, in JSON format.
          */
         getSuggestions ( jsonData ) {
-
+            this.suggester.getSuggestions(jsonData);
         }
 
         /**
@@ -54,7 +54,7 @@ let graphSuggesterControllerMaker = ( function () {
          * @param target the target graph.
          */
         changeFitnessTarget ( target ) {
-
+            this.suggester.changeFitnessTarget(target);
         }
 
     }
