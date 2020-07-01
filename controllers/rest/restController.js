@@ -15,15 +15,13 @@ class RestController {
   }
 
   static addDataSource(dashboardID, dataSource, done, error) {
-    DataSource.getEntityList(dataSource)
-      .then((list) => {
-        Database.addDataSource(dashboardID, dataSource, list)
-          .then(() => done())
-          .catch((err) => error && error(err));
+    DataSource.getMetaData(dataSource, DataSource.sourceTypes.Odata)
+      .then((meta) => {
+        console.log(meta);
+        done();
       })
       .catch((err) => error && error(err));
   }
-
   //Log in\out\register Users
 
   //Request Graph Suggestions

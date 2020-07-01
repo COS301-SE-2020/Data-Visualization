@@ -40,7 +40,7 @@ class Database {
     });
   }
 
-  static addDataSource(dashboardID, dataSource, list) {
+  static addDataSource(dashboardID, dataSource, srcType, list) {
     console.log('new DataSource:', dashboardID, dataSource, list);
 
     return new Promise((resolve, reject) => resolve());
