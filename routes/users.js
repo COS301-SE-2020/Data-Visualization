@@ -29,7 +29,7 @@ router.post('/register', (req, res) => {
     checkName(req.body.name) &&
     checkName(req.body.surname) &&
     checkUserEmail(req.body.email) &&
-    checkUserPasswordRegister(req.body.password, req.body.password, req.body.name);
+    checkUserPasswordRegister(req.body.password, req.body.confirmPassword, req.body.name);
   if (check) {
     Rest.register(
       req.body.name,
@@ -81,14 +81,26 @@ function checkUserEmail(email) {
   return valid;
 }
 function checkUserPasswordLogin(userPassword){
-
-}
-function checkUserPasswordRegister(password, confirmPassword, name){
     let valid = true;
+    let re;
     if (password.trim().length === 0) {
         // password cannot be empty
         valid = false;
-    } else let re;
+    }
+    else{
+        re= /^[0-9a-zA-Z!@#\$%\^&\*]{9,}$/;
+        return re.test(password);
+    }
+
+    return valid;
+}
+function checkUserPasswordRegister(password, confirmPassword, name){
+    let valid = true;
+    let re;
+    if (password.trim().length === 0) {
+        // password cannot be empty
+        valid = false;
+    }
     if (password !== "" && password === confirmPassword) {
         if (password.length < 8) {
             //password must be 8 letters
@@ -122,6 +134,6 @@ function checkUserPasswordRegister(password, confirmPassword, name){
         valid = false;
         //confirm password incorrect
     }
-    return;
+    return valid;
 }
 module.exports = router;
