@@ -2,11 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 
-const { rest } = require('../controllers');
+const { Rest } = require('../controllers');
 
 //  1. GET_DASHBOARDS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.get('/', (req, res) => {
-  rest.getDashboardList(
+  Rest.getDashboardList(
     (list) => res.status(200).json(list),
     (err) => error(res, err)
   );
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 //  2. ADD_DASHBOARDS (THIS WILL JUST ADD A DASHBOARD TO THE PANEL PAGE)
 // => POST (nameOfDashboard, descriptionOfDashboard,dashColour)
 router.post('/', (req, res) => {
-  rest.addDashboard(
+  Rest.addDashboard(
     req.body.name,
     req.body.description,
     () => res.status(200).json({ message: 'Successfully Added Dashboard' }),
@@ -25,7 +25,7 @@ router.post('/', (req, res) => {
 
 //  3. REMOVE_DASHBOARD
 router.delete('/', (req, res) => {
-  rest.removeDashboard(
+  Rest.removeDashboard(
     req.body.dashboardID,
     () => {
       res.status(200).json({ message: 'Successfully Removed Dashboard' });
@@ -39,7 +39,7 @@ router.delete('/', (req, res) => {
 //     UPDATE_DASHBOARD_DESCRIPTION
 //  => PUT(dashboardDescription, dashboardID)
 router.put('/', (req, res) => {
-  rest.updateDashboard(
+  Rest.updateDashboard(
     req.body.dashboardID,
     req.body.fields,
     req.body.data,

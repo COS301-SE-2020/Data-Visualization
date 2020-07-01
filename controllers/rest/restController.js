@@ -1,5 +1,4 @@
 const Database = require('../database');
-const db = new Database();
 
 class RestController {
   //CRUD DataSource
@@ -21,49 +20,49 @@ class RestController {
 	*/
 
   static getDashboardList(done, error) {
-    db.getDashboardList()
+    Database.getDashboardList()
       .then((list) => done(list))
       .catch((err) => error && error(err));
   }
 
   static addDashboard(name, description, done, error) {
-    db.addDashboard(name, description)
+    Database.addDashboard(name, description)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
   static updateDashboard(id, fields, data, done, error) {
-    db.updateDashboard(id, fields, data)
+    Database.updateDashboard(id, fields, data)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
   static removeDashboard(id, done, error) {
-    db.removeDashboard(id)
+    Database.removeDashboard(id)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
   static getGraphList(id, done, error) {
-    db.getGraphList(id)
+    Database.getGraphList(id)
       .then((list) => done(list))
       .catch((err) => error && error(err));
   }
 
   static updateGraph(id, fields, data, done, error) {
-    db.updateGraph(id, fields, data)
+    Database.updateGraph(id, fields, data)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
   static addGraph(graphTypeID, dashboardID, done, error) {
-    db.addGraph(dashboardID, graphTypeID)
+    Database.addGraph(dashboardID, graphTypeID)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
   static removeGraph(id, done, error) {
-    db.removeGraph(id)
+    Database.removeGraph(id)
       .then(() => done())
       .catch((err) => error && error(err));
   }

@@ -1,5 +1,5 @@
-const rest = require('./rest');
-const dataSource = require('./dataSource');
-const database = require('./database');
+const Rest = require('./rest');
+const DataSource = require('./dataSource');
+const Database = require('./database');
 
-module.exports = { rest, dataSource, database };
+module.exports = { Rest, DataSource, Database };
