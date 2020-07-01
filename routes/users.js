@@ -77,7 +77,6 @@ function checkUserEmail(email){
     return valid;
 }
 function checkUserPasswordLogin(userPassword){
-    // Do user password validation
 
 }
 function checkUserPasswordRegister(password, confirmPassword, name){
@@ -85,7 +84,8 @@ function checkUserPasswordRegister(password, confirmPassword, name){
     if (password.trim().length === 0) {
         // password cannot be empty
         valid = false;
-    } else if (password !== "" && password === confirmPassword) {
+    } else let re;
+    if (password !== "" && password === confirmPassword) {
         if (password.length < 8) {
             //password must be 8 letters
             valid = false;
@@ -102,7 +102,7 @@ function checkUserPasswordRegister(password, confirmPassword, name){
         re = /[a-z]/;
         if (!re.test(password)) {
             valid = false;
-           // password must contain at least one lowercase letter (a-z)!
+            // password must contain at least one lowercase letter (a-z)!
         }
         re = /[A-Z]/;
         if (!re.test(password)) {
@@ -112,11 +112,11 @@ function checkUserPasswordRegister(password, confirmPassword, name){
         re = /[!@#$%^&*]/;
         if (!re.test(password)) {
             valid = false;
-          // password must contain at least one special character
+            // password must contain at least one special character
         }
     } else {
         valid = false;
-        //confirm password
+        //confirm password incorrect
     }
     return valid;
 }
