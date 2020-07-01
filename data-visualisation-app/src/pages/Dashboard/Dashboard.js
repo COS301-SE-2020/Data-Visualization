@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import update from 'react-addons-update';
-import './Dashboard.less';
+import './Dashboard.scss';
 import API from '../../helpers/apiRequests';
 import * as Constants from '../../globals/constants';
 import HomePage from '../../components/HomePage/HomePage';

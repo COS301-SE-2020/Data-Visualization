@@ -28,11 +28,15 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 
 
+import './App.scss';
+
+
 //pages
 import Dashboard from '../../pages/Dashboard';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
 import LoginDialog from '../../pages/LoginDialog/LoginDialog';
+import AddConnection from '../AddConnection';
 
 const drawerWidth = 240;
 
@@ -168,7 +172,8 @@ function App(props) {
 
           <ListItem button className={classes.nested}>
             <ListItemIcon  className={classes.icon}>
-              <AddIcon />
+              {/*<AddIcon />*/}
+              <AddConnection/>
             </ListItemIcon>
           </ListItem>
 

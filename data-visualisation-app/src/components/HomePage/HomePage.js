@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../globals/globals.less';
+import '../../globals/globals.scss';
 import HomePanelButton from '../../components/HomePanelButton/HomePanelButton';
 import './HomePage.css';
 import {Layout} from 'antd';
