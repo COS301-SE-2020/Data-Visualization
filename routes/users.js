@@ -92,7 +92,7 @@ function checkUserPasswordLogin(userPassword){
 }
 function checkUserPasswordRegister(password, confirmPassword, name){
     let valid = true;
-    if (password.value.trim().length === 0) {
+    if (password.trim().length === 0) {
         // password cannot be empty
         valid = false;
     } else if (password !== "" && password === confirmPassword) {
