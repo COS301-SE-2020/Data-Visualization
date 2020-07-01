@@ -7,8 +7,9 @@
  * Related Documents: SRS Document - www.example.com
  * Update History:
  * Date         Author              Changes
- * -------------------------------------------------------
+ * -----------------------------------------------------------
  * 30/06/2020    Marco Lombaard     Original
+ * 1/07/2020     Marco Lombaard     Added setMetadata function
  *
  * Test Cases: none
  *
@@ -29,13 +30,15 @@
  */
 class graphSuggester {
     /**
-     * The default constructor for the object - sets the two class variables graphTypes and graphWeights
+     * The default constructor for the object - initialises class variables
      */
     constructor() {
         this.graphTypes = [];
         this.graphWeights = [];
-        //initialise graphTypes
-        //initialise graphWeights
+        this.terminals = [];
+        this.nonTerminals = [];
+        this.nodeWeights = [];
+        //initialise maybe
     }
 
     /**
@@ -50,6 +53,30 @@ class graphSuggester {
         }
 
         //TODO maybe add some way to carry over/reset weights?
+    }
+
+    /**
+     * This function sets the nodes that can be selected for graph suggestions.
+     * @param items the 'terminal' nodes, these don't lead to other tables for data.
+     * @param associations the 'non-terminal' nodes, these lead to other tables for data.
+     */
+    setMetadata( items, associations ) {
+        let count = 0;              //used to set weights for all nodes(option pool)
+        let defaultWeight = 10;     //just a default weight for IGA
+
+        for ( let i = 0; i < items.length; i++ ) {
+            this.terminals[i] = items[i];
+            this.nodeWeights [ count ] = defaultWeight;
+            count++;
+        }
+
+        for ( let i = 0; i < associations.length; i++ ) {
+            this.nonTerminals[i] = associations[i];
+            this.nodeWeights [ count ] = defaultWeight;
+            count++;
+        }
+
+        //TODO maybe keep original weights - probably fine like this though
     }
 
     /**

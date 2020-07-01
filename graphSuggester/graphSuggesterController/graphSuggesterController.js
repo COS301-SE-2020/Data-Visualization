@@ -7,8 +7,9 @@
  * Related Documents: SRS Document - www.example.com
  * Update History:
  * Date         Author              Changes
- * -------------------------------------------------------
+ * ------------------------------------------------------------------
  * 30/06/2020    Marco Lombaard     Original
+ * 1/07/2020     Marco Lombaard     Added parseODataMetadata function
  *
  * Test Cases: none
  *
@@ -52,6 +53,43 @@ let graphSuggesterControllerMaker = ( function () {
          * @param target the target graph.
          */
         changeFitnessTarget ( target ) { this.suggester.changeFitnessTarget ( target ); }
+
+        /**
+         * This function parses the metadata which is received in XML format and passes it to the suggester
+         * so it knows what it can suggest. It passes the properties(treated as terminal nodes) and the
+         * navigation properties(so it can go to deeper layers) via the setMetadata function.
+         * @param xmlData the metadata in XML format.
+         */
+        parseODataMetadata ( xmlData ){
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString ( xmlData,"text/xml" );
+            let entities = xmlDoc.getElementsByTagName ( 'EntityType' ); //all "tables" that are available
+            //let entities = xmlDoc.getElementsByTagName ( 'EntitySet' );
+
+            let items = [];             //each "table" has its own items
+            let index;                  //used to index items for JSON parsing
+            let children;               //children of each entity(basically elements/attributes)
+            let links;                  //links to other "tables" associated with this one
+            let associations = [];      //associated tables - used in suggestion generation
+
+            for ( let i = 0; i < entities.length; i++ ) {   //step through each table and find their items
+                index = entities[i].Name;                   //The idea is to use strings as indices for JSON parsing
+                items [ index ] = [];
+
+                children = entities[i].getElementsByTagName ( 'Property' );
+
+                for ( let j = 0; j < children.length; j++ ) { items [ index ][j] = children[j].Name; }
+
+                links = entities[i].getElementsByTagName ( 'NavigationProperty' );
+
+                for ( let j=0; j < links.length; j++ ) { associations[j] = links[j].Name; }
+            }
+
+            this.suggester.setMetadata( items, associations );
+            //TODO remove these console.log statements - they are for testing purposes
+            console.log("Items: "+items);
+            console.log("Associations: "+associations);
+        }
 
     }
 
