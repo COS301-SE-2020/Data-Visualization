@@ -82,14 +82,14 @@ class RestController {
       .catch((err) => error && error(err));
   }
   static loginUser(userName, password, done, error) {
-    Database.loginUser(userName, password,)
-        .then(() => done())
-        .catch((err) => error && error(err));
+    Database.authenticate(userName, password)
+      .then((user) => done(user))
+      .catch((err) => error && error(err));
   }
-  static registerUser(userName, userSurname, userEmail, userPassword,done, error) {
-    Database.registerUser(userName, userSurname, userEmail, userPassword)
-        .then(() => done())
-        .catch((err) => error && error(err));
+  static registerUser(userName, userSurname, userEmail, userPassword, done, error) {
+    Database.register(userName, userSurname, userEmail, userPassword)
+      .then((user) => done(user))
+      .catch((err) => error && error(err));
   }
 }
 

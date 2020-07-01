@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 
+const SESS_NAME = 'sid'; //ms
+
 const { Rest } = require('../controllers');
 //TODO:
 // login user
@@ -13,12 +15,16 @@ const { Rest } = require('../controllers');
 router.post('/login', (req, res) => {
   const check = checkUserEmail(req.body.email) && checkUserPasswordLogin(req.body.password);
   if (check) {
-    Rest.login(
+    Rest.loginUser(
       req.body.email,
       req.body.password,
       (user) => {
-        req.session.sid = user;
-        res.status(200).json({ message: 'Successfully Logged In User' });
+        if (user === false) {
+          res.status(401).json({ message: 'Failed to Log In User' });
+        } else {
+          req.session[SESS_NAME] = user;
+          res.status(200).json({ message: 'Successfully Logged In User' });
+        }
       },
       (err) => error(res, err)
     );
@@ -31,13 +37,13 @@ router.post('/register', (req, res) => {
     checkUserEmail(req.body.email) &&
     checkUserPasswordRegister(req.body.password, req.body.confirmPassword, req.body.name);
   if (check) {
-    Rest.register(
+    Rest.registerUser(
       req.body.name,
       req.body.surname,
       req.body.email,
       req.body.password,
       (user) => {
-        req.session.sid = user;
+        req.session[SESS_NAME] = user;
         res.status(200).json({ message: 'Successfully Registered In User' });
       },
       (err) => error(res, err)
@@ -46,8 +52,12 @@ router.post('/register', (req, res) => {
 });
 router.post('/logout', (req, res) => {
   req.session.destroy((err) => {
-    if (err) return;
-    res.clearCookie(SESS_NAME);
+    if (err) {
+      res.status(200).json({ message: 'Failed to Log out' });
+    } else {
+      res.clearCookie(SESS_NAME);
+      res.status(200).json({ message: 'Successfully Logged out' });
+    }
   });
 });
 
@@ -80,60 +90,59 @@ function checkUserEmail(email) {
   }
   return valid;
 }
-function checkUserPasswordLogin(userPassword){
-    let valid = true;
-    let re;
-    if (password.trim().length === 0) {
-        // password cannot be empty
-        valid = false;
-    }
-    else{
-        re= /^[0-9a-zA-Z!@#\$%\^&\*]{9,}$/;
-        return re.test(password);
-    }
+function checkUserPasswordLogin(password) {
+  let valid = true;
+  let re;
+  if (password.trim().length === 0) {
+    // password cannot be empty
+    valid = false;
+  } else {
+    re = /^[0-9a-zA-Z!@#\$%\^&\*]{9,}$/;
+    return re.test(password);
+  }
 
-    return valid;
+  return valid;
 }
-function checkUserPasswordRegister(password, confirmPassword, name){
-    let valid = true;
-    let re;
-    if (password.trim().length === 0) {
-        // password cannot be empty
-        valid = false;
+function checkUserPasswordRegister(password, confirmPassword, name) {
+  let valid = true;
+  let re;
+  if (password.trim().length === 0) {
+    // password cannot be empty
+    valid = false;
+  }
+  if (password !== '' && password === confirmPassword) {
+    if (password.length < 8) {
+      //password must be 8 letters
+      valid = false;
     }
-    if (password !== "" && password === confirmPassword) {
-        if (password.length < 8) {
-            //password must be 8 letters
-            valid = false;
-        }
-        if (password === name) {
-            //Password must be different than name
-            valid = false;
-        }
-        re = /[0-9]/;
-        if (!re.test(password)) {
-            valid = false;
-            // password password must contain at least one number (0-9)
-        }
-        re = /[a-z]/;
-        if (!re.test(password)) {
-            valid = false;
-            // password must contain at least one lowercase letter (a-z)!
-        }
-        re = /[A-Z]/;
-        if (!re.test(password)) {
-            valid = false;
-            // password must contain at least one capital letter
-        }
-        re = /[!@#$%^&*]/;
-        if (!re.test(password)) {
-            valid = false;
-            // password must contain at least one special character
-        }
-    } else {
-        valid = false;
-        //confirm password incorrect
+    if (password === name) {
+      //Password must be different than name
+      valid = false;
     }
-    return valid;
+    re = /[0-9]/;
+    if (!re.test(password)) {
+      valid = false;
+      // password password must contain at least one number (0-9)
+    }
+    re = /[a-z]/;
+    if (!re.test(password)) {
+      valid = false;
+      // password must contain at least one lowercase letter (a-z)!
+    }
+    re = /[A-Z]/;
+    if (!re.test(password)) {
+      valid = false;
+      // password must contain at least one capital letter
+    }
+    re = /[!@#$%^&*]/;
+    if (!re.test(password)) {
+      valid = false;
+      // password must contain at least one special character
+    }
+  } else {
+    valid = false;
+    //confirm password incorrect
+  }
+  return valid;
 }
 module.exports = router;
