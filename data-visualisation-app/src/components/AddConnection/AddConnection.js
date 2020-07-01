@@ -2,18 +2,14 @@ import React, {useState} from 'react';
 import {Button, Modal, Input, Select} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-function AddConnection(props) {
-    const [visible, setVisible] = useState(false);
+const AddConnection = (props) => {
+    const [visible, setVisible] = useState(true);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [finished, setFinished] = useState(false);
     const [currentOkText, setCurrentOkText] = useState('Add');
 
-    function showModal() {
-        setVisible(true);
-    };
-
-    function handleOk(e) {
-        console.log(e);
+    function handleOk() {
+        props.changeState();
         // setVisible(false);
         setConfirmLoading(true);
         console.log(finished);
@@ -29,8 +25,8 @@ function AddConnection(props) {
         }
     };
 
-    function handleCancel(e) {
-        console.log(e);
+    function handleCancel() {
+        props.changeState();
         setVisible(false);
     };
 
@@ -43,7 +39,6 @@ function AddConnection(props) {
 
     return (
         <div >
-            <PlusOutlined onClick={showModal} />
             <Modal
                 title="Add Connection"
                 visible={visible}
@@ -52,11 +47,7 @@ function AddConnection(props) {
                 confirmLoading={confirmLoading}
                 onCancel={handleCancel}
             >
-
-                <Input addonBefore={selectBefore} defaultValue="mysite" />
-
-
-
+            <Input addonBefore={selectBefore} defaultValue="mysite" />
             </Modal>
         </div>
     );
