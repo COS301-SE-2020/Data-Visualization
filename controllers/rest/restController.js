@@ -1,4 +1,5 @@
 const Database = require('../database');
+const DataSource = require('../dataSource');
 
 class RestController {
   //CRUD DataSource
@@ -6,6 +7,22 @@ class RestController {
 		ADD: Add to DB under Dashboard
 		REMOVE: Add to DB under Dashboard
 	*/
+
+  static getDataSourceList(id, done, error) {
+    // Database.getDataSourceList(id)
+    //   .then((list) => done(list))
+    //   .catch((err) => error && error(err));
+  }
+
+  static addDataSource(dashboardID, dataSource, done, error) {
+    DataSource.getEntityList(dataSource)
+      .then((list) => {
+        Database.addDataSource(dashboardID, dataSource, list)
+          .then(() => done())
+          .catch((err) => error && error(err));
+      })
+      .catch((err) => error && error(err));
+  }
 
   //Log in\out\register Users
 

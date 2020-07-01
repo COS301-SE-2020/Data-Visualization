@@ -4,9 +4,7 @@ const path = require('path');
 const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
 const static_path = '/data-visualisation-app/build/';
 
-const users = require('./routes/users.js');
-const dashboards = require('./routes/dashboards.js');
-const graphs = require('./routes/graphs.js');
+const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute } = require('./routes');
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -14,13 +12,14 @@ app.use(express.json());
 app.use(express.static(__dirname + static_path));
 
 app.use((req, res, next) => {
-  console.log(req.body, req.query);
+  console.log(req.method, req.body, req.query);
   next();
 });
 
-app.use('/users', users);
-app.use('/graphs', graphs);
-app.use('/dashboards', dashboards);
+app.use('/users', UsersRoute);
+app.use('/graphs', GraphsRoute);
+app.use('/dashboards', DashboardsRoute);
+app.use('/datasource', DataSourceRoute);
 
 let server = app.listen(PORT, function () {
   let port = server.address().port;

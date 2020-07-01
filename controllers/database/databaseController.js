@@ -39,6 +39,16 @@ class Database {
         .catch((err) => conReject(err));
     });
   }
+
+  static addDataSource(dashboardID, dataSource, list) {
+    console.log('new DataSource:', dashboardID, dataSource, list);
+
+    return new Promise((resolve, reject) => resolve());
+
+    /// TODO: Add row in DataSource table
+    /// TODO: Add rows in DataSourceEntity table
+  }
+
   static async getDashboardList() {
     let query = `SELECT * FROM Dashboard;`;
     let result = await Database.sendQuery(query);
