@@ -3,6 +3,9 @@ const Pool = require('pg-pool');
 const params = require('url').parse(process.env.DATABASE_URL);
 const auth = params.auth.split(':');
 
+const bcrypt = require('bcryptjs');
+const saltRounds = 12;
+
 const config = {
   user: auth[0],
   password: auth[1],
@@ -40,7 +43,72 @@ class Database {
     });
   }
 
-  static addDataSource(dashboardID, dataSource, srcType, list) {
+  static async authenticate(email, password) {
+    return new Promise((resolve, reject) => {
+      console.log('==> AUTHENTICATING: ' + email);
+      Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`).then((result) => {
+        if (typeof result !== 'undefined' && result.command === 'SELECT') {
+          if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
+            console.log('==> AUTHENTICATION: succesful');
+            delete result.rows[0].password;
+            resolve(result.rows[0]);
+          } else {
+            console.log('==> AUTHENTICATION: failed');
+            resolve(false);
+          }
+        } else {
+          console.log('==> AUTHENTICATION: error');
+          reject(result);
+        }
+      });
+    }).catch((err) => reject(err));
+  }
+
+  static async findUserByEmail(email) {
+    let result = await DatabasesendQuery(`SELECT * FROM Users WHERE( email =  + '${email}' + );`);
+
+    if (result && result.command === 'SELECT' && result.rows.length > 0) {
+      console.log('==> LOOKUP: found - ' + email);
+      delete result.rows[0].password;
+      return new Promise((resolve, reject) => {
+        resolve(result.rows[0]);
+      });
+    } else {
+      console.log('==> LOOKUP: Not found - ' + email);
+      return new Promise((resolve, reject) => {
+        reject(result);
+      });
+    }
+  }
+
+  static async register(fname, lname, email, password) {
+    password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
+
+    console.log('==> REGISTER: ' + email);
+    return new Promise((resolve, reject) => {
+      DatabasesendQuery(
+        `INSERT INTO Users (email,firstname,lastname,password) VALUES('${email}', '${fname}', '${lname}', '${password}')`
+      )
+        .then((response) => {
+          console.log('REGISTER RESPONSE');
+          resolve(false);
+        })
+        .catch((err) => {
+          if ('code' in err && err.code === '23505') {
+            if ('table' in err && err.table === 'users') {
+              if ('constraint' in err && err.constraint === 'users_pkey') {
+                console.log('USER ALREADY EXISTS');
+                resolve(true);
+              }
+            }
+          }
+          console.log('REGISTER ERROR');
+          reject(err);
+        });
+    });
+  }
+
+  static addDataSource(dashboardID, dataSource, list) {
     console.log('new DataSource:', dashboardID, dataSource, list);
 
     return new Promise((resolve, reject) => resolve());
