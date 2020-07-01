@@ -122,5 +122,6 @@ function checkUserPasswordRegister(password, confirmPassword, name){
         valid = false;
         //confirm password incorrect
     }
+    return;
 }
 module.exports = router;
