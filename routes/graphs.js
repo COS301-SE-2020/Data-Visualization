@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 
-const rest = require('../rest-controller/restController');
+const { rest } = require('../controllers');
 
 //  1. GET_GRAPHS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.get('/', (req, res) => {
@@ -17,11 +17,11 @@ router.get('/', (req, res) => {
 //  => PUT(graphType, graphID)
 router.put('/', (req, res) => {
   rest.updateGraph(
-      req.body.graphID || req.body.graphID || -1,
-      req.body.fields,
-      req.body.data,
-      () => res.status(200).json({ message: 'Successfully Updated Graph' }),
-      (err) => error(res, err)
+    req.body.graphID || req.body.graphID || -1,
+    req.body.fields,
+    req.body.data,
+    () => res.status(200).json({ message: 'Successfully Updated Graph' }),
+    (err) => error(res, err)
   );
 });
 
@@ -29,10 +29,10 @@ router.put('/', (req, res) => {
 // => POST (dashboardID, graphID)
 router.post('/', (req, res) => {
   rest.addGraph(
-      req.body.graphTypeID,
-      req.body.dashboardID,
-      () => res.status(200).json({ message: 'Successfully Added To Dashboard' }),
-      (err) => error(res, err)
+    req.body.graphTypeID,
+    req.body.dashboardID,
+    () => res.status(200).json({ message: 'Successfully Added To Dashboard' }),
+    (err) => error(res, err)
   );
 });
 
@@ -40,9 +40,9 @@ router.post('/', (req, res) => {
 //  => DELETE (graphID)
 router.delete('/', (req, res) => {
   rest.removeGraph(
-      req.body.graphID,
-      () => res.status(200).json({ message: 'Successfully Removed Graph' }),
-      (err) => error(res, err)
+    req.body.graphID,
+    () => res.status(200).json({ message: 'Successfully Removed Graph' }),
+    (err) => error(res, err)
   );
 });
 

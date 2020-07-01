@@ -2,11 +2,6 @@ const Database = require('../database');
 const db = new Database();
 
 class RestController {
-  //Get Dashboard List
-  //Get Graph List
-
-  //CRUD Dashbroad/Graph
-
   //CRUD DataSource
   /*
 		ADD: Add to DB under Dashboard
@@ -61,16 +56,16 @@ class RestController {
       .catch((err) => error && error(err));
   }
 
-  static addGraph(graphTypeID,dashboardID,done,error) {
+  static addGraph(graphTypeID, dashboardID, done, error) {
     db.addGraph(dashboardID, graphTypeID)
-        .then(() => done())
-        .catch((err) => error && error(err));
+      .then(() => done())
+      .catch((err) => error && error(err));
   }
 
-  static removeGraph(id, done,error) {
+  static removeGraph(id, done, error) {
     db.removeGraph(id)
-        .then(() => done())
-        .catch((err) => error && error(err));
+      .then(() => done())
+      .catch((err) => error && error(err));
   }
 }
 
