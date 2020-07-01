@@ -3,13 +3,32 @@ const express = require('express');
 const path = require('path');
 const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
 const static_path = '/data-visualisation-app/build/';
-
+const session = require('express-session');
+const pgStore = require('connect-pg-simple')(session);
+const { Database } = require('../controllers');
 const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute } = require('./routes');
 
+const SESS_LIFETIME =  30 * 24 * 60 * 60 * 1000; //ms
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(__dirname + static_path));
+
+app.use(session({
+  store: new pgStore({
+    pool : Database.pg_pool,
+    tableName : 'session'
+  }),
+  name: SESS_NAME,
+  resave: false,
+  saveUninitialized: false,
+  secret: SESS_SECRET,
+  cookie: {
+    maxAge : SESS_LIFETIME,
+    sameSite: false, //PRODUCTION => true
+    secure: false //PRODUCTION => true
+  }
+}));
 
 app.use((req, res, next) => {
   console.log(req.method, req.body, req.query);

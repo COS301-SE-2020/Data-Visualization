@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 
+
 const { Rest } = require('../controllers');
 //TODO:
 // login user
@@ -9,55 +10,43 @@ const { Rest } = require('../controllers');
 // logout uer
 // do necessary regex
 // store user details in session: firstname, lastname, email
-router.use(express.urlencoded({ extended: true }));
 
-router.use(session({
-    store: new pgStore({
-        pool : db.pg_pool,
-        tableName : 'session'
-    }),
-    name: SESS_NAME,
-    resave: false,
-    saveUninitialized: false,
-    secret: SESS_SECRET,
-    cookie: {
-        maxAge : SESS_LIFETIME,
-        sameSite: true,
-        secure: false //PRODUCTION => true
+router.post('/login', (req, res) => {
+    const check = checkUserEmail(req.body.email) && checkUserPasswordLogin(req.body.password);
+    if (check) {
+        Rest.login(
+            req.body.email,
+            req.body.password,
+            () => {
+                res.status(200).json({message: 'Successfully Logged In User'});
+            },
+            (err) => error(res, err)
+        );
     }
-}));
-
-router.post('/user-login', (req, res) => {
-    let userName = checkName(req.body.name);
-    let userPassword = checkUserPasswordLogin(req.body.password);
-    Rest.login(
-        userName,
-        userPassword,
-        () => {
-            res.status(200).json({ message: 'Successfully Logged In User' });
-        },
-        (err) => error(res, err)
-    );
+    else error(res, {error: "Email or password incorrect"});
 });
-router.post('/user-register', (req, res) => {
-    let userName = checkName(req.body.name);
-    let userSurname = checkName(req.body.surname);
-    let userEmail = checkUserEmail(req.body.email);
-    let userPassword = checkUserPasswordRegister(req.body.password, req.body.password,req.body.name );
-
-    Rest.register(
-        userName,
-        userSurname,
-        userEmail,
-        userPassword,
-        () => {
-            res.status(200).json({ message: 'Successfully Logged In User' });
-        },
-        (err) => error(res, err)
-    );
+router.post('/register', (req, res) => {
+    const check = checkName(req.body.name) &&  checkName(req.body.surname) && checkUserEmail(req.body.email) &&
+        checkUserPasswordRegister(req.body.password, req.body.password,req.body.name );
+    if (check) {
+        Rest.register(
+            req.body.name,
+            req.body.surname,
+            req.body.email,
+            req.body.password,
+            () => {
+                res.status(200).json({message: 'Successfully Logged In User'});
+            },
+            (err) => error(res, err)
+        );
+    }
+    else error(res, {error: "Failed to register new user"});
 });
-router.post('/user-logout', (req, res) => {
-   // Kill session and redirect ?
+router.post('/logout', (req, res) => {
+    req.session.destroy(err =>{
+        if(err) return;
+        res.clearCookie(SESS_NAME);
+    });
 });
 
 function error(res, err) {
@@ -89,6 +78,7 @@ function checkUserEmail(email){
 }
 function checkUserPasswordLogin(userPassword){
     // Do user password validation
+
 }
 function checkUserPasswordRegister(password, confirmPassword, name){
     let valid = true;
