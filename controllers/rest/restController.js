@@ -24,8 +24,6 @@ class RestController {
       .catch((err) => error && error(err));
   }
 
-  //Log in\out\register Users
-
   //Request Graph Suggestions
   /*
 		//
@@ -82,6 +80,25 @@ class RestController {
     Database.removeGraph(id)
       .then(() => done())
       .catch((err) => error && error(err));
+  }
+  //TODO:
+  // login user
+  // register user
+  // logout uer
+  static loginUser(userName, password, done, error) {
+    Database.loginUser(userName, password,)
+        .then(() => done())
+        .catch((err) => error && error(err));
+  }
+  static registerUser(userName, userSurname, userEmail, userPassword,done, error) {
+    Database.registerUser(userName, userSurname, userEmail, userPassword)
+        .then(() => done())
+        .catch((err) => error && error(err));
+  }
+  static logoutUser(id, done, error) {
+    Database.logoutUser(id)
+        .then(() => done())
+        .catch((err) => error && error(err));
   }
 }
 
