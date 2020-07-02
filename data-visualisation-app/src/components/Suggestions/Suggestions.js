@@ -3,10 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
 import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined} from '@ant-design/icons';
-import {Typography, Menu, Dropdown} from 'antd';
+import {Typography, Menu, Dropdown, Button} from 'antd';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 import './Suggestions.scss';
 
+const { Title } = Typography;
 
 const demotempoptions = [{
     legend: {
@@ -220,7 +222,6 @@ const demotempoptions = [{
 
 
 
-
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -241,6 +242,11 @@ const useStyles = makeStyles((theme) => ({
 // });
 
 function Suggestions(props) {
+
+    const back = () => {
+        props.setStage('entities');
+    };
+
     const classes = useStyles();
 
     // let chartPointers, tmp;
@@ -273,6 +279,7 @@ function Suggestions(props) {
         );
 
         return (
+            
             <div className='suggestion panel__shadow'>
                 <div style={{marginBottom: '10px'}}>
                     <Grid container spacing={3}>
@@ -335,6 +342,12 @@ function Suggestions(props) {
 
     return (
         <div className={classes.root}>
+            <span id = 'headingSpan'>
+                <Button id = 'backButton' icon={<ArrowBackIosIcon />} onClick={back}></Button>
+                <Typography>
+                    <Title id = 'titleText'>Suggestions</Title>
+                </Typography>
+                </span>
             <Grid container spacing={3}>
                 {charts}
             </Grid>

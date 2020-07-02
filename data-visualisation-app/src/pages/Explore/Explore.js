@@ -3,19 +3,18 @@ import DataConnection from '../../components/DataConnection';
 import Entities from '../../components/Entities';
 import Suggestions from '../../components/Suggestions';
 
-function Explore() {
+function Explore(props) {
 
-  const [exploreStage, setExploreStage] = React.useState('dataConnection');
   return (
 
-          exploreStage === 'dataConnection' ?
-          <DataConnection setStage= {setExploreStage}/>
+          props.exploreStage === 'dataConnection' ?
+          <DataConnection setStage= {props.setExploreStage}/>
           :
-          exploreStage === 'entities' ?
-          <Entities setStage= {setExploreStage}/>
+          props.exploreStage === 'entities' ?
+          <Entities setStage= {props.setExploreStage}/>
           :
-          exploreStage === 'suggestions' ?
-          <Suggestions setStage= {setExploreStage}/>
+          props.exploreStage === 'suggestions' ?
+          <Suggestions setStage= {props.setExploreStage}/>
           :
           null
   );

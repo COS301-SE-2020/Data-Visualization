@@ -142,6 +142,7 @@ function App(props) {
 
   //handle page state
   const [pageType, setPageType] = React.useState('home')
+  const [exploreStage, setExploreStage] = React.useState('dataConnection');
 
   const handlePageType = (t) => {
     setPageType(t);
@@ -318,7 +319,7 @@ function App(props) {
           <Home pType= {pageType}  setpType= {setPageType} />
           :
           pageType === 'explore' ?
-          <Explore />
+          <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />
           :
 			    pageType === 'dashboards' ?
 			    <Dashboard />
