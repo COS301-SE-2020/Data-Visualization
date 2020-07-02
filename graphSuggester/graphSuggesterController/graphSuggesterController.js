@@ -60,7 +60,7 @@ let graphSuggesterControllerMaker = ( function () {
          * navigation properties(so it can go to deeper layers) via the setMetadata function.
          * @param xmlData the metadata in XML format.
          */
-        parseODataMetadata ( xmlData ){
+        parseODataMetadata ( xmlData ) {
             let parser = new DOMParser();
             let xmlDoc = parser.parseFromString ( xmlData,"text/xml" );
             let entities = xmlDoc.getElementsByTagName ( 'EntityType' ); //all "tables" that are available
