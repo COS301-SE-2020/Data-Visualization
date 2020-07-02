@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "antd": "^4.3.5",
     "axios": "^0.19.2",
     "react": "^16.13.1",
     "react-addons-update": "^15.6.2",
@@ -15,10 +16,10 @@
     "react-test-renderer": "^16.13.1"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -45,11 +46,5 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "antd": "^4.3.3",
-    "craco": "0.0.3",
-    "craco-less": "^1.17.0",
-    "eslint": "^7.3.1",
-    "eslint-plugin-react": "^7.20.1"
-  }
+  "devDependencies": {}
 }
