@@ -6,7 +6,7 @@ const { Rest } = require('../controllers');
 
 //  1. GET_GRAPHS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.get('/', (req, res) => {
-  Rest.getGraphList(
+  Rest.getDataSourceList(
     req.query.dashboardID || req.body.dashboardID || -1,
     (list) => res.status(200).json(list),
     (err) => error(res, err)
@@ -16,21 +16,22 @@ router.get('/', (req, res) => {
 //  2. UPDATE_GRAPH
 //  => PUT(graphType, graphID)
 router.put('/', (req, res) => {
-  Rest.updateGraph(
-    req.body.graphID || req.body.graphID || -1,
-    req.body.fields,
-    req.body.data,
-    () => res.status(200).json({ message: 'Successfully Updated Graph' }),
-    (err) => error(res, err)
-  );
+  // Rest.updateGraph(
+  //   req.body.graphID || req.body.graphID || -1,
+  //   req.body.fields,
+  //   req.body.data,
+  //   () => res.status(200).json({ message: 'Successfully Updated Graph' }),
+  //   (err) => error(res, err)
+  // );
+  res.status(200).json({ message: 'Updated Data Source: Comming Soon...' });
 });
 
 //  3. ADD_GRAPH_TO_DASHBOARD
 // => POST (dashboardID, graphID)
 router.post('/', (req, res) => {
-  Rest.addGraph(
-    req.body.graphTypeID,
+  Rest.addDataSource(
     req.body.dashboardID,
+    req.body.dataSourceUrl,
     () => res.status(200).json({ message: 'Successfully Added To Dashboard' }),
     (err) => error(res, err)
   );
@@ -39,11 +40,12 @@ router.post('/', (req, res) => {
 //  4. DELETE_GRAPH_FROM_DASHBOARD
 //  => DELETE (graphID)
 router.delete('/', (req, res) => {
-  Rest.removeGraph(
-    req.body.graphID,
-    () => res.status(200).json({ message: 'Successfully Removed Graph' }),
-    (err) => error(res, err)
-  );
+  // Rest.removeGraph(
+  //   req.body.graphID,
+  //   () => res.status(200).json({ message: 'Successfully Removed Graph' }),
+  //   (err) => error(res, err)
+  // );
+  res.status(200).json({ message: 'Delete Data Source: Comming Soon...' });
 });
 
 function error(res, err) {

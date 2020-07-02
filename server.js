@@ -3,23 +3,62 @@ const express = require('express');
 const path = require('path');
 const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
 const static_path = '/data-visualisation-app/build/';
+const session = require('express-session');
+const pgStore = require('connect-pg-simple')(session);
+const { Database } = require('./controllers');
+const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute } = require('./routes');
 
-const users = require('./routes/users.js');
-const dashboards = require('./routes/dashboards.js');
-const graphs = require('./routes/graphs.js');
+const {
+  PORT = 8000,
+  SESS_NAME = 'sid',
+  SESS_LIFETIME = 30 * 24 * 60 * 60 * 1000, //ms
+  SESS_SECRET = 'my secret string',
+} = process.env;
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(__dirname + static_path));
 
-app.use('/users', users);
-app.use('/graphs', graphs);
-app.use('/dashboards', dashboards);
+app.use(
+  session({
+    store: new pgStore({
+      pool: Database.pg_pool,
+      tableName: 'session',
+    }),
+    name: SESS_NAME,
+    resave: false,
+    saveUninitialized: false,
+    secret: SESS_SECRET,
+    cookie: {
+      maxAge: SESS_LIFETIME,
+      sameSite: false, //PRODUCTION => true
+      secure: false, //PRODUCTION => true
+    },
+  })
+);
+
 app.use((req, res, next) => {
-  console.log(req.body, req.query);
+  console.log('=====================================');
+  console.log(req.method);
+  console.log(req.body);
+  console.log(req.query);
+  console.log(req.session);
+  console.log('=====================================');
   next();
 });
+
+app.use('/users', UsersRoute);
+
+app.use((req, res, next) => {
+  if (req.session.sid && req.body.email && req.body.email === req.session.sid.email) {
+    next();
+  } else res.status(401).json({ message: 'User is not authenticated' });
+});
+
+app.use('/graphs', GraphsRoute);
+app.use('/dashboards', DashboardsRoute);
+app.use('/datasource', DataSourceRoute);
 
 let server = app.listen(PORT, function () {
   let port = server.address().port;
