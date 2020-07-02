@@ -148,6 +148,8 @@ class Database {
     });
   }
   static async updateDashboard(email, dashboardID, fields, data) {
+    console.log(fields, data);
+
     let index = -1;
     fields = fields.filter((field, i) => {
       if (field === 'email') {
@@ -155,7 +157,9 @@ class Database {
         return false;
       } else return true;
     });
-    data.splice(index, 1);
+    if (index >= 0) data.splice(index, 1);
+
+    console.log(fields, data);
 
     let query = `UPDATE Dashboard SET ${fieldUpdates(
       fields,
