@@ -1,7 +1,5 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-
-
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -27,14 +25,14 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
+import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
+import {Button} from 'antd';
 
-
-
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
 
 
 import './App.scss';
+
 
 //pages
 import Dashboard from '../../pages/Dashboard';
@@ -42,8 +40,8 @@ import About from '../../pages/About';
 import Trash from '../../pages/Trash';
 import LoginDialog from '../../pages/LoginDialog/LoginDialog';
 import AddConnection from '../AddConnection';
-
-import Suggestions from '../../pages/Suggestions';
+import Home from '../../pages/Home';
+import Explore from '../../pages/Explore';
 
 const drawerWidth = 240;
 
@@ -74,10 +72,10 @@ const useStyles = makeStyles((theme) => ({
    // marginRight: theme.spacing(2),
     [theme.breakpoints.up('sm')]: {
 	},
-	display: 'flex', 
-	justifyContent: 'flex-end',
-	maxWidth: '210px',
-	marginLeft: "auto",
+	  display: 'flex', 
+	  justifyContent: 'flex-end',
+	  maxWidth: '210px',
+	  marginLeft: "auto",
     marginRight: -20
 
   },
@@ -125,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
   //8D66E3 tertiary
 }));
 
-
+  
 
 function App(props) {
   const { window } = props;
@@ -144,21 +142,46 @@ function App(props) {
   const [loginNameState, setLoginNameState] = React.useState('Login/Sign up');
 
   //handle page state
-  const [pageType, setPageType] = React.useState('dashboard')
+  const [pageType, setPageType] = React.useState('home')
 
+  const handlePageType = (t) => {
+    setPageType(t);
+    return(
+      mobileOpen == true ? handleDrawerToggle() : null
+    );
+  }
+  
 
-
+ 
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <Divider />
       <List  className= {classes.drawerList}>
-       <ListItem button onClick={() => setPageType('dashboards')}>
+
+
+        <ListItem button onClick={ () => handlePageType('home') }>
+          <ListItemIcon className={classes.icon} >
+            <HomeOutlinedIcon/>
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
+
+        <ListItem button onClick={() => handlePageType('explore')}>
+          <ListItemIcon className={classes.icon} >
+            <ExploreOutlinedIcon/>
+          </ListItemIcon>
+          <ListItemText primary="Explore" />
+        </ListItem>
+
+        <ListItem button onClick={() => handlePageType('dashboards')}>
           <ListItemIcon className={classes.icon} >
             <DashboardIcon/>
           </ListItemIcon>
           <ListItemText primary="My Dashboards" />
         </ListItem>
+
+
         <ListItem button onClick= {handleOpenIcon}>
           <ListItemIcon className={classes.icon}>
             <InputIcon/>
@@ -176,14 +199,11 @@ function App(props) {
             ))}
           </List>
 
-
           <ListItem button className={classes.nested}>
             <ListItemIcon  className={classes.icon}>
-              {/*<AddIcon />*/}
-              <AddConnection/>
+              <AddIcon />
             </ListItemIcon>
           </ListItem>
-
 
          </Collapse>
 
@@ -194,7 +214,7 @@ function App(props) {
           <ListItemText primary="Lock" />
         </ListItem>
 		
-        <ListItem button onClick={() => setPageType('trash')}>
+        <ListItem button onClick={() => handlePageType('trash')}>
           <ListItemIcon className={classes.icon}>
             <DeleteIcon />
           </ListItemIcon>
@@ -204,7 +224,7 @@ function App(props) {
       </List>
       <Divider />
       <List component="nav" className= {classes.drawerList}>
-        <ListItem button onClick={() => setPageType('about')}>
+        <ListItem button onClick={() => handlePageType('about')}>
           <ListItemIcon className={classes.icon}>
             <InfoIcon />
           </ListItemIcon>
@@ -229,36 +249,35 @@ function App(props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-			className={classes.menuButton}
-			style={{ color: '#3C6A7F' }}
+			      className={classes.menuButton}
+			      style={{ color: '#3C6A7F' }}
 			
           >
             <MenuIcon />
           </IconButton>
-
 	
-			<Typography variant="h6" className = {classes.typographyHeading} noWrap children={
-				pageType === 'dashboard' ? 'Dashbaords' 
-				: 
-				pageType === 'about' ? 'About' 
-				:  
-				pageType === 'trash' ? 'Trash'
-				:
-				'Dashbaords' 
-				} >
-            
-			</Typography>
-    
+			    <Typography variant="h6" className = {classes.typographyHeading} noWrap children={
 
-		  <ListItem button className={classes.userButton} onClick={() => setPageType('loginDialog')}>
-		  <ListItemText primary={loginNameState} className = {classes.drawerListCollapse}/>
-           <ListItemIcon className = {classes.icon}>
-             <AccountCircleIcon />
-           </ListItemIcon>
-          </ListItem>
-		  
-		
-        </Toolbar>
+            pageType === 'home' ? 'Home'
+            :
+            pageType === 'explore' ? 'Explore'
+			 	    :
+				    pageType === 'dashboards' ? 'Dashbaords' 
+			 	    : 
+				    pageType === 'about' ? 'About' 
+				    :  
+				    pageType === 'trash' ? 'Trash'
+				    :
+				    'Home' 
+				  } >
+            
+			    </Typography>
+          
+          <LoginDialog/>
+        </Toolbar> 
+
+       
+
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -292,27 +311,28 @@ function App(props) {
         </Hidden>
       </nav>
 	  <main className={classes.content}>
-
-          {/*<Suggestions/>*/}
+	  
         <div className ={classes.toolbar} />
-		{
-			
-			pageType === 'dashboard' ?
-			
-                <Dashboard />
-			:
-			pageType === 'about' ?
-			<About /> 
-			:
-			pageType === 'trash' ?
-			<Trash/>
-			:
-			pageType === 'loginDialog' ?
-			<LoginDialog pType= {pageType}  setpType= {setPageType} setNameState = {setLoginNameState}/>
-			:
-			<Dashboard />
-		
-		}
+		    {
+
+			    pageType === 'home' ?
+          <Home pType= {pageType}  setpType= {setPageType} />
+          :
+          pageType === 'explore' ?
+          <Explore />
+          :
+			    pageType === 'dashboards' ?
+			    <Dashboard />
+			    :
+			    pageType === 'about' ?
+			    <About /> 
+			    :
+			    pageType === 'trash' ?
+			    <Trash/>
+			    :
+          null
+         
+		    }
 		
 		 
       </main>

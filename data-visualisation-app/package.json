@@ -8,18 +8,15 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "antd": "^4.4.0",
     "axios": "^0.19.2",
-    "echarts": "^4.8.0",
-    "echarts-for-react": "^2.0.16",
     "node-sass": "^4.14.1",
     "prop-types": "latest",
     "react": "^16.13.1",
     "react-addons-update": "^15.6.2",
     "react-dom": "^16.13.1",
-    "react-grid-layout": "^0.18.3",
     "react-scripts": "3.4.1",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "reqwest": "^2.0.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -53,6 +50,9 @@
     ]
   },
   "devDependencies": {
+    "antd": "^4.3.3",
+    "craco": "0.0.3",
+    "craco-less": "^1.17.0",
     "tailwindcss": "^1.1.3"
   }
 }

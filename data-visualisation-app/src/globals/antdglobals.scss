@@ -1,28 +1,26 @@
 @import './globals.scss';
 
-.ant-typography {
-  font-family: $font-default;
-}
-
 .ant-btn {
   font-family: $font-default;
   color: rgba(0, 0, 0, 0.65);
+  //border-color: #d9d9d9;
   border: 1px solid #d9d9d9;
+  
 }
 
 .ant-btn:hover,
 .ant-btn:focus {
   border-color: $color-border-hover;
+  //border: 1px solid $color-border-hover;
   color: $color-primary;
 }
 
 .ant-btn:active {
   color: $color-active;
   background: #fff;
+  //border-color: $color-active;
   border: 1px solid $color-active;
 }
-
-
 
 
 .ant-btn-primary {
