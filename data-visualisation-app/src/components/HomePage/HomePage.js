@@ -3,7 +3,6 @@ import '../../globals/globals.scss';
 import HomePanelButton from '../../components/HomePanelButton/HomePanelButton';
 import './HomePage.css';
 import {Layout} from 'antd';
-import {FooterGlobal} from '../../globals/globals';
 import PageTitle from '../../components/PageTitle';
 
 function HomePage(props) {
@@ -50,7 +49,6 @@ function HomePage(props) {
               />
 
           </Layout.Content>
-          {FooterGlobal()}
       </React.Fragment>
   );
 }

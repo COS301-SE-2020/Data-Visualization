@@ -1,162 +1,139 @@
 import React, { Fragment } from 'react';
-import {useState} from 'react';
-import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
-import { EyeInvisibleOutlined, EyeTwoTone, InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-import './LoginDialog.scss';
 
 function SignUpDialog(props) {
 
-  const [visible, setVisible] = useState(true);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [finished, setFinished] = useState(false);
-  const [currentOkText, setCurrentOkText] = useState('Sign up');
-
-  function handleOk(e) {
-    //send to back end
-
-    setVisible(false);
-  };
-  function handleCancel(e) {
-      setVisible(false);
+  const [open, setOpen] = React.useState(true);
+  
+ 
+  const handleClose = () => {
+    props.setpType('dashboard');
   };
 
+  const handleSend = () => {
+    //send
+
+    props.setpType('dashboard');
+  };
 
   return (
-    <div >
-      <Modal
-          title="Sign Up"
-          visible={visible}
-          okText={currentOkText}
-          onCancel={handleCancel}
-
-          footer={[
-              <Button onClick={handleCancel}>
-                Cancel
-              </Button>,
-              <Button type="primary" confirmLoading={confirmLoading} onClick={handleOk}>
-                Sign Up
-              </Button>,
-            ]}
-          >
-        <Input placeholder="Name" />
-        <br />
-        <br />
-        <Input placeholder="Surname" />
-        <br />
-        <br />
-        <Input
-          placeholder="Email"
-          suffix={
-          <Tooltip title="Extra information">
-            <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-          </Tooltip>
-          }
-        />
-        <br />
-        <br />
-        <Input
-          placeholder="Username"
-          prefix={<UserOutlined className="site-form-item-icon" />}
-          suffix={
-          <Tooltip title="Extra information">
-            <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-          </Tooltip>
-          }
-        />
-        <br />
-        <br />
-        <Input.Password
-          placeholder="Create a password"
-          iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-        />
-        <br />
-        <br />
-        <Input.Password
-          placeholder="Confirm password"
-          iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-        />
-        
-      </Modal>
+    <div>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Sign up</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Name"
+            type="name"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="sname"
+            label="Surname"
+            type="name"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="uname"
+            label="Email Address / Username"
+            type="email"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="password"
+            label="Password"
+            type="password"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="password"
+            label="Confirm password"
+            type="password"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSend} color="primary">
+            Sign up
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
-    
-    //<SignUpDialog pType= {props.pType}  setpType= {props.setpType}/>
   );
 }
 
 function LoginDialog(props) {
 
-  const [visible, setVisible] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [finished, setFinished] = useState(false);
-  const [currentOkText, setCurrentOkText] = useState('Login');
+ 
+  const [open, setOpen] = React.useState(true);
 
-  //const [open, setOpen] = React.useState(true);
   const [signup, setSignUp] = React.useState('false');
  
-  
-  function showModal() {
-    setVisible(true);
-    setSignUp(false);
-};
+  const handleClose = () => {
+    props.setpType('dashboard');
+  };
 
-  function handleOk(e) {
-    //send to back end
+  const handleSend = () => {
+    //send
 
-    setVisible(false);
+    props.setNameState('Welcome Byron');
+    props.setpType('dashboard');
   };
-  function handleCancel(e) {
-      console.log(e);
-      setVisible(false);
-  };
-  function handleSignUp(e) {
-    //send to back end
-    setVisible(false);
-    setSignUp('true');
-  };
-  
+
 
   return (
-    <div id = 'loginDiv'>
-      <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button>
-      <Modal
-          title="Login"
-          visible={visible}
-          okText={currentOkText}
-          onCancel={handleCancel}
-
-          footer={[
-          <Button  type="dashed" ghost confirmLoading={confirmLoading} onClick = {handleSignUp}>
-              Sign up
-            </Button>,
-            <Button onClick={handleCancel}>
-              Cancel
-            </Button>,
-            <Button type="primary" confirmLoading={confirmLoading} onClick={handleOk}>
-              Login
-            </Button>,
-          ]}
-          >
-        <Input
-          placeholder="Enter your username"
-          prefix={<UserOutlined className="site-form-item-icon" />}
-          suffix={
-          <Tooltip title="Extra information">
-            <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-          </Tooltip>
-          }
-        />
-        <br />
-        <br />
-        <Input.Password
-          placeholder="input password"
-          iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-        />
-      </Modal>
+    <div>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Login</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Email Address / Username"
+            type="email"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="password"
+            label="Password"
+            type="password"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSignUp('true')} color="primary">
+            Sign up
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSend} color="primary">
+            Login
+          </Button>
+        </DialogActions>
+      </Dialog>
       <main>
         {
           signup === 'true' ?
-            <SignUpDialog/>
+            <SignUpDialog pType= {props.pType}  setpType= {props.setpType}/>
             :
             null
         }
@@ -164,7 +141,7 @@ function LoginDialog(props) {
       </main>
     </div>
     
-    
+
   );
 }
 

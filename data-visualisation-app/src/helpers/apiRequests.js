@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const inPROD = true;
+const inPROD = false;
 const inDEV_PORT = 8000;
 
 function getAPIurl() {
