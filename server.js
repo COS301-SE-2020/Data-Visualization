@@ -62,6 +62,7 @@ app.use((req, res, next) => {
 app.use('/graphs', GraphsRoute);
 app.use('/dashboards', DashboardsRoute);
 app.use('/datasource', DataSourceRoute);
+app.use('/graphSuggestions', DataSourceRoute);
 
 let server = app.listen(PORT, function () {
   let port = server.address().port;
