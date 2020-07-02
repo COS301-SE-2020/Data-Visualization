@@ -8,10 +8,13 @@ const pgStore = require('connect-pg-simple')(session);
 const { Database } = require('./controllers');
 const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute } = require('./routes');
 
-const SESS_LIFETIME = 30 * 24 * 60 * 60 * 1000; //ms
-const SESS_NAME = 'sid'; //ms
+const {
+  PORT = 8000,
+  SESS_NAME = 'sid',
+  SESS_LIFETIME = 30 * 24 * 60 * 60 * 1000, //ms
+  SESS_SECRET = 'my secret string',
+} = process.env;
 
-const SESS_SECRET = 'Elna maak baie errors ;)'; //ms
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
