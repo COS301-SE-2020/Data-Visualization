@@ -1,6 +1,6 @@
 import React from 'react';
 import DataConnection from '../../components/DataConnection';
-import AddEntities from '../../components/AddEntities';
+import Entities from '../../components/Entities';
 
 function Explore() {
 
@@ -10,8 +10,8 @@ function Explore() {
           exploreStage === 'dataConnection' ?
           <DataConnection setStage= {setExploreStage}/>
           :
-          exploreStage === 'addEntities' ?
-          <AddEntities setStage= {setExploreStage}/>
+          exploreStage === 'entities' ?
+          <Entities setStage= {setExploreStage}/>
           :
           null
   );

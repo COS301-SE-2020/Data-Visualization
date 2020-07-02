@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Button, Modal, Input, Select} from 'antd';
 import { Form } from 'antd';
 
-const AddConnection = (props) => {
+const AddConnectionDialog = (props) => {
     const [visible, setVisible] = useState(true);
  
 
@@ -62,7 +62,7 @@ const AddConnection = (props) => {
                     </Form.Item>
 
                     <Form.Item {...tailLayout}>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary"  htmlType="submit">
                             Add
                         </Button>
                     </Form.Item>
@@ -73,4 +73,4 @@ const AddConnection = (props) => {
     );
 }
 
-export default AddConnection;
+export default AddConnectionDialog;

@@ -3,8 +3,7 @@
     align-items: center;
 }
 
-#firstBackButton{
-    visibility: hidden;
+#backButton{
     background-color: transparent;
     background-repeat:no-repeat;
     border: none;
@@ -18,3 +17,22 @@
 #titleText{
     margin-top: 12px;
 }
+
+#selectorDiv{
+    background-color: blueviolet;
+}
+#selectorDiv :hover{
+    cursor:pointer;
+}
+
+#button-explore-dataPage{
+    margin: 0;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+
+

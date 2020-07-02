@@ -1,10 +1,13 @@
 import React from 'react';
-import { List, Avatar, Button, Skeleton } from 'antd';
-import {Modal, Input, Select} from 'antd';
-import './DataConnection.scss';
-import AddConnection from '../AddConnection';
-
+import { List, Avatar, Button, Skeleton, Typography } from 'antd';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import reqwest from 'reqwest';
+
+import './DataConnection.scss';
+import AddConnectionDialog from '../AddConnectionDialog';
+
+
+const { Title } = Typography;
 
 const count = 3;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
@@ -57,7 +60,7 @@ class DataConnection extends React.Component {
   };
 
   next = () => {
-    this.props.setStage('addEntities');
+    this.props.setStage('entities');
   };
 
 
@@ -73,14 +76,20 @@ class DataConnection extends React.Component {
             lineHeight: '32px',
           }}
         >
-          <Button onClick={this.changeAddState} style ={{marginRight: '10px'}}>Add Connection</Button>
-          <Button type = 'primary'  onClick={this.next}>Next</Button>
+          <Button shape = 'round' onClick={this.changeAddState} style ={{marginRight: '10px'}}>Add Connection</Button>
+          <Button type = 'primary' shape = 'round' onClick={this.next}>Next</Button>
         </div>
       ) : null;
    
 
     return (
      <div>
+        <span id = 'headingSpan'>
+          <Button id = 'firstBackButton' icon={<ArrowBackIosIcon />} visible = 'false'></Button>
+          <Typography>
+            <Title id = 'titleText'>Connections</Title>
+          </Typography>
+        </span>
         <List
           className="dataSourceList"
           loading={initLoading}
@@ -114,7 +123,7 @@ class DataConnection extends React.Component {
         {
             this.state.addConnection ? 
             
-              <AddConnection changeState = {this.changeAddState}/>
+              <AddConnectionDialog changeState = {this.changeAddState}/>
             
             :
             null

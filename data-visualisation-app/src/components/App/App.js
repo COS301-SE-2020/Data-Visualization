@@ -39,7 +39,6 @@ import Dashboard from '../../pages/Dashboard';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
 import LoginDialog from '../../pages/LoginDialog/LoginDialog';
-import AddConnection from '../AddConnection';
 import Home from '../../pages/Home';
 import Explore from '../../pages/Explore';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Radio } from 'antd';
-import {CompassOutlined, WindowsOutlined} from '@ant-design/icons';
+import {CompassOutlined} from '@ant-design/icons';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 
 import './Home.scss';
