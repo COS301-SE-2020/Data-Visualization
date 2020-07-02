@@ -1,4 +1,6 @@
 require('dotenv').config();
+const PRODUCTION = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
+
 const Pool = require('pg-pool');
 const params = require('url').parse(process.env.DATABASE_URL);
 const auth = params.auth.split(':');
@@ -19,7 +21,7 @@ const config = {
 
 class Database {
   static sendQuery(SQL_query) {
-    console.log(SQL_query);
+    if (!PRODUCTION) console.log(SQL_query);
     return new Promise((conResolve, conReject) => {
       Database.pg_pool
         .connect()
@@ -93,13 +95,31 @@ class Database {
   }
 
   //==================DATA SOURCE===============
-  static addDataSource(dashboardID, dataSource, list) {
-    console.log('new DataSource:', dashboardID, dataSource, list);
+  static async getDataSourceList(dashboardID, dataSource, list) {
+    let query = `SELECT * FROM datasource WHERE ( dashboardID = '${dashboardID}');`;
+    let result = await Database.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'SELECT') resolve(result.rows);
+      else reject(result);
+    });
+  }
 
-    return new Promise((resolve, reject) => resolve());
+  static async addDataSource(dashboardID, sourceURL) {
+    let query = `INSERT INTO datasource (dashboardID, sourceurl) VALUES ('${dashboardID}','${sourceURL}');`;
+    let result = await Database.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'INSERT') resolve(result);
+      else reject(result);
+    });
+  }
 
-    /// TODO: Add row in DataSource table
-    /// TODO: Add rows in DataSourceEntity table
+  static async removeDataSource(dataSourceID) {
+    let query = `DELETE FROM datasource WHERE ( ID = '${dataSourceID}');`;
+    let result = await Database.sendQuery(query);
+    return new Promise((resolve, reject) => {
+      if (result && result.command === 'DELETE') resolve(result);
+      else reject(result);
+    });
   }
 
   //==================DASHBOARDS===============
