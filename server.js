@@ -46,6 +46,13 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', UsersRoute);
+
+app.use((req, res, next) => {
+  if (req.session.sid && req.body.email && req.body.email === req.session.sid.email) {
+    next();
+  } else res.status(401).json({ message: 'User is not authenticated' });
+});
+
 app.use('/graphs', GraphsRoute);
 app.use('/dashboards', DashboardsRoute);
 app.use('/datasource', DataSourceRoute);
