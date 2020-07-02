@@ -5,12 +5,6 @@ const router = express.Router();
 const SESS_NAME = 'sid'; //ms
 
 const { Rest } = require('../controllers');
-//TODO:
-// login user
-// create user
-// logout uer
-// do necessary regex
-// store user details in session: firstname, lastname, email
 
 router.post('/login', (req, res) => {
   const check = checkUserEmail(req.body.email) && checkUserPasswordLogin(req.body.password);

@@ -4,7 +4,7 @@ const router = express.Router();
 
 const { Rest } = require('../controllers');
 
-router.get('/', (req, res) => {
+router.post('/list', (req, res) => {
   Rest.getDataSourceList(
     req.query.dashboardID || req.body.dashboardID || -1,
     (list) => res.status(200).json(list),
@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
   );
 });
 
-router.post('/', (req, res) => {
+router.post('/add', (req, res) => {
   Rest.addDataSource(
     req.body.dashboardID,
     req.body.dataSourceUrl,
@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
   );
 });
 
-router.delete('/', (req, res) => {
+router.post('/remove', (req, res) => {
   Rest.removeDataSource(
     req.body.dataSourceID,
     () => res.status(200).json({ message: 'Successfully Removed Data Source' }),

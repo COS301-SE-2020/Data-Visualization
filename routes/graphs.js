@@ -5,7 +5,7 @@ const router = express.Router();
 const { Rest } = require('../controllers');
 
 //  1. GET_GRAPHS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
-router.get('/', (req, res) => {
+router.post('/list', (req, res) => {
   Rest.getGraphList(
     req.query.dashboardID || req.body.dashboardID || -1,
     (list) => res.status(200).json(list),
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 
 //  2. UPDATE_GRAPH
 //  => PUT(graphType, graphID)
-router.put('/', (req, res) => {
+router.post('/update', (req, res) => {
   Rest.updateGraph(
     req.body.graphID || req.body.graphID || -1,
     req.body.fields,
@@ -27,7 +27,7 @@ router.put('/', (req, res) => {
 
 //  3. ADD_GRAPH_TO_DASHBOARD
 // => POST (dashboardID, graphID)
-router.post('/', (req, res) => {
+router.post('/add', (req, res) => {
   Rest.addGraph(
     req.body.graphTypeID,
     req.body.dashboardID,
@@ -38,7 +38,7 @@ router.post('/', (req, res) => {
 
 //  4. DELETE_GRAPH_FROM_DASHBOARD
 //  => DELETE (graphID)
-router.delete('/', (req, res) => {
+router.post('/remove', (req, res) => {
   Rest.removeGraph(
     req.body.graphID,
     () => res.status(200).json({ message: 'Successfully Removed Graph' }),

@@ -6,7 +6,7 @@ const SESS_NAME = 'sid'; //ms
 const { Rest } = require('../controllers');
 
 //  1. GET_DASHBOARDS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
-router.get('/', (req, res) => {
+router.post('/list', (req, res) => {
   Rest.getDashboardList(
     req.body.email,
     (list) => res.status(200).json(list),
@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 
 //  2. ADD_DASHBOARDS (THIS WILL JUST ADD A DASHBOARD TO THE PANEL PAGE)
 // => POST (nameOfDashboard, descriptionOfDashboard,dashColour)
-router.post('/', (req, res) => {
+router.post('/add', (req, res) => {
   Rest.addDashboard(
     req.body.email,
     req.body.name,
@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
 });
 
 //  3. REMOVE_DASHBOARD
-router.delete('/', (req, res) => {
+router.post('/remove', (req, res) => {
   Rest.removeDashboard(
     req.body.email,
     req.body.dashboardID,
@@ -42,7 +42,7 @@ router.delete('/', (req, res) => {
 //  => PUT(dashboardNewName, dashboardID)
 //     UPDATE_DASHBOARD_DESCRIPTION
 //  => PUT(dashboardDescription, dashboardID)
-router.put('/', (req, res) => {
+router.post('/update', (req, res) => {
   Rest.updateDashboard(
     req.body.email,
     req.body.dashboardID,
