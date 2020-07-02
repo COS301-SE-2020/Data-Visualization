@@ -29,20 +29,6 @@ router.post('/entity-data', (req, res) => {
         (err) => error(res, err)
     );
 });
-// router.get('/fitness', (req, res) => {
-//     Rest.getFitness(
-//         req.body,
-//         (list) => res.status(200).json(list),
-//         (err) => error(res, err)
-//     );
-// });
-// router.get('/parseMetaData', (req, res) => {
-//     Rest.parseMetaData(
-//         req.body,
-//         (list) => res.status(200).json(list),
-//         (err) => error(res, err)
-//     );
-// });
 function error(res, err) {
     console.error(err);
     res.status(400).json({ message: 'Error Occurred' });
