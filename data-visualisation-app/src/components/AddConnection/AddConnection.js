@@ -1,29 +1,29 @@
 import React, {useState} from 'react';
 import {Button, Modal, Input, Select} from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Form } from 'antd';
 
 const AddConnection = (props) => {
     const [visible, setVisible] = useState(true);
-    const [confirmLoading, setConfirmLoading] = useState(false);
-    const [finished, setFinished] = useState(false);
-    const [currentOkText, setCurrentOkText] = useState('Add');
+ 
 
-    function handleOk() {
-        props.changeState();
-        // setVisible(false);
-        setConfirmLoading(true);
-        console.log(finished);
-        if (finished) {
-            setVisible(false);
-            setConfirmLoading(false);
-        } else {
-            setTimeout(() => {
-                setFinished(true);
-                setCurrentOkText('Done');
-                setConfirmLoading(false);
-            }, 2000);
-        }
-    };
+    const layout = {
+        labelCol: { span: 8 },
+        wrapperCol: { span: 24 },
+      };
+      const tailLayout = {
+        wrapperCol: { offset: 10, span: 16 },
+      };
+
+      const onFinish = values => {
+        console.log('Success:', values);
+
+        //send url to database
+
+      };
+    
+      const onFinishFailed = errorInfo => {
+        console.log('Failed:', errorInfo);
+      };
 
     function handleCancel() {
         props.changeState();
@@ -40,14 +40,34 @@ const AddConnection = (props) => {
     return (
         <div >
             <Modal
-                title="Add Connection"
+                title="Enter URI"
                 visible={visible}
-                onOk={handleOk}
-                okText={currentOkText}
-                confirmLoading={confirmLoading}
                 onCancel={handleCancel}
+                footer={[
+                    
+                  ]}
             >
-            <Input addonBefore={selectBefore} defaultValue="mysite" />
+                <Form
+                    {...layout}
+                    name="basic"
+                    initialValues={{ remember: true }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                >
+                    <Form.Item
+                        name="uri"
+                        rules={[{ required: true, message: 'Please input your a data source URI' }]}
+                    >
+                        <Input addonBefore={selectBefore} />
+                    </Form.Item>
+
+                    <Form.Item {...tailLayout}>
+                        <Button type="primary" htmlType="submit">
+                            Add
+                        </Button>
+                    </Form.Item>
+                    </Form>
+            
             </Modal>
         </div>
     );

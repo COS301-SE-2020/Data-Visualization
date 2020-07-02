@@ -1,22 +1,79 @@
 import React, { Fragment } from 'react';
 import {useState} from 'react';
 import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
-import { EyeInvisibleOutlined, EyeTwoTone, InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
+import {Form, Checkbox} from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import './LoginDialog.scss';
 
+
+//sign up constants
+const { Option } = Select;
+const AutoCompleteOption = AutoComplete.Option;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+  },
+};
+
+//login constants
+const layout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+};
+const tailLayout = {
+  wrapperCol: { offset: 8, span: 16 },
+};
+
+
+
+//sign up function
 function SignUpDialog(props) {
 
-  const [visible, setVisible] = useState(true);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [finished, setFinished] = useState(false);
-  const [currentOkText, setCurrentOkText] = useState('Sign up');
+  const [form] = Form.useForm();
 
-  function handleOk(e) {
-    //send to back end
+  const onFinish = values => {
+    //send to backend
 
-    setVisible(false);
+
+
+    console.log('Received values of form: ', values);
   };
+
+
+  const [autoCompleteResult, setAutoCompleteResult] = useState([]);
+
+
+  const websiteOptions = autoCompleteResult.map(website => ({
+    label: website,
+    value: website,
+  }));
+
+
+  const [visible, setVisible] = useState(true);
+
+  //const [confirmLoading, setConfirmLoading] = useState(false);
+  //const [finished, setFinished] = useState(false);
+
+ 
   function handleCancel(e) {
       setVisible(false);
   };
@@ -25,71 +82,131 @@ function SignUpDialog(props) {
   return (
     <div >
       <Modal
-          title="Sign Up"
+          title='Sign Up'
           visible={visible}
-          okText={currentOkText}
           onCancel={handleCancel}
 
           footer={[
-              <Button onClick={handleCancel}>
-                Cancel
-              </Button>,
-              <Button type="primary" confirmLoading={confirmLoading} onClick={handleOk}>
-                Sign Up
-              </Button>,
+            
             ]}
           >
-        <Input placeholder="Name" />
-        <br />
-        <br />
-        <Input placeholder="Surname" />
-        <br />
-        <br />
-        <Input
-          placeholder="Email"
-          suffix={
-          <Tooltip title="Extra information">
-            <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-          </Tooltip>
-          }
-        />
-        <br />
-        <br />
-        <Input
-          placeholder="Username"
-          prefix={<UserOutlined className="site-form-item-icon" />}
-          suffix={
-          <Tooltip title="Extra information">
-            <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-          </Tooltip>
-          }
-        />
-        <br />
-        <br />
-        <Input.Password
-          placeholder="Create a password"
-          iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-        />
-        <br />
-        <br />
-        <Input.Password
-          placeholder="Confirm password"
-          iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-        />
+        
+        <Form
+          {...formItemLayout}
+          form={form}
+          name="register"
+          onFinish={onFinish}
+          scrollToFirstError
+        >
+          <Form.Item
+            name="name"
+            label={
+              <span>
+                Name&nbsp;
+                <Tooltip title="What do you want others to call you?">
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </span>
+            }
+            rules={[{ required: true, message: 'Please input your name!', whitespace: true }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="surname"
+            label='Surname'
+            rules={[{ required: true, message: 'Please input your surname!', whitespace: true }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="email"
+            label="E-mail"
+            rules={[
+              {
+                type: 'email',
+                message: 'The input is not valid E-mail!',
+              },
+              {
+                required: true,
+                message: 'Please input your E-mail!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your password!',
+              },
+            ]}
+            hasFeedback
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="confirm"
+            label="Confirm Password"
+            dependencies={['password']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Please confirm your password!',
+              },
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('The two passwords that you entered do not match!');
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="agreement"
+            valuePropName="checked"
+            rules={[
+              { validator:(_, value) => value ? Promise.resolve() : Promise.reject('Should accept agreement') },
+            ]}
+            {...tailFormItemLayout}
+          >
+            <Checkbox>
+              I have read the <a href="">agreement</a>
+            </Checkbox>
+          </Form.Item>
+          <Form.Item {...tailFormItemLayout}>
+            <Button type="primary" htmlType="submit">
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
         
       </Modal>
     </div>
-    
-    //<SignUpDialog pType= {props.pType}  setpType= {props.setpType}/>
+  
   );
 }
 
+
+//login function
 function LoginDialog(props) {
 
   const [visible, setVisible] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [finished, setFinished] = useState(false);
-  const [currentOkText, setCurrentOkText] = useState('Login');
+  //const [confirmLoading, setConfirmLoading] = useState(false);
+  //const [finished, setFinished] = useState(false);
+  //const [currentOkText, setCurrentOkText] = useState('Login');
 
   //const [open, setOpen] = React.useState(true);
   const [signup, setSignUp] = React.useState('false');
@@ -98,23 +215,26 @@ function LoginDialog(props) {
   function showModal() {
     setVisible(true);
     setSignUp(false);
-};
-
-  function handleOk(e) {
-    //send to back end
-
-    setVisible(false);
   };
-  function handleCancel(e) {
-      console.log(e);
+
+  function handleCancel() {
       setVisible(false);
   };
   function handleSignUp(e) {
-    //send to back end
     setVisible(false);
     setSignUp('true');
   };
   
+  const onFinish = values => {
+    //send to backend
+
+
+    console.log('Success:', values);
+  };
+
+  const onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
 
   return (
     <div id = 'loginDiv'>
@@ -122,36 +242,64 @@ function LoginDialog(props) {
       <Modal
           title="Login"
           visible={visible}
-          okText={currentOkText}
           onCancel={handleCancel}
 
           footer={[
-          <Button  type="dashed" ghost confirmLoading={confirmLoading} onClick = {handleSignUp}>
-              Sign up
-            </Button>,
-            <Button onClick={handleCancel}>
-              Cancel
-            </Button>,
-            <Button type="primary" confirmLoading={confirmLoading} onClick={handleOk}>
-              Login
-            </Button>,
+         
           ]}
           >
-        <Input
-          placeholder="Enter your username"
-          prefix={<UserOutlined className="site-form-item-icon" />}
-          suffix={
-          <Tooltip title="Extra information">
-            <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-          </Tooltip>
-          }
-        />
-        <br />
-        <br />
-        <Input.Password
-          placeholder="input password"
-          iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-        />
+          <Form
+            {...layout}
+            name="basic"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+          >
+            <Form.Item
+              name="email"
+              label="E-mail"
+              rules={[
+                {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!',
+                },
+                {
+                  required: true,
+                  message: 'Please input your E-mail!',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+              <Input.Password />
+            </Form.Item>
+
+            <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
+
+            <Form.Item {...tailLayout}>
+          
+
+              <Button type="primary" htmlType="submit">
+                Login
+              </Button>
+
+              <Button htmlType="button" style={{marginLeft: '10px'}} onClick = {handleSignUp}>
+                Sign Up
+              </Button>
+              
+            </Form.Item>
+
+          </Form>
+        
       </Modal>
       <main>
         {
