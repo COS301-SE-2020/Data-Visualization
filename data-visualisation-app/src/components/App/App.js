@@ -298,6 +298,7 @@ function App(props) {
 		{
 			
 			pageType === 'dashboard' ?
+			
                 <Dashboard />
 			:
 			pageType === 'about' ?
