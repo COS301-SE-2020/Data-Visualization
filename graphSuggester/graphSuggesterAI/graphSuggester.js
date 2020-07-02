@@ -108,21 +108,25 @@ class graphSuggester {
             let keys = this.nonTerminals[type];         //check the available keys in the metadata
             let options = [];                           //the available key options(processed later)
             let count = 0;                              //the index for options
+            let nameKey = null;
 
             for ( let key = 0; key < keys.length; key++ ) {     //go through all the keys and get rid of IDs and such
                                                                 //those keys are not graph data
-                let name = keys [ key ];                        //the key
+                let name = keys [ key ];    //the key
 
                 if (!( name.contains( 'ID' ) || name.contains( 'Name' ) || name.contains( 'Picture' )
                     || name.contains( 'Description' ) )) {  //trim out the "useless" keys
                     options [ count++ ] = keys [ key ];           //add the key if it is meaningful data
+                }
+                else if ( name.contains( 'Name' ) && nameKey == null ){    //store the name key for later access
+                    nameKey = name;
                 }
             }
 
             let hasData = false;    //check variable used to see if data exists or if a deeper thread is followed
 
             for ( let i = 0; i < options.length; i++ ) {
-                if ( results[0][ options[i] ][ 'deferred' ] == null ) { //if this isn't a link then we have data
+                if ( results[0] [ options[i] ] [ 'deferred' ] == null ) { //if this isn't a link then we have data
                     hasData = true;
                     break;
                 }
@@ -131,8 +135,16 @@ class graphSuggester {
             if ( !hasData ) {       //if we don't have data then request the deeper layer(s)
                 //TODO request the (deeper layer) data from dataSource and add them to the options
             }
-            //TODO algorithm to select the data
 
+            let choice = Math.trunc(Math.random()*options.length);  //select random index
+            let data = [];                                             //2D array containing item names and attributes
+            let params = [ options[ choice ], 'value' ];                 //the labels for column values
+
+            //Store name of field and it's chosen attribute in data
+            for ( let i = 0; i < results.length; i++ ) { data[i] = [ results[i][ nameKey ], results[i][ options[choice] ] ]; }
+
+            //generate the graph option - TODO fix the hardcoding
+            let option = this.constructOption( data, 'pie', params, options[ choice ], 'value');
         }
     }
 
