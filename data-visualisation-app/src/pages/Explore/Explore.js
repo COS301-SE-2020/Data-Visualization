@@ -1,6 +1,7 @@
 import React from 'react';
 import DataConnection from '../../components/DataConnection';
 import Entities from '../../components/Entities';
+import Suggestions from '../../components/Suggestions';
 
 function Explore() {
 
@@ -12,6 +13,9 @@ function Explore() {
           :
           exploreStage === 'entities' ?
           <Entities setStage= {setExploreStage}/>
+          :
+          exploreStage === 'suggestions' ?
+          <Suggestions setStage= {setExploreStage}/>
           :
           null
   );
