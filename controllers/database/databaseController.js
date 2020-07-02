@@ -19,7 +19,7 @@ const config = {
 
 class Database {
   static sendQuery(SQL_query) {
-    // console.log(SQL_query);
+    console.log(SQL_query);
     return new Promise((conResolve, conReject) => {
       Database.pg_pool
         .connect()
@@ -43,6 +43,7 @@ class Database {
     });
   }
 
+  //==================USERS===============
   static async authenticate(email, password) {
     return new Promise((resolve, reject) => {
       console.log('==> AUTHENTICATING: ' + email);
@@ -62,23 +63,6 @@ class Database {
         }
       });
     }).catch((err) => reject(err));
-  }
-
-  static async findUserByEmail(email) {
-    let result = await DatabasesendQuery(`SELECT * FROM Users WHERE( email =  + '${email}' + );`);
-
-    if (result && result.command === 'SELECT' && result.rows.length > 0) {
-      console.log('==> LOOKUP: found - ' + email);
-      delete result.rows[0].password;
-      return new Promise((resolve, reject) => {
-        resolve(result.rows[0]);
-      });
-    } else {
-      console.log('==> LOOKUP: Not found - ' + email);
-      return new Promise((resolve, reject) => {
-        reject(result);
-      });
-    }
   }
 
   static async register(fname, lname, email, password) {
@@ -108,6 +92,7 @@ class Database {
     });
   }
 
+  //==================DATA SOURCE===============
   static addDataSource(dashboardID, dataSource, list) {
     console.log('new DataSource:', dashboardID, dataSource, list);
 
@@ -117,38 +102,53 @@ class Database {
     /// TODO: Add rows in DataSourceEntity table
   }
 
-  static async getDashboardList() {
-    let query = `SELECT * FROM Dashboard;`;
+  //==================DASHBOARDS===============
+  static async getDashboardList(email) {
+    let query = `SELECT * FROM Dashboard WHERE (email = '${email}');`;
     let result = await Database.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'SELECT') resolve(result.rows);
       else reject(result);
     });
   }
-  static async addDashboard(name, desc) {
-    let query = `INSERT INTO Dashboard (Name,Description) VALUES ('${name}','${desc}');`;
+  static async addDashboard(email, name, desc) {
+    let query = `INSERT INTO Dashboard (Name,Description,email) VALUES ('${name}','${desc}','${email}');`;
     let result = await Database.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'INSERT') resolve(result);
       else reject(result);
     });
   }
-  static async removeDashboard(dashboardID) {
-    let query = `DELETE FROM Dashboard WHERE ( ID = '${dashboardID}');`;
+  static async removeDashboard(email, dashboardID) {
+    let query = `DELETE FROM Dashboard WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
     let result = await Database.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'DELETE') resolve(result);
       else reject(result);
     });
   }
-  static async updateDashboard(dashboardID, fields, data) {
-    let query = `UPDATE Dashboard SET ${fieldUpdates(fields, data)} WHERE ( ID = '${dashboardID}');`;
+  static async updateDashboard(email, dashboardID, fields, data) {
+    let index = -1;
+    fields = fields.filter((field, i) => {
+      if (field === 'email') {
+        index = i;
+        return false;
+      } else return true;
+    });
+    data.splice(index, 1);
+
+    let query = `UPDATE Dashboard SET ${fieldUpdates(
+      fields,
+      data
+    )} WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
     let result = await Database.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'UPDATE') resolve(result);
       else reject(result);
     });
   }
+
+  //==================GRAPHS===============
   static async getGraphList(dashboardID) {
     let query = `SELECT g.id, g.dashboardID, g.graphtypeid, t.source
     FROM graph as g join graphtype as t on (g.graphtypeid=t.id)

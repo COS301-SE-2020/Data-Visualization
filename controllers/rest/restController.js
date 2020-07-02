@@ -33,26 +33,26 @@ class RestController {
 		//respond with suggestions
 	*/
 
-  static getDashboardList(done, error) {
-    Database.getDashboardList()
+  static getDashboardList(email, done, error) {
+    Database.getDashboardList(email)
       .then((list) => done(list))
       .catch((err) => error && error(err));
   }
 
-  static addDashboard(name, description, done, error) {
-    Database.addDashboard(name, description)
+  static addDashboard(email, name, description, done, error) {
+    Database.addDashboard(email, name, description)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
-  static updateDashboard(id, fields, data, done, error) {
-    Database.updateDashboard(id, fields, data)
+  static updateDashboard(email, id, fields, data, done, error) {
+    Database.updateDashboard(email, id, fields, data)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
-  static removeDashboard(id, done, error) {
-    Database.removeDashboard(id)
+  static removeDashboard(email, id, done, error) {
+    Database.removeDashboard(email, id)
       .then(() => done())
       .catch((err) => error && error(err));
   }

@@ -58,7 +58,6 @@ router.post('/logout', (req, res) => {
       res.clearCookie(SESS_NAME);
       res.status(200).json({ message: 'Successfully Logged out' });
     }
-    console.log(req.session);
   });
 });
 

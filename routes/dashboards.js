@@ -8,6 +8,7 @@ const { Rest } = require('../controllers');
 //  1. GET_DASHBOARDS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.get('/', (req, res) => {
   Rest.getDashboardList(
+    req.body.email,
     (list) => res.status(200).json(list),
     (err) => error(res, err)
   );
@@ -17,6 +18,7 @@ router.get('/', (req, res) => {
 // => POST (nameOfDashboard, descriptionOfDashboard,dashColour)
 router.post('/', (req, res) => {
   Rest.addDashboard(
+    req.body.email,
     req.body.name,
     req.body.description,
     () => res.status(200).json({ message: 'Successfully Added Dashboard' }),
@@ -27,6 +29,7 @@ router.post('/', (req, res) => {
 //  3. REMOVE_DASHBOARD
 router.delete('/', (req, res) => {
   Rest.removeDashboard(
+    req.body.email,
     req.body.dashboardID,
     () => {
       res.status(200).json({ message: 'Successfully Removed Dashboard' });
@@ -41,6 +44,7 @@ router.delete('/', (req, res) => {
 //  => PUT(dashboardDescription, dashboardID)
 router.put('/', (req, res) => {
   Rest.updateDashboard(
+    req.body.email,
     req.body.dashboardID,
     req.body.fields,
     req.body.data,
