@@ -39,15 +39,15 @@ class Odata {
 }
 
 function format(src) {
-  return `https://services.odata.org/V2/${src}?$format=json`;
+  return `${src}?$format=json`;
 }
 
 function formatEntity(src, entity) {
-  return `https://services.odata.org/V2/${src}/${entity}?$format=json`;
+  return `${src}/${entity}?$format=json`;
 }
 
 function formatMetaData(src) {
-  return `https://services.odata.org/V2/${src}/$metadata`;
+  return `${src}/$metadata`;
 }
 
 module.exports = Odata;

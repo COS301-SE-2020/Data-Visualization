@@ -8,18 +8,21 @@ class RestController {
 		REMOVE: Add to DB under Dashboard
 	*/
 
-  static getDataSourceList(id, done, error) {
-    // Database.getDataSourceList(id)
-    //   .then((list) => done(list))
-    //   .catch((err) => error && error(err));
+  static getDataSourceList(dashboardID, done, error) {
+    Database.getDataSourceList(dashboardID)
+      .then((list) => done(list))
+      .catch((err) => error && error(err));
   }
 
-  static addDataSource(dashboardID, dataSource, done, error) {
-    DataSource.getMetaData(dataSource, DataSource.sourceTypes.Odata)
-      .then((meta) => {
-        console.log(meta);
-        done();
-      })
+  static addDataSource(dashboardID, dataSourceURL, done, error) {
+    Database.addDataSource(dashboardID, dataSourceURL)
+      .then(() => done())
+      .catch((err) => error && error(err));
+  }
+
+  static removeDataSource(dataSourceID, done, error) {
+    Database.removeDataSource(dataSourceID)
+      .then(() => done())
       .catch((err) => error && error(err));
   }
 
