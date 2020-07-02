@@ -72,7 +72,7 @@ class Database {
 
     console.log('==> REGISTER: ' + email);
     return new Promise((resolve, reject) => {
-      DatabasesendQuery(
+      Database.sendQuery(
         `INSERT INTO Users (email,firstname,lastname,password) VALUES('${email}', '${fname}', '${lname}', '${password}')`
       )
         .then((response) => {
