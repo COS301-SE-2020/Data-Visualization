@@ -95,8 +95,8 @@ class Database {
   }
 
   //==================DATA SOURCE===============
-  static async getDataSourceList(dashboardID, dataSource, list) {
-    let query = `SELECT * FROM datasource WHERE ( dashboardID = '${dashboardID}');`;
+  static async getDataSourceList(email) {
+    let query = `SELECT * FROM datasource WHERE ( email = '${email}');`;
     let result = await Database.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'SELECT') resolve(result.rows);
@@ -104,8 +104,8 @@ class Database {
     });
   }
 
-  static async addDataSource(dashboardID, sourceURL) {
-    let query = `INSERT INTO datasource (dashboardID, sourceurl) VALUES ('${dashboardID}','${sourceURL}');`;
+  static async addDataSource(email, sourceURL) {
+    let query = `INSERT INTO datasource (email, sourceurl) VALUES ('${email}','${sourceURL}');`;
     let result = await Database.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'INSERT') resolve(result);
@@ -113,8 +113,8 @@ class Database {
     });
   }
 
-  static async removeDataSource(dataSourceID) {
-    let query = `DELETE FROM datasource WHERE ( ID = '${dataSourceID}');`;
+  static async removeDataSource(email, dataSourceID) {
+    let query = `DELETE FROM datasource WHERE ( email = '${email}') AND ( ID = '${dataSourceID}');`;
     let result = await Database.sendQuery(query);
     return new Promise((resolve, reject) => {
       if (result && result.command === 'DELETE') resolve(result);
