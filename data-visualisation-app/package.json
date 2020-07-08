@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "antd": "^4.4.0",
     "axios": "^0.19.2",
     "echarts": "^4.8.0",
     "echarts-for-react": "^2.0.16",
@@ -16,9 +17,18 @@
     "react": "^16.13.1",
     "react-addons-update": "^15.6.2",
     "react-dom": "^16.13.1",
+    "react-grid-layout": "^0.18.3",
+    "react-redux": "^7.2.0",
     "react-scripts": "3.4.1",
     "react-test-renderer": "^16.13.1",
-    "reqwest": "^2.0.5"
+    "react-undo": "^1.2.1",
+    "redux": "^4.0.5",
+    "redux-undo": "^1.0.1",
+    "reqwest": "^2.0.5",
+    "styled-components": "^5.1.1",
+    "styled-icons": "^10.6.0",
+    "three": "^0.118.3",
+    "three-orbitcontrols": "^2.110.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -52,9 +62,6 @@
     ]
   },
   "devDependencies": {
-    "antd": "^4.3.3",
-    "craco": "0.0.3",
-    "craco-less": "^1.17.0",
     "tailwindcss": "^1.1.3"
   }
 }

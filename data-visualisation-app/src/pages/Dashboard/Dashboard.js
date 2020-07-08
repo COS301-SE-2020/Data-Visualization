@@ -1,7 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import update from 'react-addons-update';
 import './Dashboard.scss';
+import request from '../../globals/requests';
+
 import API from '../../helpers/apiRequests';
+
 import * as Constants from '../../globals/constants';
 import HomePage from '../../components/HomePage/HomePage';
 import DisplayDashboard from '../../components/DisplayDashboard/DisplayDashboard';
@@ -19,6 +22,7 @@ function Dashboard() {
 
 	useEffect(() => {
 		reqDashboardList();
+		// request.user.login('peter@neverland.com', 'Passwosdfrd1@');
 	}, []);
 
 	//Boolean Checks
@@ -81,8 +85,9 @@ function Dashboard() {
 			})
 			.catch((err) => console.error(err));
 	};
+
 	const reqDashboardAdd = (newDash) => {
-		API.dashboard
+		request.API.dashboard
 			.add(newDash.name, newDash.description)
 			.then((res) => {
 				console.log(res);
@@ -92,7 +97,7 @@ function Dashboard() {
 			.catch((err) => console.error(err));
 	};
 	const reqDashboardDelete = () => {
-		API.dashboard
+		request.API.dashboard
 			.delete(DashboardList[DashboardIndex].id)
 			.then((res) => {
 				console.log(res);
@@ -102,7 +107,7 @@ function Dashboard() {
 			.catch((err) => console.error(err));
 	};
 	const reqDashboardUpdate = () => {
-		API.dashboard
+		request.API.dashboard
 			.update()
 			.then((res) => {
 				console.log(res);
@@ -113,7 +118,7 @@ function Dashboard() {
 
 	const reqGraphList = () => {
 		console.log(DashboardList[DashboardIndex].id);
-		API.graph
+		request.API.graph
 			.list(DashboardList[DashboardIndex].id)
 			.then((res) => {
 				console.log(res);
@@ -122,7 +127,7 @@ function Dashboard() {
 			.catch((err) => console.error(err));
 	};
 	const reqGraphAdd = (newGraph) => {
-		API.graph
+		request.API.graph
 			.add(newGraph.dashboardID, newGraph.graphtypeid)
 			.then((res) => {
 				console.log(res);
@@ -131,7 +136,7 @@ function Dashboard() {
 			.catch((err) => console.error(err));
 	};
 	const reqGraphDelete = (gID) => {
-		API.graph
+		request.API.graph
 			.delete(gID)
 			.then((res) => {
 				console.log(res);
@@ -140,7 +145,7 @@ function Dashboard() {
 			.catch((err) => console.error(err));
 	};
 	const reqGraphUpdate = () => {
-		API.graph
+		request.API.graph
 			.update()
 			.then((res) => {
 				console.log(res);
@@ -148,6 +153,8 @@ function Dashboard() {
 			})
 			.catch((err) => console.error(err));
 	};
+
+
 
 	//Navigation procedures
 	const backToHome = () => {
@@ -195,16 +202,7 @@ function Dashboard() {
 		}
 	}
 
-	return (
-
-		<Fragment>
-
-		<Layout style={{ height: '100vh' }} >
-			{router()}
-		</Layout>
-
-		</Fragment>
-	);
+	return router();
 }
 
 export default Dashboard;
