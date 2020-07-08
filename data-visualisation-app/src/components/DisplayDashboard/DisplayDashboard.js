@@ -5,15 +5,8 @@ import {Typography, Button} from 'antd';
 import './DisplayDashboard.scss';
 import { Empty, Input } from 'antd';
 import Grid from '@material-ui/core/Grid';
-// import {AiOutlineClose} from 'react-icons/ai';
 
-
-import { ActionCreators as UndoActionCreators } from 'redux-undo';
-import { connect, Provider } from 'react-redux';
-import { createStore } from 'redux';
-import undoable, { distinctState } from 'redux-undo';
-import UndoRedo from 'react-undo/dist';
-
+import useUndo from 'use-undo';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -227,88 +220,25 @@ const demotempoptions = [{
 ];
 
 
-let nextTodoId = 0
-export const addTodo = (text) => ({
-	type: 'ADD_TODO',
-	id: nextTodoId++,
-	text
-});
-
-const todo = (state, action) => {
-	switch (action.type) {
-		case 'ADD_TODO':
-			return {
-				id: action.id,
-				text: action.text,
-				completed: false
-			}
-		case 'TOGGLE_TODO':
-			if (state.id !== action.id) {
-				return state
-			}
-
-			return {
-				...state,
-				completed: !state.completed
-			}
-		default:
-			return state
-	}
-}
-
-const todos = (state = [], action) => {
-	switch (action.type) {
-		case 'ADD_TODO':
-			return [
-				...state,
-				todo(undefined, action)
-			]
-		case 'TOGGLE_TODO':
-			return state.map(t =>
-				todo(t, action)
-			)
-		default:
-			return state
-	}
-}
-
-const undoableTodos = undoable(todos);
-
-
-function UndoRedoButtons(props) {
-	return (
-		<p>
-			<button onClick={props.onUndo} disabled={!props.canUndo}>
-				Undo
-			</button>
-			<button onClick={props.onRedo} disabled={!props.canRedo}>
-				Redo
-			</button>
-		</p>
-	);
-}
-
-const mapStateToProps = (state) => ({
-	canUndo: state.todos.past.length > 0,
-	canRedo: state.todos.future.length > 0
-});
-
-const mapDispatchToProps = ({
-	onUndo: UndoActionCreators.undo,
-	onRedo: UndoActionCreators.redo
-});
-
-UndoRedoButtons = connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(UndoRedoButtons);
-
 
 function DisplayDashboard(props) {
 
 	const [editMode, setEditMode] = useState(false);
 	const [dashboardName, setDashboardName] = useState('dashboardname');
 	const [dashboardDescription, setDashboardDescription] = useState('dashboarddescription');
+
+	const [
+		dashboardState,
+		{
+			set: setDashboardState,
+			reset: resetDashboardState,
+			undo: undoDashboardState,
+			redo: redoDashboardState,
+			canUndo,
+			canRedo
+		}
+	] = useUndo({name: 'dashboardname', description: 'dashboarddesciption'}); //{name: 'dashboardname', description: 'dashboarddesciption'}
+	const { present: presentDashboard } = dashboardState;
 
 	useEffect(() => {
 		// props.reqGraphList();
@@ -388,32 +318,41 @@ function DisplayDashboard(props) {
 	}
 
 	function onEditNameChange(name) {
-		console.log('new name;' + name);
-		props.dispatch(addTodo(name));
 		setDashboardName(name);
+		setDashboardState({name: name, description: presentDashboard.description});
 	}
 
 	function onEditDescriptionChange(description) {
 		console.log('new name;' + description);
-		setDashboardDescription(description);
+		setDashboardState({name: presentDashboard.name, description: description});
 	}
 
 	return (
 		<div className='content--padding'>
+
 			<div style={{marginBottom: '20px'}}>
 
 				<Grid container spacing={3}>
 					<Grid item xs={8}>
 						<Typography.Title level={3} editable={editMode && {onChange: onEditNameChange}}>
-							{dashboardName}
+							{presentDashboard.name}
 						</Typography.Title>
-						<Typography.Paragraph editable={editMode && {onChange: onEditDescriptionChange}}>{dashboardDescription}</Typography.Paragraph>
+						<Typography.Paragraph editable={editMode && {onChange: onEditDescriptionChange}}>{presentDashboard.description}</Typography.Paragraph>
 					</Grid>
 					<Grid item xs={4} style={{textAlign: 'right'}}>
 						<Button ghost onClick={onEditDashboardClick}>
 							{(editMode ? 'Save Dashboard' : 'Edit Dashboard')}
 						</Button>
-						<UndoRedoButtons/>
+						{editMode &&
+							<React.Fragment>
+								<Button onClick={undoDashboardState} disabled={!canUndo}>
+									Undo
+								</Button>
+								<Button onClick={redoDashboardState} disabled={!canRedo}>
+									Redo
+								</Button>
+							</React.Fragment>
+						}
 					</Grid>
 				</Grid>
 
@@ -442,15 +381,4 @@ function DisplayDashboard(props) {
 	);
 }
 
-DisplayDashboard = connect()(DisplayDashboard);
-
-
-const store = createStore(undoableTodos);
-
-export default function() {
-	return (
-		<Provider store={store}>
-			<DisplayDashboard/>
-		</Provider>
-	);
-};
+export default DisplayDashboard;

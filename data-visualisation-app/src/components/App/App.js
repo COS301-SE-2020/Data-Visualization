@@ -347,7 +347,7 @@ function App(props) {
 					</Hidden>
 				</nav>
 
-				<main className={classes.content} style={{overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' }} ref={targetRef}>
+				<main className={classes.content} style={(pageType === 'home' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
 
 					{/*<p>{dimensions.width}</p>*/}
 					{/*<p>{dimensions.height}</p>*/}
