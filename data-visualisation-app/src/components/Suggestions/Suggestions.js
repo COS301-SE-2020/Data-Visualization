@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
-import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined} from '@ant-design/icons';
+import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined} from '@ant-design/icons';
 import {Typography, Menu, Dropdown, Button} from 'antd';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import FilterDialog from '../FilterDialog';
 
 import './Suggestions.scss';
 
@@ -13,7 +14,7 @@ const { Title } = Typography;
 const demotempoptions = [{
     legend: {
         data: ['Something'],
-        fontFamily: "Tahoma"
+        fontFamily: 'Tahoma'
     },
     tooltip: {
         trigger: 'axis',
@@ -234,6 +235,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+
 // window.addEventListener('resize', function() {
 //     for (let n = 0; n < demotempoptions.length; n++) {
 //         tmp = chartPointers[n].getEchartsInstance();
@@ -243,9 +245,13 @@ const useStyles = makeStyles((theme) => ({
 
 function Suggestions(props) {
 
+
+
     const back = () => {
         props.setStage('entities');
     };
+
+    const [filterState, setFilterState] = React.useState(false);
 
     const classes = useStyles();
 
@@ -347,10 +353,24 @@ function Suggestions(props) {
                 <Typography>
                     <Title id = 'titleText'>Suggestions</Title>
                 </Typography>
-                </span>
+            </span>
+            <div id = 'filterDiv'>
+                    <Button id = 'filterButton' icon={<FilterOutlined />} onClick={() => setFilterState(true)}>Filter</Button>
+            </div> 
             <Grid container spacing={3}>
                 {charts}
             </Grid>
+            <main>
+                {
+                    filterState ? 
+            
+                    <FilterDialog setFState = {setFilterState}/>
+            
+                    :
+                    null
+                }
+        
+        </main>
         </div>
     );
 };

@@ -61,7 +61,7 @@ const globalMaterialUITheme = createMuiTheme({
 
 		primary: {
 			main: '#ff4400',
-			mainGradient: "linear-gradient(to right, tomato, cyan)",
+			mainGradient: 'linear-gradient(to right, tomato, cyan)',
 		}
 	}
 });
@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		justifyContent: 'flex-end',
 		maxWidth: '210px',
-		marginLeft: "auto",
+		marginLeft: 'auto',
 		marginRight: -20
 
 	},
@@ -118,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	nested: {
 		paddingLeft: theme.spacing(11),
-		color: "#3C6A7F",
+		color: '#3C6A7F',
 	},
 	nestedNoIcon: {
 		paddingLeft: theme.spacing(9),
@@ -128,17 +128,17 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(9),
 	},
 	typographyHeading: {
-		color: "#2f2f2e",
+		color: '#2f2f2e',
 		fontSize: '1.5em',
 	},
 	drawerList: {
-		color: "#2f2f2e",
+		color: '#2f2f2e',
 	},
 	icon: {
 		color: '#2f2f2e',
 	},
 	drawerListCollapse: {
-		color: "#3C6A7F",
+		color: '#3C6A7F',
 	},
 
 	//05192F primary -> 3C6A7F//lighter
@@ -179,14 +179,15 @@ function App(props) {
 	const [loginNameState, setLoginNameState] = React.useState('Login/Sign up');
 
 	//handle page state
-	const [pageType, setPageType] = React.useState('home')
+	const [pageType, setPageType] = React.useState('home');
+	const [exploreStage, setExploreStage] = React.useState('dataConnection');
 
 	const handlePageType = (t) => {
 		setPageType(t);
 		return (
-			mobileOpen == true ? handleDrawerToggle() : null
+			mobileOpen === true ? handleDrawerToggle() : null
 		);
-	}
+	};
 
 
 
@@ -358,7 +359,7 @@ function App(props) {
 							<Home pType={pageType} setpType={setPageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />
 							:
 							pageType === 'explore' ?
-								<Explore />
+								<Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />
 								:
 								pageType === 'dashboards' ?
 									<Dashboard />
