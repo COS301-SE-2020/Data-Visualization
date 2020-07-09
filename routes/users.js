@@ -4,9 +4,19 @@ const router = express.Router();
 
 const { Rest } = require('../controllers');
 
+let loggedUsers = {};
+
 router.post('/login', (req, res) => {
-  const check = checkUserEmail(req.body.email) && checkUserPasswordLogin(req.body.password);
-  if (check) {
+  if (Object.keys(req.body).length === 0){
+    error(res, {error: 'Body Undefined'}, 400);
+  }
+   else if(!checkUserEmail(req.body.email)){
+    error(res, { error: 'User Email Incorrect' }, 400);
+  }
+  else if (!checkUserPasswordLogin(req.body.password)){
+    error(res, { error: 'User Password Incorrect' }, 400);
+  }
+  else{
     Rest.loginUser(
       req.body.email,
       req.body.password,
@@ -14,48 +24,67 @@ router.post('/login', (req, res) => {
         if (user === false) {
           res.status(401).json({ message: 'Failed to Log In User' });
         } else {
-          req.session.sid[user.apikey] = user;
+          // if (!req.session.sid) req.session.sid = {};
+          // req.session.sid[user.apikey] = user;
+          loggedUsers[user.apikey] = user;
           res.status(200).json({ message: 'Successfully Logged In User', apikey: user.apikey });
         }
       },
-      (err) => error(res, err)
+      (err) => error(res, err, 404)
     );
-  } else error(res, { error: 'Email or password incorrect' });
+  }
 });
 router.post('/register', (req, res) => {
-  const check =
-    checkName(req.body.name) &&
-    checkName(req.body.surname) &&
-    checkUserEmail(req.body.email) &&
-    checkUserPasswordRegister(req.body.password, req.body.confirmPassword, req.body.name);
-  if (check) {
+  if(Object.keys(req.body).length === 0){
+    error(res, { error: 'Body Undefined' }, 400);
+  }
+  else if(!checkName(req.body.name)){
+    error(res, { error: 'User Name Incorrect' }, 400);
+  }
+  else if (!checkName(req.body.surname)){
+    error(res, { error: 'User Surname Incorrect' }, 400);
+  }
+  else if(!checkUserEmail(req.body.email)){
+    error(res, { error: 'User Email Incorrect' }, 400);
+  }
+  else if (!checkUserPasswordRegister(req.body.password, req.body.confirmPassword, req.body.name)){
+    error(res, { error: 'User Password Incorrect' }, 400);
+  }
+  else{
     Rest.registerUser(
       req.body.name,
       req.body.surname,
       req.body.email,
       req.body.password,
       (user) => {
-        req.session.sid[user.apikey] = user;
+        // if (!req.session.sid) req.session.sid = {};
+        // req.session.sid[user.apikey] = user;
+        loggedUsers[user.apikey] = user;
         res.status(200).json({ message: 'Successfully Registered User', apikey: user.apikey });
       },
-      (err) => error(res, err)
+      (err) => error(res, err,404)
     );
-  } else error(res, { error: 'Failed to register new user' });
+  }
 });
 router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      res.status(200).json({ message: 'Failed to Log out' });
-    } else {
-      res.clearCookie(SESS_NAME);
-      res.status(200).json({ message: 'Successfully Logged out' });
-    }
-  });
+  delete loggedUsers[req.body.apikey];
+  res.status(200).json({ message: 'Successfully Logged out' });
+
+  // req.session.destroy((err) => {
+  //   if (err) {
+  //     res.status(200).json({ message: 'Failed to Log out' });
+  //   } else {
+  //     if (req.session && req.session.sid) {
+  //       res.clearCookie(sid);
+  //     }
+  //     res.status(200).json({ message: 'Successfully Logged out' });
+  //   }
+  // });
 });
 
-function error(res, err) {
+function error(res, err, status= 404) {
   console.error(err);
-  res.status(400).json({ message: 'Error Occurred' });
+  res.status(status).json(err);
 }
 
 function checkName(name) {
@@ -138,4 +167,4 @@ function checkUserPasswordRegister(password, confirmPassword, name) {
   }
   return valid;
 }
-module.exports = router;
+module.exports = { router, loggedUsers };
