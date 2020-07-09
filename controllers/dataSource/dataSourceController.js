@@ -1,24 +1,18 @@
 const Odata = require('./Odata');
 
 class DataSource {
-  static getMetaData(src, type) {
-    return DataSource.sources[type].getMetaData(src); //Returns a promise
+  static getMetaData(src) {
+    return Odata.getMetaData(src); //Returns a promise
   }
 
-  static getEntityList(src, type) {
-    return DataSource.sources[type].getEntityList(src); //Returns a promise
+  static getEntityList(src) {
+    return Odata.getEntityList(src); //Returns a promise
   }
 
-  static getEntityData(src, type, entity) {
-    return DataSource.sources[type].getEntityData(src, entity);
+  static getEntityData(src, entity) {
+    return Odata.getEntityData(src, entity);
   }
 }
-DataSource.sourceTypes = {
-  Odata: 0,
-};
-DataSource.sources = {
-  [DataSource.sourceTypes.Odata]: Odata,
-};
 
 const entityList = [
   'Categories',

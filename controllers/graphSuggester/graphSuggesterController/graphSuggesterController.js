@@ -116,3 +116,5 @@ let graphSuggesterControllerMaker = ( function () {
     }
 
 } )();
+
+module.exports = graphSuggesterControllerMaker;
