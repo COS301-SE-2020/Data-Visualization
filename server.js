@@ -15,7 +15,8 @@ const {
   SESS_LIFETIME = 30 * 24 * 60 * 60 * 1000, //ms
   SESS_SECRET = 'my secret string',
 } = process.env;
-const PRODUCTION = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
+
+const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 const app = express();
 app.use(cors());
@@ -54,6 +55,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', UsersRoute);
+app.use('/graphSuggestions', DataSourceRoute);
 
 app.use((req, res, next) => {
   if (req.body.apikey && loggedUsers && loggedUsers.hasOwnProperty(req.body.apikey)) {
@@ -66,7 +68,6 @@ app.use((req, res, next) => {
 app.use('/graphs', GraphsRoute);
 app.use('/dashboards', DashboardsRoute);
 app.use('/datasource', DataSourceRoute);
-app.use('/graphSuggestions', DataSourceRoute);
 
 let server = app.listen(PORT, function () {
   let port = server.address().port;
