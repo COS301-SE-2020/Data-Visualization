@@ -166,34 +166,45 @@ class Database {
   }
 
   //==================GRAPHS===============
-  static async getGraphList(dashboardID) {
-    let query = `SELECT g.id, g.dashboardID, g.graphtypeid, t.source
-    FROM graph as g join graphtype as t on (g.graphtypeid=t.id)
-    WHERE ( g.dashboardID = '${dashboardID}');`;
+  static async getGraphList(email, dashboardID) {
+    let query = ` SELECT g.* from graph as g join (
+      SELECT * from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}')
+    ) as de on (g.dashboardid=de.id);`;
     return new Promise((resolve, reject) => {
       Database.sendQuery(query)
         .then((result) => resolve(result.rows))
         .catch((result) => reject(result));
     });
   }
-  static async addGraph(dashboardID, GraphTypeID) {
-    let query = `INSERT INTO Graph (dashboardID, GraphTypeID) VALUES ('${dashboardID}','${GraphTypeID}');`;
+  static async addGraph(email, dashboardID, title, options, metadata) {
+    options = JSON.stringify(options);
+    metadata = JSON.stringify(metadata);
+    let query = `INSERT INTO GRAPH (dashboardid, title, metadata, options)
+    SELECT ${dashboardID}, '${title}', '${metadata}','${options}'
+    WHERE EXISTS (SELECT '${email}' FROM dashboard AS d WHERE (d.email = '${email}') AND (d.ID = ${dashboardID}))`;
     return new Promise((resolve, reject) => {
       Database.sendQuery(query)
         .then((result) => resolve(result.rows))
         .catch((result) => reject(result));
     });
   }
-  static async removeGraph(GraphID) {
-    let query = `DELETE FROM Graph WHERE ( ID = '${GraphID}');`;
-    let result = await Database.sendQuery(query);
+  static async removeGraph(email, dashboardID, graphID) {
+    let query = `DELETE FROM Graph as g WHERE (
+      g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
+    ) AND (g.ID = '${graphID}');`;
     return new Promise((resolve, reject) => {
-      if (result && result.command === 'DELETE') resolve(result);
-      else reject(result);
+      Database.sendQuery(query)
+        .then((result) => resolve(result.rows))
+        .catch((result) => reject(result));
     });
   }
-  static async updateGraph(GraphID, fields, data) {
-    let query = `UPDATE Graph SET ${fieldUpdates(fields, data)} WHERE ( ID = '${GraphID}');`;
+  static async updateGraph(email, dashboardID, graphID, fields, data) {
+    data = data.map((item, i) =>
+      i < fields.length && (fields[i] === 'metadata' || fields[i] === 'options') ? JSON.stringify(item) : item
+    );
+    let query = `UPDATE Graph as g SET ${fieldUpdates(fields, data)} WHERE (
+      g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
+    ) AND (g.ID = '${graphID}');`;
     return new Promise((resolve, reject) => {
       Database.sendQuery(query)
         .then((result) => resolve(result.rows))
