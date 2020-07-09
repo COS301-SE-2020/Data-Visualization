@@ -64,9 +64,9 @@ router.post('/logout', (req, res) => {
   // });
 });
 
-function error(res, err) {
+function error(res, err, msg) {
   console.error(err);
-  res.status(400).json({ message: 'Error Occurred' });
+  res.status(400).json({ message: msg });
 }
 
 function checkName(name) {
