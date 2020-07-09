@@ -146,7 +146,7 @@ class graphSuggester {
 
             let choice = Math.trunc( Math.random()*options.length );  //select random index - TODO let the GA do this
             let data = [];                                             //2D array containing item names and attributes
-            let params = [ options[ choice ], 'value' ];               //the labels for column values
+            let params = [ nameKey, 'value' ];               //the labels for column values
 
             for ( let i = 0; i < results.length; i++ ) {
                 //Store name of field and its chosen attribute in data
@@ -154,7 +154,7 @@ class graphSuggester {
             }
 
             //generate the graph option - TODO fix the hardcoding
-            let option = this.constructOption ( data, 'pie', params, params[0], params[1] );
+            let option = this.constructOption ( data, 'pie', params, params[0], params[1], options [ choice ] );
 
             return option;
         }
@@ -167,9 +167,10 @@ class graphSuggester {
      * @param params the labels for data, used to select which entries go on the x and y-axis.
      * @param xEntries the entry/entries used on the x-axis.
      * @param yEntries the entry/entries used on the y-axis.
+     * @param graphName the suggested name of the graph
      * @return option the data used to generate the graph.
      */
-    constructOption ( data, graph, params, xEntries, yEntries ){
+    constructOption ( data, graph, params, xEntries, yEntries, graphName ){
         let src = [];
         src[0] = params;
 
@@ -187,6 +188,7 @@ class graphSuggester {
             series: [                   //construct the series of graphs, this could be one or more graphs
                 {
                     type: graph,
+                    name: graphName,
                     encode: {
                         x: xEntries,    //TODO check if multiple values are allowed - might be useful
                         y: yEntries,
