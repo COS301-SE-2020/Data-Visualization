@@ -6,10 +6,11 @@
  * Modules: None
  * Related Documents: SRS Document - www.example.com
  * Update History:
- * Date         Author              Changes
+ * Date          Author              Changes
  * ------------------------------------------------------------------
  * 30/06/2020    Marco Lombaard     Original
- * 1/07/2020     Marco Lombaard     Added parseODataMetadata function
+ * 01/07/2020    Marco Lombaard     Added parseODataMetadata function
+ * 09/07/2020    Marco Lombaard     Fixed parseODataMetaData function
  *
  * Test Cases: none
  *
@@ -45,7 +46,7 @@ let graphSuggesterControllerMaker = ( function () {
          * @param jsonData the data that suggestions need to be generated for, passed in JSON format
          * @returns the suggestions that were generated, in JSON format.
          */
-        getSuggestions ( jsonData ) { this.suggester.getSuggestions( jsonData ); }
+        getSuggestions ( jsonData ) { return this.suggester.getSuggestions( jsonData ); }
 
         /**
          * This function passes the target graph that must become the fittest graph to the graph
@@ -59,12 +60,12 @@ let graphSuggesterControllerMaker = ( function () {
          * so it knows what it can suggest. It passes the properties(treated as terminal nodes) and the
          * navigation properties(so it can go to deeper layers) via the setMetadata function.
          * @param xmlData the metadata in XML format.
+         * @returns an object containing the parsed items and associated tables - this is for debugging purposes
          */
         parseODataMetadata ( xmlData ) {
             let parser = new DOMParser();
-            let xmlDoc = parser.parseFromString ( xmlData,"text/xml" );
+            let xmlDoc = parser.parseFromString ( xmlData,'text/xml' );
             let entities = xmlDoc.getElementsByTagName ( 'EntityType' ); //all "tables" that are available
-            //let entities = xmlDoc.getElementsByTagName ( 'EntitySet' );
 
             let items = [];             //each "table" has its own items
             let index;                  //used to index items for JSON parsing
@@ -73,22 +74,29 @@ let graphSuggesterControllerMaker = ( function () {
             let associations = [];      //associated tables - used in suggestion generation
 
             for ( let i = 0; i < entities.length; i++ ) {   //step through each table and find their items
-                index = entities[i].Name;                   //The idea is to use strings as indices for JSON parsing
+                //The idea is to use strings as indices for JSON parsing, here the name of the entity is used
+                index = entities[i].attributes.getNamedItem ( 'Name' ).value;
                 items [ index ] = [];
+                associations [ index ] = [];
 
                 children = entities[i].getElementsByTagName ( 'Property' );
 
-                for ( let j = 0; j < children.length; j++ ) { items [ index ][j] = children[j].Name; }
+                for ( let j = 0; j < children.length; j++ ) {
+                    //store the 'fields' of each 'table'
+                    items [ index ][j] = children[j].attributes.getNamedItem ( 'Name' ).value;
+                }
 
                 links = entities[i].getElementsByTagName ( 'NavigationProperty' );
 
-                for ( let j=0; j < links.length; j++ ) { associations[j] = links[j].Name; }
+                for ( let j=0; j < links.length; j++ ) {
+                    //store the 'tables' associated with the current 'table'
+                    associations[ index ][j] = links[j].attributes.getNamedItem ( 'Name' ).value;
+                }
             }
 
             this.suggester.setMetadata( items, associations );
-            //TODO remove these console.log statements - they are for testing purposes
-            console.log("Items: "+items);
-            console.log("Associations: "+associations);
+
+            return { "items" : items, "associations" : associations };
         }
 
     }

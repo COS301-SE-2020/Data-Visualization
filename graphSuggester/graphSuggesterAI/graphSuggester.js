@@ -6,11 +6,12 @@
  * Modules: None
  * Related Documents: SRS Document - www.example.com
  * Update History:
- * Date         Author              Changes
- * ---------------------------------------------------------------
+ * Date          Author             Changes
+ * -------------------------------------------------------------------------------
  * 30/06/2020    Marco Lombaard     Original
- * 1/07/2020     Marco Lombaard     Added setMetadata function
- * 2/07/2020     Marco Lombaard     Added constructOption function
+ * 01/07/2020    Marco Lombaard     Added setMetadata function
+ * 02/07/2020    Marco Lombaard     Added constructOption function
+ * 09/07/2020    Marco Lombaard     Fixed getSuggestions and setMetaData functions
  *
  * Test Cases: none
  *
@@ -68,21 +69,23 @@ class graphSuggester {
         this.nonTerminals = [];
         this.nodeWeights = [];
 
-        for ( let i = 0; i < items.length; i++ ) {
-            this.terminals[i] = items[i];
+        let itemsKeys = Object.keys(items);
+        let associationKeys = Object.keys(associations);
+
+        for ( let i = 0; i < itemsKeys.length; i++ ) {
+            this.terminals [ itemsKeys[i] ] = items [ itemsKeys[i] ];
             this.nodeWeights [ count ] = defaultWeight;
             count++;
         }
 
-        for ( let i = 0; i < associations.length; i++ ) {
-            this.nonTerminals[i] = associations[i];
+        for ( let i = 0; i < associationKeys.length; i++ ) {
+            this.nonTerminals [ associationKeys[i] ] = associations [ associationKeys[i] ];
             this.nodeWeights [ count ] = defaultWeight;
             count++;
         }
 
-        this.totalWeight = (count-1)*defaultWeight;
+        this.totalWeight = ( count-1 ) * defaultWeight;
 
-        //TODO maybe keep original weights - probably fine like this though
     }
 
     /**
@@ -91,34 +94,39 @@ class graphSuggester {
      * @return suggestions the suggested graphs in JSON format.
      */
     getSuggestions ( jsonData ) {
-        let object = JSON.parse(jsonData);
+        let object = JSON.parse ( jsonData );
         object = object [ 'd' ];            //OData always starts with 'd' as the main key
 
         let results = object [ 'results' ]; //OData follows up with 'results' key
 
+        if (results == null){
+            results = object;
+        }
+
         if ( results == null ) {            //Didn't follow with 'results' key, will have to go to a deeper layer
-            console.log('Need to go a layer deeper');
+            console.log ( 'Need to go a layer deeper' );
             //request deeper layer based on 'redirect' field
         }
         else {
             //generate suggestions
-            let item;
-            let type = results[0]['metadata']['type']   //get the table type(Customers, Products, etc.)
-            type = type.substr(type.indexOf('.')+1);//they all start with 'Northwind.' so trim that out
-            let keys = this.nonTerminals[type];         //check the available keys in the metadata
+            let type = results[0] [ '__metadata' ] [ 'type' ];   //get the table type(Customers, Products, etc.)
+
+            type = type.substr( type.indexOf('.')+1 );//they all start with 'Northwind.' so trim that out
+                                                                     //TODO make it adapt to different sources
+            let keys = this.terminals [ type ];         //check the available keys in the metadata
             let options = [];                           //the available key options(processed later)
             let count = 0;                              //the index for options
             let nameKey = null;
 
             for ( let key = 0; key < keys.length; key++ ) {     //go through all the keys and get rid of IDs and such
-                                                                //those keys are not graph data
+                                                                //those keys are not graph data, just identifiers
                 let name = keys [ key ];    //the key
 
-                if (!( name.contains( 'ID' ) || name.contains( 'Name' ) || name.contains( 'Picture' )
-                    || name.contains( 'Description' ) )) {  //trim out the "useless" keys
+                if (!( name.includes ( 'ID' ) || name.includes ( 'Name' ) || name.includes ( 'Picture' )
+                    || name.includes ( 'Description' ) )) {  //trim out the "useless" keys
                     options [ count++ ] = keys [ key ];           //add the key if it is meaningful data
                 }
-                else if ( name.contains( 'Name' ) && nameKey == null ){    //store the name key for later access
+                else if ( name.includes ( 'Name' ) && nameKey == null ){    //store the name key for later access
                     nameKey = name;
                 }
             }
@@ -126,7 +134,7 @@ class graphSuggester {
             let hasData = false;    //check variable used to see if data exists or if a deeper thread is followed
 
             for ( let i = 0; i < options.length; i++ ) {
-                if ( results[0] [ options[i] ] [ 'deferred' ] == null ) { //if this isn't a link then we have data
+                if ( results[0] [ options[i] ] [ '__deferred' ] == null ) { //if this isn't a link then we have data
                     hasData = true;
                     break;
                 }
@@ -136,15 +144,19 @@ class graphSuggester {
                 //TODO request the (deeper layer) data from dataSource and add them to the options
             }
 
-            let choice = Math.trunc(Math.random()*options.length);  //select random index
+            let choice = Math.trunc( Math.random()*options.length );  //select random index - TODO let the GA do this
             let data = [];                                             //2D array containing item names and attributes
-            let params = [ options[ choice ], 'value' ];                 //the labels for column values
+            let params = [ options[ choice ], 'value' ];               //the labels for column values
 
-            //Store name of field and it's chosen attribute in data
-            for ( let i = 0; i < results.length; i++ ) { data[i] = [ results[i][ nameKey ], results[i][ options[choice] ] ]; }
+            for ( let i = 0; i < results.length; i++ ) {
+                //Store name of field and its chosen attribute in data
+                data[i] = [ results[i] [ nameKey ], results[i] [ options[choice] ] ];
+            }
 
             //generate the graph option - TODO fix the hardcoding
-            let option = this.constructOption( data, 'pie', params, options[ choice ], 'value');
+            let option = this.constructOption ( data, 'pie', params, params[0], params[1] );
+
+            return option;
         }
     }
 
@@ -165,17 +177,18 @@ class graphSuggester {
             src[i+1] = data[i];
         }
 
-        let option = {
+        let option = {  //this constructs the options sent to the Apache eCharts API - this will have to be changed if
+                        //a different API is used
             dataset: {
                 source: src,
             },
-            xAxis: {type: 'category'},  //TODO change this so it gets decided later or by the AI
+            xAxis: {type: 'category'},  //TODO change this so the type(s) gets decided by frontend or by the AI
             yAxis: {},
-            series: [
+            series: [                   //construct the series of graphs, this could be one or more graphs
                 {
                     type: graph,
                     encode: {
-                        x: xEntries,    //TODO check if many values are allowed
+                        x: xEntries,    //TODO check if multiple values are allowed - might be useful
                         y: yEntries,
                     }
                 }
@@ -192,7 +205,7 @@ class graphSuggester {
      */
     changeFitnessTarget ( target ) {
         //change target with best fitness
-        let targetPosition = this.graphTypes.findIndex ( target );
+        let targetPosition = this.graphTypes.indexOf ( target );
         let worstWeight = 10;   //this doesn't have to be hardcoded and can be decided by an algorithm/formula
 
         for ( let i = 0; i < this.graphWeights.length; i++ ) {
@@ -202,10 +215,9 @@ class graphSuggester {
         this.graphWeights [ targetPosition ] = 0;   //set target to fittest individual
 
         /*
-                something along the lines of:
-                graphWeights[target] = bestWeight
-                graphWeights[originalTarget] = lesserWeight or worstWeight
-                or whatever
+                the idea is something along the lines of:
+                graphWeights[target] = bestWeight(so probably 0, maybe some other value for less extreme suggestion changes)
+                graphWeights[originalTarget] = lesserWeight or worstWeight(make other options less attractive again)
          */
     }
 }
