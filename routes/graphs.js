@@ -7,6 +7,7 @@ const { Rest } = require('../controllers');
 //  1. GET_GRAPHS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.post('/list', (req, res) => {
   Rest.getGraphList(
+    req.body.email,
     req.body.dashboardID,
     (list) => res.status(200).json(list),
     (err) => error(res, err)
@@ -17,6 +18,8 @@ router.post('/list', (req, res) => {
 //  => PUT(graphType, graphID)
 router.post('/update', (req, res) => {
   Rest.updateGraph(
+    req.body.email,
+    req.body.dashboardID,
     req.body.graphID,
     req.body.fields,
     req.body.data,
@@ -29,8 +32,11 @@ router.post('/update', (req, res) => {
 // => POST (dashboardID, graphID)
 router.post('/add', (req, res) => {
   Rest.addGraph(
-    req.body.graphTypeID,
+    req.body.email,
     req.body.dashboardID,
+    req.body.title,
+    req.body.options,
+    req.body.metadata,
     () => res.status(200).json({ message: 'Successfully Added To Dashboard' }),
     (err) => error(res, err)
   );
@@ -40,6 +46,8 @@ router.post('/add', (req, res) => {
 //  => DELETE (graphID)
 router.post('/remove', (req, res) => {
   Rest.removeGraph(
+    req.body.email,
+    req.body.dashboardID,
     req.body.graphID,
     () => res.status(200).json({ message: 'Successfully Removed Graph' }),
     (err) => error(res, err)

@@ -60,26 +60,26 @@ class RestController {
       .catch((err) => error && error(err));
   }
 
-  static getGraphList(id, done, error) {
-    Database.getGraphList(id)
+  static getGraphList(email, dashboardID, done, error) {
+    Database.getGraphList(email, dashboardID)
       .then((list) => done(list))
       .catch((err) => error && error(err));
   }
 
-  static updateGraph(id, fields, data, done, error) {
-    Database.updateGraph(id, fields, data)
+  static updateGraph(email, dashboardID, graphID, fields, data, done, error) {
+    Database.updateGraph(email, dashboardID, graphID, fields, data)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
-  static addGraph(graphTypeID, dashboardID, done, error) {
-    Database.addGraph(dashboardID, graphTypeID)
+  static addGraph(email, dashboardID, title, options, metadata, done, error) {
+    Database.addGraph(email, dashboardID, title, options, metadata)
       .then(() => done())
       .catch((err) => error && error(err));
   }
 
-  static removeGraph(id, done, error) {
-    Database.removeGraph(id)
+  static removeGraph(email, dashboardID, graphID, done, error) {
+    Database.removeGraph(email, dashboardID, graphID)
       .then(() => done())
       .catch((err) => error && error(err));
   }
