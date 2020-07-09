@@ -4,7 +4,13 @@ const router = express.Router();
 
 const { Rest } = require('../controllers');
 
-router.post('/meta-data', (req, res) => {
+router.post('/get-suggestions', (req, res) => {
+  Rest.getSuggestions(
+      (list) => res.status(200).json(list),
+      (err) => error(res, err,404)
+  );
+});
+/*router.post('/meta-data', (req, res) => {
   if(Object.keys(req.body).length === 0){
     error(res, { error: 'Body Undefined' },400);
   }
@@ -65,7 +71,7 @@ router.post('/entity-data', (req, res) => {
     );
   }
 });
-
+*/
 function error(res, err, status= 404) {
   console.error(err);
   res.status(status).json(err);

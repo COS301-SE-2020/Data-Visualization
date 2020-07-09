@@ -2,11 +2,6 @@ const Database = require('../database');
 const DataSource = require('../dataSource');
 
 class RestController {
-  //CRUD DataSource
-  /*
-		ADD: Add to DB under Dashboard
-		REMOVE: Add to DB under Dashboard
-	*/
 
   static getDataSourceList(email, done, error) {
     Database.getDataSourceList(email)
@@ -25,16 +20,6 @@ class RestController {
       .then(() => done())
       .catch((err) => error && error(err));
   }
-
-  //Request Graph Suggestions
-  /*
-        //
-
-        //Get data sources of Dashboard from DB
-        //get data from data sources
-        //get suggestions from iga based on data from data sources
-        //respond with suggestions
-    */
 
   static getDashboardList(email, done, error) {
     Database.getDashboardList(email)
@@ -111,6 +96,9 @@ class RestController {
     DataSource.getEntityData()
       .then((user) => done(user))
       .catch((err) => error && error(err));
+  }
+  static getSuggestions(){
+
   }
 }
 
