@@ -1,4 +1,26 @@
 /**
+ * @file suggesterTest.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             Changes
+ * -------------------------------------------------------------------------------
+ * 09/07/2020    Marco Lombaard     Original
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file tests the graph suggestion functionality of the app. It has hardcoded values
+ * used in testing and uses console logs to report functionality. This will later be replaced by unit testing.
+ *
+ * Error Messages: "Error"
+ * Assumptions: None.
+ * Constraints: None.
+ */
+
+/**
  * This is the main testing function. It creates a controller and calls each of its functions to test if they work.
  * This consequently tests if each of the suggester's functions work.
  */
@@ -34,6 +56,8 @@ function main() {
         console.log( 'Generated suggestion: ', suggestion );
         controller.changeFitnessTarget( 'bar' );
         console.log( 'Fitness target changed successfully' );
+
+        console.log("For display purposes, copy and paste this in an eCharts example: ",JSON.stringify(suggestion));
     }
 
     //this is test data obtained from https://services.odata.org/V2/Northwind/Northwind.svc/$metadata

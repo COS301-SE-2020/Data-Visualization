@@ -154,7 +154,7 @@ class graphSuggester {
             }
 
             //generate the graph option - TODO fix the hardcoding
-            let option = this.constructOption ( data, 'pie', params, params[0], params[1], options [ choice ] );
+            let option = this.constructOption ( data, 'bar', params, params[0], params[1], options [ choice ] );
 
             return option;
         }
@@ -180,6 +180,9 @@ class graphSuggester {
 
         let option = {  //this constructs the options sent to the Apache eCharts API - this will have to be changed if
                         //a different API is used
+            title: {
+                text: graphName
+            },
             dataset: {
                 source: src,
             },
@@ -188,7 +191,6 @@ class graphSuggester {
             series: [                   //construct the series of graphs, this could be one or more graphs
                 {
                     type: graph,
-                    name: graphName,
                     encode: {
                         x: xEntries,    //TODO check if multiple values are allowed - might be useful
                         y: yEntries,
