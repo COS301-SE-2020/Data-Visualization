@@ -2,8 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 
-const SESS_NAME = 'sid'; //ms
-
 const { Rest } = require('../controllers');
 
 router.post('/login', (req, res) => {
@@ -16,8 +14,8 @@ router.post('/login', (req, res) => {
         if (user === false) {
           res.status(401).json({ message: 'Failed to Log In User' });
         } else {
-          req.session[SESS_NAME] = user;
-          res.status(200).json({ message: 'Successfully Logged In User' });
+          req.session.sid[user.apikey] = user;
+          res.status(200).json({ message: 'Successfully Logged In User', apikey: user.apikey });
         }
       },
       (err) => error(res, err)
@@ -37,8 +35,8 @@ router.post('/register', (req, res) => {
       req.body.email,
       req.body.password,
       (user) => {
-        req.session[SESS_NAME] = user;
-        res.status(200).json({ message: 'Successfully Registered In User' });
+        req.session.sid[user.apikey] = user;
+        res.status(200).json({ message: 'Successfully Registered User', apikey: user.apikey });
       },
       (err) => error(res, err)
     );
@@ -59,6 +57,7 @@ function error(res, err) {
   console.error(err);
   res.status(400).json({ message: 'Error Occurred' });
 }
+
 function checkName(name) {
   let re = /^\w+$/;
   let valid = true;

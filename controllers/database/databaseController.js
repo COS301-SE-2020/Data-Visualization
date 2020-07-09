@@ -70,10 +70,12 @@ class Database {
   static async register(fname, lname, email, password) {
     password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
-    console.log('==> REGISTER: ' + email);
+    const apikey = new Date().toString();
+
+    console.log('==> REGISTER: ' + email, apikey);
     return new Promise((resolve, reject) => {
       Database.sendQuery(
-        `INSERT INTO Users (email,firstname,lastname,password) VALUES('${email}', '${fname}', '${lname}', '${password}')`
+        `INSERT INTO Users (email,firstname,lastname,password) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`
       )
         .then((response) => {
           console.log('REGISTER RESPONSE');
