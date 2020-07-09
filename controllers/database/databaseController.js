@@ -70,16 +70,19 @@ class Database {
   static async register(fname, lname, email, password) {
     password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
-    const apikey = new Date().toString();
+    const apikey = generateApiKey();
+    console.log('==> REGISTER: ' + email + ' |' + apikey);
+    console.log(generateApiKey());
+    console.log(generateApiKey());
+    console.log(generateApiKey());
 
-    console.log('==> REGISTER: ' + email, apikey);
     return new Promise((resolve, reject) => {
       Database.sendQuery(
-        `INSERT INTO Users (email,firstname,lastname,password) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`
+        `INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`
       )
         .then((response) => {
           console.log('REGISTER RESPONSE');
-          resolve(false);
+          resolve({ apikey });
         })
         .catch((err) => {
           if ('code' in err && err.code === '23505') {
@@ -220,10 +223,10 @@ function fieldUpdates(fields, data) {
   return output;
 }
 function generateApiKey() {
-  let result           = '';
-  let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let charactersLength = characters.length;
-  for ( let i = 0; i < 20; i++ ) {
+  for (let i = 0; i < 20; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;

@@ -1,11 +1,12 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const static_path = '/data-visualisation-app/build/';
 const session = require('express-session');
 const pgStore = require('connect-pg-simple')(session);
 const { Database } = require('./controllers');
-const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute } = require('./routes');
+const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute, loggedUsers } = require('./routes');
 
 const {
   PORT = 8000,
@@ -17,6 +18,7 @@ const {
 const PRODUCTION = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
 
 const app = express();
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(__dirname + static_path));
@@ -45,7 +47,7 @@ app.use((req, res, next) => {
     console.log(req.method);
     console.log(req.body);
     console.log(req.query);
-    console.log(req.session);
+    console.log('USERS', loggedUsers);
     console.log('=====================================');
   }
   next();
@@ -54,8 +56,9 @@ app.use((req, res, next) => {
 app.use('/users', UsersRoute);
 
 app.use((req, res, next) => {
-  if (req.body.apikey && req.session.sid && req.session.sid.hasOwnProperty(req.body.apikey)) {
-    req.body.email === req.session.sid[req.body.apikey].email;
+  if (req.body.apikey && loggedUsers && loggedUsers.hasOwnProperty(req.body.apikey)) {
+    req.body.email = loggedUsers[req.body.apikey].email;
+    console.log('auth-email', req.body.email);
     next();
   } else res.status(401).json({ message: 'User is not authenticated' });
 });
