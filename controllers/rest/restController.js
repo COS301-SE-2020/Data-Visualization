@@ -101,12 +101,14 @@ class RestController {
       .then((XMLString) => {
         const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
 
-        let randKey = Math.floor(Math.random() * Meta.sets.length);
-        const itemsKeys = Meta.items.keys();
-        while (itemsKeys[randKey].length === 0){
-          randKey = Math.floor(Math.random() * Meta.sets.length);
+        let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
+        const itemsKeys = Meta.items.keys();  //this is a list of the items keys
+        let chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
+
+        while (chosen != null && chosen.length === 0){  //check if the item with the selected key has data
+          randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
         }
-        const randEntity = Meta.sets[randKey];
+        const randEntity = Meta.sets[randKey];  //select this entity for data source querying
 
         DataSource.getEntityData(src, randEntity)
           .then((Odata) => {
