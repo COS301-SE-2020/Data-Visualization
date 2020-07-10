@@ -94,9 +94,11 @@ class graphSuggesterAI {
      * @return suggestions the suggested graphs in JSON format.
      */
     getSuggestions ( jsonData ) {
-        let object = JSON.parse ( jsonData );
+        let object = jsonData;
+        console.log(object);
         object = object [ 'd' ];            //OData always starts with 'd' as the main key
-
+        console.log("====================================================================");
+        console.log(object);
         let results = object [ 'results' ]; //OData follows up with 'results' key
 
         if (results == null){

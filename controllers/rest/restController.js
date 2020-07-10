@@ -100,7 +100,7 @@ class RestController {
   static getSuggestions(src, done, error) {
     DataSource.getMetaData(src)
       .then((XMLString)=> {
-        const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
+       // const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
         const options = graphsSuggesterController.getSuggestions(Meta);
         done(options);
       })
