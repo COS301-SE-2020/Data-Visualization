@@ -136,7 +136,7 @@ class graphSuggesterAI {
         let name = keys[key]; //the key
 
         if (
-          !(name.includes('ID') || name.includes('Name') || name.includes('Picture') || name.includes('Description'))
+          !(name.includes('ID') || name.includes('Name') || name.includes('Picture') || name.includes('Description') || name.includes('Date'))
         ) {
           //trim out the "useless" keys
           options[count++] = keys[key]; //add the key if it is meaningful data
