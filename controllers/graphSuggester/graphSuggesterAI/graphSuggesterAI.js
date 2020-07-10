@@ -165,7 +165,7 @@ class graphSuggesterAI {
 
       let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do this
       let data = []; //2D array containing item names and attributes
-      let params = [nameKey, 'value']; //the labels for column values
+      let params = [type + ": " + nameKey, 'value']; //the labels for column values
 
       for (let i = 0; i < results.length; i++) {
         //Store name of field and its chosen attribute in data
