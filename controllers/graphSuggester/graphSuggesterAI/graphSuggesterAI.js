@@ -140,7 +140,7 @@ class graphSuggesterAI {
         ) {
           //trim out the "useless" keys
           options[count++] = keys[key]; //add the key if it is meaningful data
-        } else if (name.includes('Name') && nameKey == null) {
+        } else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {
           //store the name key for later access
           nameKey = name;
         }
