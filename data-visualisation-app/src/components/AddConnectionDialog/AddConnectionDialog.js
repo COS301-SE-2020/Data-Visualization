@@ -2,6 +2,9 @@ import React, {useState} from 'react';
 import {Button, Modal, Input, Select} from 'antd';
 import { Form } from 'antd';
 
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
+
 const AddConnectionDialog = (props) => {
     const [visible, setVisible] = useState(true);
  
@@ -15,9 +18,16 @@ const AddConnectionDialog = (props) => {
       };
 
       const onFinish = values => {
-        console.log('Success:', values);
 
         //send url to database
+        request.dataSources.add(request.user.apikey, values, function(result) {
+            console.log(result);
+            
+            if (result === constants.RESPONSE_CODES.SUCCESS) {
+              //reload??
+            }
+        });
+
 
       };
     

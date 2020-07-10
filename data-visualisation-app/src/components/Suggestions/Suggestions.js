@@ -383,7 +383,7 @@ function Suggestions(props) {
             <Grid container spacing={3}>
                 {charts}
             </Grid>
-            <Button id = 'moreLikeThisButton' type = 'primary' htmlType="submit" form="my-form" >More like this</Button>
+            <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form" >More like this</Button>
             <main>
                 {
                     filterState ? 

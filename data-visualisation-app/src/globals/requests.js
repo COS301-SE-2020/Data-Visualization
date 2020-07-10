@@ -45,7 +45,7 @@ function successfulResponse(res) {
 
 const API = {
     dashboard: {
-        list: (email) => axios.post(getAPIurl() + 'dashboards/list', {'email' : 'pieterpieterpieter@gmail.com'}, {withCredentials: true}),
+        list: (email) => axios.post(getAPIurl() + 'dashboards/list', {'email' : 'pieterpieterpieter@gmail.com'}),
         add: (name, description) => axios.post(getAPIurl() + 'dashboard', { name, description }),
         delete: (dashboardID) => axios.delete(getAPIurl() + 'dashboard', { data: { dashboardID } }),
         update: (dashboardID, fields, data) => axios.put(getAPIurl() + 'dashboard', { dashboardID, fields, data }),
@@ -62,9 +62,14 @@ const API = {
         update: (graphID, fields, data) => axios.put(getAPIurl() + 'graph', { graphID, fields, data }),
     },
     user: {
-        login: (email, password) => axios.post(getAPIurl() + 'users/login', {email, password}, {withCredentials: true}),
+        login: (email, password) => axios.post(getAPIurl() + 'users/login', {email, password}),
         register: (name, surname, email, password, confirmPassword) => axios.post(getAPIurl() + 'users/register', {name, surname, email, password, confirmPassword}),
         logout: () => axios.post(getAPIurl() + 'users/logout', {})
+    },
+    dataSources: {
+        list: (apikey) => axios.post(getAPIurl() + 'datasource/list', {apikey}),
+        add: (apikey, dataSourceUrl) => axios.post(getAPIurl() + 'datasource/add', {apikey, dataSourceUrl}),
+        delete: (dataSourceID, apikey) => axios.post(getAPIurl() + 'datasource/remove', {dataSourceID, apikey}),
     }
 };
 
@@ -93,9 +98,10 @@ const request = {
             .then((res) => {
                 if (callback !== undefined) {
                     if (successfulResponse(res)) {
-                        console.log(res);
-                        request.user.isLoggedIn = true;
+                        console.log(res.data.message);
+                        request.user.apikey = res.data.apikey;
                         request.user.email = email;
+                        request.user.isLoggedIn = true;
                         callback(constants.RESPONSE_CODES.SUCCESS);
                     } else {
                         callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -108,13 +114,16 @@ const request = {
                 }
             });
         }, register: (name, surname, email, password, confirmPassword, callback) => {
-            API.user.login(name, surname, email, password, confirmPassword)
+            API.user.register(name, surname, email, password, confirmPassword)
                 .then((res) => {
                     console.log(res);
+                    request.user.apikey = res.data.apikey;
+                    request.user.email = email;
+
                 })
                 .catch((err) => console.error(err));
         }, logout: (callback) => {
-            API.user.login()
+            API.user.logout()
                 .then((res) => {
                     console.log(res);
                 })
@@ -122,6 +131,72 @@ const request = {
         },
         apikey: localStorage.getItem(''),
         isLoggedIn: localStorage.getItem(''),
+        dataSources: [],
+    },
+
+
+    dataSources: {
+        list: (apikey, callback) => {
+            if (request.user.isLoggedIn) {
+                API.dataSources.list(apikey).then((res) => {
+                    console.log(res);
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            console.log(res);
+                            request.user.dataSources = res.data;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
+                    }
+                })
+                .catch((err) => console.error(err));
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        },
+        add: (apikey, dataSourceUrl, callback) => {
+            if (request.user.isLoggedIn) {
+                API.dataSources.add(apikey, dataSourceUrl).then((res) => {
+                    console.log(res);
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            console.log(res);
+
+                            //add to request.user.dataSources array
+                            //request.user.dataSources = res.data;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
+                    }
+                })
+                .catch((err) => console.error(err));
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        },
+        delete: (dataSourceID, apikey, callback) => {
+            if (request.user.isLoggedIn) {
+                API.dataSources.delete(dataSourceID, apikey).then((res) => {
+                    console.log(res);
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            console.log(res);
+
+                            //delete from request.user.dataSources array
+                            //request.user.dataSources = res.data;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
+                    }
+                })
+                .catch((err) => console.error(err));
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        }
     },
     cache: {
         dashbaord: {
@@ -129,6 +204,10 @@ const request = {
                 timestamp: null,
                 data: null
             }
+        },
+        user: {
+            email: '',
+            apikey: ''
         }
     }
 };

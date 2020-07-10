@@ -56,10 +56,19 @@ function SignUpDialog(props) {
 
   const onFinish = values => {
     //send to backend
+    console.log('here');
 
+    request.user.register(values.name, values.surname, values.email, values.password, values.confirm, function(result) {
+      console.log(result);
+
+      
+      // if (result === constants.RESPONSE_CODES.SUCCESS) {
+      //     // request.dashboard.list(request.user.email, function(result) {
+      //     //     console.log(result);
+      //     // });
+      // }
+    });
     
-
-
   };
 
 
@@ -217,6 +226,7 @@ function LoginDialog(props) {
  
   
   function showModal() {
+    
     setVisible(true);
     setSignUp(false);
   };
@@ -230,18 +240,18 @@ function LoginDialog(props) {
   };
   
   const onFinish = values => {
+ 
     //send to backend
-    request.user.login('koos@gmail.com', 'KoosKoekemoer@301', function(result) {
+    request.user.login(values.email, values.password, function(result) {
       console.log(result);
-      if (result === constants.RESPONSE_CODES.SUCCESS) {
-          request.dashboard.list(request.user.email, function(result) {
-              console.log(result);
-          });
-      }
-});
-
-    
-  };
+      // if (result === constants.RESPONSE_CODES.SUCCESS) {
+      //     // request.dashboard.list(request.user.email, function(result) {
+      //     //     console.log(result);
+      //     // });
+      // }
+    });
+    setVisible(false);
+ };
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
@@ -249,7 +259,12 @@ function LoginDialog(props) {
 
   return (
     <div id = 'loginDiv'>
-      <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button>
+        {
+          request.user.isLoggedIn === null ?
+          <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button>
+          :
+          null
+        }
       <Modal
           title="Login"
           visible={visible}
@@ -285,8 +300,8 @@ function LoginDialog(props) {
 
             
             <Form.Item
-              label="Password"
               name="password"
+              label="Password"
               rules={[{ required: true, message: 'Please input your password!' }]}
             >
               <Input.Password />
@@ -319,6 +334,7 @@ function LoginDialog(props) {
             :
             null
         }
+        
         
       </main>
     </div>

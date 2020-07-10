@@ -2,6 +2,8 @@ import React from 'react';
 import { List, Avatar, Button, Skeleton, Typography } from 'antd';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import reqwest from 'reqwest';
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
 
 import './DataConnection.scss';
 import AddConnectionDialog from '../AddConnectionDialog';
@@ -24,32 +26,44 @@ class DataConnection extends React.Component {
   };
 
   componentDidMount() {
+
+
     this.getData(res => {
       this.setState({
         initLoading: false,
-        data: res.results,
-        list: res.results,
+        data: request.user.dataSources,
+        list: request.user.dataSources,
       });
     });
+
   }
 
+
+
   getData = callback => {
-    //get data from database
-    reqwest({
-      url: fakeDataUrl,
-      type: 'json',
-      method: 'get',
-      contentType: 'application/json',
-      success: res => {
-        callback(res);
-      },
+    
+    request.dataSources.list(request.user.apikey, function(result) {
+      console.log(result);
+      
+      if (result === constants.RESPONSE_CODES.SUCCESS) {
+        callback(request.user.dataSources);
+      }
     });
+
   };
 
 
   deleteItem = (itemToDelete) => {
     //request to database to delete this item and then refresh the list
-    console.log(itemToDelete.name.last);
+
+    request.dataSources.delete(itemToDelete.id, request.user.apikey, function(result) {
+      console.log(result);
+      
+      if (result === constants.RESPONSE_CODES.SUCCESS) {
+        //reload??
+      }
+    });
+
   }
 
 
@@ -98,12 +112,10 @@ class DataConnection extends React.Component {
           dataSource={list}
           renderItem={item => (
             <List.Item
-              key={item.name.first}
+              key={item.id}
               actions={
                 [
-                  <a onClick={() => {this.deleteItem(item)}}>
-                    Delete
-                  </a>
+                  <Button id = 'deleteButton' onClick={() => {this.deleteItem(item);}} >delete</Button>
                 ]
               }>
               <Skeleton avatar title={false} loading={item.loading} active>
@@ -111,8 +123,8 @@ class DataConnection extends React.Component {
                   avatar={
                     <Avatar src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png" />
                   }
-                  title={<a href="https://ant.design">{item.name.last}</a>}
-                  description='Ant Design, a design language for background applications, is refined by Ant UED Team'
+                  title={<a href="https://ant.design">{item.id}</a>}
+                  description={item.sourceurl}
                 />
                 <div></div>
               </Skeleton>
