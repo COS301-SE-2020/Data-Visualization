@@ -6,7 +6,7 @@ const static_path = '/data-visualisation-app/build/';
 const session = require('express-session');
 const pgStore = require('connect-pg-simple')(session);
 const { Database } = require('./controllers');
-const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute, loggedUsers } = require('./routes');
+const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute, Suggestions, loggedUsers } = require('./routes');
 
 const {
   PORT = 8000,
@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', UsersRoute);
-app.use('/graphSuggestions', DataSourceRoute);
+app.use('/suggestions', Suggestions);
 
 app.use((req, res, next) => {
   if (req.body.apikey && loggedUsers && loggedUsers.hasOwnProperty(req.body.apikey)) {

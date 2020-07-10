@@ -1,5 +1,5 @@
 /**
- * @file graphSuggester.js
+ * @file graphSuggesterAI.js
  * Project: Data Visualisation Generator
  * Copyright: Open Source
  * Organisation: Doofenshmirtz Evil Incorporated
@@ -30,7 +30,7 @@
  *                     Class functionality should be accessed through graphSuggestionController.js.
  * @author Marco Lombaard
  */
-class graphSuggester {
+class graphSuggesterAI {
     /**
      * The default constructor for the object - initialises class variables
      */
@@ -225,3 +225,4 @@ class graphSuggester {
          */
     }
 }
+module.exports = graphSuggesterAI;

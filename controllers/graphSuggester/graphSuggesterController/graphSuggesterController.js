@@ -15,19 +15,21 @@
  * Test Cases: none
  *
  * Functional Description: This file creates the graph suggester controller for the graph suggester
- * contained in graphSuggester.js.
+ * contained in graphSuggesterAI.js.
  * This controller handles all suggestion requests and queries the suggester as required.
  *
  * Error Messages: "Error"
  * Assumptions: Input values are assumed to be in JSON format when requesting suggestions.
  * Constraints: Input values must be passed to the suggester in JSON format when requesting suggestions.
  */
-
+const DOMParser = require("dom-parser");
+const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI');
 /**
  * This function returns a function to create a graphSuggesterController object, which is used to manage
  * requests for suggestion generation.
  * @returns getInstance, a function to create a singleton instance of the graphSuggesterController object.
  */
+
 let graphSuggesterControllerMaker = ( function () {
     let instance;
 
@@ -38,11 +40,11 @@ let graphSuggesterControllerMaker = ( function () {
      * @author Marco Lombaard
      */
     class graphSuggesterController {
-        suggester = new graphSuggester();
+        suggester = new graphSuggesterAI();
 
         /**
          * This function passes the data that suggestions need to be generated for, to the graph
-         * suggester in graphSuggester.js.
+         * suggester in graphSuggesterAI.js.
          * @param jsonData the data that suggestions need to be generated for, passed in JSON format
          * @returns the suggestions that were generated, in JSON format.
          */
@@ -50,7 +52,7 @@ let graphSuggesterControllerMaker = ( function () {
 
         /**
          * This function passes the target graph that must become the fittest graph to the graph
-         * suggester in graphSuggester.js.
+         * suggester in graphSuggesterAI.js.
          * @param target the target graph.
          */
         changeFitnessTarget ( target ) { this.suggester.changeFitnessTarget ( target ); }

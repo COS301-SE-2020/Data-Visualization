@@ -2,6 +2,6 @@ const Rest = require('./rest');
 const DataSource = require('./dataSource');
 const Database = require('./database');
 
-const GraphSuggester = require('./graphSuggester');
+const {GraphSuggesterController} = require('./graphSuggester');
 
-module.exports = { Rest, DataSource, Database, GraphSuggester};
+module.exports = { Rest, DataSource, Database, GraphSuggesterController};

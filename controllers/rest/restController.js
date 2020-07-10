@@ -1,6 +1,6 @@
 const Database = require('../database');
 const DataSource = require('../dataSource');
-const GraphSuggester = require('../graphSuggester');
+const {graphsSuggesterController} = require('../graphSuggester');
 class RestController {
 
   static getDataSourceList(email, done, error) {
@@ -97,11 +97,11 @@ class RestController {
       .then((user) => done(user))
       .catch((err) => error && error(err));
   }
-  static getSuggestion(src, done, error) {
+  static getSuggestions(src, done, error) {
     DataSource.getMetaData(src)
       .then((XMLString)=> {
-        const Meta = GraphSuggester.parseODataMetadata(XMLString);
-        const options = GraphSuggester.getSuggestions(Meta );
+        const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
+        const options = graphsSuggesterController.getSuggestions(Meta);
         done(options);
       })
       .catch((err) => error && error(err));
