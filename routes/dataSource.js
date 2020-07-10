@@ -28,7 +28,7 @@ router.post('/add', (req, res) => {
     Rest.addDataSource(
         req.body.email,
         req.body.dataSourceUrl,
-        () => res.status(200).json({message: 'Successfully Added To Data Source'}),
+        () => res.status(200).json({message: 'Successfully Added Data Source'}),
         (err) => error(res, err)
     );
   }
