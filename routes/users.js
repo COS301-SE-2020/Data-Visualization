@@ -24,7 +24,7 @@ router.post('/login', (req, res) => {
                     // if (!req.session.sid) req.session.sid = {};
                     // req.session.sid[user.apikey] = user;
                     loggedUsers[user.apikey] = user;
-                    res.status(202).json({ message: 'Successfully Logged In User', apikey: user.apikey });
+                    res.status(200).json({ message: 'Successfully Logged In User', apikey: user.apikey });
                 }
             },
             (err) => error(res, err, 400)
