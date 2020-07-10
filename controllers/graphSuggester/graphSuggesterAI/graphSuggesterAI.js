@@ -159,6 +159,8 @@ class graphSuggesterAI {
       if (!hasData) {
         //if we don't have data then request the deeper layer(s)
         //TODO request the (deeper layer) data from dataSource and add them to the options
+        console.log("Need to go deeper for more info");
+        return null;
       }
 
       let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do this
