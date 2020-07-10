@@ -301,7 +301,7 @@ function App(props) {
 								:
 								pageType === 'explore' ? 'Explore'
 									:
-									pageType === 'dashboards' ? 'Dashbaords'
+									pageType === 'dashboards' ? 'Dashboards'
 										:
 										pageType === 'about' ? 'About'
 											:

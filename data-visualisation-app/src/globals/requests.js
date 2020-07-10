@@ -120,14 +120,14 @@ const request = {
                 })
                 .catch((err) => console.error(err));
         },
-        email: '',
-        isLoggedIn: true,
-        cache: {
-            dashbaord: {
-                list: {
-                    timestamp: null,
-                    data: null
-                }
+        apikey: localStorage.getItem(''),
+        isLoggedIn: localStorage.getItem(''),
+    },
+    cache: {
+        dashbaord: {
+            list: {
+                timestamp: null,
+                data: null
             }
         }
     }

@@ -48,8 +48,8 @@ class DataConnection extends React.Component {
 
 
   deleteItem = (itemToDelete) => {
-    //request to database to delete this item
-    console.log(itemToDelete.name.last)
+    //request to database to delete this item and then refresh the list
+    console.log(itemToDelete.name.last);
   }
 
 

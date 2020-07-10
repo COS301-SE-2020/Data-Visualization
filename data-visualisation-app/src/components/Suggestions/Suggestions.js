@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
 import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined} from '@ant-design/icons';
-import {Typography, Menu, Dropdown, Button} from 'antd';
+import {Typography, Menu, Dropdown, Button, Form, Checkbox} from 'antd';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import FilterDialog from '../FilterDialog';
 
@@ -261,6 +261,14 @@ function Suggestions(props) {
         const [isAdded, setIsAdded] = useState(false);
 
 
+        const onFinish = values => {
+            console.log('Success:', values);
+          };
+        
+          const onFinishFailed = errorInfo => {
+            console.log('Failed:', errorInfo);
+          };
+
         function onAddChartToDashboard(chart, dashboard) {
             console.log(chart + ' has been added to ' + dashboard);
             setIsAdded(true);
@@ -329,6 +337,21 @@ function Suggestions(props) {
                         <Grid item xs={2}>
                             <StarOutlined />
                         </Grid>
+                        <Grid item xs={2}>
+                        <Form
+                            id = 'my-form'
+                            name='basic'
+                            initialValues={{ remember: true }}
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
+                            >
+                            
+                            <Form.Item name={props.chartOption} valuePropName="checked">
+                                <Checkbox></Checkbox>
+                            </Form.Item>
+                            
+                        </Form>
+                        </Grid>
                     </Grid>
                 </div>
             </div>);
@@ -360,6 +383,7 @@ function Suggestions(props) {
             <Grid container spacing={3}>
                 {charts}
             </Grid>
+            <Button id = 'moreLikeThisButton' type = 'primary' htmlType="submit" form="my-form" >More like this</Button>
             <main>
                 {
                     filterState ? 

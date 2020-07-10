@@ -4,6 +4,10 @@ import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
 import {Form, Checkbox} from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
+import API from '../../helpers/apiRequests';
+
 import './LoginDialog.scss';
 
 
@@ -53,9 +57,9 @@ function SignUpDialog(props) {
   const onFinish = values => {
     //send to backend
 
+    
 
 
-    console.log('Received values of form: ', values);
   };
 
 
@@ -227,9 +231,16 @@ function LoginDialog(props) {
   
   const onFinish = values => {
     //send to backend
+    request.user.login('koos@gmail.com', 'KoosKoekemoer@301', function(result) {
+      console.log(result);
+      if (result === constants.RESPONSE_CODES.SUCCESS) {
+          request.dashboard.list(request.user.email, function(result) {
+              console.log(result);
+          });
+      }
+});
 
-
-    console.log('Success:', values);
+    
   };
 
   const onFinishFailed = errorInfo => {
