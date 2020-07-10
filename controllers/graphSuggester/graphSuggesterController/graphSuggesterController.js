@@ -22,7 +22,7 @@
  * Assumptions: Input values are assumed to be in JSON format when requesting suggestions.
  * Constraints: Input values must be passed to the suggester in JSON format when requesting suggestions.
  */
-const DOMParser = require("dom-parser");
+const DOMParser = require("xmldom").DOMParser;
 const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI');
 /**
  * This function returns a function to create a graphSuggesterController object, which is used to manage
