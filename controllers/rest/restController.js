@@ -101,7 +101,11 @@ class RestController {
       .then((XMLString) => {
         const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
 
-        const randKey = Math.floor(Math.random() * Meta.sets.length);
+        let randKey = Math.floor(Math.random() * Meta.sets.length);
+        const itemsKeys = Meta.items.keys();
+        while (itemsKeys[randKey].length === 0){
+          randKey = Math.floor(Math.random() * Meta.sets.length);
+        }
         const randEntity = Meta.sets[randKey];
 
         DataSource.getEntityData(src, randEntity)
