@@ -1,8 +1,7 @@
 const Database = require('../database');
 const DataSource = require('../dataSource');
-const {graphsSuggesterController} = require('../graphSuggester');
+const { graphsSuggesterController } = require('../graphSuggester');
 class RestController {
-
   static getDataSourceList(email, done, error) {
     Database.getDataSourceList(email)
       .then((list) => done(list))
@@ -99,10 +98,19 @@ class RestController {
   }
   static getSuggestions(src, done, error) {
     DataSource.getMetaData(src)
-      .then((XMLString)=> {
-       // const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
-        const options = graphsSuggesterController.getSuggestions(Meta);
-        done(options);
+      .then((XMLString) => {
+        const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
+
+        const randKey = Math.floor(Math.random() * Meta.sets.length);
+        const randEntity = Meta.sets[randKey];
+
+        DataSource.getEntityData(src, randEntity)
+          .then((Odata) => {
+            const options = graphsSuggesterController.getSuggestions(Odata);
+            if (options === null) RestController.getSuggestions(src, done, error);
+            else done(options);
+          })
+          .catch((err) => error && error(err));
       })
       .catch((err) => error && error(err));
   }

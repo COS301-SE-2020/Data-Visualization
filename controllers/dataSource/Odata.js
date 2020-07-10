@@ -43,6 +43,7 @@ function format(src) {
 }
 
 function formatEntity(src, entity) {
+  console.log(`ODATA: ${src}/${entity}?$format=json`);
   return `${src}/${entity}?$format=json`;
 }
 
