@@ -57,13 +57,13 @@ app.use((req, res, next) => {
 app.use('/users', UsersRoute);
 app.use('/suggestions', Suggestions);
 
-// app.use((req, res, next) => {
-//   if (req.body.apikey && loggedUsers && loggedUsers.hasOwnProperty(req.body.apikey)) {
-//     req.body.email = loggedUsers[req.body.apikey].email;
-//     console.log('auth-email', req.body.email);
-//     next();
-//   } else res.status(401).json({ message: 'User is not authenticated' });
-// });
+app.use((req, res, next) => {
+  if (req.body.apikey && loggedUsers && loggedUsers.hasOwnProperty(req.body.apikey)) {
+    req.body.email = loggedUsers[req.body.apikey].email;
+    console.log('auth-email', req.body.email);
+    next();
+  } else res.status(401).json({ message: 'User is not authenticated' });
+});
 
 app.use('/graphs', GraphsRoute);
 app.use('/dashboards', DashboardsRoute);
