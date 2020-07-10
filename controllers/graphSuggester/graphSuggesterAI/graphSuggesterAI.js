@@ -103,7 +103,7 @@ class graphSuggesterAI {
     if (results == null) {
       results = object;
     }
-    if (results.length === 0) {
+    if (results == null || results.length === 0) {
       console.log('RESULTS array has length of 0.');
       return null;
     }
@@ -111,6 +111,7 @@ class graphSuggesterAI {
     if (results == null) {
       //Didn't follow with 'results' key, will have to go to a deeper layer
       console.log('Need to go a layer deeper');
+      return null;
       //request deeper layer based on 'redirect' field
     } else {
       //generate suggestions
