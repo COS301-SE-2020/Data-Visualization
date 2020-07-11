@@ -27,6 +27,8 @@ function generateID() {
   return result;
 }
 
+
+
 class DataConnection extends React.Component {
 
   
@@ -38,11 +40,10 @@ class DataConnection extends React.Component {
     addConnection : false,
   };
 
+  
   componentDidMount() {
-    
-    if(request.user.isLoggedIn){
+
       this.getData(res => {
-        
         this.setState({
           initLoading: false,
           data: request.user.dataSources,
@@ -50,40 +51,58 @@ class DataConnection extends React.Component {
         });
 
       });
-    }
-   
+  
   }
 
+  
   getData = callback => {
-    request.dataSources.list(request.user.apikey, function(result) {
-      console.log(result);
-      
-      if (result === constants.RESPONSE_CODES.SUCCESS) {
-        callback(request.user.dataSources);
-      
-      }
-    });
+
+    if(request.user.isLoggedIn){
+      request.dataSources.list(request.user.apikey, function(result) {
+        console.log(result);
+        
+        if (result === constants.RESPONSE_CODES.SUCCESS) {
+          callback(request.user.dataSources);
+        
+        }
+      });
+    }
+    else{
+      callback(request.user.dataSources);
+    }
+    
   };
 
 
   deleteItem = (itemToDelete) => {
-    //request to database to delete this item and then refresh the list
+    
+    if(request.user.isLoggedIn){
+      //delete on back end
+      request.dataSources.delete(itemToDelete.id, request.user.apikey, function(result) {
+        console.log(result);
+        if (result === constants.RESPONSE_CODES.SUCCESS) {
 
-   //delete on back end
-    request.dataSources.delete(itemToDelete.id, request.user.apikey, function(result) {
-      console.log(result);
-      if (result === constants.RESPONSE_CODES.SUCCESS) {
+        }
+      });
 
-      }
-    });
+      //delete on front end
+      request.user.dataSources = this.state.list.filter(list => list.id !== itemToDelete.id);
 
-    //delete on front end
-    request.user.dataSources = this.state.list.filter(list => list.id !== itemToDelete.id);
+      this.setState(previousState => ({
+        data: request.user.dataSources,
+        list: request.user.dataSources
+      }));
+    }
+    else{
+      //delete on front end
+      request.user.dataSources = this.state.list.filter(list => list.id !== itemToDelete.id);
 
-    this.setState(previousState => ({
-      data: request.user.dataSources,
-      list: request.user.dataSources
-    }));
+      this.setState(previousState => ({
+        data: request.user.dataSources,
+        list: request.user.dataSources
+      }));
+    }
+   
     
   }
 
@@ -91,28 +110,46 @@ class DataConnection extends React.Component {
 
   addItem = (values) => {
 
-    //add item on back end
+  
+    
     var newID = generateID();
-    request.dataSources.add(newID, request.user.apikey, values.uri, function(result) {
-      console.log(result);
-      console.log(request.user.dataSources);
-      if (result === constants.RESPONSE_CODES.SUCCESS) {
-        
-      }
-    });
-   
-    //added item on front end
-    request.user.dataSources.push({
-      'id': newID,
-      'email': request.user.email,
-      'sourceurl': values.uri
-    });
 
-    this.setState(previousState => ({
-      data: request.user.dataSources,
-      list: request.user.dataSources
-    }));
+    if(request.user.isLoggedIn){
+      //add item on back end
+      request.dataSources.add(newID, request.user.apikey, values.uri, function(result) {
+        console.log(result);
+        console.log(request.user.dataSources);
+        if (result === constants.RESPONSE_CODES.SUCCESS) {
+          
+        }
+      });
 
+      //added item on front end
+      request.user.dataSources.push({
+        'id': newID,
+        'email': request.user.email,
+        'sourceurl': values.uri
+      });
+
+      this.setState(previousState => ({
+        data: request.user.dataSources,
+        list: request.user.dataSources
+      }));
+    }
+    else{
+      //added item on front end
+      request.user.dataSources.push({
+        'id': newID,
+        'email': request.user.email,
+        'sourceurl': values.uri
+      });
+
+      this.setState(previousState => ({
+        data: request.user.dataSources,
+        list: request.user.dataSources
+      }));
+    }
+    
   }
 
  

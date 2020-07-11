@@ -254,6 +254,15 @@ function LoginDialog(props) {
     request.user.isLoggedIn = false;
     dispatch({ isLoggedIn: false });
 
+    //reset datasource list
+    request.user.dataSources = [
+			{
+				'id': 6,
+				'email': 'elna@gmail.com',
+				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
+			}
+		];
+
     //send to backend
     request.user.logout(function(result) {
       console.log(result);
