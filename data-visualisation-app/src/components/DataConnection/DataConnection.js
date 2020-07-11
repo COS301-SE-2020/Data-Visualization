@@ -7,16 +7,29 @@ import * as constants from '../../globals/constants';
 
 import './DataConnection.scss';
 import AddConnectionDialog from '../AddConnectionDialog';
-
+import {useGlobalState} from '../../globals/Store';
+import update from 'react-addons-update';
+import { ListAlt } from 'styled-icons/material';
 
 const { Title } = Typography;
 
 const count = 3;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
 
+
+function generateID() {
+  let result = '';
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let charactersLength = characters.length;
+  for (let i = 0; i < 10; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 class DataConnection extends React.Component {
 
-
+  
   state = {
     initLoading: true,
     loading: false,
@@ -26,45 +39,83 @@ class DataConnection extends React.Component {
   };
 
   componentDidMount() {
+    
+    if(request.user.isLoggedIn){
+      this.getData(res => {
+        
+        this.setState({
+          initLoading: false,
+          data: request.user.dataSources,
+          list: request.user.dataSources,
+        });
 
-
-    this.getData(res => {
-      this.setState({
-        initLoading: false,
-        data: request.user.dataSources,
-        list: request.user.dataSources,
       });
-    });
-
+    }
+   
   }
 
-
-
   getData = callback => {
-    
     request.dataSources.list(request.user.apikey, function(result) {
       console.log(result);
       
       if (result === constants.RESPONSE_CODES.SUCCESS) {
         callback(request.user.dataSources);
+      
       }
     });
-
   };
 
 
   deleteItem = (itemToDelete) => {
     //request to database to delete this item and then refresh the list
 
+   //delete on back end
     request.dataSources.delete(itemToDelete.id, request.user.apikey, function(result) {
       console.log(result);
-      
       if (result === constants.RESPONSE_CODES.SUCCESS) {
-        //reload??
+
       }
     });
 
+    //delete on front end
+    request.user.dataSources = this.state.list.filter(list => list.id !== itemToDelete.id);
+
+    this.setState(previousState => ({
+      data: request.user.dataSources,
+      list: request.user.dataSources
+    }));
+    
   }
+
+    
+
+  addItem = (values) => {
+
+    //add item on back end
+    var newID = generateID();
+    request.dataSources.add(newID, request.user.apikey, values.uri, function(result) {
+      console.log(result);
+      console.log(request.user.dataSources);
+      if (result === constants.RESPONSE_CODES.SUCCESS) {
+        
+      }
+    });
+   
+    //added item on front end
+    request.user.dataSources.push({
+      'id': newID,
+      'email': request.user.email,
+      'sourceurl': values.uri
+    });
+
+    this.setState(previousState => ({
+      data: request.user.dataSources,
+      list: request.user.dataSources
+    }));
+
+  }
+
+ 
 
 
   changeAddState = () => {
@@ -123,8 +174,8 @@ class DataConnection extends React.Component {
                   avatar={
                     <Avatar src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png" />
                   }
-                  title={<a href="https://ant.design">{item.id}</a>}
-                  description={item.sourceurl}
+                  title={<a href="https://ant.design">{item.sourceurl}</a>}
+                  description={item.id}
                 />
                 <div></div>
               </Skeleton>
@@ -135,7 +186,7 @@ class DataConnection extends React.Component {
         {
             this.state.addConnection ? 
             
-              <AddConnectionDialog changeState = {this.changeAddState}/>
+              <AddConnectionDialog changeState = {this.changeAddState} addItem = {this.addItem}/>
             
             :
             null

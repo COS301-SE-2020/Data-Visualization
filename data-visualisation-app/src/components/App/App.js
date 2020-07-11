@@ -51,8 +51,16 @@ import Home from '../../pages/Home';
 import Explore from '../../pages/Explore';
 import { MuiThemeProvider } from '@material-ui/core';
 
-const drawerWidth = 240;
 
+/**
+ *   State Variables
+*/
+import GlobalStateProvider  from '../../globals/Store';
+import {useGlobalState} from '../../globals/Store';
+
+
+
+const drawerWidth = 240;
 
 const globalMaterialUITheme = createMuiTheme({
 	typography: {
@@ -65,7 +73,6 @@ const globalMaterialUITheme = createMuiTheme({
 		}
 	}
 });
-
 
 
 const useStyles = makeStyles((theme) => ({
@@ -149,6 +156,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function App(props) {
+	
 	const { window } = props;
 	const classes = useStyles();
 	const theme = useTheme();
@@ -188,8 +196,6 @@ function App(props) {
 			mobileOpen === true ? handleDrawerToggle() : null
 		);
 	};
-
-
 
 	const drawer = (
 		<div>
@@ -277,6 +283,7 @@ function App(props) {
 	const container = window !== undefined ? () => window().document.body : undefined;
 
 	return (
+		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 
 			<div className={classes.root}>
@@ -312,7 +319,7 @@ function App(props) {
 
 						</Typography>
 
-						<LoginDialog />
+						<LoginDialog handlePageType ={handlePageType}/>
 					</Toolbar>
 				</AppBar>
 
@@ -379,6 +386,7 @@ function App(props) {
 
 			</div>
 		</MuiThemeProvider>
+		</GlobalStateProvider >
 	);
 }
 
@@ -389,6 +397,8 @@ App.propTypes = {
 	 */
 	window: PropTypes.func,
 };
+
+
 
 export default App;
 

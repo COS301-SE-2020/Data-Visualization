@@ -22,6 +22,8 @@
 import axios from 'axios';
 import * as constants from './constants.js';
 
+import {useGlobalState} from './Store';
+
 /**
  *   Static Variables
  */
@@ -31,6 +33,7 @@ let currentURL = (constants.PRODUCTION ? constants.URL.production : constants.UR
 
 const inPROD = false;
 const inDEV_PORT = 8000;
+
 
 function getAPIurl() {
     let rest = window.location.href;
@@ -68,7 +71,7 @@ const API = {
     },
     dataSources: {
         list: (apikey) => axios.post(getAPIurl() + 'datasource/list', {apikey}),
-        add: (apikey, dataSourceUrl) => axios.post(getAPIurl() + 'datasource/add', {apikey, dataSourceUrl}),
+        add: (id ,apikey, dataSourceUrl) => axios.post(getAPIurl() + 'datasource/add', {id, apikey, dataSourceUrl}),
         delete: (dataSourceID, apikey) => axios.post(getAPIurl() + 'datasource/remove', {dataSourceID, apikey}),
     }
 };
@@ -96,12 +99,15 @@ const request = {
         login: (email, password, callback) => {
             API.user.login(email, password)
             .then((res) => {
+              
                 if (callback !== undefined) {
                     if (successfulResponse(res)) {
                         console.log(res.data.message);
                         request.user.apikey = res.data.apikey;
                         request.user.email = email;
+
                         request.user.isLoggedIn = true;
+                      
                         callback(constants.RESPONSE_CODES.SUCCESS);
                     } else {
                         callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -129,9 +135,16 @@ const request = {
                 })
                 .catch((err) => console.error(err));
         },
-        apikey: localStorage.getItem(''),
         isLoggedIn: localStorage.getItem(''),
-        dataSources: [],
+        apikey: localStorage.getItem(''),
+        email: '',
+        dataSources: [
+			{
+				"id": 6,
+				"email": "elna@gmail.com",
+				"sourceurl": "https://services.odata.org/V2/Northwind/Northwind.svc"
+			}
+		]
     },
 
 
@@ -143,7 +156,9 @@ const request = {
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
                             console.log(res);
+                            
                             request.user.dataSources = res.data;
+                            
                             callback(constants.RESPONSE_CODES.SUCCESS);
                         } else {
                             callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -155,16 +170,19 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
-        add: (apikey, dataSourceUrl, callback) => {
+        add: (id, apikey, dataSourceUrl, callback) => {
             if (request.user.isLoggedIn) {
-                API.dataSources.add(apikey, dataSourceUrl).then((res) => {
+                API.dataSources.add(id, apikey, dataSourceUrl).then((res) => {
                     console.log(res);
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
                             console.log(res);
-
+                            
                             //add to request.user.dataSources array
-                            //request.user.dataSources = res.data;
+                            //request.user.dataSources = res.data;  
+
+                           
+
                             callback(constants.RESPONSE_CODES.SUCCESS);
                         } else {
                             callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);

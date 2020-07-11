@@ -20,14 +20,9 @@ const AddConnectionDialog = (props) => {
       const onFinish = values => {
 
         //send url to database
-        request.dataSources.add(request.user.apikey, values, function(result) {
-            console.log(result);
-            
-            if (result === constants.RESPONSE_CODES.SUCCESS) {
-              //reload??
-            }
-        });
-
+        props.addItem(values);
+        props.changeState();
+        setVisible(false);
 
       };
     

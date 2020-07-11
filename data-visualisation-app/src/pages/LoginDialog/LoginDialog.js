@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 import {useState} from 'react';
 import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
 import {Form, Checkbox} from 'antd';
@@ -8,7 +8,9 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import API from '../../helpers/apiRequests';
 
+import {useGlobalState} from '../../globals/Store';
 import './LoginDialog.scss';
+
 
 
 //sign up constants
@@ -51,13 +53,13 @@ const tailLayout = {
 
 //sign up function
 function SignUpDialog(props) {
-
+  
+  
   const [form] = Form.useForm();
 
   const onFinish = values => {
     //send to backend
-    console.log('here');
-
+    
     request.user.register(values.name, values.surname, values.email, values.password, values.confirm, function(result) {
       console.log(result);
 
@@ -213,17 +215,20 @@ function SignUpDialog(props) {
 }
 
 
+
 //login function
 function LoginDialog(props) {
 
+  
   const [visible, setVisible] = useState(false);
+  const [signup, setSignUp] = React.useState('false');
+  
   //const [confirmLoading, setConfirmLoading] = useState(false);
   //const [finished, setFinished] = useState(false);
   //const [currentOkText, setCurrentOkText] = useState('Login');
-
   //const [open, setOpen] = React.useState(true);
-  const [signup, setSignUp] = React.useState('false');
  
+  
   
   function showModal() {
     
@@ -235,22 +240,48 @@ function LoginDialog(props) {
       setVisible(false);
   };
   function handleSignUp(e) {
+
     setVisible(false);
     setSignUp('true');
   };
-  
-  const onFinish = values => {
+
+
+
+  const [state, dispatch] = useGlobalState();
  
+  function handleLogout(){
+    //changed isLoggedIn before request to server...
+    request.user.isLoggedIn = false;
+    dispatch({ isLoggedIn: false });
+
+    //send to backend
+    request.user.logout(function(result) {
+      console.log(result);
+      if (result === constants.RESPONSE_CODES.SUCCESS) {
+        
+      }
+    });
+
+    //set page type to home
+    props.handlePageType('home');
+ }
+
+  const onFinish = values => {
+   
     //send to backend
     request.user.login(values.email, values.password, function(result) {
       console.log(result);
-      // if (result === constants.RESPONSE_CODES.SUCCESS) {
-      //     // request.dashboard.list(request.user.email, function(result) {
-      //     //     console.log(result);
-      //     // });
-      // }
+      if (result === constants.RESPONSE_CODES.SUCCESS) {
+          dispatch({ isLoggedIn: true });
+          // request.dashboard.list(request.user.email, function(result) {
+          //     console.log(result);
+          // });
+      }
     });
     setVisible(false);
+
+    //set page type to home
+    props.handlePageType('home');
  };
 
   const onFinishFailed = errorInfo => {
@@ -259,12 +290,16 @@ function LoginDialog(props) {
 
   return (
     <div id = 'loginDiv'>
+      {
+        console.log(state.isLoggedIn)
+      }
         {
-          request.user.isLoggedIn === null ?
-          <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button>
-          :
-          null
+          state.isLoggedIn === false ?
+            <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button> 
+            :
+            <Button id = 'logout' type="dashed" style={{ color: '#3C6A7F' }} onClick={handleLogout}>Logout</Button> 
         }
+           
       <Modal
           title="Login"
           visible={visible}
@@ -278,7 +313,7 @@ function LoginDialog(props) {
             {...layout}
             name="basic"
             initialValues={{ remember: true }}
-            onFinish={onFinish}
+            onFinish={onFinish }
             onFinishFailed={onFinishFailed}
           >
             <Form.Item
