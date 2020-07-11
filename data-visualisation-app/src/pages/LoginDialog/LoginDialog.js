@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from 'react';
 import {useState} from 'react';
 import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
-import {Form, Checkbox} from 'antd';
+import {Form, Checkbox, Spin} from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import request from '../../globals/requests';
@@ -10,6 +10,7 @@ import API from '../../helpers/apiRequests';
 
 import {useGlobalState} from '../../globals/Store';
 import './LoginDialog.scss';
+import { notification } from 'antd';
 
 
 
@@ -53,22 +54,48 @@ const tailLayout = {
 
 //sign up function
 function SignUpDialog(props) {
-  
-  
+
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const openNotification = placement => {
+    notification.info({
+      message: 'Invalid data',
+      description:
+        'The server rejected your infomation',
+      placement,
+    });
+  };
+
+  const signUpSuccessNotification = placement => {
+    notification.info({
+      message: 'Sign up success',
+      description:
+        'You are now successfully signed up with us',
+      placement,
+    });
+  };
+
+
   const [form] = Form.useForm();
 
   const onFinish = values => {
     //send to backend
-    
+    setConfirmLoading(true);
     request.user.register(values.name, values.surname, values.email, values.password, values.confirm, function(result) {
       console.log(result);
 
-      
-      // if (result === constants.RESPONSE_CODES.SUCCESS) {
-      //     // request.dashboard.list(request.user.email, function(result) {
-      //     //     console.log(result);
-      //     // });
-      // }
+      if (result === constants.RESPONSE_CODES.SUCCESS) {
+        setConfirmLoading(false);
+        setVisible(false);
+        signUpSuccessNotification('bottomRight');
+
+      }
+      else{
+        setConfirmLoading(false);
+        openNotification('bottomRight');
+      }
+
+
     });
     
   };
@@ -96,6 +123,7 @@ function SignUpDialog(props) {
 
   return (
     <div >
+      
       <Modal
           title='Sign Up'
           visible={visible}
@@ -105,7 +133,7 @@ function SignUpDialog(props) {
             
             ]}
           >
-        
+        <Spin spinning={confirmLoading}></Spin>
         <Form
           {...formItemLayout}
           form={form}
@@ -207,8 +235,9 @@ function SignUpDialog(props) {
             </Button>
           </Form.Item>
         </Form>
-        
+        <Spin spinning={confirmLoading}></Spin>
       </Modal>
+      
     </div>
   
   );
@@ -223,15 +252,41 @@ function LoginDialog(props) {
   const [visible, setVisible] = useState(false);
   const [signup, setSignUp] = React.useState('false');
   
-  //const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   //const [finished, setFinished] = useState(false);
   //const [currentOkText, setCurrentOkText] = useState('Login');
   //const [open, setOpen] = React.useState(true);
  
   
+  const openNotification = placement => {
+    notification.info({
+      message: 'Invalid credentials',
+      description:
+        'Either your email or password was incorrect. Try again',
+      placement,
+    });
+  };
+
+  const loginSuccessNotification = placement => {
+    notification.info({
+      message: 'Welcome',
+      description:
+        'Hope you have a great day',
+      placement,
+    });
+  };
+
+  const logoutSuccessNotification = placement => {
+    notification.info({
+      message: 'Bye',
+      description:
+        'Have a good day',
+      placement,
+    });
+  };
+
   
   function showModal() {
-    
     setVisible(true);
     setSignUp(false);
   };
@@ -240,7 +295,6 @@ function LoginDialog(props) {
       setVisible(false);
   };
   function handleSignUp(e) {
-
     setVisible(false);
     setSignUp('true');
   };
@@ -250,47 +304,53 @@ function LoginDialog(props) {
   const [state, dispatch] = useGlobalState();
  
   function handleLogout(){
-    //changed isLoggedIn before request to server...
-    request.user.isLoggedIn = false;
-    dispatch({ isLoggedIn: false });
-
-    //reset datasource list
-    request.user.dataSources = [
-			{
-				'id': 6,
-				'email': 'elna@gmail.com',
-				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
-			}
-		];
-
+    
     //send to backend
     request.user.logout(function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
-        
+        dispatch({ isLoggedIn: false }); 
+        //reset datasource list
+        request.user.dataSources = [
+          {
+            'id': 6,
+            'email': 'elna@gmail.com',
+            'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
+          }
+        ];
+        //set page type to home
+        props.handlePageType('home');
+        logoutSuccessNotification('bottomRight');
       }
     });
 
-    //set page type to home
-    props.handlePageType('home');
+    
  }
 
   const onFinish = values => {
-   
+    setConfirmLoading(true);
     //send to backend
     request.user.login(values.email, values.password, function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
+          setConfirmLoading(false);
           dispatch({ isLoggedIn: true });
+          setVisible(false);
+          props.handlePageType('home');
+          loginSuccessNotification('bottomRight');
+
           // request.dashboard.list(request.user.email, function(result) {
           //     console.log(result);
           // });
       }
-    });
-    setVisible(false);
+      else{
+        setConfirmLoading(false);
+        openNotification('bottomRight');
+      }
 
-    //set page type to home
-    props.handlePageType('home');
+    });
+
+    
  };
 
   const onFinishFailed = errorInfo => {
@@ -299,25 +359,24 @@ function LoginDialog(props) {
 
   return (
     <div id = 'loginDiv'>
-      {
-        console.log(state.isLoggedIn)
-      }
+    
         {
           state.isLoggedIn === false ?
             <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button> 
             :
             <Button id = 'logout' type="dashed" style={{ color: '#3C6A7F' }} onClick={handleLogout}>Logout</Button> 
         }
-           
       <Modal
           title="Login"
           visible={visible}
+          onOk={onFinish}
           onCancel={handleCancel}
-
+          confirmLoading={confirmLoading}
           footer={[
          
           ]}
           >
+          <Spin spinning={confirmLoading}>
           <Form
             {...layout}
             name="basic"
@@ -369,8 +428,10 @@ function LoginDialog(props) {
             </Form.Item>
 
           </Form>
-        
+          </Spin>
       </Modal>
+     
+      
       <main>
         {
           signup === 'true' ?

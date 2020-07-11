@@ -30,7 +30,6 @@ import {useGlobalState} from './Store';
 let currentURL = (constants.PRODUCTION ? constants.URL.production : constants.URL.localhost);
 
 
-
 const inPROD = false;
 const inDEV_PORT = 8000;
 
@@ -105,9 +104,27 @@ const request = {
                         console.log(res.data.message);
                         request.user.apikey = res.data.apikey;
                         request.user.email = email;
-
                         request.user.isLoggedIn = true;
-                      
+                        callback(constants.RESPONSE_CODES.SUCCESS);
+                    } else {
+                        callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                    }
+                }
+            })
+            .catch((err) => {
+                if (callback !== undefined) {
+                    callback(constants.RESPONSE_CODES.NETWORK_ERROR); 
+                }
+            });
+        }, register: (name, surname, email, password, confirmPassword, callback) => {
+            API.user.register(name, surname, email, password, confirmPassword)
+            .then((res) => {
+              
+                if (callback !== undefined) {
+                    if (successfulResponse(res)) {
+                        console.log(res);
+                        request.user.apikey = res.data.apikey;
+                        request.user.email = email;
                         callback(constants.RESPONSE_CODES.SUCCESS);
                     } else {
                         callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -119,21 +136,24 @@ const request = {
                     callback(constants.RESPONSE_CODES.NETWORK_ERROR);
                 }
             });
-        }, register: (name, surname, email, password, confirmPassword, callback) => {
-            API.user.register(name, surname, email, password, confirmPassword)
-                .then((res) => {
-                    console.log(res);
-                    request.user.apikey = res.data.apikey;
-                    request.user.email = email;
-
-                })
-                .catch((err) => console.error(err));
         }, logout: (callback) => {
             API.user.logout()
-                .then((res) => {
-                    console.log(res);
-                })
-                .catch((err) => console.error(err));
+            .then((res) => {
+                if (callback !== undefined) {
+                    if (successfulResponse(res)) {
+                        console.log(res);
+                        request.user.isLoggedIn = false;
+                        callback(constants.RESPONSE_CODES.SUCCESS);
+                    } else {
+                        callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                    }
+                }
+            })
+            .catch((err) => {
+                if (callback !== undefined) {
+                    callback(constants.RESPONSE_CODES.NETWORK_ERROR);
+                }
+            });
         },
         isLoggedIn: localStorage.getItem(''),
         apikey: localStorage.getItem(''),
