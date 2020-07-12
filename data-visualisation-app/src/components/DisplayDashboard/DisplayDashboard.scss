@@ -1,3 +1,4 @@
+@import '../../globals/globals.scss';
 
 .panel {
     background-color: white;
@@ -11,4 +12,10 @@
     border: 1px solid #c9c9c9;
     border-radius: 1%;
     padding: 10px;
+}
+
+.searchLabel {
+}
+.searchLabel--search-font {
+    font-family: $font-light;
 }

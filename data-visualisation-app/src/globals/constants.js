@@ -38,7 +38,7 @@ export const APPLICATION_LOGO_H = require('../assets/img/logo_vlong_s.png');
  *   Icons
  */
 export const ICONS = {
-    CLOSE: <Close/>,
+    CLOSE: <Close size={20}/>,
     ERROR: <ErrorCircle/>
 }
 
@@ -47,11 +47,46 @@ export const LOADER = <Spin/>;
 /**
  *   Server Constants
  */
-export const PRODUCTION = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
+export const PRODUCTION_MODE = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
+export const URL_HOST = {
+    PRODUCTION: 'https://data-visualisation-prod.herokuapp.com',
+    DEVELOPMENT: 'https://data-visualisation-dev.herokuapp.com',
+    LOCALHOST: 'http://localhost:8000'
+
+};
+
+export const URL_HOST_DEFAULT = (PRODUCTION_MODE ? URL_HOST.PRODUCTION : URL_HOST.LOCALHOST);
+
+export const URL_ROOT = {
+    USER: URL_HOST_DEFAULT + '/' + 'users',
+    DASHBOARD: URL_HOST_DEFAULT + '/' + 'dashboards',
+    DATASOURCE: URL_HOST_DEFAULT + '/' + 'datasource',
+    GRAPH: URL_HOST_DEFAULT + '/' + 'graphs'
+};
+
 export const URL = {
-    production: 'https://data-visualisation-prod.herokuapp.com',
-    development: 'https://data-visualisation-dev.herokuapp.com',
-    localhost: 'http://localhost:8000'
+    USER: {
+        LOGIN: URL_ROOT.USER + '/' + 'login',
+        REGISTER: URL_ROOT.USER + '/' + 'register',
+        LOGOUT: URL_ROOT.USER + '/' + 'logout'
+    },
+    DATASOURCE: {
+        LIST: URL_ROOT.DATASOURCE + '/' + 'list',
+        ADD: URL_ROOT.DATASOURCE + '/' + 'add',
+        REMOVE: URL_ROOT.DATASOURCE + '/' + 'remove'
+    },
+    DASHBOARD: {
+        LIST: URL_ROOT.DASHBOARD + '/' + 'list',
+        ADD: URL_ROOT.DASHBOARD + '/' + 'add',
+        REMOVE: URL_ROOT.DASHBOARD + '/' + 'remove',
+        UPDATE: URL_ROOT.DASHBOARD + '/' + 'update'
+    },
+    GRAPH: {
+        LIST: URL_ROOT.GRAPH + '/' + 'list',
+        ADD: URL_ROOT.GRAPH + '/' + 'add',
+        REMOVE: URL_ROOT.GRAPH + '/' + 'remove',
+        UPDATE: URL_ROOT.GRAPH + '/' + 'update'
+    },
 };
 
 /**

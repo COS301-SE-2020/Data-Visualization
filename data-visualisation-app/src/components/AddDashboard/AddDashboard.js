@@ -1,84 +1,98 @@
 import React, { useState } from 'react';
 import './AddDashboard.css';
-import {Form, Input, Button, Layout, Row, Col, Typography, Space} from 'antd';
+import { Form, Input, Button, Layout, Row, Col, Typography, Space, message } from 'antd';
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
 
 function AddDashboard(props) {
-  const [dashBoardName, setDashboardName] = useState('');
-  const [dashBoardDescription, setDashboardDescription] = useState('');
+	const [dashBoardName, setDashboardName] = useState('');
+	const [dashBoardDescription, setDashboardDescription] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 
 
-  const mySubmitHandler = (event) => {
-    props.add({ name: dashBoardName, description: dashBoardDescription });
+	const mySubmitHandler = (event) => {
+		// props.add({ name: dashBoardName, description: dashBoardDescription });
 
-  };
+		setIsLoading(true);
+		request.dashboard.add(dashBoardName, dashBoardDescription, function (result) {
+			setIsLoading(false);
+			if (result === constants.RESPONSE_CODES.SUCCESS) {
+				message.success('Dashboard was successfully created.');
+				props.home();
+			} else {
+				message.error('There was a problem creating a new dashboard.');
+			}
+		});
 
-  const myChangeHandler = (event) => {
-    setDashboardName(event.target.value);
-  };
-  const myChangeHandler2 = (event) => {
-    setDashboardDescription(event.target.value);
-  };
+	};
 
-  const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
-  };
+	const myChangeHandler = (event) => {
+		setDashboardName(event.target.value);
+	};
+	const myChangeHandler2 = (event) => {
+		setDashboardDescription(event.target.value);
+	};
 
-  return (
+	const layout = {
+		labelCol: { span: 8 },
+		wrapperCol: { span: 16 },
+	};
 
-      <Layout.Content className='content-colors' style={{overflow: 'hidden'}}>
+	return (
 
-        <Row gutter={[16, 16]}>
-          <Col span={8} offset={8}>
+		<Layout.Content className='content-colors' style={{ overflow: 'hidden' }}>
 
-            <div className='add-dashboard-box'>
-              <Typography.Title level={4} style={{marginBottom: '30px'}}>Create New Dashboard</Typography.Title>
+			<Row gutter={[16, 16]}>
+				<Col span={8} offset={8}>
 
-              <Form
-                  {...layout}
-                  name="basic"
-                  initialValues={{ remember: false }}
-                  onFinish={mySubmitHandler}
-              >
+					<div className='add-dashboard-box'>
+						<Typography.Title level={4} style={{ marginBottom: '30px' }}>Create New Dashboard</Typography.Title>
 
-                <Form.Item
-                    label="Name:"
-                    name="adderField"
-                    placeholder='Consumer'
-                    onChange={myChangeHandler}
-                    rules={[{ required: true, message: 'Provide a dashboard name.' }]}
-                >
-                  <Input />
-                </Form.Item>
+						<Form
+							{...layout}
+							name="basic"
+							initialValues={{ remember: false }}
+							onFinish={mySubmitHandler}
+						>
 
-                <Form.Item
-                    label="Description:"
-                    name="adderField1"
-                    placeholder='Short Description'
-                    onChange={myChangeHandler2}
-                    rules={[{ required: true, message: 'Some information about dashboard.' }]}
-                >
-                  <Input.TextArea />
-                </Form.Item>
+							<Form.Item
+								label="Name:"
+								name="adderField"
+								placeholder='Consumer'
+								onChange={myChangeHandler}
+								rules={[{ required: true, message: 'Provide a dashboard name.' }]}
+							>
+								<Input />
+							</Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 8, span: 32 }}>
-                  <Space size={10}>
-                    <Button type="primary" htmlType="submit">
-                      Create
-                    </Button>
-                    <Button htmlType='button' onClick={props.home}>
-                      Cancel
-                    </Button>
-                  </Space>
-                </Form.Item>
-              </Form>
+							<Form.Item
+								label="Description:"
+								name="adderField1"
+								placeholder='Short Description'
+								onChange={myChangeHandler2}
+								rules={[{ required: true, message: 'Some information about dashboard.' }]}
+							>
+								<Input.TextArea />
+							</Form.Item>
 
-            </div>
+							<Form.Item wrapperCol={{ offset: 8, span: 32 }}>
+								<Space size={10}>
+									<Button type="primary" htmlType="submit" loading={isLoading}>
+										Create
+                    				</Button>
+									<Button htmlType='button' onClick={props.home}>
+										Cancel
+                    				</Button>
+								</Space>
+							</Form.Item>
+						</Form>
 
-          </Col>
-        </Row>
-      </Layout.Content>
-  );
+					</div>
+
+				</Col>
+			</Row>
+		</Layout.Content>
+	);
 }
 
 export default AddDashboard;

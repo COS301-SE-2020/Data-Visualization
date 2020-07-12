@@ -21,7 +21,7 @@ function Dashboard() {
 
 
 	useEffect(() => {
-		reqDashboardList();
+		// reqDashboardList();
 		// request.user.login('peter@neverland.com', 'Passwosdfrd1@');
 	}, []);
 
@@ -55,25 +55,25 @@ function Dashboard() {
 		);
 	};
 
-	const addGraphToDashboard = (newGraph) => {
-		setDashboardList(
-			update(DashboardList, {
-				[DashboardIndex]: {
-					graphs: { $push: [newGraph] },
-				},
-			})
-		);
-	};
+	// const addGraphToDashboard = (newGraph) => {
+	// 	setDashboardList(
+	// 		update(DashboardList, {
+	// 			[DashboardIndex]: {onAddButtonClick,
+	// 				graphs: { $push: [newGraph] },
+	// 			},
+	// 		})
+	// 	);
+	// };
 
-	const removeGraphFromDashboard = (gID) => {
-		setDashboardList(
-			update(DashboardList, {
-				[DashboardIndex]: {
-					graphs: { $splice: [[gID, 1]] },
-				},
-			})
-		);
-	};
+	// const removeGraphFromDashboard = (gID) => {
+	// 	setDashboardList(
+	// 		update(DashboardList, {
+	// 			[DashboardIndex]: {
+	// 				graphs: { $splice: [[gID, 1]] },
+	// 			},
+	// 		})
+	// 	);
+	// };
 
 	//Network Reqeust procedures
 	const reqDashboardList = () => {
@@ -180,8 +180,7 @@ function Dashboard() {
 			} else {
 				return (
 					<DisplayDashboard
-						dashboard={DashboardList[DashboardIndex]}
-						reqGraphList={reqGraphList}
+						dashboardID={DashboardIndex}
 						backFunc={backToHome}
 						editDashboard={setIsAddingDashboard}
 					/>
