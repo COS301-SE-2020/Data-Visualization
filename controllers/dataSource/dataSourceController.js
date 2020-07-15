@@ -26,14 +26,28 @@ const Odata = require('./Odata');
  * @author Phillip Schulze
  */
 class DataSource {
+  /**
+   * This function gets Odata.
+   * @param src the source where this Odata must be retrieved from
+   * @returns a promise of Odata
+   */
   static getMetaData(src) {
     return Odata.getMetaData(src); //Returns a promise
   }
-
+  /**
+   * This function gets an entity list.
+   * @param src the source where this entity list must be retrieved from
+   * @returns a promise of the entity list
+   */
   static getEntityList(src) {
     return Odata.getEntityList(src); //Returns a promise
   }
-
+  /**
+   * This function gets entity data.
+   * @param src the source where the entity data must be retrieved from
+   * @param entity the entity that we want data from
+   * @returns a promise of the entities data
+   */
   static getEntityData(src, entity) {
     return Odata.getEntityData(src, entity);
   }
