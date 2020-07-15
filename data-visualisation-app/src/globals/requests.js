@@ -68,7 +68,7 @@ const API = {
     },
     dataSources: {
         list: (apikey) => axios.post(getAPIurl() + 'datasource/list', {apikey}),
-        add: (id ,apikey, dataSourceUrl) => axios.post(getAPIurl() + 'datasource/add', {id, apikey, dataSourceUrl}),
+        add: (apikey, dataSourceID, dataSourceUrl) => axios.post(getAPIurl() + 'datasource/add', {apikey, dataSourceID, dataSourceUrl}),
         delete: (dataSourceID, apikey) => axios.post(getAPIurl() + 'datasource/remove', {dataSourceID, apikey}),
     }
 };
@@ -207,8 +207,8 @@ const request = {
                 if (callback !== undefined) {
                     if (successfulResponse(res)) {
                         console.log(res.data.message);
-                        localStorage.setItem('apikey', res.data.apikey);
-                        localStorage.setItem('loggedInFlag', true);
+                        //localStorage.setItem('apikey', res.data.apikey);
+                        //localStorage.setItem('loggedInFlag', true);
                         request.user.apikey = res.data.apikey;
                         request.user.isLoggedIn = true;
                         callback(constants.RESPONSE_CODES.SUCCESS);
@@ -262,7 +262,7 @@ const request = {
             });
         },
         apikey: localStorage.getItem('apikey'),
-        isLoggedIn: localStorage.getItem('loggedInFlag'),
+        isLoggedIn: false,
                 dataSources: [
 			{
 				'id': 6,
@@ -295,9 +295,9 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
-        add: (id, apikey, dataSourceUrl, callback) => {
+        add: (apikey, dataSourceID, dataSourceUrl, callback) => {
             if (request.user.isLoggedIn) {
-                API.dataSources.add(id, apikey, dataSourceUrl).then((res) => {
+                API.dataSources.add(apikey, dataSourceID, dataSourceUrl).then((res) => {
                     console.log(res);
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {

@@ -42,7 +42,7 @@ class DataConnection extends React.Component {
 
   
   componentDidMount() {
-
+    console.log(request.user.isLoggedIn);
       this.getData(res => {
         this.setState({
           initLoading: false,
@@ -110,13 +110,12 @@ class DataConnection extends React.Component {
 
   addItem = (values) => {
 
-  
-    
     var newID = generateID();
 
+    console.log(request.user.apikey);
     if(request.user.isLoggedIn){
       //add item on back end
-      request.dataSources.add(newID, request.user.apikey, values.uri, function(result) {
+      request.dataSources.add(request.user.apikey, newID , values.uri, function(result) {
         console.log(result);
         console.log(request.user.dataSources);
         if (result === constants.RESPONSE_CODES.SUCCESS) {
