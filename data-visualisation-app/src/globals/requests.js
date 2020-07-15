@@ -29,7 +29,7 @@ import {useGlobalState} from './Store';
  */
 let currentURL = (constants.PRODUCTION_MODE ? constants.URL.production : constants.URL.localhost);
 
-// deprecated functions:
+///// deprecated functions: /////
 const inPROD = false;
 const inDEV_PORT = 8000;
 
@@ -48,10 +48,24 @@ function canRequest() {
     return request.user.isLoggedIn && request.user.apikey !== '';
 }
 
+
+
+function generateID() {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < 10; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+
+
 const API = {
     dashboard: {
         list: (apikey) => axios.post(constants.URL.DASHBOARD.LIST, {apikey}),
-        add: (apikey, name, description) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, name, description }),
+        add: (apikey, dashboardID, name, description) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, dashboardID, name, description }),
         delete: (apikey, dashboardID) => axios.post(constants.URL.DASHBOARD.REMOVE, { apikey, dashboardID }),
         update: (apikey, dashboardID, fields, data) => axios.post(constants.URL.DASHBOARD.UPDATE, { apikey, dashboardID, fields, data }),
     },
@@ -94,7 +108,7 @@ const request = {
         add: (name, description, callback) => {
             if (canRequest) {
                 API.dashboard
-                    .add(request.user.apikey, name, description)
+                    .add(request.user.apikey, generateID(), name, description)
                     .then((res) => {
                         if (callback !== undefined) {
                             request.cache.dashboard.list.data = res.data;
@@ -201,75 +215,75 @@ const request = {
         login: (email, password, callback) => {
             console.log('calling login with ' + email + ' ' + password);
             API.user.login(email, password)
-            .then((res) => {
-                console.log('got response from login');
-                console.log(res);
-                if (callback !== undefined) {
-                    if (successfulResponse(res)) {
-                        console.log(res.data.message);
-                        //localStorage.setItem('apikey', res.data.apikey);
-                        //localStorage.setItem('loggedInFlag', true);
-                        request.user.apikey = res.data.apikey;
-                        request.user.isLoggedIn = true;
-                        callback(constants.RESPONSE_CODES.SUCCESS);
-                    } else {
-                        callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                .then((res) => {
+                    console.log('got response from login');
+                    console.log(res);
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            console.log(res.data.message);
+                            //localStorage.setItem('apikey', res.data.apikey);
+                            //localStorage.setItem('loggedInFlag', true);
+                            request.user.apikey = res.data.apikey;
+                            request.user.isLoggedIn = true;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                if (callback !== undefined) {
-                    callback(constants.RESPONSE_CODES.NETWORK_ERROR);
-                }
-            });
+                })
+                .catch((err) => {
+                    if (callback !== undefined) {
+                        callback(constants.RESPONSE_CODES.NETWORK_ERROR);
+                    }
+                });
         }, register: (name, surname, email, password, confirmPassword, callback) => {
             API.user.register(name, surname, email, password, confirmPassword)
-            .then((res) => {
-              
-                if (callback !== undefined) {
-                    if (successfulResponse(res)) {
-                        console.log(res);
-                        request.user.apikey = res.data.apikey;
-                        request.user.email = email;
-                        callback(constants.RESPONSE_CODES.SUCCESS);
-                    } else {
-                        callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                .then((res) => {
+
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            console.log(res);
+                            request.user.apikey = res.data.apikey;
+                            request.user.email = email;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                if (callback !== undefined) {
-                    callback(constants.RESPONSE_CODES.NETWORK_ERROR);
-                }
-            });
+                })
+                .catch((err) => {
+                    if (callback !== undefined) {
+                        callback(constants.RESPONSE_CODES.NETWORK_ERROR);
+                    }
+                });
         }, logout: (callback) => {
             API.user.logout()
-            .then((res) => {
-                if (callback !== undefined) {
-                    if (successfulResponse(res)) {
-                        console.log(res);
-                        request.user.isLoggedIn = false;
-                        callback(constants.RESPONSE_CODES.SUCCESS);
-                    } else {
-                        callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                .then((res) => {
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            console.log(res);
+                            request.user.isLoggedIn = false;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                if (callback !== undefined) {
-                    callback(constants.RESPONSE_CODES.NETWORK_ERROR);
-                }
-            });
+                })
+                .catch((err) => {
+                    if (callback !== undefined) {
+                        callback(constants.RESPONSE_CODES.NETWORK_ERROR);
+                    }
+                });
         },
         apikey: localStorage.getItem('apikey'),
         isLoggedIn: false,
-                dataSources: [
-			{
-				'id': 6,
-				'email': 'elna@gmail.com',
-				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
-			}
-		]
+        dataSources: [
+            {
+                'id': 6,
+                'email': 'elna@gmail.com',
+                'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
+            }
+        ]
     },
 
 
@@ -281,16 +295,16 @@ const request = {
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
                             console.log(res);
-                            
+
                             request.user.dataSources = res.data;
-                            
+
                             callback(constants.RESPONSE_CODES.SUCCESS);
                         } else {
                             callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
                         }
                     }
                 })
-                .catch((err) => console.error(err));
+                    .catch((err) => console.error(err));
             } else {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
@@ -302,11 +316,11 @@ const request = {
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
                             console.log(res);
-                            
-                            //add to request.user.dataSources array
-                            //request.user.dataSources = res.data;  
 
-                           
+                            //add to request.user.dataSources array
+                            //request.user.dataSources = res.data;
+
+
 
                             callback(constants.RESPONSE_CODES.SUCCESS);
                         } else {
@@ -314,7 +328,7 @@ const request = {
                         }
                     }
                 })
-                .catch((err) => console.error(err));
+                    .catch((err) => console.error(err));
             } else {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
@@ -336,7 +350,7 @@ const request = {
                         }
                     }
                 })
-                .catch((err) => console.error(err));
+                    .catch((err) => console.error(err));
             } else {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }

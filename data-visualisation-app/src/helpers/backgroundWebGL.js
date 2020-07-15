@@ -68,7 +68,10 @@ class BackgroundDots extends Component {
             }
 
         }
+//242424
+        //0xd9d9d9
 
+        // F8F9FB was 0xffffff
         var geometry = new THREE.BufferGeometry();
         geometry.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
         geometry.setAttribute( 'scale', new THREE.BufferAttribute( scales, 1 ) );
@@ -76,7 +79,7 @@ class BackgroundDots extends Component {
         var material = new THREE.ShaderMaterial( {
 
             uniforms: {
-                color: { value: new THREE.Color( 0xd9d9d9 ) },
+                color: { value: new THREE.Color( 0x242424 ) },
             },
             vertexShader: document.getElementById( 'vertexshader' ).textContent,
             fragmentShader: document.getElementById( 'fragmentshader' ).textContent
@@ -91,7 +94,7 @@ class BackgroundDots extends Component {
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
 
-        this.renderer.setClearColor(0xffffff, 1);
+        this.renderer.setClearColor(0xF8F9FB, 1);
 
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );

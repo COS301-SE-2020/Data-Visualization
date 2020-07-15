@@ -18,6 +18,7 @@ function AddDashboard(props) {
 			setIsLoading(false);
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
 				message.success('Dashboard was successfully created.');
+				props.setDetails(dashBoardName, dashBoardDescription);
 				props.home();
 			} else {
 				message.error('There was a problem creating a new dashboard.');
@@ -40,7 +41,7 @@ function AddDashboard(props) {
 
 	return (
 
-		<Layout.Content className='content-colors' style={{ overflow: 'hidden' }}>
+		<Layout.Content style={{ overflow: 'hidden' }}>
 
 			<Row gutter={[16, 16]}>
 				<Col span={8} offset={8}>

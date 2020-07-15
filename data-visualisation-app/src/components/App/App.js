@@ -27,6 +27,7 @@ import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
+import MenuItem from '@material-ui/core/MenuItem';
 import { Button } from 'antd';
 import { Database } from '@styled-icons/feather';
 import {Home as HomeIcon} from '@styled-icons/feather';
@@ -77,7 +78,10 @@ const globalMaterialUITheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		display: 'flex',
+		display: 'flex'
+	},
+	selected: {
+		color: 'white'
 	},
 	drawer: {
 		[theme.breakpoints.up('sm')]: {
@@ -116,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	drawerPaper: {
 		width: drawerWidth,
-		background: 'linear-gradient(302deg, rgba(255,255,255,1) 0%, rgba(242,242,242,1) 54%, rgba(195,195,195,1) 100%)',
+		background: '#242424',
 	},
 	content: {
 		flexGrow: 1,
@@ -125,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	nested: {
 		paddingLeft: theme.spacing(11),
-		color: '#3C6A7F',
+		color: '#e6e6e6',
 	},
 	nestedNoIcon: {
 		paddingLeft: theme.spacing(9),
@@ -135,17 +139,17 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(9),
 	},
 	typographyHeading: {
-		color: '#2f2f2e',
+		color: 'white',
 		fontSize: '1.5em',
 	},
 	drawerList: {
-		color: '#2f2f2e',
+		color: '#969698',
 	},
 	icon: {
-		color: '#2f2f2e',
+		color: '#969698',
 	},
 	drawerListCollapse: {
-		color: '#3C6A7F',
+		color: '#969698',
 	},
 
 	//05192F primary -> 3C6A7F//lighter
@@ -204,35 +208,35 @@ function App(props) {
 			<List className={classes.drawerList}>
 
 
-				<ListItem button onClick={() => handlePageType('home')}>
+				<MenuItem button onClick={() => handlePageType('home')} selected={pageType === 'home'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<HomeIcon size='25' />
+						<HomeIcon size='25' style={(pageType === 'home' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Home" />
-				</ListItem>
+				</MenuItem>
 
-				<ListItem button onClick={() => handlePageType('explore')}>
+				<MenuItem button onClick={() => handlePageType('explore')} selected={pageType === 'explore'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<ExploreOutlinedIcon />
+						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Explore" />
-				</ListItem>
+				</MenuItem>
 
-				<ListItem button onClick={() => handlePageType('dashboards')}>
+				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<DashboardIcon />
+						<DashboardIcon style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="My Dashboards" />
-				</ListItem>
+				</MenuItem>
 
 
-				<ListItem button onClick={handleOpenIcon}>
+				<MenuItem button onClick={handleOpenIcon} selected={pageType === 'connections'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<Database size='25' />
+						<Database size='25' style={(pageType === 'connections' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Connections" />
 					{openIcon ? <ExpandLess /> : <ExpandMore />}
-				</ListItem>
+				</MenuItem>
 
 				<Collapse in={openIcon} timeout="auto" unmountOnExit>
 					<List component="div" disablePadding className={classes.drawerListCollapse}>
@@ -268,12 +272,12 @@ function App(props) {
 			</List>
 			<Divider />
 			<List component="nav" className={classes.drawerList}>
-				<ListItem button onClick={() => handlePageType('about')}>
+				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<InfoIcon />
+						<InfoIcon style={(pageType === 'connections' ? {color: 'about'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="About" />
-				</ListItem>
+				</MenuItem>
 			</List>
 		</div>
 	);
@@ -288,7 +292,7 @@ function App(props) {
 
 			<div className={classes.root}>
 				<CssBaseline />
-				<AppBar position="fixed" className={classes.appBar} style={{ background: 'linear-gradient(48deg, rgba(235,235,235,1) 0%, rgba(255,255,255,1) 100%)' }}>
+				<AppBar position="fixed" className={classes.appBar} style={{ background: '#242424' }}>
 					<Toolbar>
 						<IconButton
 							color="inherit"
@@ -357,8 +361,6 @@ function App(props) {
 
 				<main className={classes.content} style={(pageType === 'home' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
 
-					{/*<p>{dimensions.width}</p>*/}
-					{/*<p>{dimensions.height}</p>*/}
 					<div className={classes.toolbar} />
 					{
 

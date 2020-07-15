@@ -43,7 +43,7 @@ function HomePanelButton(props) {
                     className='panelLayout home-panel-add'
                     style={{...getSizeStyle()}}
                     onClick={() => props.action()}>
-                    <div onClick={() => props.action()}>
+                    <div>
                         <div style={{marginTop: '35px'}}>+</div>
                     </div>
                 </div>
@@ -76,7 +76,6 @@ function HomePage(props) {
         request.user.login('peter@neverland.com', 'Password@301', function(result) {
             if (result === constants.RESPONSE_CODES.SUCCESS) {
                 request.dashboard.list(function(result) {
-                    console.log('this is called');
                     setDashboardList(request.cache.dashboard.list.data);
                     setIsReady(true);
                 });
@@ -106,8 +105,7 @@ function HomePage(props) {
     return (
         <div className='content--padding'>
 
-              <PageTitle>Dashboards</PageTitle>
-
+            <PageTitle>Dashboards</PageTitle>
             {isReady ?
                 <React.Fragment>
                     {(() => {
@@ -118,7 +116,7 @@ function HomePage(props) {
                                         data={dashboard}
                                         key={dashboard.id}
                                         isAddButton={false}
-                                        action={() => props.setDashboardIndex(dashboard.id)}
+                                        action={() => {props.setDetails(dashboard.name, dashboard.description); props.setDashboardIndex(dashboard.id);}}
                                     />
                                 );
                             });

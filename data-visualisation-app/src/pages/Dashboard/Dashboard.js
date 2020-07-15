@@ -15,10 +15,16 @@ import {Layout, Menu} from 'antd';
 
 
 function Dashboard() {
-	const [DashboardIndex, setDashboardIndex] = useState(-1);
+	const [DashboardIndex, setDashboardIndex] = useState('');
+	const [dashboardName, setDashboardName] = useState('');
+	const [dashboardDescription, setDashboardDescription] = useState('');
 	const [DashboardList, setDashboardList] = useState([]);
 	const [IsAddingDashboard, setIsAddingDashboard] = useState(false);
 
+	function setDashboardDetail(name, description) {
+		setDashboardName(name);
+		setDashboardDescription(description);
+	}
 
 	useEffect(() => {
 		// reqDashboardList();
@@ -26,7 +32,7 @@ function Dashboard() {
 	}, []);
 
 	//Boolean Checks
-	const isSelected = () => DashboardIndex >= 0;
+	const isSelected = () => DashboardIndex !== '';
 
 	//State Mutators
 	const deleteDashboard = () => {
@@ -158,7 +164,7 @@ function Dashboard() {
 
 	//Navigation procedures
 	const backToHome = () => {
-		setDashboardIndex(-1);
+		setDashboardIndex('');
 		setIsAddingDashboard(false);
 	};
 
@@ -166,35 +172,38 @@ function Dashboard() {
 	function router() {
 	
 		if (isSelected()) {
-			if (IsAddingDashboard) {
-				return (
-					<EditDashboard
-						dashboard={DashboardList[DashboardIndex]}
-						Back={setIsAddingDashboard}
-						Delete={reqDashboardDelete}
-						Update={setDashboard}
-						addGraph={reqGraphAdd}
-						removeGraph={reqGraphDelete}
-					/>
-				);
-			} else {
+			// if (IsAddingDashboard) {
+			// 	return (
+			// 		<EditDashboard
+			// 			dashboard={DashboardList[DashboardIndex]}
+			// 			Back={setIsAddingDashboard}
+			// 			Delete={reqDashboardDelete}
+			// 			Update={setDashboard}
+			// 			addGraph={reqGraphAdd}
+			// 			removeGraph={reqGraphDelete}
+			// 		/>
+			// 	);
+			// } else {
 				return (
 					<DisplayDashboard
 						dashboardID={DashboardIndex}
+						name={dashboardName}
+						description={dashboardDescription}
 						backFunc={backToHome}
 						editDashboard={setIsAddingDashboard}
 					/>
 				);
-			}
+			// }
 		} else {
 			if (IsAddingDashboard) {
-				return <AddDashboard add={reqDashboardAdd} home={backToHome} />;
+				return <AddDashboard add={reqDashboardAdd} home={backToHome} setDetails={setDashboardDetail} />;
 			} else {
 				return (
 					<HomePage
 						dashboardList={DashboardList}
 						setDashboardIndex={setDashboardIndex}
 						onAddButtonClick={setIsAddingDashboard}
+						setDetails={setDashboardDetail}
 					/>
 				);
 			}
