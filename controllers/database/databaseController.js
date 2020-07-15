@@ -1,5 +1,26 @@
+/**
+ * @file databaseController.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             Changes
+ * -------------------------------------------------------------------------------
+ * 29/06/2020   Elna Pistorius & Phillip Schulze     Original
+ * 2/07/2020    Elna Pistorius & Phillip Schulze     Changed endpoint names and request methods to POST
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a database controller that handles any database requests.
+ *
+ * Error Messages: "Error"
+ * Assumptions: None
+ * Constraints: None
+ */
 require('dotenv').config();
-const PRODUCTION = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
+const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 const Pool = require('pg-pool');
 const params = require('url').parse(process.env.DATABASE_URL);
@@ -19,7 +40,18 @@ const config = {
   },
 };
 
+/**
+ * Purpose: This class is responsible for suggestion generation when graph suggestions are generated.
+ * Usage Instructions: Use the corresponding getters and setters to modify/retrieve class variables.
+ * Class functionality should be accessed through restController.js.
+ * @author Phillip Schulze
+ */
 class Database {
+  /**
+   * This function sends queries to the database.
+   * @param SQL_query the query that needs to be executed in the database
+   * @returns a promise
+   */
   static sendQuery(SQL_query) {
     if (!PRODUCTION) console.log(SQL_query);
     return new Promise((conResolve, conReject) => {
@@ -42,7 +74,14 @@ class Database {
     });
   }
 
-  //==================USERS===============
+  /*==================USERS===============*/
+  /**
+   * This function authenticates a user.
+   * @param email the users email
+   * @param password the users password
+   * @returns a promise
+   */
+
   static authenticate(email, password) {
     return new Promise((resolve, reject) => {
       console.log('==> AUTHENTICATING: ' + email);
@@ -65,6 +104,14 @@ class Database {
         .catch((err) => reject(err));
     });
   }
+  /**
+   * This function is to registers a user.
+   * @param fname the users first name
+   * @param lname the users last name
+   * @param email the users email
+   * @param password the users password
+   * @returns a promise
+   */
 
   static register(fname, lname, email, password) {
     password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
@@ -87,7 +134,12 @@ class Database {
     });
   }
 
-  //==================DATA SOURCE===============
+  /*==================DATA SOURCE===============*/
+  /**
+   * This function is to get a list of data sources
+   * @param email the users email
+   * @returns a promise
+   */
   static async getDataSourceList(email) {
     let query = `SELECT * FROM datasource WHERE ( email = '${email}');`;
     return new Promise((resolve, reject) => {
@@ -96,7 +148,12 @@ class Database {
         .catch((result) => reject(result));
     });
   }
-
+  /**
+   * This function is to add a data source
+   * @param email the users email
+   * @params sourceURL the data source url to add
+   * @returns a promise
+   */
   static async addDataSource(email, sourceURL) {
     let query = `INSERT INTO datasource (email, sourceurl) VALUES ('${email}','${sourceURL}');`;
     return new Promise((resolve, reject) => {
@@ -105,7 +162,12 @@ class Database {
         .catch((result) => reject(result));
     });
   }
-
+  /**
+   * This function is to remove
+   * @param email the users email
+   * @params dataSourceID the data source id
+   * @returns a promise
+   */
   static async removeDataSource(email, dataSourceID) {
     let query = `DELETE FROM datasource WHERE ( email = '${email}') AND ( ID = '${dataSourceID}');`;
     return new Promise((resolve, reject) => {
