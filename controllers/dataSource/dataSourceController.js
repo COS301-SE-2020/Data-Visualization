@@ -1,5 +1,30 @@
+/**
+ * @file dataSourceController.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author              Changes
+ * -------------------------------------------------------------------------------
+ * 2/07/2020    Phillip Schulze     Original
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a data source that handles any data source requests.
+ *
+ * Error Messages: "Error"
+ * Assumptions: None
+ * Constraints: None
+ */
 const Odata = require('./Odata');
-
+/**
+ * Purpose: This class is responsible for getting DataSources.
+ * Usage Instructions: Use the corresponding getters to retrieve class variables.
+ * Class functionality should be accessed through restController.js.
+ * @author Phillip Schulze
+ */
 class DataSource {
   static getMetaData(src) {
     return Odata.getMetaData(src); //Returns a promise

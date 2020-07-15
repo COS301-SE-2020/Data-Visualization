@@ -1,0 +1,32 @@
+@import '~antd/dist/antd.css';
+@import '../../globals/antdglobals.scss';
+@import '../../globals/globals.scss';
+
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+.app-header {
+  background-color: $primary-white;
+}
+
+.global-footer {
+  background-color: $primary-black;
+  color: $primary-white;
+}
+
+.app-header > img {
+  height: 45px;
+  margin-top: 5px;
+  position: absolute;
+  left: 42%;
+}
+
+.app-menu {
+  float: left;
+}
+
+.app-header > div {
+  float: right;
+}

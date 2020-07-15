@@ -1,0 +1,38 @@
+#headingSpan{
+    display: inline-flex;
+    align-items: center;
+}
+
+#backButton{
+    background-color: transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+    float: left;
+    margin-right: 10px;
+}
+
+#titleText{
+    margin-top: 12px;
+}
+
+#selectorDiv{
+    background-color: blueviolet;
+}
+#selectorDiv :hover{
+    cursor:pointer;
+}
+
+#button-explore-dataPage{
+    margin: 0;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+
+
