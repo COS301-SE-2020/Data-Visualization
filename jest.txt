@@ -1,0 +1,1144 @@
+[0m[7m[1m[31m FAIL [39m[22m[27m[0m ]8;;file:///home/phillipstemmlar/cos/capstone/tests/int/Odata.test.js[2mtests/int/[22m[1mOdata.test.js[22m]8;;
+  Testing functions that retrieve data from an Odata source
+    [31m✕[39m [2mFunction that retrieves the metadata XML file for a given Odata source (2008 ms)[22m
+
+[1m[31m  [1m● [22m[1mTesting functions that retrieve data from an Odata source › Function that retrieves the metadata XML file for a given Odata source[39m[22m
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    [32m- Expected  - 560[39m
+    [31m+ Received  + 557[39m
+
+    [32m-[39m
+    [32m- 	<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0" nighteye="disabled">[39m
+    [32m- 	<style>a { color:rgb(140,140,250); } *::-webkit-scrollbar-track-piece { background-color:rgba(255, 255, 255, 0.2) !important; } *::-webkit-scrollbar-track { background-color:rgba(255, 255, 255, 0.3) !important; } *::-webkit-scrollbar-thumb { background-color:rgba(255, 255, 255, 0.5) !important; } embed[type="application/pdf"] { filter:invert(90%); }</style>[39m
+    [32m- 	<style id="nighteyedefaultcss">html { color:#bfbfbf; background-image:none !important; background:#1f1f1f !important; } body { background-color:#1f1f1f; background-image:none !important; } input, select, textarea, button { color:#bfbfbf; background-color:#1f1f1f; } font { color:#bfbfbf; }</style>[39m
+    [32m- 	<style>html {filter: contrast(100%) brightness(100%) saturate(100%);} .NIGHTEYE_Filter { width:100%; height:100%; position:fixed; left:0; top:0; pointer-events:none; z-index:4000000000; } .NIGHTEYE_YellowFilter { background:rgba(255, 255, 0, 0.15); opacity:0; } .NIGHTEYE_BlueFilter { background:rgba(0, 0, 255, 0.15); opacity:0; } .NIGHTEYE_DimFilter { background:rgba(0, 0, 0, 0.5); opacity:0; } .NIGHTEYE_TransformZ { transform:translateZ(0); }</style>[39m
+    [32m- 	<edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="1.0">[39m
+    [32m- 	<Schema xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="NorthwindModel">[39m
+    [32m- 	<EntityType Name="Category">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CategoryID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Name="CategoryID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity"/>[39m
+    [32m- 	<Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Description" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Picture" Type="Edm.Binary" Nullable="true" MaxLength="Max" FixedLength="false"/>[39m
+    [32m- 	<NavigationProperty Name="Products" Relationship="NorthwindModel.FK_Products_Categories" FromRole="Categories" ToRole="Products"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="CustomerDemographic">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CustomerTypeID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="CustomerTypeID" Type="Edm.String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="true"/>[39m
+    [32m- 	<Property Name="CustomerDesc" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<NavigationProperty Name="Customers" Relationship="NorthwindModel.CustomerCustomerDemo" FromRole="CustomerDemographics" ToRole="Customers"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Customer">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CustomerID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="CustomerID" Type="Edm.String" Nullable="false" MaxLength="5" Unicode="true" FixedLength="true"/>[39m
+    [32m- 	<Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ContactName" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ContactTitle" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Phone" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Fax" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<NavigationProperty Name="Orders" Relationship="NorthwindModel.FK_Orders_Customers" FromRole="Customers" ToRole="Orders"/>[39m
+    [32m- 	<NavigationProperty Name="CustomerDemographics" Relationship="NorthwindModel.CustomerCustomerDemo" FromRole="Customers" ToRole="CustomerDemographics"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Employee">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="EmployeeID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Name="EmployeeID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity"/>[39m
+    [32m- 	<Property Name="LastName" Type="Edm.String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="FirstName" Type="Edm.String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Title" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="TitleOfCourtesy" Type="Edm.String" Nullable="true" MaxLength="25" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="BirthDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="HireDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="HomePhone" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Extension" Type="Edm.String" Nullable="true" MaxLength="4" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Photo" Type="Edm.Binary" Nullable="true" MaxLength="Max" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Notes" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ReportsTo" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="PhotoPath" Type="Edm.String" Nullable="true" MaxLength="255" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<NavigationProperty Name="Employees1" Relationship="NorthwindModel.FK_Employees_Employees" FromRole="Employees" ToRole="Employees1"/>[39m
+    [32m- 	<NavigationProperty Name="Employee1" Relationship="NorthwindModel.FK_Employees_Employees" FromRole="Employees1" ToRole="Employees"/>[39m
+    [32m- 	<NavigationProperty Name="Orders" Relationship="NorthwindModel.FK_Orders_Employees" FromRole="Employees" ToRole="Orders"/>[39m
+    [32m- 	<NavigationProperty Name="Territories" Relationship="NorthwindModel.EmployeeTerritories" FromRole="Employees" ToRole="Territories"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Order_Detail">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	<PropertyRef Name="ProductID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="OrderID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="ProductID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="UnitPrice" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="Quantity" Type="Edm.Int16" Nullable="false"/>[39m
+    [32m- 	<Property Name="Discount" Type="Edm.Single" Nullable="false"/>[39m
+    [32m- 	<NavigationProperty Name="Order" Relationship="NorthwindModel.FK_Order_Details_Orders" FromRole="Order_Details" ToRole="Orders"/>[39m
+    [32m- 	<NavigationProperty Name="Product" Relationship="NorthwindModel.FK_Order_Details_Products" FromRole="Order_Details" ToRole="Products"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Order">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Name="OrderID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity"/>[39m
+    [32m- 	<Property Name="CustomerID" Type="Edm.String" Nullable="true" MaxLength="5" Unicode="true" FixedLength="true"/>[39m
+    [32m- 	<Property Name="EmployeeID" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="OrderDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="RequiredDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="ShipVia" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="Freight" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="ShipName" Type="Edm.String" Nullable="true" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipAddress" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipCity" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipRegion" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipPostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipCountry" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<NavigationProperty Name="Customer" Relationship="NorthwindModel.FK_Orders_Customers" FromRole="Orders" ToRole="Customers"/>[39m
+    [32m- 	<NavigationProperty Name="Employee" Relationship="NorthwindModel.FK_Orders_Employees" FromRole="Orders" ToRole="Employees"/>[39m
+    [32m- 	<NavigationProperty Name="Order_Details" Relationship="NorthwindModel.FK_Order_Details_Orders" FromRole="Orders" ToRole="Order_Details"/>[39m
+    [32m- 	<NavigationProperty Name="Shipper" Relationship="NorthwindModel.FK_Orders_Shippers" FromRole="Orders" ToRole="Shippers"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Product">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="ProductID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Name="ProductID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity"/>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="SupplierID" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="CategoryID" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="QuantityPerUnit" Type="Edm.String" Nullable="true" MaxLength="20" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="UnitPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="UnitsInStock" Type="Edm.Int16" Nullable="true"/>[39m
+    [32m- 	<Property Name="UnitsOnOrder" Type="Edm.Int16" Nullable="true"/>[39m
+    [32m- 	<Property Name="ReorderLevel" Type="Edm.Int16" Nullable="true"/>[39m
+    [32m- 	<Property Name="Discontinued" Type="Edm.Boolean" Nullable="false"/>[39m
+    [32m- 	<NavigationProperty Name="Category" Relationship="NorthwindModel.FK_Products_Categories" FromRole="Products" ToRole="Categories"/>[39m
+    [32m- 	<NavigationProperty Name="Order_Details" Relationship="NorthwindModel.FK_Order_Details_Products" FromRole="Products" ToRole="Order_Details"/>[39m
+    [32m- 	<NavigationProperty Name="Supplier" Relationship="NorthwindModel.FK_Products_Suppliers" FromRole="Products" ToRole="Suppliers"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Region">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="RegionID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="RegionID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="RegionDescription" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="true"/>[39m
+    [32m- 	<NavigationProperty Name="Territories" Relationship="NorthwindModel.FK_Territories_Region" FromRole="Region" ToRole="Territories"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Shipper">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="ShipperID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Name="ShipperID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity"/>[39m
+    [32m- 	<Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Phone" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<NavigationProperty Name="Orders" Relationship="NorthwindModel.FK_Orders_Shippers" FromRole="Shippers" ToRole="Orders"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Supplier">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="SupplierID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Name="SupplierID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity"/>[39m
+    [32m- 	<Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ContactName" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ContactTitle" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Phone" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Fax" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="HomePage" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<NavigationProperty Name="Products" Relationship="NorthwindModel.FK_Products_Suppliers" FromRole="Suppliers" ToRole="Products"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Territory">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="TerritoryID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="TerritoryID" Type="Edm.String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="TerritoryDescription" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="true"/>[39m
+    [32m- 	<Property Name="RegionID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<NavigationProperty Name="Region" Relationship="NorthwindModel.FK_Territories_Region" FromRole="Territories" ToRole="Region"/>[39m
+    [32m- 	<NavigationProperty Name="Employees" Relationship="NorthwindModel.EmployeeTerritories" FromRole="Territories" ToRole="Employees"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Alphabetical_list_of_product">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="ProductID"/>[39m
+    [32m- 	<PropertyRef Name="ProductName"/>[39m
+    [32m- 	<PropertyRef Name="Discontinued"/>[39m
+    [32m- 	<PropertyRef Name="CategoryName"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="ProductID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="SupplierID" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="CategoryID" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="QuantityPerUnit" Type="Edm.String" Nullable="true" MaxLength="20" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="UnitPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="UnitsInStock" Type="Edm.Int16" Nullable="true"/>[39m
+    [32m- 	<Property Name="UnitsOnOrder" Type="Edm.Int16" Nullable="true"/>[39m
+    [32m- 	<Property Name="ReorderLevel" Type="Edm.Int16" Nullable="true"/>[39m
+    [32m- 	<Property Name="Discontinued" Type="Edm.Boolean" Nullable="false"/>[39m
+    [32m- 	<Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Category_Sales_for_1997">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CategoryName"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="CategorySales" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Current_Product_List">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="ProductID"/>[39m
+    [32m- 	<PropertyRef Name="ProductName"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Name="ProductID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity"/>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Customer_and_Suppliers_by_City">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CompanyName"/>[39m
+    [32m- 	<PropertyRef Name="Relationship"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ContactName" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Relationship" Type="Edm.String" Nullable="false" MaxLength="9" Unicode="false" FixedLength="false"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Invoice">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CustomerName"/>[39m
+    [32m- 	<PropertyRef Name="Salesperson"/>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	<PropertyRef Name="ShipperName"/>[39m
+    [32m- 	<PropertyRef Name="ProductID"/>[39m
+    [32m- 	<PropertyRef Name="ProductName"/>[39m
+    [32m- 	<PropertyRef Name="UnitPrice"/>[39m
+    [32m- 	<PropertyRef Name="Quantity"/>[39m
+    [32m- 	<PropertyRef Name="Discount"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="ShipName" Type="Edm.String" Nullable="true" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipAddress" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipCity" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipRegion" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipPostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipCountry" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="CustomerID" Type="Edm.String" Nullable="true" MaxLength="5" Unicode="true" FixedLength="true"/>[39m
+    [32m- 	<Property Name="CustomerName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Salesperson" Type="Edm.String" Nullable="false" MaxLength="31" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="OrderID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="OrderDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="RequiredDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="ShipperName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ProductID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="UnitPrice" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="Quantity" Type="Edm.Int16" Nullable="false"/>[39m
+    [32m- 	<Property Name="Discount" Type="Edm.Single" Nullable="false"/>[39m
+    [32m- 	<Property Name="ExtendedPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="Freight" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Order_Details_Extended">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	<PropertyRef Name="ProductID"/>[39m
+    [32m- 	<PropertyRef Name="ProductName"/>[39m
+    [32m- 	<PropertyRef Name="UnitPrice"/>[39m
+    [32m- 	<PropertyRef Name="Quantity"/>[39m
+    [32m- 	<PropertyRef Name="Discount"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="OrderID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="ProductID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="UnitPrice" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="Quantity" Type="Edm.Int16" Nullable="false"/>[39m
+    [32m- 	<Property Name="Discount" Type="Edm.Single" Nullable="false"/>[39m
+    [32m- 	<Property Name="ExtendedPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Order_Subtotal">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="OrderID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="Subtotal" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Orders_Qry">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	<PropertyRef Name="CompanyName"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="OrderID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="CustomerID" Type="Edm.String" Nullable="true" MaxLength="5" Unicode="true" FixedLength="true"/>[39m
+    [32m- 	<Property Name="EmployeeID" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="OrderDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="RequiredDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="ShipVia" Type="Edm.Int32" Nullable="true"/>[39m
+    [32m- 	<Property Name="Freight" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="ShipName" Type="Edm.String" Nullable="true" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipAddress" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipCity" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipRegion" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipPostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShipCountry" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Product_Sales_for_1997">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CategoryName"/>[39m
+    [32m- 	<PropertyRef Name="ProductName"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ProductSales" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Products_Above_Average_Price">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="ProductName"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="UnitPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Products_by_Category">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CategoryName"/>[39m
+    [32m- 	<PropertyRef Name="ProductName"/>[39m
+    [32m- 	<PropertyRef Name="Discontinued"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="QuantityPerUnit" Type="Edm.String" Nullable="true" MaxLength="20" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="UnitsInStock" Type="Edm.Int16" Nullable="true"/>[39m
+    [32m- 	<Property Name="Discontinued" Type="Edm.Boolean" Nullable="false"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Sales_by_Category">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="CategoryID"/>[39m
+    [32m- 	<PropertyRef Name="CategoryName"/>[39m
+    [32m- 	<PropertyRef Name="ProductName"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="CategoryID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ProductSales" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Sales_Totals_by_Amount">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	<PropertyRef Name="CompanyName"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="SaleAmount" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	<Property Name="OrderID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false"/>[39m
+    [32m- 	<Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Summary_of_Sales_by_Quarter">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="OrderID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="Subtotal" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<EntityType Name="Summary_of_Sales_by_Year">[39m
+    [32m- 	<Key>[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	</Key>[39m
+    [32m- 	<Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true"/>[39m
+    [32m- 	<Property Name="OrderID" Type="Edm.Int32" Nullable="false"/>[39m
+    [32m- 	<Property Name="Subtotal" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4"/>[39m
+    [32m- 	</EntityType>[39m
+    [32m- 	<Association Name="FK_Products_Categories">[39m
+    [32m- 	<End Role="Categories" Type="NorthwindModel.Category" Multiplicity="0..1"/>[39m
+    [32m- 	<End Role="Products" Type="NorthwindModel.Product" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Categories">[39m
+    [32m- 	<PropertyRef Name="CategoryID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Products">[39m
+    [32m- 	<PropertyRef Name="CategoryID"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="FK_Orders_Customers">[39m
+    [32m- 	<End Role="Customers" Type="NorthwindModel.Customer" Multiplicity="0..1"/>[39m
+    [32m- 	<End Role="Orders" Type="NorthwindModel.Order" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Customers">[39m
+    [32m- 	<PropertyRef Name="CustomerID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Orders">[39m
+    [32m- 	<PropertyRef Name="CustomerID"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="FK_Employees_Employees">[39m
+    [32m- 	<End Role="Employees" Type="NorthwindModel.Employee" Multiplicity="0..1"/>[39m
+    [32m- 	<End Role="Employees1" Type="NorthwindModel.Employee" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Employees">[39m
+    [32m- 	<PropertyRef Name="EmployeeID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Employees1">[39m
+    [32m- 	<PropertyRef Name="ReportsTo"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="FK_Orders_Employees">[39m
+    [32m- 	<End Role="Employees" Type="NorthwindModel.Employee" Multiplicity="0..1"/>[39m
+    [32m- 	<End Role="Orders" Type="NorthwindModel.Order" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Employees">[39m
+    [32m- 	<PropertyRef Name="EmployeeID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Orders">[39m
+    [32m- 	<PropertyRef Name="EmployeeID"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="FK_Order_Details_Orders">[39m
+    [32m- 	<End Role="Orders" Type="NorthwindModel.Order" Multiplicity="1"/>[39m
+    [32m- 	<End Role="Order_Details" Type="NorthwindModel.Order_Detail" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Orders">[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Order_Details">[39m
+    [32m- 	<PropertyRef Name="OrderID"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="FK_Order_Details_Products">[39m
+    [32m- 	<End Role="Products" Type="NorthwindModel.Product" Multiplicity="1"/>[39m
+    [32m- 	<End Role="Order_Details" Type="NorthwindModel.Order_Detail" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Products">[39m
+    [32m- 	<PropertyRef Name="ProductID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Order_Details">[39m
+    [32m- 	<PropertyRef Name="ProductID"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="FK_Orders_Shippers">[39m
+    [32m- 	<End Role="Shippers" Type="NorthwindModel.Shipper" Multiplicity="0..1"/>[39m
+    [32m- 	<End Role="Orders" Type="NorthwindModel.Order" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Shippers">[39m
+    [32m- 	<PropertyRef Name="ShipperID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Orders">[39m
+    [32m- 	<PropertyRef Name="ShipVia"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="FK_Products_Suppliers">[39m
+    [32m- 	<End Role="Suppliers" Type="NorthwindModel.Supplier" Multiplicity="0..1"/>[39m
+    [32m- 	<End Role="Products" Type="NorthwindModel.Product" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Suppliers">[39m
+    [32m- 	<PropertyRef Name="SupplierID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Products">[39m
+    [32m- 	<PropertyRef Name="SupplierID"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="FK_Territories_Region">[39m
+    [32m- 	<End Role="Region" Type="NorthwindModel.Region" Multiplicity="1"/>[39m
+    [32m- 	<End Role="Territories" Type="NorthwindModel.Territory" Multiplicity="*"/>[39m
+    [32m- 	<ReferentialConstraint>[39m
+    [32m- 	<Principal Role="Region">[39m
+    [32m- 	<PropertyRef Name="RegionID"/>[39m
+    [32m- 	</Principal>[39m
+    [32m- 	<Dependent Role="Territories">[39m
+    [32m- 	<PropertyRef Name="RegionID"/>[39m
+    [32m- 	</Dependent>[39m
+    [32m- 	</ReferentialConstraint>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="CustomerCustomerDemo">[39m
+    [32m- 	<End Role="CustomerDemographics" Type="NorthwindModel.CustomerDemographic" Multiplicity="*"/>[39m
+    [32m- 	<End Role="Customers" Type="NorthwindModel.Customer" Multiplicity="*"/>[39m
+    [32m- 	</Association>[39m
+    [32m- 	<Association Name="EmployeeTerritories">[39m
+    [32m- 	<End Role="Employees" Type="NorthwindModel.Employee" Multiplicity="*"/>[39m
+    [32m- 	<End Role="Territories" Type="NorthwindModel.Territory" Multiplicity="*"/>[39m
+    [32m- 	</Association>[39m
+    [32m- 	</Schema>[39m
+    [32m- 	<Schema xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ODataWeb.Northwind.Model">[39m
+    [32m- 	<EntityContainer xmlns:p7="http://schemas.microsoft.com/ado/2009/02/edm/annotation" Name="NorthwindEntities" p7:LazyLoadingEnabled="true" m:IsDefaultEntityContainer="true">[39m
+    [32m- 	<EntitySet Name="Categories" EntityType="NorthwindModel.Category"/>[39m
+    [32m- 	<EntitySet Name="CustomerDemographics" EntityType="NorthwindModel.CustomerDemographic"/>[39m
+    [32m- 	<EntitySet Name="Customers" EntityType="NorthwindModel.Customer"/>[39m
+    [32m- 	<EntitySet Name="Employees" EntityType="NorthwindModel.Employee"/>[39m
+    [32m- 	<EntitySet Name="Order_Details" EntityType="NorthwindModel.Order_Detail"/>[39m
+    [32m- 	<EntitySet Name="Orders" EntityType="NorthwindModel.Order"/>[39m
+    [32m- 	<EntitySet Name="Products" EntityType="NorthwindModel.Product"/>[39m
+    [32m- 	<EntitySet Name="Regions" EntityType="NorthwindModel.Region"/>[39m
+    [32m- 	<EntitySet Name="Shippers" EntityType="NorthwindModel.Shipper"/>[39m
+    [32m- 	<EntitySet Name="Suppliers" EntityType="NorthwindModel.Supplier"/>[39m
+    [32m- 	<EntitySet Name="Territories" EntityType="NorthwindModel.Territory"/>[39m
+    [32m- 	<EntitySet Name="Alphabetical_list_of_products" EntityType="NorthwindModel.Alphabetical_list_of_product"/>[39m
+    [32m- 	<EntitySet Name="Category_Sales_for_1997" EntityType="NorthwindModel.Category_Sales_for_1997"/>[39m
+    [32m- 	<EntitySet Name="Current_Product_Lists" EntityType="NorthwindModel.Current_Product_List"/>[39m
+    [32m- 	<EntitySet Name="Customer_and_Suppliers_by_Cities" EntityType="NorthwindModel.Customer_and_Suppliers_by_City"/>[39m
+    [32m- 	<EntitySet Name="Invoices" EntityType="NorthwindModel.Invoice"/>[39m
+    [32m- 	<EntitySet Name="Order_Details_Extendeds" EntityType="NorthwindModel.Order_Details_Extended"/>[39m
+    [32m- 	<EntitySet Name="Order_Subtotals" EntityType="NorthwindModel.Order_Subtotal"/>[39m
+    [32m- 	<EntitySet Name="Orders_Qries" EntityType="NorthwindModel.Orders_Qry"/>[39m
+    [32m- 	<EntitySet Name="Product_Sales_for_1997" EntityType="NorthwindModel.Product_Sales_for_1997"/>[39m
+    [32m- 	<EntitySet Name="Products_Above_Average_Prices" EntityType="NorthwindModel.Products_Above_Average_Price"/>[39m
+    [32m- 	<EntitySet Name="Products_by_Categories" EntityType="NorthwindModel.Products_by_Category"/>[39m
+    [32m- 	<EntitySet Name="Sales_by_Categories" EntityType="NorthwindModel.Sales_by_Category"/>[39m
+    [32m- 	<EntitySet Name="Sales_Totals_by_Amounts" EntityType="NorthwindModel.Sales_Totals_by_Amount"/>[39m
+    [32m- 	<EntitySet Name="Summary_of_Sales_by_Quarters" EntityType="NorthwindModel.Summary_of_Sales_by_Quarter"/>[39m
+    [32m- 	<EntitySet Name="Summary_of_Sales_by_Years" EntityType="NorthwindModel.Summary_of_Sales_by_Year"/>[39m
+    [32m- 	<AssociationSet Name="FK_Products_Categories" Association="NorthwindModel.FK_Products_Categories">[39m
+    [32m- 	<End Role="Categories" EntitySet="Categories"/>[39m
+    [32m- 	<End Role="Products" EntitySet="Products"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="FK_Orders_Customers" Association="NorthwindModel.FK_Orders_Customers">[39m
+    [32m- 	<End Role="Customers" EntitySet="Customers"/>[39m
+    [32m- 	<End Role="Orders" EntitySet="Orders"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="FK_Employees_Employees" Association="NorthwindModel.FK_Employees_Employees">[39m
+    [32m- 	<End Role="Employees" EntitySet="Employees"/>[39m
+    [32m- 	<End Role="Employees1" EntitySet="Employees"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="FK_Orders_Employees" Association="NorthwindModel.FK_Orders_Employees">[39m
+    [32m- 	<End Role="Employees" EntitySet="Employees"/>[39m
+    [32m- 	<End Role="Orders" EntitySet="Orders"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="FK_Order_Details_Orders" Association="NorthwindModel.FK_Order_Details_Orders">[39m
+    [32m- 	<End Role="Orders" EntitySet="Orders"/>[39m
+    [32m- 	<End Role="Order_Details" EntitySet="Order_Details"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="FK_Order_Details_Products" Association="NorthwindModel.FK_Order_Details_Products">[39m
+    [32m- 	<End Role="Products" EntitySet="Products"/>[39m
+    [32m- 	<End Role="Order_Details" EntitySet="Order_Details"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="FK_Orders_Shippers" Association="NorthwindModel.FK_Orders_Shippers">[39m
+    [32m- 	<End Role="Shippers" EntitySet="Shippers"/>[39m
+    [32m- 	<End Role="Orders" EntitySet="Orders"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="FK_Products_Suppliers" Association="NorthwindModel.FK_Products_Suppliers">[39m
+    [32m- 	<End Role="Suppliers" EntitySet="Suppliers"/>[39m
+    [32m- 	<End Role="Products" EntitySet="Products"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="FK_Territories_Region" Association="NorthwindModel.FK_Territories_Region">[39m
+    [32m- 	<End Role="Region" EntitySet="Regions"/>[39m
+    [32m- 	<End Role="Territories" EntitySet="Territories"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="CustomerCustomerDemo" Association="NorthwindModel.CustomerCustomerDemo">[39m
+    [32m- 	<End Role="CustomerDemographics" EntitySet="CustomerDemographics"/>[39m
+    [32m- 	<End Role="Customers" EntitySet="Customers"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	<AssociationSet Name="EmployeeTerritories" Association="NorthwindModel.EmployeeTerritories">[39m
+    [32m- 	<End Role="Employees" EntitySet="Employees"/>[39m
+    [32m- 	<End Role="Territories" EntitySet="Territories"/>[39m
+    [32m- 	</AssociationSet>[39m
+    [32m- 	</EntityContainer>[39m
+    [32m- 	</Schema>[39m
+    [32m- 	</edmx:DataServices>[39m
+    [32m- 	</edmx:Edmx>[39m
+    [31m+ <?xml version="1.0" encoding="utf-8" standalone="yes"?>    [39m
+    [31m+ <edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">    [39m
+    [31m+   <edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="1.0">    [39m
+    [31m+     <Schema Namespace="NorthwindModel" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">    [39m
+    [31m+       <EntityType Name="Category">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CategoryID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="CategoryID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />    [39m
+    [31m+         <Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Description" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Picture" Type="Edm.Binary" Nullable="true" MaxLength="Max" FixedLength="false" />    [39m
+    [31m+         <NavigationProperty Name="Products" Relationship="NorthwindModel.FK_Products_Categories" FromRole="Categories" ToRole="Products" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="CustomerDemographic">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CustomerTypeID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="CustomerTypeID" Type="Edm.String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="true" />    [39m
+    [31m+         <Property Name="CustomerDesc" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <NavigationProperty Name="Customers" Relationship="NorthwindModel.CustomerCustomerDemo" FromRole="CustomerDemographics" ToRole="Customers" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Customer">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CustomerID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="CustomerID" Type="Edm.String" Nullable="false" MaxLength="5" Unicode="true" FixedLength="true" />    [39m
+    [31m+         <Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ContactName" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ContactTitle" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Phone" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Fax" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <NavigationProperty Name="Orders" Relationship="NorthwindModel.FK_Orders_Customers" FromRole="Customers" ToRole="Orders" />    [39m
+    [31m+         <NavigationProperty Name="CustomerDemographics" Relationship="NorthwindModel.CustomerCustomerDemo" FromRole="Customers" ToRole="CustomerDemographics" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Employee">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="EmployeeID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="EmployeeID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />    [39m
+    [31m+         <Property Name="LastName" Type="Edm.String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="FirstName" Type="Edm.String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Title" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="TitleOfCourtesy" Type="Edm.String" Nullable="true" MaxLength="25" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="BirthDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="HireDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="HomePhone" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Extension" Type="Edm.String" Nullable="true" MaxLength="4" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Photo" Type="Edm.Binary" Nullable="true" MaxLength="Max" FixedLength="false" />    [39m
+    [31m+         <Property Name="Notes" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ReportsTo" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="PhotoPath" Type="Edm.String" Nullable="true" MaxLength="255" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <NavigationProperty Name="Employees1" Relationship="NorthwindModel.FK_Employees_Employees" FromRole="Employees" ToRole="Employees1" />    [39m
+    [31m+         <NavigationProperty Name="Employee1" Relationship="NorthwindModel.FK_Employees_Employees" FromRole="Employees1" ToRole="Employees" />    [39m
+    [31m+         <NavigationProperty Name="Orders" Relationship="NorthwindModel.FK_Orders_Employees" FromRole="Employees" ToRole="Orders" />    [39m
+    [31m+         <NavigationProperty Name="Territories" Relationship="NorthwindModel.EmployeeTerritories" FromRole="Employees" ToRole="Territories" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Order_Detail">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+           <PropertyRef Name="ProductID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="ProductID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="UnitPrice" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="Quantity" Type="Edm.Int16" Nullable="false" />    [39m
+    [31m+         <Property Name="Discount" Type="Edm.Single" Nullable="false" />    [39m
+    [31m+         <NavigationProperty Name="Order" Relationship="NorthwindModel.FK_Order_Details_Orders" FromRole="Order_Details" ToRole="Orders" />    [39m
+    [31m+         <NavigationProperty Name="Product" Relationship="NorthwindModel.FK_Order_Details_Products" FromRole="Order_Details" ToRole="Products" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Order">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />    [39m
+    [31m+         <Property Name="CustomerID" Type="Edm.String" Nullable="true" MaxLength="5" Unicode="true" FixedLength="true" />    [39m
+    [31m+         <Property Name="EmployeeID" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="OrderDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="RequiredDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="ShipVia" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="Freight" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="ShipName" Type="Edm.String" Nullable="true" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipAddress" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipCity" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipRegion" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipPostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipCountry" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <NavigationProperty Name="Customer" Relationship="NorthwindModel.FK_Orders_Customers" FromRole="Orders" ToRole="Customers" />    [39m
+    [31m+         <NavigationProperty Name="Employee" Relationship="NorthwindModel.FK_Orders_Employees" FromRole="Orders" ToRole="Employees" />    [39m
+    [31m+         <NavigationProperty Name="Order_Details" Relationship="NorthwindModel.FK_Order_Details_Orders" FromRole="Orders" ToRole="Order_Details" />    [39m
+    [31m+         <NavigationProperty Name="Shipper" Relationship="NorthwindModel.FK_Orders_Shippers" FromRole="Orders" ToRole="Shippers" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Product">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="ProductID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="ProductID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="SupplierID" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="CategoryID" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="QuantityPerUnit" Type="Edm.String" Nullable="true" MaxLength="20" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="UnitPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="UnitsInStock" Type="Edm.Int16" Nullable="true" />    [39m
+    [31m+         <Property Name="UnitsOnOrder" Type="Edm.Int16" Nullable="true" />    [39m
+    [31m+         <Property Name="ReorderLevel" Type="Edm.Int16" Nullable="true" />    [39m
+    [31m+         <Property Name="Discontinued" Type="Edm.Boolean" Nullable="false" />    [39m
+    [31m+         <NavigationProperty Name="Category" Relationship="NorthwindModel.FK_Products_Categories" FromRole="Products" ToRole="Categories" />    [39m
+    [31m+         <NavigationProperty Name="Order_Details" Relationship="NorthwindModel.FK_Order_Details_Products" FromRole="Products" ToRole="Order_Details" />    [39m
+    [31m+         <NavigationProperty Name="Supplier" Relationship="NorthwindModel.FK_Products_Suppliers" FromRole="Products" ToRole="Suppliers" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Region">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="RegionID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="RegionID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="RegionDescription" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="true" />    [39m
+    [31m+         <NavigationProperty Name="Territories" Relationship="NorthwindModel.FK_Territories_Region" FromRole="Region" ToRole="Territories" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Shipper">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="ShipperID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="ShipperID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />    [39m
+    [31m+         <Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Phone" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <NavigationProperty Name="Orders" Relationship="NorthwindModel.FK_Orders_Shippers" FromRole="Shippers" ToRole="Orders" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Supplier">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="SupplierID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="SupplierID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />    [39m
+    [31m+         <Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ContactName" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ContactTitle" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Phone" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Fax" Type="Edm.String" Nullable="true" MaxLength="24" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="HomePage" Type="Edm.String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <NavigationProperty Name="Products" Relationship="NorthwindModel.FK_Products_Suppliers" FromRole="Suppliers" ToRole="Products" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Territory">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="TerritoryID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="TerritoryID" Type="Edm.String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="TerritoryDescription" Type="Edm.String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="true" />    [39m
+    [31m+         <Property Name="RegionID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <NavigationProperty Name="Region" Relationship="NorthwindModel.FK_Territories_Region" FromRole="Territories" ToRole="Region" />    [39m
+    [31m+         <NavigationProperty Name="Employees" Relationship="NorthwindModel.EmployeeTerritories" FromRole="Territories" ToRole="Employees" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Alphabetical_list_of_product">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="ProductID" />    [39m
+    [31m+           <PropertyRef Name="ProductName" />    [39m
+    [31m+           <PropertyRef Name="Discontinued" />    [39m
+    [31m+           <PropertyRef Name="CategoryName" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="ProductID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="SupplierID" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="CategoryID" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="QuantityPerUnit" Type="Edm.String" Nullable="true" MaxLength="20" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="UnitPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="UnitsInStock" Type="Edm.Int16" Nullable="true" />    [39m
+    [31m+         <Property Name="UnitsOnOrder" Type="Edm.Int16" Nullable="true" />    [39m
+    [31m+         <Property Name="ReorderLevel" Type="Edm.Int16" Nullable="true" />    [39m
+    [31m+         <Property Name="Discontinued" Type="Edm.Boolean" Nullable="false" />    [39m
+    [31m+         <Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Category_Sales_for_1997">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CategoryName" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="CategorySales" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Current_Product_List">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="ProductID" />    [39m
+    [31m+           <PropertyRef Name="ProductName" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="ProductID" Type="Edm.Int32" Nullable="false" p8:StoreGeneratedPattern="Identity" xmlns:p8="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Customer_and_Suppliers_by_City">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CompanyName" />    [39m
+    [31m+           <PropertyRef Name="Relationship" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ContactName" Type="Edm.String" Nullable="true" MaxLength="30" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Relationship" Type="Edm.String" Nullable="false" MaxLength="9" Unicode="false" FixedLength="false" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Invoice">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CustomerName" />    [39m
+    [31m+           <PropertyRef Name="Salesperson" />    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+           <PropertyRef Name="ShipperName" />    [39m
+    [31m+           <PropertyRef Name="ProductID" />    [39m
+    [31m+           <PropertyRef Name="ProductName" />    [39m
+    [31m+           <PropertyRef Name="UnitPrice" />    [39m
+    [31m+           <PropertyRef Name="Quantity" />    [39m
+    [31m+           <PropertyRef Name="Discount" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="ShipName" Type="Edm.String" Nullable="true" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipAddress" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipCity" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipRegion" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipPostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipCountry" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="CustomerID" Type="Edm.String" Nullable="true" MaxLength="5" Unicode="true" FixedLength="true" />    [39m
+    [31m+         <Property Name="CustomerName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Salesperson" Type="Edm.String" Nullable="false" MaxLength="31" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="OrderDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="RequiredDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="ShipperName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ProductID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="UnitPrice" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="Quantity" Type="Edm.Int16" Nullable="false" />    [39m
+    [31m+         <Property Name="Discount" Type="Edm.Single" Nullable="false" />    [39m
+    [31m+         <Property Name="ExtendedPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="Freight" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Order_Details_Extended">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+           <PropertyRef Name="ProductID" />    [39m
+    [31m+           <PropertyRef Name="ProductName" />    [39m
+    [31m+           <PropertyRef Name="UnitPrice" />    [39m
+    [31m+           <PropertyRef Name="Quantity" />    [39m
+    [31m+           <PropertyRef Name="Discount" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="ProductID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="UnitPrice" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="Quantity" Type="Edm.Int16" Nullable="false" />    [39m
+    [31m+         <Property Name="Discount" Type="Edm.Single" Nullable="false" />    [39m
+    [31m+         <Property Name="ExtendedPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Order_Subtotal">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="Subtotal" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Orders_Qry">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+           <PropertyRef Name="CompanyName" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="CustomerID" Type="Edm.String" Nullable="true" MaxLength="5" Unicode="true" FixedLength="true" />    [39m
+    [31m+         <Property Name="EmployeeID" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="OrderDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="RequiredDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="ShipVia" Type="Edm.Int32" Nullable="true" />    [39m
+    [31m+         <Property Name="Freight" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="ShipName" Type="Edm.String" Nullable="true" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipAddress" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipCity" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipRegion" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipPostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShipCountry" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Address" Type="Edm.String" Nullable="true" MaxLength="60" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="City" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Region" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="PostalCode" Type="Edm.String" Nullable="true" MaxLength="10" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="Country" Type="Edm.String" Nullable="true" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Product_Sales_for_1997">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CategoryName" />    [39m
+    [31m+           <PropertyRef Name="ProductName" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ProductSales" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Products_Above_Average_Price">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="ProductName" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="UnitPrice" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Products_by_Category">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CategoryName" />    [39m
+    [31m+           <PropertyRef Name="ProductName" />    [39m
+    [31m+           <PropertyRef Name="Discontinued" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="QuantityPerUnit" Type="Edm.String" Nullable="true" MaxLength="20" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="UnitsInStock" Type="Edm.Int16" Nullable="true" />    [39m
+    [31m+         <Property Name="Discontinued" Type="Edm.Boolean" Nullable="false" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Sales_by_Category">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="CategoryID" />    [39m
+    [31m+           <PropertyRef Name="CategoryName" />    [39m
+    [31m+           <PropertyRef Name="ProductName" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="CategoryID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ProductName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ProductSales" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Sales_Totals_by_Amount">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+           <PropertyRef Name="CompanyName" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="SaleAmount" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="CompanyName" Type="Edm.String" Nullable="false" MaxLength="40" Unicode="true" FixedLength="false" />    [39m
+    [31m+         <Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Summary_of_Sales_by_Quarter">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="Subtotal" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <EntityType Name="Summary_of_Sales_by_Year">    [39m
+    [31m+         <Key>    [39m
+    [31m+           <PropertyRef Name="OrderID" />    [39m
+    [31m+         </Key>    [39m
+    [31m+         <Property Name="ShippedDate" Type="Edm.DateTime" Nullable="true" />    [39m
+    [31m+         <Property Name="OrderID" Type="Edm.Int32" Nullable="false" />    [39m
+    [31m+         <Property Name="Subtotal" Type="Edm.Decimal" Nullable="true" Precision="19" Scale="4" />    [39m
+    [31m+       </EntityType>    [39m
+    [31m+       <Association Name="FK_Products_Categories">    [39m
+    [31m+         <End Role="Categories" Type="NorthwindModel.Category" Multiplicity="0..1" />    [39m
+    [31m+         <End Role="Products" Type="NorthwindModel.Product" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Categories">    [39m
+    [31m+             <PropertyRef Name="CategoryID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Products">    [39m
+    [31m+             <PropertyRef Name="CategoryID" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="FK_Orders_Customers">    [39m
+    [31m+         <End Role="Customers" Type="NorthwindModel.Customer" Multiplicity="0..1" />    [39m
+    [31m+         <End Role="Orders" Type="NorthwindModel.Order" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Customers">    [39m
+    [31m+             <PropertyRef Name="CustomerID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Orders">    [39m
+    [31m+             <PropertyRef Name="CustomerID" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="FK_Employees_Employees">    [39m
+    [31m+         <End Role="Employees" Type="NorthwindModel.Employee" Multiplicity="0..1" />    [39m
+    [31m+         <End Role="Employees1" Type="NorthwindModel.Employee" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Employees">    [39m
+    [31m+             <PropertyRef Name="EmployeeID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Employees1">    [39m
+    [31m+             <PropertyRef Name="ReportsTo" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="FK_Orders_Employees">    [39m
+    [31m+         <End Role="Employees" Type="NorthwindModel.Employee" Multiplicity="0..1" />    [39m
+    [31m+         <End Role="Orders" Type="NorthwindModel.Order" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Employees">    [39m
+    [31m+             <PropertyRef Name="EmployeeID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Orders">    [39m
+    [31m+             <PropertyRef Name="EmployeeID" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="FK_Order_Details_Orders">    [39m
+    [31m+         <End Role="Orders" Type="NorthwindModel.Order" Multiplicity="1" />    [39m
+    [31m+         <End Role="Order_Details" Type="NorthwindModel.Order_Detail" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Orders">    [39m
+    [31m+             <PropertyRef Name="OrderID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Order_Details">    [39m
+    [31m+             <PropertyRef Name="OrderID" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="FK_Order_Details_Products">    [39m
+    [31m+         <End Role="Products" Type="NorthwindModel.Product" Multiplicity="1" />    [39m
+    [31m+         <End Role="Order_Details" Type="NorthwindModel.Order_Detail" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Products">    [39m
+    [31m+             <PropertyRef Name="ProductID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Order_Details">    [39m
+    [31m+             <PropertyRef Name="ProductID" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="FK_Orders_Shippers">    [39m
+    [31m+         <End Role="Shippers" Type="NorthwindModel.Shipper" Multiplicity="0..1" />    [39m
+    [31m+         <End Role="Orders" Type="NorthwindModel.Order" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Shippers">    [39m
+    [31m+             <PropertyRef Name="ShipperID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Orders">    [39m
+    [31m+             <PropertyRef Name="ShipVia" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="FK_Products_Suppliers">    [39m
+    [31m+         <End Role="Suppliers" Type="NorthwindModel.Supplier" Multiplicity="0..1" />    [39m
+    [31m+         <End Role="Products" Type="NorthwindModel.Product" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Suppliers">    [39m
+    [31m+             <PropertyRef Name="SupplierID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Products">    [39m
+    [31m+             <PropertyRef Name="SupplierID" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="FK_Territories_Region">    [39m
+    [31m+         <End Role="Region" Type="NorthwindModel.Region" Multiplicity="1" />    [39m
+    [31m+         <End Role="Territories" Type="NorthwindModel.Territory" Multiplicity="*" />    [39m
+    [31m+         <ReferentialConstraint>    [39m
+    [31m+           <Principal Role="Region">    [39m
+    [31m+             <PropertyRef Name="RegionID" />    [39m
+    [31m+           </Principal>    [39m
+    [31m+           <Dependent Role="Territories">    [39m
+    [31m+             <PropertyRef Name="RegionID" />    [39m
+    [31m+           </Dependent>    [39m
+    [31m+         </ReferentialConstraint>    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="CustomerCustomerDemo">    [39m
+    [31m+         <End Role="CustomerDemographics" Type="NorthwindModel.CustomerDemographic" Multiplicity="*" />    [39m
+    [31m+         <End Role="Customers" Type="NorthwindModel.Customer" Multiplicity="*" />    [39m
+    [31m+       </Association>    [39m
+    [31m+       <Association Name="EmployeeTerritories">    [39m
+    [31m+         <End Role="Employees" Type="NorthwindModel.Employee" Multiplicity="*" />    [39m
+    [31m+         <End Role="Territories" Type="NorthwindModel.Territory" Multiplicity="*" />    [39m
+    [31m+       </Association>    [39m
+    [31m+     </Schema>    [39m
+    [31m+     <Schema Namespace="ODataWeb.Northwind.Model" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">    [39m
+    [31m+       <EntityContainer Name="NorthwindEntities" p7:LazyLoadingEnabled="true" m:IsDefaultEntityContainer="true" xmlns:p7="http://schemas.microsoft.com/ado/2009/02/edm/annotation">    [39m
+    [31m+         <EntitySet Name="Categories" EntityType="NorthwindModel.Category" />    [39m
+    [31m+         <EntitySet Name="CustomerDemographics" EntityType="NorthwindModel.CustomerDemographic" />    [39m
+    [31m+         <EntitySet Name="Customers" EntityType="NorthwindModel.Customer" />    [39m
+    [31m+         <EntitySet Name="Employees" EntityType="NorthwindModel.Employee" />    [39m
+    [31m+         <EntitySet Name="Order_Details" EntityType="NorthwindModel.Order_Detail" />    [39m
+    [31m+         <EntitySet Name="Orders" EntityType="NorthwindModel.Order" />    [39m
+    [31m+         <EntitySet Name="Products" EntityType="NorthwindModel.Product" />    [39m
+    [31m+         <EntitySet Name="Regions" EntityType="NorthwindModel.Region" />    [39m
+    [31m+         <EntitySet Name="Shippers" EntityType="NorthwindModel.Shipper" />    [39m
+    [31m+         <EntitySet Name="Suppliers" EntityType="NorthwindModel.Supplier" />    [39m
+    [31m+         <EntitySet Name="Territories" EntityType="NorthwindModel.Territory" />    [39m
+    [31m+         <EntitySet Name="Alphabetical_list_of_products" EntityType="NorthwindModel.Alphabetical_list_of_product" />    [39m
+    [31m+         <EntitySet Name="Category_Sales_for_1997" EntityType="NorthwindModel.Category_Sales_for_1997" />    [39m
+    [31m+         <EntitySet Name="Current_Product_Lists" EntityType="NorthwindModel.Current_Product_List" />    [39m
+    [31m+         <EntitySet Name="Customer_and_Suppliers_by_Cities" EntityType="NorthwindModel.Customer_and_Suppliers_by_City" />    [39m
+    [31m+         <EntitySet Name="Invoices" EntityType="NorthwindModel.Invoice" />    [39m
+    [31m+         <EntitySet Name="Order_Details_Extendeds" EntityType="NorthwindModel.Order_Details_Extended" />    [39m
+    [31m+         <EntitySet Name="Order_Subtotals" EntityType="NorthwindModel.Order_Subtotal" />    [39m
+    [31m+         <EntitySet Name="Orders_Qries" EntityType="NorthwindModel.Orders_Qry" />    [39m
+    [31m+         <EntitySet Name="Product_Sales_for_1997" EntityType="NorthwindModel.Product_Sales_for_1997" />    [39m
+    [31m+         <EntitySet Name="Products_Above_Average_Prices" EntityType="NorthwindModel.Products_Above_Average_Price" />    [39m
+    [31m+         <EntitySet Name="Products_by_Categories" EntityType="NorthwindModel.Products_by_Category" />    [39m
+    [31m+         <EntitySet Name="Sales_by_Categories" EntityType="NorthwindModel.Sales_by_Category" />    [39m
+    [31m+         <EntitySet Name="Sales_Totals_by_Amounts" EntityType="NorthwindModel.Sales_Totals_by_Amount" />    [39m
+    [31m+         <EntitySet Name="Summary_of_Sales_by_Quarters" EntityType="NorthwindModel.Summary_of_Sales_by_Quarter" />    [39m
+    [31m+         <EntitySet Name="Summary_of_Sales_by_Years" EntityType="NorthwindModel.Summary_of_Sales_by_Year" />    [39m
+    [31m+         <AssociationSet Name="FK_Products_Categories" Association="NorthwindModel.FK_Products_Categories">    [39m
+    [31m+           <End Role="Categories" EntitySet="Categories" />    [39m
+    [31m+           <End Role="Products" EntitySet="Products" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="FK_Orders_Customers" Association="NorthwindModel.FK_Orders_Customers">    [39m
+    [31m+           <End Role="Customers" EntitySet="Customers" />    [39m
+    [31m+           <End Role="Orders" EntitySet="Orders" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="FK_Employees_Employees" Association="NorthwindModel.FK_Employees_Employees">    [39m
+    [31m+           <End Role="Employees" EntitySet="Employees" />    [39m
+    [31m+           <End Role="Employees1" EntitySet="Employees" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="FK_Orders_Employees" Association="NorthwindModel.FK_Orders_Employees">    [39m
+    [31m+           <End Role="Employees" EntitySet="Employees" />    [39m
+    [31m+           <End Role="Orders" EntitySet="Orders" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="FK_Order_Details_Orders" Association="NorthwindModel.FK_Order_Details_Orders">    [39m
+    [31m+           <End Role="Orders" EntitySet="Orders" />    [39m
+    [31m+           <End Role="Order_Details" EntitySet="Order_Details" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="FK_Order_Details_Products" Association="NorthwindModel.FK_Order_Details_Products">    [39m
+    [31m+           <End Role="Products" EntitySet="Products" />    [39m
+    [31m+           <End Role="Order_Details" EntitySet="Order_Details" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="FK_Orders_Shippers" Association="NorthwindModel.FK_Orders_Shippers">    [39m
+    [31m+           <End Role="Shippers" EntitySet="Shippers" />    [39m
+    [31m+           <End Role="Orders" EntitySet="Orders" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="FK_Products_Suppliers" Association="NorthwindModel.FK_Products_Suppliers">    [39m
+    [31m+           <End Role="Suppliers" EntitySet="Suppliers" />    [39m
+    [31m+           <End Role="Products" EntitySet="Products" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="FK_Territories_Region" Association="NorthwindModel.FK_Territories_Region">    [39m
+    [31m+           <End Role="Region" EntitySet="Regions" />    [39m
+    [31m+           <End Role="Territories" EntitySet="Territories" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="CustomerCustomerDemo" Association="NorthwindModel.CustomerCustomerDemo">    [39m
+    [31m+           <End Role="CustomerDemographics" EntitySet="CustomerDemographics" />    [39m
+    [31m+           <End Role="Customers" EntitySet="Customers" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+         <AssociationSet Name="EmployeeTerritories" Association="NorthwindModel.EmployeeTerritories">    [39m
+    [31m+           <End Role="Employees" EntitySet="Employees" />    [39m
+    [31m+           <End Role="Territories" EntitySet="Territories" />    [39m
+    [31m+         </AssociationSet>    [39m
+    [31m+       </EntityContainer>    [39m
+    [31m+     </Schema>    [39m
+    [31m+   </edmx:DataServices>    [39m
+    [31m+ </edmx:Edmx>[39m
+[2m[22m
+[2m    [0m [90m 49 | [39m	test([32m'Function that retrieves the metadata XML file for a given Odata source'[39m[33m,[39m () [33m=>[39m {[0m[22m
+[2m    [0m [90m 50 | [39m		[36mreturn[39m [33mOdata[39m[33m.[39mgetMetaData(sourceUrl)[33m.[39mthen((xmlString) [33m=>[39m {[0m[22m
+[2m    [0m[31m[1m>[22m[2m[39m[90m 51 | [39m			expect(xmlString)[33m.[39mtoBe(metadata())[33m;[39m[0m[22m
+[2m    [0m [90m    | [39m			                  [31m[1m^[22m[2m[39m[0m[22m
+[2m    [0m [90m 52 | [39m		})[33m;[39m[0m[22m
+[2m    [0m [90m 53 | [39m	})[33m;[39m[0m[22m
+[2m    [0m [90m 54 | [39m[0m[22m
+[2m[22m
+[2m      [2mat [22m[2m[0m[36mtests/int/Odata.test.js[39m[0m[2m:51:22[22m[2m[22m
+
+[1mTest Suites: [22m[1m[31m1 failed[39m[22m, 1 total
+[1mTests:       [22m[1m[31m1 failed[39m[22m, 1 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        2.292 s, estimated 3 s
+[2mRan all test suites[22m[2m matching [22m/int\/Odata/i[2m.[22m

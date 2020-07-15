@@ -31,7 +31,7 @@ const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI');
  */
 
 let graphSuggesterControllerMaker = (function () {
-	let instance;
+	let instance = null;
 
 	/**
 	 * This class handles all requests for graph suggestion generation.

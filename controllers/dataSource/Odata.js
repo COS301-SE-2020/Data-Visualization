@@ -19,6 +19,7 @@
  * Constraints: None
  */
 const axios = require('axios');
+const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 /**
  * Purpose: This class is responsible for getting Odata.
  * Usage Instructions: Use the corresponding getters to retrieve class variables. And use the format to format this Odata
@@ -31,6 +32,7 @@ class Odata {
 	 * @returns a promise of Odata
 	 */
 	static getMetaData(src) {
+		if (!PRODUCTION) console.log('Odata: ', formatMetaData(src));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(formatMetaData(src))
@@ -47,6 +49,7 @@ class Odata {
 	 * @returns a promise of the entity list
 	 */
 	static getEntityList(src) {
+		if (!PRODUCTION) console.log('Odata: ', format(src));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(format(src))
@@ -64,6 +67,7 @@ class Odata {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity) {
+		if (!PRODUCTION) console.log('Odata: ', formatEntity(src, entity));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(formatEntity(src, entity))
@@ -81,7 +85,7 @@ class Odata {
  * @returns string of json format
  */
 function format(src) {
-	return `${src}?$format=json`;
+	return `${src}/?$format=json`;
 }
 /**
  * This function formats an entity in to json.
@@ -90,8 +94,7 @@ function format(src) {
  * @returns string of json format
  */
 function formatEntity(src, entity) {
-	console.log(`ODATA: ${src}/${entity}?$format=json`);
-	return `${src}/${entity}?$format=json`;
+	return `${src}/${entity}/?$format=json`;
 }
 /**
  * This function formats an metadata in to json.

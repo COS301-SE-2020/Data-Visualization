@@ -261,6 +261,8 @@ class RestController {
 	static getSuggestions(src, done, error) {
 		DataSource.getMetaData(src)
 			.then((XMLString) => {
+				console.log(graphsSuggesterController);
+
 				const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
 
 				let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
