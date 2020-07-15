@@ -4,12 +4,13 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
-		"postinstall": "npm install --prefix ./data-visualisation-app",
 		"start": "node server.js",
 		"build": "npm run build --prefix ./data-visualisation-app",
 		"test": "env NODE_ENV=production jest -- tests",
 		"test:unit": "env NODE_ENV=production jest -- unit",
-		"test:int": "env NODE_ENV=production jest -- int"
+		"test:int": "env NODE_ENV=production jest -- int",
+		"heroku-postbuild": "npm install --prefix ./data-visualisation-app",
+		"posttest": "npm test --prefix ./data-visualisation-app"
 	},
 	"repository": {
 		"type": "git",
@@ -39,6 +40,7 @@
 		"xmldom": "^0.3.0"
 	},
 	"devDependencies": {
-		"jest": "^26.1.0"
+		"jest": "^26.1.0",
+		"rewire": "^5.0.0"
 	}
 }
