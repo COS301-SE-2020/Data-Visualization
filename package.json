@@ -7,7 +7,9 @@
 		"postinstall": "npm install --prefix ./data-visualisation-app",
 		"start": "node server.js",
 		"build": "npm run build --prefix ./data-visualisation-app",
-		"test": "jest"
+		"test": "env NODE_ENV=production jest -- tests",
+		"test:unit": "env NODE_ENV=production jest -- unit",
+		"test:int": "env NODE_ENV=production jest -- int"
 	},
 	"repository": {
 		"type": "git",

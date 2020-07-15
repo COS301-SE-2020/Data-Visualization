@@ -85,20 +85,20 @@ class Database {
 
 	static authenticate(email, password) {
 		return new Promise((resolve, reject) => {
-			console.log('==> AUTHENTICATING: ' + email);
+			if (!PRODUCTION) console.log('==> AUTHENTICATING: ' + email);
 			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
 				.then((result) => {
 					if (typeof result !== 'undefined' && result.command === 'SELECT') {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
-							console.log('==> AUTHENTICATION: succesful');
+							if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful');
 							delete result.rows[0].password;
 							resolve(result.rows[0]);
 						} else {
-							console.log('==> AUTHENTICATION: failed');
+							if (!PRODUCTION) console.log('==> AUTHENTICATION: failed');
 							resolve(false);
 						}
 					} else {
-						console.log('==> AUTHENTICATION: error');
+						if (!PRODUCTION) console.log('==> AUTHENTICATION: error');
 						reject(result);
 					}
 				})
@@ -117,14 +117,14 @@ class Database {
 		password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
 		const apikey = generateApiKey();
-		console.log('==> REGISTER: ' + email + ' |' + apikey);
+		if (!PRODUCTION) console.log('==> REGISTER: ' + email + ' |' + apikey);
 
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(
 				`INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`
 			)
 				.then((response) => {
-					console.log('REGISTER RESPONSE');
+					if (!PRODUCTION) console.log('REGISTER RESPONSE');
 					resolve({ apikey });
 				})
 				.catch((err) => {
@@ -136,22 +136,20 @@ class Database {
 
 	static async unregister(email, password) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`).then((result) => {
-				if (typeof result !== 'undefined' && result.command === 'SELECT') {
-					if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
-						Database.sendQuery(`DELETE FROM Users WHERE( email = '${email});`)
-							.then((result) => {
-								resolve(true);
-							})
-							.catch((err) => reject(err));
-					} else {
-						resolve(false);
-					}
-				} else {
-					reject(result);
-				}
-			});
-		}).catch((err) => reject(err));
+			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
+				.then((result) => {
+					if (typeof result !== 'undefined' && result.command === 'SELECT') {
+						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
+							Database.sendQuery(`DELETE FROM Users WHERE( email = '${email}');`)
+								.then((result) => {
+									resolve(true);
+								})
+								.catch((err) => reject(err));
+						} else resolve(false);
+					} else reject(result);
+				})
+				.catch((err) => reject(err));
+		});
 	}
 
 	/*==================DATA SOURCE===============*/
