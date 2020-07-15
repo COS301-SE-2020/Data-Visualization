@@ -9,8 +9,7 @@
 		"test": "env NODE_ENV=production jest -- tests",
 		"test:unit": "env NODE_ENV=production jest -- unit",
 		"test:int": "env NODE_ENV=production jest -- int",
-		"heroku-postbuild": "npm install --prefix ./data-visualisation-app",
-		"posttest": "npm test --prefix ./data-visualisation-app"
+		"heroku-postbuild": "npm install --prefix ./data-visualisation-app"
 	},
 	"repository": {
 		"type": "git",
