@@ -24,22 +24,22 @@ require('dotenv').config();
 const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 const Pool = require('pg-pool');
-const params = require('url').parse(process.env.DATABASE_URL),
-	auth = params.auth.split(':');
+const params = require('url').parse(process.env.DATABASE_URL);
+const auth = params.auth.split(':');
 
 const bcrypt = require('bcryptjs');
-const saltRounds = 12,
-
-	config = {
-		user: auth[0],
-		password: auth[1],
-		host: params.hostname,
-		port: params.port,
-		database: params.pathname.split('/')[1],
-		ssl: {
-			rejectUnauthorized: false,
-		},
-	};
+const saltRounds = 12;
+const config = {
+	user: auth[0],
+	password: auth[1],
+	host: params.hostname,
+	port: params.port,
+	database: params.pathname.split('/')[1],
+	hostnossl: true,
+	ssl: {
+		rejectUnauthorized: PRODUCTION, //check this
+	},
+};
 
 /**
  * Purpose: This class is responsible for doing any database related requests.
@@ -50,20 +50,20 @@ const saltRounds = 12,
 class Database {
 	/**
 	 * This function sends queries to the database.
-	 * @param SQL_query the query that needs to be executed in the database
+	 * @param querySql the query that needs to be executed in the database
 	 * @returns a promise
 	 */
-	static sendQuery(SQL_query) {
-		if (!PRODUCTION) console.log(SQL_query);
+	static sendQuery(querySql) {
+		if (!PRODUCTION) console.log(querySql);
 		return new Promise((conResolve, conReject) => {
-			Database.pg_pool
+			Database.pgPool
 				.connect()
 				.then((client) => {
 					client
-						.query(SQL_query)
+						.query(querySql)
 						.then((res) => {
 							client.release();
-							if (typeof res === 'undefined') conReject(DBerror(UndefinedResponseFromDBerror(SQL_query)));
+							if (typeof res === 'undefined') conReject(DBerror(UndefinedResponseFromDBerror(querySql)));
 							else conResolve(res);
 						})
 						.catch((err) => {
@@ -345,7 +345,7 @@ class Database {
 		});
 	}
 }
-Database.pg_pool = new Pool(config);
+Database.pgPool = new Pool(config);
 /**
  * This function is used to convert lists of fields and data into comma seperated field=data pairs
  * @param fields
@@ -364,9 +364,9 @@ function fieldUpdates(fields, data) {
  * @returns an apikey
  */
 function generateApiKey() {
-	let result = '',
-	 characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-	 charactersLength = characters.length;
+	let result = '';
+	let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let charactersLength = characters.length;
 	for (let i = 0; i < 20; i++) {
 		result += characters.charAt(Math.floor(Math.random() * charactersLength));
 	}
@@ -386,13 +386,13 @@ function DBerror(err) {
  * This function is used to return a error if any custom errors occurs.
  * @returns a JSON object of the error to be displayed.
  */
-function UndefinedResponseFromDBerror(SQL_query) {
+function UndefinedResponseFromDBerror(querySql) {
 	return {
 		table: undefined,
 		code: undefined,
 		routine: 'undefinedResponseFromDatabase',
 		hint: undefined,
-		detail: 'Query Sent: ' + SQL_query,
+		detail: 'Query Sent: ' + querySql,
 	};
 }
 

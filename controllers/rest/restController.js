@@ -20,9 +20,9 @@
  * Assumptions: None
  * Constraints: None
  */
-const Database = require('../database'),
-	DataSource = require('../dataSource'),
-	{ graphsSuggesterController } = require('../graphSuggester');
+const Database = require('../database');
+const DataSource = require('../dataSource');
+const { graphsSuggesterController } = require('../graphSuggester');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
  * handles these requests appropriately by getting or setting the requested data from or to the models.
@@ -267,7 +267,7 @@ class RestController {
 				const itemsKeys = Meta.items.keys(); //this is a list of the items keys
 				let chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
 
-				while (chosen != null && chosen.length === 0) {
+				while (chosen !== null && chosen.length === 0) {
 					//check if the item with the selected key has data
 					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
 				}

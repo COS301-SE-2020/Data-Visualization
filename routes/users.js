@@ -113,8 +113,8 @@ function error(res, err, status = 400) {
  * @param name the name of the user that needs to be tested (username or surname)
  */
 function checkName(name) {
-	let re = /^\w+$/,
-	 valid = true;
+	let re = /^\w+$/;
+	let valid = true;
 	if (name.trim().length === 0) {
 		// name can not be blank
 		valid = false;
@@ -129,9 +129,9 @@ function checkName(name) {
  */
 function checkUserEmail(email) {
 	let emailReg = new RegExp(
-			/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
-		),
-	 valid = true;
+		/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
+	);
+	let valid = true;
 	if (email.trim().length === 0) {
 		// email required
 		valid = false;
@@ -146,13 +146,13 @@ function checkUserEmail(email) {
  * @param password the users password that needs to be validated
  */
 function checkUserPasswordLogin(password) {
-	let valid = true,
-	 re;
+	let valid = true;
+	let re;
 	if (password.trim().length === 0) {
 		// password cannot be empty
 		valid = false;
 	} else {
-		re = /^[0-9a-zA-Z!@#\$%\^&\*]{9,}$/;
+		re = /^[0-9a-zA-Z!@#\$%\^&\*]{9,}$/; //eslint-disable-line
 		return re.test(password);
 	}
 
@@ -166,8 +166,8 @@ function checkUserPasswordLogin(password) {
  *
  */
 function checkUserPasswordRegister(password, confirmPassword, name) {
-	let valid = true,
-	 re;
+	let valid = true;
+	let re;
 	if (password.trim().length === 0) {
 		// password cannot be empty
 		valid = false;

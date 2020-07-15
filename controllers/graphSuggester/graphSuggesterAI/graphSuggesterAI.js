@@ -33,8 +33,8 @@
  */
 class graphSuggesterAI {
 	/**
-   * The default constructor for the object - initialises class variables
-   */
+	 * The default constructor for the object - initialises class variables
+	 */
 	constructor() {
 		//graphTypes are the types of graphs that can be generated - TODO right now it's hardcoded, it should be set by setGraphTypes
 		this.graphTypes = [ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ];
@@ -46,10 +46,10 @@ class graphSuggesterAI {
 	}
 
 	/**
-   * This function sets the available types of graphs so that graph suggestion knows which graphs it can
-   * suggest.
-   * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
-   */
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	setGraphTypes(newTypes) {
 		this.graphTypes = [];
 		for (let i = 0; i < newTypes.length; i++) {
@@ -60,19 +60,19 @@ class graphSuggesterAI {
 	}
 
 	/**
-   * This function sets the nodes that can be selected for graph suggestions.
-   * @param items the 'terminal' nodes, these don't lead to other tables for data.
-   * @param associations the 'non-terminal' nodes, these lead to other tables for data.
-   */
+	 * This function sets the nodes that can be selected for graph suggestions.
+	 * @param items the 'terminal' nodes, these don't lead to other tables for data.
+	 * @param associations the 'non-terminal' nodes, these lead to other tables for data.
+	 */
 	setMetadata(items, associations) {
-		let count = 0, //used to set weights for all nodes(option pool)
-			defaultWeight = 10; //just a default weight for IGA
+		let count = 0; //used to set weights for all nodes(option pool)
+		let defaultWeight = 10; //just a default weight for IGA
 		this.terminals = []; //reset values so that old ones don't interfere
 		this.nonTerminals = [];
 		this.nodeWeights = [];
 
-		let itemsKeys = Object.keys(items),
-			associationKeys = Object.keys(associations);
+		let itemsKeys = Object.keys(items);
+		let associationKeys = Object.keys(associations);
 
 		for (let i = 0; i < itemsKeys.length; i++) {
 			this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
@@ -92,25 +92,25 @@ class graphSuggesterAI {
 	}
 
 	/**
-   * This function returns the graph suggestions in JSON format.
-   * @param jsonData the data to be used in suggestion generation, in JSON format.
-   * @return suggestions the suggested graphs in JSON format.
-   */
+	 * This function returns the graph suggestions in JSON format.
+	 * @param jsonData the data to be used in suggestion generation, in JSON format.
+	 * @return suggestions the suggested graphs in JSON format.
+	 */
 	getSuggestions(jsonData) {
 		// let object = JSON.parse(jsonData);
-		let object = jsonData,
-			// object = object [ 'd' ];            //OData always starts with 'd' as the main key
-			results = object['results']; //OData follows up with 'results' key
+		let object = jsonData;
+		// object = object [ 'd' ];            //OData always starts with 'd' as the main key
+		let results = object['results']; //OData follows up with 'results' key
 
-		if (results == null) {
+		if (results === null) {
 			results = object;
 		}
-		if (results == null || results.length === 0) {
+		if (results === null || results.length === 0) {
 			console.log('RESULTS array has length of 0.');
 			return null;
 		}
 
-		if (results == null) {
+		if (results === null) {
 			//Didn't follow with 'results' key, will have to go to a deeper layer
 			console.log('Need to go a layer deeper');
 			return null;
@@ -125,10 +125,10 @@ class graphSuggesterAI {
 			//   console.log(this.terminals);
 			//   console.log(type);
 
-			let keys = this.terminals[type], //check the available keys in the metadata
-				options = [], //the available key options(processed later)
-				count = 0, //the index for options
-				nameKey = null;
+			let keys = this.terminals[type]; //check the available keys in the metadata
+			let options = []; //the available key options(processed later)
+			let count = 0; //the index for options
+			let nameKey = null;
 
 			//   console.log(keys);
 
@@ -138,11 +138,17 @@ class graphSuggesterAI {
 				let name = keys[key]; //the key
 
 				if (
-					!(name.includes('ID') || name.includes('Name') || name.includes('Picture') || name.includes('Description') || name.includes('Date'))
+					!(
+						name.includes('ID') ||
+						name.includes('Name') ||
+						name.includes('Picture') ||
+						name.includes('Description') ||
+						name.includes('Date')
+					)
 				) {
 					//trim out the "useless" keys
 					options[count++] = keys[key]; //add the key if it is meaningful data
-				} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {
+				} else if ((name.includes('Name') || name.includes('ID')) && nameKey === null) {
 					//store the name key for later access
 					nameKey = name;
 				}
@@ -151,7 +157,7 @@ class graphSuggesterAI {
 			let hasData = false; //check variable used to see if data exists or if a deeper thread is followed
 
 			for (let i = 0; i < options.length; i++) {
-				if (results[0][options[i]]['__deferred'] == null) {
+				if (results[0][options[i]]['__deferred'] === null) {
 					//if this isn't a link then we have data
 					hasData = true;
 					break;
@@ -165,10 +171,10 @@ class graphSuggesterAI {
 				return null;
 			}
 
-			let choice = Math.trunc(Math.random() * options.length), //select random index - TODO let the GA do this
-				data = [], //2D array containing item names and attributes
-				params = [ nameKey, 'value' ], //the labels for column values
-				graph = this.graphTypes[Math.trunc(Math.random() * 5)];  //select a random graph type - TODO replace 5 with graphTypes.length
+			let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do this
+			let data = []; //2D array containing item names and attributes
+			let params = [ nameKey, 'value' ]; //the labels for column values
+			let graph = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type - TODO replace 5 with graphTypes.length
 
 			for (let i = 0; i < results.length; i++) {
 				//Store name of field and its chosen attribute in data
@@ -183,15 +189,15 @@ class graphSuggesterAI {
 	}
 
 	/**
-   * This function constructs and returns the graph parameters for eChart graph generation in frontend.
-   * @param data an array containing data arrays, which contain data for graphs.
-   * @param graph the type of graph to be used.
-   * @param params the labels for data, used to select which entries go on the x and y-axis.
-   * @param xEntries the entry/entries used on the x-axis.
-   * @param yEntries the entry/entries used on the y-axis.
-   * @param graphName the suggested name of the graph
-   * @return option the data used to generate the graph.
-   */
+	 * This function constructs and returns the graph parameters for eChart graph generation in frontend.
+	 * @param data an array containing data arrays, which contain data for graphs.
+	 * @param graph the type of graph to be used.
+	 * @param params the labels for data, used to select which entries go on the x and y-axis.
+	 * @param xEntries the entry/entries used on the x-axis.
+	 * @param yEntries the entry/entries used on the y-axis.
+	 * @param graphName the suggested name of the graph
+	 * @return option the data used to generate the graph.
+	 */
 	constructOption(data, graph, params, xEntries, yEntries, graphName) {
 		let src = [];
 		src[0] = params;
@@ -225,40 +231,43 @@ class graphSuggesterAI {
 		//the current options array works for line, bar, scatter, effectScatter charts
 		//it is also the default options array
 
-		if(graph.includes('pie')){  //for pie charts
-			option.series = [{
-				type: graph,
-				radius: '60%',
-				label: {
-					formatter: '{b}: {@'+yEntries+'} ({d}%)'
+		if (graph.includes('pie')) {
+			//for pie charts
+			option.series = [
+				{
+					type: graph,
+					radius: '60%',
+					label: {
+						formatter: '{b}: {@' + yEntries + '} ({d}%)',
+					},
+					encode: {
+						itemName: xEntries,
+						value: yEntries,
+					},
 				},
-				encode: {
-					itemName: xEntries,
-					value: yEntries,
-				}
-			}];
-		} else if (graph.includes('parallel')){ //for parallel charts - TODO to be added
-
-		} else if (graph.includes('candlestick')){  //for candlestick charts - TODO to be added
-
-		} else if (graph.includes('map')){  //for map charts - TODO to be added
-
-		} else if (graph.includes('funnel')){ //for funnel charts - TODO to be added
-
+			];
+		} else if (graph.includes('parallel')) {
+			//for parallel charts - TODO to be added
+		} else if (graph.includes('candlestick')) {
+			//for candlestick charts - TODO to be added
+		} else if (graph.includes('map')) {
+			//for map charts - TODO to be added
+		} else if (graph.includes('funnel')) {
+			//for funnel charts - TODO to be added
 		}
 
 		return option;
 	}
 
 	/**
-   * This function sets the target graph as the fittest individual, so the genetic algorithm tries to
-   * achieve more generations of that type.
-   * @param target the target graph type
-   */
+	 * This function sets the target graph as the fittest individual, so the genetic algorithm tries to
+	 * achieve more generations of that type.
+	 * @param target the target graph type
+	 */
 	changeFitnessTarget(target) {
 		//change target with best fitness
-		let targetPosition = this.graphTypes.indexOf(target),
-			worstWeight = 10; //this doesn't have to be hardcoded and can be decided by an algorithm/formula
+		let targetPosition = this.graphTypes.indexOf(target);
+		let worstWeight = 10; //this doesn't have to be hardcoded and can be decided by an algorithm/formula
 
 		for (let i = 0; i < this.graphWeights.length; i++) {
 			this.graphWeights[i] = worstWeight; //reset weights so that fittest individual is the target

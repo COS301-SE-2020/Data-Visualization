@@ -27,59 +27,29 @@ const Odata = require('./Odata');
  */
 class DataSource {
 	/**
-   * This function gets Odata.
-   * @param src the source where this Odata must be retrieved from
-   * @returns a promise of Odata
-   */
+	 * This function gets Odata.
+	 * @param src the source where this Odata must be retrieved from
+	 * @returns a promise of Odata
+	 */
 	static getMetaData(src) {
 		return Odata.getMetaData(src); //Returns a promise
 	}
 	/**
-   * This function gets an entity list.
-   * @param src the source where this entity list must be retrieved from
-   * @returns a promise of the entity list
-   */
+	 * This function gets an entity list.
+	 * @param src the source where this entity list must be retrieved from
+	 * @returns a promise of the entity list
+	 */
 	static getEntityList(src) {
 		return Odata.getEntityList(src); //Returns a promise
 	}
 	/**
-   * This function gets entity data.
-   * @param src the source where the entity data must be retrieved from
-   * @param entity the entity that we want data from
-   * @returns a promise of the entities data
-   */
+	 * This function gets entity data.
+	 * @param src the source where the entity data must be retrieved from
+	 * @param entity the entity that we want data from
+	 * @returns a promise of the entities data
+	 */
 	static getEntityData(src, entity) {
 		return Odata.getEntityData(src, entity);
 	}
 }
-
-const entityList = [
-	'Categories',
-	'CustomerDemographics',
-	'Customers',
-	'Employees',
-	'Order_Details',
-	'Orders',
-	'Products',
-	'Regions',
-	'Shippers',
-	'Suppliers',
-	'Territories',
-	'Alphabetical_list_of_products',
-	'Category_Sales_for_1997',
-	'Current_Product_Lists',
-	'Customer_and_Suppliers_by_Cities',
-	'Invoices',
-	'Order_Details_Extendeds',
-	'Order_Subtotals',
-	'Orders_Qries',
-	'Product_Sales_for_1997',
-	'Products_Above_Average_Prices',
-	'Products_by_Categories',
-	'Sales_by_Categories',
-	'Sales_Totals_by_Amounts',
-	'Summary_of_Sales_by_Quarters',
-	'Summary_of_Sales_by_Years',
-];
-
 module.exports = DataSource;

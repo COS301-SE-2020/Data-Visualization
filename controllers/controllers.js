@@ -20,10 +20,10 @@
  * Assumptions: None
  * Constraints: None
  */
-const Rest = require('./rest'),
-	DataSource = require('./dataSource'),
-	Database = require('./database'),
+const Rest = require('./rest');
+const DataSource = require('./dataSource');
+const Database = require('./database');
 
-	{ GraphSuggesterController } = require('./graphSuggester');
+const { GraphSuggesterController } = require('./graphSuggester');
 
 module.exports = { Rest, DataSource, Database, GraphSuggesterController };
