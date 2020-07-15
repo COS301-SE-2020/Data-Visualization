@@ -20,9 +20,9 @@
  * Assumptions: None
  * Constraints: None
  */
-const Database = require('../database');
-const DataSource = require('../dataSource');
-const { graphsSuggesterController } = require('../graphSuggester');
+const Database = require('../database'),
+	DataSource = require('../dataSource'),
+	{ graphsSuggesterController } = require('../graphSuggester');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
  * handles these requests appropriately by getting or setting the requested data from or to the models.

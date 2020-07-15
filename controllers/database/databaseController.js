@@ -24,22 +24,22 @@ require('dotenv').config();
 const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 const Pool = require('pg-pool');
-const params = require('url').parse(process.env.DATABASE_URL);
-const auth = params.auth.split(':');
+const params = require('url').parse(process.env.DATABASE_URL),
+	auth = params.auth.split(':');
 
 const bcrypt = require('bcryptjs');
-const saltRounds = 12;
+const saltRounds = 12,
 
-const config = {
-	user: auth[0],
-	password: auth[1],
-	host: params.hostname,
-	port: params.port,
-	database: params.pathname.split('/')[1],
-	ssl: {
-		rejectUnauthorized: false,
-	},
-};
+	config = {
+		user: auth[0],
+		password: auth[1],
+		host: params.hostname,
+		port: params.port,
+		database: params.pathname.split('/')[1],
+		ssl: {
+			rejectUnauthorized: false,
+		},
+	};
 
 /**
  * Purpose: This class is responsible for doing any database related requests.
@@ -364,9 +364,9 @@ function fieldUpdates(fields, data) {
  * @returns an apikey
  */
 function generateApiKey() {
-	let result = '';
-	let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	let charactersLength = characters.length;
+	let result = '',
+	 characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+	 charactersLength = characters.length;
 	for (let i = 0; i < 20; i++) {
 		result += characters.charAt(Math.floor(Math.random() * charactersLength));
 	}

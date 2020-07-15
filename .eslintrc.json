@@ -1,38 +1,34 @@
 {
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es2020": true
-  },
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "ecmaVersion": 11
-  },
-  "rules": {
-    "indent": ["error", "tab"],
-    "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "always"],
-    "no-unreachable": ["error"],
-    "valid-typeof": ["error"],
-    "eqeqeq": ["error"],
-    "vars-on-top": ["error"],
-    "no-unused-vars": ["error"],
-    "no-use-before-define": ["error"],
-    "array-bracket-spacing": [
-      "error",
-      "always",
-      { "objectsInArrays": false, "arraysInArrays": false, "singleValue": true }
-    ],
-    "object-curly-spacing": ["error", "always", { "objectsInArrays": false, "arraysInArrays": false }],
-    "block-spacing": ["error", "never"],
-    "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
-    "camelcase": ["error", "always"],
-    "comma-spacing": ["error", { "before": false, "after": true }],
-    "implicit-arrow-linebreak": ["error", "beside"],
-    "no-mixed-spaces-and-tabs": ["error"],
-    "one-var": ["error", "always", { "var": "never", "let": "consecutive", "const": "consecutive" }],
-    "space-before-blocks": ["error", "always", { "functions": "always", "keywords": "off", "classes": "always" }],
-    "no-var": ["error"]
-  }
+	"env": {
+		"browser": true,
+		"commonjs": true,
+		"es2020": true
+	},
+	"extends": "eslint:recommended",
+	"parserOptions": {
+		"ecmaVersion": 11
+	},
+	"rules": {
+		"indent": ["error", "tab"],
+		"linebreak-style": ["error", "unix"],
+		"quotes": ["error", "single"],
+		"semi": ["error", "always"],
+		"no-unreachable": ["error"],
+		"valid-typeof": ["error"],
+		"eqeqeq": ["error"],
+		"vars-on-top": ["error"],
+		"no-unused-vars": ["error"],
+		"no-use-before-define": ["error"],
+		"array-bracket-spacing": ["error", "always", { "objectsInArrays": false, "arraysInArrays": false, "singleValue": true }],
+		"object-curly-spacing": ["error", "always"],
+		"block-spacing": ["error", "never"],
+		"brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+		"camelcase": ["error", { "properties": "always" }],
+		"comma-spacing": ["error", { "before": false, "after": true }],
+		"implicit-arrow-linebreak": ["error", "beside"],
+		"no-mixed-spaces-and-tabs": ["error"],
+		"one-var": ["error", { "var": "never", "let": "consecutive", "const": "consecutive" }],
+		"space-before-blocks": ["error", { "functions": "always", "keywords": "off", "classes": "always" }],
+		"no-var": ["error"]
+	}
 }

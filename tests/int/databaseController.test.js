@@ -1,24 +1,24 @@
 const { Database } = require('../../controllers/controllers');
 
-const EMAIL = 'firstnamelastname@gmail.com';
-const PASSWORD = 'FirstnameLastname@1234';
-const F_NAME = 'FIRSTNAME';
-const L_NAME = 'LASTNAME';
+const EMAIL = 'firstnamelastname@gmail.com',
+	PASSWORD = 'FirstnameLastname@1234',
+	F_NAME = 'FIRSTNAME',
+	L_NAME = 'LASTNAME',
 
-const USER_ALREADY_EXISTS_ERROR = 'userAlreadyExists';
-const ITEM_ALREADY_EXISTS_ERROR = 'userAlreadyExists';
+	USER_ALREADY_EXISTS_ERROR = 'userAlreadyExists',
+	ITEM_ALREADY_EXISTS_ERROR = 'userAlreadyExists',
 
-const DATA_SOURCE_ID = 'ASKDNFKSNDAFKNSAF';
-const DATA_SOURCE_URL = 'http://data.source.url/mock/mock.cvs';
+	DATA_SOURCE_ID = 'ASKDNFKSNDAFKNSAF',
+	DATA_SOURCE_URL = 'http://data.source.url/mock/mock.cvs',
 
-const DASHBOARD_ID = 'ksbfnlsadnflnsa';
-const DASHBOARD_NAME = 'Dashboard Name';
-const DASHBOARD_DESC = 'Dashboard Description';
+	DASHBOARD_ID = 'ksbfnlsadnflnsa',
+	DASHBOARD_NAME = 'Dashboard Name',
+	DASHBOARD_DESC = 'Dashboard Description',
 
-const GRAPH_ID = 'slajkbfhsbajf';
-const GRAPH_TITLE = 'Graph Title';
-const GRAPH_OPTIONS = { data: [1, 2, 3, 4], x: 'dependent', y: 'independent' };
-const GRAPH_META = { w: 100, h: 200, x: 10, y: 20 };
+	GRAPH_ID = 'slajkbfhsbajf',
+	GRAPH_TITLE = 'Graph Title',
+	GRAPH_OPTIONS = { data: [ 1, 2, 3, 4 ], x: 'dependent', y: 'independent' },
+	GRAPH_META = { w: 100, h: 200, x: 10, y: 20 };
 
 describe('Testing user management', () => {
 	beforeEach((done) => {
@@ -159,7 +159,7 @@ describe('Testing with an existing user', () => {
 			});
 		});
 
-		test("Adding a graph that a user's dashbaord already has", () => {
+		test('Adding a graph that a user\'s dashbaord already has', () => {
 			return Database.addGraph(EMAIL, DASHBOARD_ID, GRAPH_ID, GRAPH_TITLE, GRAPH_OPTIONS, GRAPH_META).catch(({ error }) => {
 				expect(error).toBe(ITEM_ALREADY_EXISTS_ERROR);
 			});

@@ -20,10 +20,10 @@
  * Assumptions: None
  * Constraints: None
  */
-const { router: UsersRoute, loggedUsers } = require('./users.js');
-const DashboardsRoute = require('./dashboards.js');
-const GraphsRoute = require('./graphs.js');
-const DataSourceRoute = require('./dataSource.js');
-const Suggestions = require('./suggestions.js');
+const { router: UsersRoute, loggedUsers } = require('./users.js'),
+	DashboardsRoute = require('./dashboards.js'),
+	GraphsRoute = require('./graphs.js'),
+	DataSourceRoute = require('./dataSource.js'),
+	Suggestions = require('./suggestions.js');
 
 module.exports = { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute, Suggestions, loggedUsers };

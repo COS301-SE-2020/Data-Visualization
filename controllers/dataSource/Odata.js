@@ -25,55 +25,55 @@ const axios = require('axios');
  * @author Phillip Schulze
  */
 class Odata {
-/**
- * This function gets Odata.
- * @param src the source where this Odata must be retrieved from
- * @returns a promise of Odata
- */
-  static getMetaData(src) {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(formatMetaData(src))
-        .then((res) => {
-          const { data } = res;
-          resolve(data);
-        })
-        .catch((err) => reject(err));
-    });
-  }
-/**
- * This function gets an entity list.
- * @param src the source where this entity list must be retrieved from
- * @returns a promise of the entity list
- */
-  static getEntityList(src) {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(format(src))
-        .then((res) => {
-          const { EntitySets } = res.data.d;
-          resolve(EntitySets);
-        })
-        .catch((err) => reject(err));
-    });
-  }
-/**
- * This function gets entity data.
- * @param src the source where the entity data must be retrieved from
- * @param entity the entity that we want data from
- * @returns a promise of the entities data
- */
-  static getEntityData(src, entity) {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(formatEntity(src, entity))
-        .then((res) => {
-          const { results } = res.data.d;
-          resolve(results);
-        })
-        .catch((err) => reject(err));
-    });
-  }
+	/**
+	 * This function gets Odata.
+	 * @param src the source where this Odata must be retrieved from
+	 * @returns a promise of Odata
+	 */
+	static getMetaData(src) {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(formatMetaData(src))
+				.then((res) => {
+					const { data } = res;
+					resolve(data);
+				})
+				.catch((err) => reject(err));
+		});
+	}
+	/**
+	 * This function gets an entity list.
+	 * @param src the source where this entity list must be retrieved from
+	 * @returns a promise of the entity list
+	 */
+	static getEntityList(src) {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(format(src))
+				.then((res) => {
+					const { EntitySets } = res.data.d;
+					resolve(EntitySets);
+				})
+				.catch((err) => reject(err));
+		});
+	}
+	/**
+	 * This function gets entity data.
+	 * @param src the source where the entity data must be retrieved from
+	 * @param entity the entity that we want data from
+	 * @returns a promise of the entities data
+	 */
+	static getEntityData(src, entity) {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(formatEntity(src, entity))
+				.then((res) => {
+					const { results } = res.data.d;
+					resolve(results);
+				})
+				.catch((err) => reject(err));
+		});
+	}
 }
 /**
  * This function formats data in to json.
@@ -81,7 +81,7 @@ class Odata {
  * @returns string of json format
  */
 function format(src) {
-  return `${src}?$format=json`;
+	return `${src}?$format=json`;
 }
 /**
  * This function formats an entity in to json.
@@ -90,8 +90,8 @@ function format(src) {
  * @returns string of json format
  */
 function formatEntity(src, entity) {
-  console.log(`ODATA: ${src}/${entity}?$format=json`);
-  return `${src}/${entity}?$format=json`;
+	console.log(`ODATA: ${src}/${entity}?$format=json`);
+	return `${src}/${entity}?$format=json`;
 }
 /**
  * This function formats an metadata in to json.
@@ -99,7 +99,7 @@ function formatEntity(src, entity) {
  * @returns string of json format
  */
 function formatMetaData(src) {
-  return `${src}/$metadata`;
+	return `${src}/$metadata`;
 }
 
 module.exports = Odata;
