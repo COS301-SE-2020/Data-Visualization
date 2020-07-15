@@ -7,11 +7,12 @@
  * Related Documents: SRS Document - www.example.com
  * Update History:
  * Date          Author             Changes
- * -------------------------------------------------------------------------------
+ * --------------------------------------------------------------------------------
  * 30/06/2020    Marco Lombaard     Original
  * 01/07/2020    Marco Lombaard     Added setMetadata function
  * 02/07/2020    Marco Lombaard     Added constructOption function
  * 09/07/2020    Marco Lombaard     Fixed getSuggestions and setMetaData functions
+ * 15/07/2020    Marco Lombaard     Added more graph types to suggestion generation
  *
  * Test Cases: none
  *
@@ -35,7 +36,8 @@ class graphSuggesterAI {
    * The default constructor for the object - initialises class variables
    */
   constructor() {
-    this.graphTypes = [];
+    //graphTypes are the types of graphs that can be generated - TODO right now it's hardcoded, it should be set by setGraphTypes
+    this.graphTypes = ['line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom'];
     this.graphWeights = [];
     this.terminals = [];
     this.nonTerminals = [];
@@ -165,7 +167,8 @@ class graphSuggesterAI {
 
       let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do this
       let data = []; //2D array containing item names and attributes
-      let params = [type + ": " + nameKey, 'value']; //the labels for column values
+      let params = [nameKey, 'value']; //the labels for column values
+      let graph = this.graphTypes[Math.trunc(Math.random() * 5)];  //select a random graph type - TODO replace 5 with graphTypes.length
 
       for (let i = 0; i < results.length; i++) {
         //Store name of field and its chosen attribute in data
@@ -173,7 +176,7 @@ class graphSuggesterAI {
       }
 
       //generate the graph option - TODO fix the hardcoding
-      let option = this.constructOption(data, 'bar', params, params[0], params[1], options[choice]);
+      let option = this.constructOption(data, graph, params, params[0], params[1], type);
 
       return option;
     }
@@ -197,9 +200,9 @@ class graphSuggesterAI {
       src[i + 1] = data[i];
     }
 
+    //this constructs the options sent to the Apache eCharts API - this will have to be changed if
+    //a different API is used
     let option = {
-      //this constructs the options sent to the Apache eCharts API - this will have to be changed if
-      //a different API is used
       title: {
         text: graphName,
       },
@@ -219,6 +222,34 @@ class graphSuggesterAI {
         },
       ],
     };
+    //the current options array works for line, bar, scatter, effectScatter charts
+    //it is also the default options array
+
+    if(graph.includes("pie")){  //for pie charts
+      option.series = [{
+        type: graph,
+        radius: '60%',
+        label: {
+          formatter: '{b}: {@'+yEntries+'} ({d}%)'
+        },
+        encode: {
+          itemName: xEntries,
+          value: yEntries,
+        }
+      }];
+    }
+    else if (graph.includes("parallel")){ //for parallel charts - TODO to be added
+
+    }
+    else if (graph.includes("candlestick")){  //for candlestick charts - TODO to be added
+
+    }
+    else if (graph.includes("map")){  //for map charts - TODO to be added
+
+    }
+    else if (graph.includes("funnel")){ //for funnel charts - TODO to be added
+
+    }
 
     return option;
   }
