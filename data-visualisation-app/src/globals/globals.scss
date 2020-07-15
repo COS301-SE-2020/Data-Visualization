@@ -1,0 +1,73 @@
+/**
+ *   @file globals.scss
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   3/7/2929   Gian Uys            Original
+ *
+ *   Test Cases: data-visualisation-app/tests/App/App.js
+ *
+ *   Functional Description:
+ *   This file includes all global CSS stylesheets and SASS variables.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
+$primary-white: white;
+$primary-black: black;
+
+$font-light: 'Segoe UI Light';
+$font-default: 'Segoe UI';
+$font-semibold: 'Segoe UI Semibold';
+
+$color-border-hover: #616161;
+$color-border-active: #616161;
+$color-border-focus: #616161;
+$color-border: #d9d9d9;
+$color-active: black;
+$color-focus: black;
+$color-hover: black;
+$color-primary: #292929;
+
+
+.content--padding {
+  padding: 25px;
+}
+
+.content-colors {
+  box-shadow: inset 1px 4px 9px -6px #cccccc;
+  background-color: #fcfcfc;
+}
+
+.panel__shadow {
+  -webkit-box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
+  -moz-box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
+  box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 18px;
+}
+::-webkit-scrollbar-thumb {
+  height: 6px;
+  border: 4px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  -webkit-border-radius: 7px;
+  background-color: rgba(0, 0, 0, 0.80);
+  -webkit-box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+}
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}

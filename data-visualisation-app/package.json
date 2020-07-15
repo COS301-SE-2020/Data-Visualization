@@ -3,17 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.10.1",
+    "@material-ui/core": "latest",
+    "@material-ui/icons": "latest",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "antd": "^4.3.5",
+    "antd": "^4.4.0",
     "axios": "^0.19.2",
+    "echarts": "^4.8.0",
+    "echarts-for-react": "^2.0.16",
+    "global-store-hook": "^1.0.4",
+    "node-sass": "^4.14.1",
+    "prop-types": "latest",
     "react": "^16.13.1",
     "react-addons-update": "^15.6.2",
     "react-dom": "^16.13.1",
+    "react-grid-layout": "^0.18.3",
     "react-scripts": "3.4.1",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "react-undo": "^1.2.1",
+    "reqwest": "^2.0.5",
+    "styled-components": "^5.1.1",
+    "styled-icons": "^10.6.0",
+    "three": "^0.118.3",
+    "three-orbitcontrols": "^2.110.3",
+    "use-undo": "^1.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,5 +60,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "tailwindcss": "^1.1.3"
+  }
 }
