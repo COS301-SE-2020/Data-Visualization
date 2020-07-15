@@ -20,15 +20,15 @@
  * Assumptions: None
  * Constraints: None
  */
-require('dotenv').config();
-const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
+require('dotenv').config()
+const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production')
 
-const Pool = require('pg-pool');
-const params = require('url').parse(process.env.DATABASE_URL);
-const auth = params.auth.split(':');
+const Pool = require('pg-pool')
+const params = require('url').parse(process.env.DATABASE_URL)
+const auth = params.auth.split(':')
 
-const bcrypt = require('bcryptjs');
-const saltRounds = 12;
+const bcrypt = require('bcryptjs')
+const saltRounds = 12
 
 const config = {
 	user: auth[0],
@@ -39,7 +39,7 @@ const config = {
 	ssl: {
 		rejectUnauthorized: false,
 	},
-};
+}
 
 /**
  * Purpose: This class is responsible for doing any database related requests.
@@ -54,7 +54,7 @@ class Database {
 	 * @returns a promise
 	 */
 	static sendQuery(SQL_query) {
-		if (!PRODUCTION) console.log(SQL_query);
+		if (!PRODUCTION) console.log(SQL_query)
 		return new Promise((conResolve, conReject) => {
 			Database.pg_pool
 				.connect()
@@ -62,17 +62,17 @@ class Database {
 					client
 						.query(SQL_query)
 						.then((res) => {
-							client.release();
-							if (typeof res === 'undefined') conReject(DBerror(UndefinedResponseFromDBerror()));
-							else conResolve(res);
+							client.release()
+							if (typeof res === 'undefined') conReject(DBerror(UndefinedResponseFromDBerror()))
+							else conResolve(res)
 						})
 						.catch((err) => {
-							client.release();
-							conReject(DBerror(err));
-						});
+							client.release()
+							conReject(DBerror(err))
+						})
 				})
-				.catch((err) => conReject(DBerror(err)));
-		});
+				.catch((err) => conReject(DBerror(err)))
+		})
 	}
 
 	/*==================USERS===============*/
@@ -85,25 +85,25 @@ class Database {
 
 	static authenticate(email, password) {
 		return new Promise((resolve, reject) => {
-			if (!PRODUCTION) console.log('==> AUTHENTICATING: ' + email);
+			if (!PRODUCTION) console.log('==> AUTHENTICATING: ' + email)
 			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
 				.then((result) => {
 					if (typeof result !== 'undefined' && result.command === 'SELECT') {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
-							if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful');
-							delete result.rows[0].password;
-							resolve(result.rows[0]);
+							if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful')
+							delete result.rows[0].password
+							resolve(result.rows[0])
 						} else {
-							if (!PRODUCTION) console.log('==> AUTHENTICATION: failed');
-							resolve(false);
+							if (!PRODUCTION) console.log('==> AUTHENTICATION: failed')
+							resolve(false)
 						}
 					} else {
-						if (!PRODUCTION) console.log('==> AUTHENTICATION: error');
-						reject(result);
+						if (!PRODUCTION) console.log('==> AUTHENTICATION: error')
+						reject(result)
 					}
 				})
-				.catch((err) => reject(err));
-		});
+				.catch((err) => reject(err))
+		})
 	}
 	/**
 	 * This function registers a user.
@@ -114,24 +114,24 @@ class Database {
 	 * @returns a promise
 	 */
 	static register(fname, lname, email, password) {
-		password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
+		password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds))
 
-		const apikey = generateApiKey();
-		if (!PRODUCTION) console.log('==> REGISTER: ' + email + ' |' + apikey);
+		const apikey = generateApiKey()
+		if (!PRODUCTION) console.log('==> REGISTER: ' + email + ' |' + apikey)
 
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(
 				`INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`
 			)
 				.then((response) => {
-					if (!PRODUCTION) console.log('REGISTER RESPONSE');
-					resolve({ apikey });
+					if (!PRODUCTION) console.log('REGISTER RESPONSE')
+					resolve({ apikey })
 				})
 				.catch((err) => {
 					// console.log(err);
-					reject(DBerror(err));
-				});
-		});
+					reject(DBerror(err))
+				})
+		})
 	}
 
 	static async unregister(email, password) {
@@ -142,14 +142,14 @@ class Database {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
 							Database.sendQuery(`DELETE FROM Users WHERE( email = '${email}');`)
 								.then((result) => {
-									resolve(true);
+									resolve(true)
 								})
-								.catch((err) => reject(err));
-						} else resolve(false);
-					} else reject(result);
+								.catch((err) => reject(err))
+						} else resolve(false)
+					} else reject(result)
 				})
-				.catch((err) => reject(err));
-		});
+				.catch((err) => reject(err))
+		})
 	}
 
 	/*==================DATA SOURCE===============*/
@@ -159,12 +159,12 @@ class Database {
 	 * @returns a promise
 	 */
 	static async getDataSourceList(email) {
-		let query = `SELECT * FROM datasource WHERE ( email = '${email}');`;
+		let query = `SELECT * FROM datasource WHERE ( email = '${email}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 	/**
 	 * This function is to add a data source
@@ -174,12 +174,12 @@ class Database {
 	 * @returns a promise
 	 */
 	static async addDataSource(email, sourceID, sourceURL) {
-		let query = `INSERT INTO datasource (id, email, sourceurl) VALUES ('${sourceID}','${email}','${sourceURL}');`;
+		let query = `INSERT INTO datasource (id, email, sourceurl) VALUES ('${sourceID}','${email}','${sourceURL}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 	/**
 	 * This function is to remove a data source
@@ -188,12 +188,12 @@ class Database {
 	 * @returns a promise
 	 */
 	static async removeDataSource(email, dataSourceID) {
-		let query = `DELETE FROM datasource WHERE ( email = '${email}') AND ( ID = '${dataSourceID}');`;
+		let query = `DELETE FROM datasource WHERE ( email = '${email}') AND ( ID = '${dataSourceID}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 
 	/*==================DASHBOARDS===============*/
@@ -203,12 +203,12 @@ class Database {
 	 * @returns a promise
 	 */
 	static async getDashboardList(email) {
-		let query = `SELECT * FROM Dashboard WHERE (email = '${email}');`;
+		let query = `SELECT * FROM Dashboard WHERE (email = '${email}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 	/**
 	 * This function adds a dashboard.
@@ -219,12 +219,12 @@ class Database {
 	 * @returns a promise
 	 */
 	static async addDashboard(email, dashboardID, name, desc) {
-		let query = `INSERT INTO Dashboard (id,Name,Description,email) VALUES ('${dashboardID}','${name}','${desc}','${email}');`;
+		let query = `INSERT INTO Dashboard (id,Name,Description,email) VALUES ('${dashboardID}','${name}','${desc}','${email}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 	/**
 	 * This function removes a dashboard.
@@ -233,12 +233,12 @@ class Database {
 	 * @returns a promise
 	 */
 	static async removeDashboard(email, dashboardID) {
-		let query = `DELETE FROM Dashboard WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
+		let query = `DELETE FROM Dashboard WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 	/**
 	 * This function update a dashboard.
@@ -249,28 +249,28 @@ class Database {
 	 * @returns a promise
 	 */
 	static async updateDashboard(email, dashboardID, fields, data) {
-		console.log(fields, data);
+		console.log(fields, data)
 
-		let index = -1;
+		let index = -1
 		fields = fields.filter((field, i) => {
 			if (field === 'email') {
-				index = i;
-				return false;
-			} else return true;
-		});
-		if (index >= 0) data.splice(index, 1);
+				index = i
+				return false
+			} else return true
+		})
+		if (index >= 0) data.splice(index, 1)
 
-		console.log(fields, data);
+		console.log(fields, data)
 
 		let query = `UPDATE Dashboard SET ${fieldUpdates(
 			fields,
 			data
-		)} WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
+		)} WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 
 	/*==================GRAPHS===============*/
@@ -283,12 +283,12 @@ class Database {
 	static async getGraphList(email, dashboardID) {
 		let query = ` SELECT g.* from graph as g join (
       SELECT * from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}')
-    ) as de on (g.dashboardid=de.id);`;
+    ) as de on (g.dashboardid=de.id);`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 	/**
 	 * This function is used to add a graph to a dashboard.
@@ -301,16 +301,16 @@ class Database {
 	 * @returns a promise
 	 */
 	static async addGraph(email, dashboardID, graphID, title, options, metadata) {
-		options = JSON.stringify(options);
-		metadata = JSON.stringify(metadata);
+		options = JSON.stringify(options)
+		metadata = JSON.stringify(metadata)
 		let query = `INSERT INTO GRAPH (id, dashboardid, title, metadata, options)
     SELECT '${graphID}', '${dashboardID}', '${title}', '${metadata}','${options}'
-    WHERE EXISTS (SELECT '${email}' FROM dashboard AS d WHERE (d.email = '${email}') AND (d.ID = '${dashboardID}'))`;
+    WHERE EXISTS (SELECT '${email}' FROM dashboard AS d WHERE (d.email = '${email}') AND (d.ID = '${dashboardID}'))`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 	/**
 	 * This function is used to remove a graph from a dashboard
@@ -322,12 +322,12 @@ class Database {
 	static async removeGraph(email, dashboardID, graphID) {
 		let query = `DELETE FROM Graph as g WHERE (
       g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
-    ) AND (g.ID = '${graphID}');`;
+    ) AND (g.ID = '${graphID}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 	/**
 	 * This function is used to remove a graph from a dashboard
@@ -339,18 +339,18 @@ class Database {
 	static async updateGraph(email, dashboardID, graphID, fields, data) {
 		data = data.map((item, i) =>
 			i < fields.length && (fields[i] === 'metadata' || fields[i] === 'options') ? JSON.stringify(item) : item
-		);
+		)
 		let query = `UPDATE Graph as g SET ${fieldUpdates(fields, data)} WHERE (
       g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
-    ) AND (g.ID = '${graphID}');`;
+    ) AND (g.ID = '${graphID}');`
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
 				.then((result) => resolve(result.rows))
-				.catch((result) => reject(result));
-		});
+				.catch((result) => reject(result))
+		})
 	}
 }
-Database.pg_pool = new Pool(config);
+Database.pg_pool = new Pool(config)
 /**
  * This function is used to remove a graph from a dashboard
  * @param fields
@@ -358,34 +358,34 @@ Database.pg_pool = new Pool(config);
  * @returns a promise
  */
 function fieldUpdates(fields, data) {
-	let output = '';
+	let output = ''
 	for (let i = 0; i < fields.length; i++) {
-		output = output + ` ${fields[i]} = '${data[i]}'${i < fields.length - 1 ? ', ' : ''}`;
+		output = output + ` ${fields[i]} = '${data[i]}'${i < fields.length - 1 ? ', ' : ''}`
 	}
-	return output;
+	return output
 }
 /**
  * This function is used to generate a api key
  * @returns a apikey
  */
 function generateApiKey() {
-	let result = '';
-	let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	let charactersLength = characters.length;
+	let result = ''
+	let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	let charactersLength = characters.length
 	for (let i = 0; i < 20; i++) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		result += characters.charAt(Math.floor(Math.random() * charactersLength))
 	}
-	return result;
+	return result
 }
 /**
  * This function is used to format the error to be displayed, if one does occur.
  * @returns a javascript object of the error.
  */
 function DBerror(err) {
-	let { table, code, routine, hint, detail } = err;
-	if (code === '23505') routine = 'userAlreadyExists';
-	if (typeof hint === 'undefined') hint = detail;
-	return { origin: 'database', table, code, error: routine, hint };
+	let { table, code, routine, hint, detail } = err
+	if (code === '23505') routine = 'userAlreadyExists'
+	if (typeof hint === 'undefined') hint = detail
+	return { origin: 'database', table, code, error: routine, hint }
 }
 /**
  * This function is used to return a error if any custom errors occurs.
@@ -398,7 +398,7 @@ function UndefinedResponseFromDBerror() {
 		routine: 'undefinedResponseFromDatabase',
 		hint: undefined,
 		detail: 'Query Sent: ' + SQL_query,
-	};
+	}
 }
 
 /*
@@ -407,4 +407,4 @@ errorMissingColumn
 userAlreadyExists
 */
 
-module.exports = Database;
+module.exports = Database
