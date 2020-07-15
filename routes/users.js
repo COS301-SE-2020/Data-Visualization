@@ -6,11 +6,11 @@
  * Modules: None
  * Related Documents: SRS Document - www.example.com
  * Update History:
- * Date          Author             Changes
+ * Date          Author             				Changes
  * -------------------------------------------------------------------------------
- * 29/06/2020   Elna Pistorius & Phillip Schulze     Original
- * 30/06/2020   Elna Pistorius & Phillip Schulze     Added more functionality
- * 2/07/2020    Elna Pistorius & Phillip Schulze     Changed endpoint names and request methods to POST
+ * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
+ * 30/06/2020   Elna Pistorius & Phillip Schulze    Added more functionality
+ * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
  *
  * Test Cases: none
  *

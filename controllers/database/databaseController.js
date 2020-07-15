@@ -8,8 +8,9 @@
  * Update History:
  * Date          Author             Changes
  * -------------------------------------------------------------------------------
- * 29/06/2020   Elna Pistorius & Phillip Schulze     Original
- * 2/07/2020    Elna Pistorius & Phillip Schulze     Changed endpoint names and request methods to POST
+ * 29/06/2020   Phillip Schulze     Original
+ * 12/07/2020   Phillip Schulze    	Added more functionality for graph suggestions
+ * 15/07/2020   Phillip Schulze	 	Modified all the functions
  *
  * Test Cases: none
  *
@@ -41,8 +42,8 @@ const config = {
 };
 
 /**
- * Purpose: This class is responsible for suggestion generation when graph suggestions are generated.
- * Usage Instructions: Use the corresponding getters and setters to modify/retrieve class variables.
+ * Purpose: This class is responsible for doing any database related requests.
+ * Usage Instructions: Use the corresponding functions to add/update/delete/remove to the database.
  * Class functionality should be accessed through restController.js.
  * @author Phillip Schulze
  */
@@ -104,7 +105,14 @@ class Database {
 				.catch((err) => reject(err));
 		});
 	}
-
+	/**
+	 * This function registers a user.
+	 * @param fname the users first name
+	 * @param lname the users last name
+	 * @param email the users email
+	 * @param password the users password
+	 * @returns a promise
+	 */
 	static register(fname, lname, email, password) {
 		password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
@@ -141,7 +149,8 @@ class Database {
 	/**
 	 * This function is to add a data source
 	 * @param email the users email
-	 * @params sourceURL the data source url to add
+	 * @param sourceID the sources ID that needs to be added
+	 * @param sourceURL the data source url to add
 	 * @returns a promise
 	 */
 	static async addDataSource(email, sourceID, sourceURL) {
@@ -153,9 +162,9 @@ class Database {
 		});
 	}
 	/**
-	 * This function is to remove
+	 * This function is to remove a data source
 	 * @param email the users email
-	 * @params dataSourceID the data source id
+	 * @param dataSourceID the data source id
 	 * @returns a promise
 	 */
 	static async removeDataSource(email, dataSourceID) {
@@ -168,7 +177,12 @@ class Database {
 	}
 
 
-	//==================DASHBOARDS===============
+	/*==================DASHBOARDS===============*/
+	/**
+	 * This function is to get a dashboard list
+	 * @param email the users email
+	 * @returns a promise
+	 */
 	static async getDashboardList(email) {
 		let query = `SELECT * FROM Dashboard WHERE (email = '${email}');`;
 		return new Promise((resolve, reject) => {
@@ -177,6 +191,14 @@ class Database {
 				.catch((result) => reject(result));
 		});
 	}
+	/**
+	 * This function adds a dashboard.
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param name the dashboards name
+	 * @param desc the description of the dashbaord
+	 * @returns a promise
+	 */
 	static async addDashboard(email, dashboardID, name, desc) {
 		let query = `INSERT INTO Dashboard (id,Name,Description,email) VALUES ('${dashboardID}','${name}','${desc}','${email}');`;
 		return new Promise((resolve, reject) => {
@@ -185,6 +207,12 @@ class Database {
 				.catch((result) => reject(result));
 		});
 	}
+	/**
+	 * This function removes a dashboard.
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @returns a promise
+	 */
 	static async removeDashboard(email, dashboardID) {
 		let query = `DELETE FROM Dashboard WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
 		return new Promise((resolve, reject) => {
@@ -193,6 +221,14 @@ class Database {
 				.catch((result) => reject(result));
 		});
 	}
+	/**
+	 * This function update a dashboard.
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param fields the fields that need to be updated
+	 * @param data data that is used to update the fields
+	 * @returns a promise
+	 */
 	static async updateDashboard(email, dashboardID, fields, data) {
 		console.log(fields, data);
 
@@ -218,7 +254,13 @@ class Database {
 		});
 	}
 
-	//==================GRAPHS===============
+	/*==================GRAPHS===============*/
+	/**
+	 * This function is used to get a list of graphs.
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @returns a promise
+	 */
 	static async getGraphList(email, dashboardID) {
 		let query = ` SELECT g.* from graph as g join (
       SELECT * from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}')
@@ -229,6 +271,16 @@ class Database {
 				.catch((result) => reject(result));
 		});
 	}
+	/**
+	 * This function is used to add a graph to a dashboard.
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param graphID the graphs id
+	 * @param title the title of the graph
+	 * @param options the options is a JSON object that stores the options and data of the graph
+	 * @param metadata the metadata is a JSON object that stores the presentation data of the graph
+	 * @returns a promise
+	 */
 	static async addGraph(email, dashboardID, graphID, title, options, metadata) {
 		options = JSON.stringify(options);
 		metadata = JSON.stringify(metadata);
@@ -241,6 +293,13 @@ class Database {
 				.catch((result) => reject(result));
 		});
 	}
+	/**
+	 * This function is used to remove a graph from a dashboard
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param graphID the graphs id
+	 * @returns a promise
+	 */
 	static async removeGraph(email, dashboardID, graphID) {
 		let query = `DELETE FROM Graph as g WHERE (
       g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
@@ -251,6 +310,13 @@ class Database {
 				.catch((result) => reject(result));
 		});
 	}
+	/**
+	 * This function is used to remove a graph from a dashboard
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param graphID the graphs id
+	 * @returns a promise
+	 */
 	static async updateGraph(email, dashboardID, graphID, fields, data) {
 		data = data.map((item, i) =>
 			i < fields.length && (fields[i] === 'metadata' || fields[i] === 'options') ? JSON.stringify(item) : item
@@ -266,7 +332,12 @@ class Database {
 	}
 }
 Database.pg_pool = new Pool(config);
-
+/**
+ * This function is used to remove a graph from a dashboard
+ * @param fields
+ * @param data
+ * @returns a promise
+ */
 function fieldUpdates(fields, data) {
 	let output = '';
 	for (let i = 0; i < fields.length; i++) {
@@ -274,6 +345,10 @@ function fieldUpdates(fields, data) {
 	}
 	return output;
 }
+/**
+ * This function is used to generate a api key
+ * @returns a apikey
+ */
 function generateApiKey() {
 	let result = '';
 	let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -283,14 +358,20 @@ function generateApiKey() {
 	}
 	return result;
 }
-
+/**
+ * This function is used to format the error to be displayed, if one does occur.
+ * @returns a javascript object of the error.
+ */
 function DBerror(err) {
 	let { table, code, routine, hint, detail } = err;
 	if (code === '23505') routine = 'userAlreadyExists';
 	if (typeof hint === 'undefined') hint = detail;
 	return { origin: 'database', table, code, error: routine, hint };
 }
-
+/**
+ * This function is used to return a error if any custom errors occurs.
+ * @returns a JSON object of the error to be displayed.
+ */
 function UndefinedResponseFromDBerror() {
 	return {
 		table: undefined,

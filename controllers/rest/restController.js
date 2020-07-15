@@ -1,55 +1,120 @@
+/**
+ * @file restController.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author                             Changes
+ * -------------------------------------------------------------------------------
+ * 29/06/2020   Elna Pistorius & Phillip Schulze     Original
+ * 12/07/2020   Elna Pistorius & Phillip Schulze     Add Graph Suggester Controller
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a rest controller that handles any requests from the roots and
+ * handles these requests appropriately by getting or setting the requested data from or to the models.
+ *
+ * Error Messages: "Error"
+ * Assumptions: None
+ * Constraints: None
+ */
 const Database = require('../database');
 const DataSource = require('../dataSource');
 const { graphsSuggesterController } = require('../graphSuggester');
+/**
+ * Purpose: This class is responsible for any requests from the roots and then
+ * handles these requests appropriately by getting or setting the requested data from or to the models.
+ * Usage Instructions: Use the corresponding getters and setters to update any sub-controllers.
+ * @author Elna Pistorius & Phillip Schulze
+ */
 class RestController {
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static getDataSourceList(email, done, error) {
 		Database.getDataSourceList(email)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
-
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static addDataSource(email, dataSourceID, dataSourceURL, done, error) {
 		Database.addDataSource(email, dataSourceID, dataSourceURL)
 			.then(() => done())
 			.catch((err) => error && error(err));
 	}
-
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static removeDataSource(email, dataSourceID, done, error) {
 		Database.removeDataSource(email, dataSourceID)
 			.then(() => done())
 			.catch((err) => error && error(err));
 	}
-
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static getDashboardList(email, done, error) {
 		Database.getDashboardList(email)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
-
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static addDashboard(email, dashboardID, name, description, done, error) {
 		Database.addDashboard(email, dashboardID, name, description)
 			.then(() => done())
 			.catch((err) => error && error(err));
 	}
-
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static updateDashboard(email, id, fields, data, done, error) {
 		Database.updateDashboard(email, id, fields, data)
 			.then(() => done())
 			.catch((err) => error && error(err));
 	}
-
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static removeDashboard(email, id, done, error) {
 		Database.removeDashboard(email, id)
 			.then(() => done())
 			.catch((err) => error && error(err));
 	}
-
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static getGraphList(email, dashboardID, done, error) {
 		Database.getGraphList(email, dashboardID)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
-
+	/**
+	 * This function sets the available types of graphs so that graph suggestion knows which graphs it can
+	 * suggest.
+	 * @param newTypes the new graph types that can be selected(such as bar/pie charts) in array format
+	 */
 	static updateGraph(email, dashboardID, graphID, fields, data, done, error) {
 		Database.updateGraph(email, dashboardID, graphID, fields, data)
 			.then(() => done())

@@ -6,14 +6,14 @@
  * Modules: None
  * Related Documents: SRS Document - www.example.com
  * Update History:
- * Date          Author             Changes
+ * Date          Author                             Changes
  * -------------------------------------------------------------------------------
- * 30/06/2020   Elna Pistorius & Phillip Schulze     Original
- * 2/07/2020    Elna Pistorius & Phillip Schulze     Added more root modules
+ * 30/06/2020   Elna Pistorius & Phillip Schulze    Original
+ * 2/07/2020    Elna Pistorius & Phillip Schulze    Added more root modules
  *
  * Test Cases: none
  *
- * Functional Description: This file just groups all the routes together so that we only have to require routes
+ * Functional Description: This file just groups all the routes together so that we only have to require routes.js
  * rather than every single rout
  *
  * Error Messages: "Error"

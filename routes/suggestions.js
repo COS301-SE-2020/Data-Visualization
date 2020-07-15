@@ -6,10 +6,10 @@
  * Modules: None
  * Related Documents: SRS Document - www.example.com
  * Update History:
- * Date          Author             Changes
+ * Date          Author                             Changes
  * -------------------------------------------------------------------------------
- * 29/06/2020   Elna Pistorius & Phillip Schulze     Original
- * 12/07/2020   Elna Pistorius & Phillip Schulze     Added graphs endpoint
+ * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
+ * 12/07/2020   Elna Pistorius & Phillip Schulze    Added graphs endpoint
  *
  * Test Cases: none
  *
