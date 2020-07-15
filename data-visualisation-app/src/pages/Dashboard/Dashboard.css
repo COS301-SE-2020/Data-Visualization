@@ -1,0 +1,153 @@
+/*.App {*/
+/*  text-align: center;*/
+/*  color: #303030;*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*}*/
+
+/*.App-logo {*/
+/*  height: 40vmin;*/
+/*  pointer-events: none;*/
+/*}*/
+
+/*@media (prefers-reduced-motion: no-preference) {*/
+/*  .App-logo {*/
+/*    animation: App-logo-spin infinite 20s linear;*/
+/*  }*/
+/*}*/
+
+/*.App-header {*/
+/*  background: #747474;*/
+/*  min-height: 200vh;*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  font-size: calc(10px + 2vmin);*/
+/*  color: white;*/
+/*}*/
+
+/*.App-link {*/
+/*  color: #61dafb;*/
+/*}*/
+
+/*@keyframes App-logo-spin {*/
+/*  from {*/
+/*    transform: rotate(0deg);*/
+/*  }*/
+/*  to {*/
+/*    transform: rotate(360deg);*/
+/*  }*/
+/*}*/
+/*body {*/
+/*  margin: 0;*/
+/*  background: #222222;*/
+/*  font-family: 'Courier New', Courier, monospace;*/
+/*  font-weight: 800;*/
+/*  min-height: 100vh;*/
+/*  justify-content: space-around;*/
+/*}*/
+/*header {*/
+/*  width: 90%;*/
+/*  padding: 1% 5%;*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  background: #303030;*/
+/*  top: 0;*/
+/*  z-index: 1000;*/
+/*  margin-bottom: 10px;*/
+/*}*/
+/*header::after {*/
+/*  display: table;*/
+/*  clear: both;*/
+/*}*/
+
+/*header h1 {*/
+/*  color: white;*/
+/*  display: inline-block;*/
+/*  margin-left: 0;*/
+/*  padding-top: 5px;*/
+/*  position: relative;*/
+/*}*/
+
+/*header nav ul {*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*  list-style: none;*/
+/*}*/
+/*header nav li {*/
+/*  display: inline-block;*/
+/*  margin-left: 30px;*/
+/*  padding-top: 5px;*/
+/*  position: relative;*/
+/*}*/
+/*header nav .nav {*/
+/*  color: white;*/
+/*  text-decoration: none;*/
+/*  font-size: 16px;*/
+/*  transition: color 250ms ease-in-out;*/
+/*  padding: 5px 10px;*/
+/*  position: relative;*/
+/*  border: none !important;*/
+/*}*/
+/*header nav .nav:hover {*/
+/*  color: #d6883e;*/
+/*  cursor: pointer;*/
+/*}*/
+/*header nav .nav::before {*/
+/*  content: '';*/
+/*  display: block;*/
+/*  height: 2px;*/
+/*  background-color: #d6883e;*/
+
+/*  position: absolute;*/
+/*  bottom: 0;*/
+/*  width: 0%;*/
+
+/*  transition: all 250ms ease-in-out;*/
+/*}*/
+/*header nav .nav:hover::before {*/
+/*  width: 100%;*/
+/*}*/
+
+/*.DisplayGraph-container {*/
+/*  display: flex;*/
+/*  flex-wrap: wrap;*/
+/*  justify-content: center;*/
+/*}*/
+
+/*.DisplayGraph {*/
+/*  flex: 0;*/
+/*  width: 200px;*/
+/*  height: 200px;*/
+/*  margin: 10px;*/
+/*}*/
+
+/*.DisplayGraph > img {*/
+/*  width: 200px;*/
+/*  height: 200px;*/
+/*}*/
+
+/*.NoContent {*/
+/*  color: rgb(150, 150, 150);*/
+/*}*/
+
+/*.display-header {*/
+/*  display: flex;*/
+/*}*/
+
+/*.display-header > h1 {*/
+/*  flex: 1;*/
+/*}*/
+
+/*.display-header > buttone {*/
+/*  flex: 0;*/
+/*}*/
+
+/*.title {*/
+/*  font-size: 3vw;*/
+/*  color: #d6883e;*/
+/*  padding-bottom: 10px;*/
+/*}*/

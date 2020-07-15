@@ -30,14 +30,14 @@ const bcrypt = require('bcryptjs');
 const saltRounds = 12;
 
 const config = {
-  user: auth[0],
-  password: auth[1],
-  host: params.hostname,
-  port: params.port,
-  database: params.pathname.split('/')[1],
-  ssl: {
-    rejectUnauthorized: false,
-  },
+	user: auth[0],
+	password: auth[1],
+	host: params.hostname,
+	port: params.port,
+	database: params.pathname.split('/')[1],
+	ssl: {
+		rejectUnauthorized: false,
+	},
 };
 
 /**
@@ -47,267 +47,258 @@ const config = {
  * @author Phillip Schulze
  */
 class Database {
-  /**
-   * This function sends queries to the database.
-   * @param SQL_query the query that needs to be executed in the database
-   * @returns a promise
-   */
-  static sendQuery(SQL_query) {
-    if (!PRODUCTION) console.log(SQL_query);
-    return new Promise((conResolve, conReject) => {
-      Database.pg_pool
-        .connect()
-        .then((client) => {
-          client
-            .query(SQL_query)
-            .then((res) => {
-              client.release();
-              if (typeof res === 'undefined') conReject(DBerror(UndefinedResponseFromDBerror()));
-              else conResolve(res);
-            })
-            .catch((err) => {
-              client.release();
-              conReject(DBerror(err));
-            });
-        })
-        .catch((err) => conReject(DBerror(err)));
-    });
-  }
+	/**
+	 * This function sends queries to the database.
+	 * @param SQL_query the query that needs to be executed in the database
+	 * @returns a promise
+	 */
+	static sendQuery(SQL_query) {
+		if (!PRODUCTION) console.log(SQL_query);
+		return new Promise((conResolve, conReject) => {
+			Database.pg_pool
+				.connect()
+				.then((client) => {
+					client
+						.query(SQL_query)
+						.then((res) => {
+							client.release();
+							if (typeof res === 'undefined') conReject(DBerror(UndefinedResponseFromDBerror()));
+							else conResolve(res);
+						})
+						.catch((err) => {
+							client.release();
+							conReject(DBerror(err));
+						});
+				})
+				.catch((err) => conReject(DBerror(err)));
+		});
+	}
 
-  /*==================USERS===============*/
-  /**
-   * This function authenticates a user.
-   * @param email the users email
-   * @param password the users password
-   * @returns a promise
-   */
+	/*==================USERS===============*/
+	/**
+	 * This function authenticates a user.
+	 * @param email the users email
+	 * @param password the users password
+	 * @returns a promise
+	 */
 
-  static authenticate(email, password) {
-    return new Promise((resolve, reject) => {
-      console.log('==> AUTHENTICATING: ' + email);
-      Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
-        .then((result) => {
-          if (typeof result !== 'undefined' && result.command === 'SELECT') {
-            if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
-              console.log('==> AUTHENTICATION: succesful');
-              delete result.rows[0].password;
-              resolve(result.rows[0]);
-            } else {
-              console.log('==> AUTHENTICATION: failed');
-              resolve(false);
-            }
-          } else {
-            console.log('==> AUTHENTICATION: error');
-            reject(result);
-          }
-        })
-        .catch((err) => reject(err));
-    });
-  }
-  /**
-   * This function is to registers a user.
-   * @param fname the users first name
-   * @param lname the users last name
-   * @param email the users email
-   * @param password the users password
-   * @returns a promise
-   */
+	static authenticate(email, password) {
+		return new Promise((resolve, reject) => {
+			console.log('==> AUTHENTICATING: ' + email);
+			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
+				.then((result) => {
+					if (typeof result !== 'undefined' && result.command === 'SELECT') {
+						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
+							console.log('==> AUTHENTICATION: succesful');
+							delete result.rows[0].password;
+							resolve(result.rows[0]);
+						} else {
+							console.log('==> AUTHENTICATION: failed');
+							resolve(false);
+						}
+					} else {
+						console.log('==> AUTHENTICATION: error');
+						reject(result);
+					}
+				})
+				.catch((err) => reject(err));
+		});
+	}
 
-  static register(fname, lname, email, password) {
-    password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
+	static register(fname, lname, email, password) {
+		password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
-    const apikey = generateApiKey();
-    console.log('==> REGISTER: ' + email + ' |' + apikey);
+		const apikey = generateApiKey();
+		console.log('==> REGISTER: ' + email + ' |' + apikey);
 
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(
-        `INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`
-      )
-        .then((response) => {
-          console.log('REGISTER RESPONSE');
-          resolve({ apikey });
-        })
-        .catch((err) => {
-          // console.log(err);
-          reject(DBerror(err));
-        });
-    });
-  }
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(
+				`INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`
+			)
+				.then((response) => {
+					console.log('REGISTER RESPONSE');
+					resolve({ apikey });
+				})
+				.catch((err) => {
+					reject(err);
+				});
+		});
+	}
+	/*==================DATA SOURCE===============*/
+	/**
+	 * This function is to get a list of data sources
+	 * @param email the users email
+	 * @returns a promise
+	 */
+	static async getDataSourceList(email) {
+		let query = `SELECT * FROM datasource WHERE ( email = '${email}');`;
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
+	/**
+	 * This function is to add a data source
+	 * @param email the users email
+	 * @params sourceURL the data source url to add
+	 * @returns a promise
+	 */
+	static async addDataSource(email, sourceID, sourceURL) {
+		let query = `INSERT INTO datasource (id, email, sourceurl) VALUES ('${sourceID}','${email}','${sourceURL}');`;
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
+	/**
+	 * This function is to remove
+	 * @param email the users email
+	 * @params dataSourceID the data source id
+	 * @returns a promise
+	 */
+	static async removeDataSource(email, dataSourceID) {
+		let query = `DELETE FROM datasource WHERE ( email = '${email}') AND ( ID = '${dataSourceID}');`;
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
 
-  /*==================DATA SOURCE===============*/
-  /**
-   * This function is to get a list of data sources
-   * @param email the users email
-   * @returns a promise
-   */
-  static async getDataSourceList(email) {
-    let query = `SELECT * FROM datasource WHERE ( email = '${email}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
-  /**
-   * This function is to add a data source
-   * @param email the users email
-   * @params sourceURL the data source url to add
-   * @returns a promise
-   */
-  static async addDataSource(email, sourceURL) {
-    let query = `INSERT INTO datasource (email, sourceurl) VALUES ('${email}','${sourceURL}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
-  /**
-   * This function is to remove
-   * @param email the users email
-   * @params dataSourceID the data source id
-   * @returns a promise
-   */
-  static async removeDataSource(email, dataSourceID) {
-    let query = `DELETE FROM datasource WHERE ( email = '${email}') AND ( ID = '${dataSourceID}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
 
-  //==================DASHBOARDS===============
-  static async getDashboardList(email) {
-    let query = `SELECT * FROM Dashboard WHERE (email = '${email}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
-  static async addDashboard(email, name, desc) {
-    let query = `INSERT INTO Dashboard (Name,Description,email) VALUES ('${name}','${desc}','${email}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
-  static async removeDashboard(email, dashboardID) {
-    let query = `DELETE FROM Dashboard WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
-  static async updateDashboard(email, dashboardID, fields, data) {
-    console.log(fields, data);
+	//==================DASHBOARDS===============
+	static async getDashboardList(email) {
+		let query = `SELECT * FROM Dashboard WHERE (email = '${email}');`;
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
+	static async addDashboard(email, dashboardID, name, desc) {
+		let query = `INSERT INTO Dashboard (id,Name,Description,email) VALUES ('${dashboardID}','${name}','${desc}','${email}');`;
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
+	static async removeDashboard(email, dashboardID) {
+		let query = `DELETE FROM Dashboard WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
+	static async updateDashboard(email, dashboardID, fields, data) {
+		console.log(fields, data);
 
-    let index = -1;
-    fields = fields.filter((field, i) => {
-      if (field === 'email') {
-        index = i;
-        return false;
-      } else return true;
-    });
-    if (index >= 0) data.splice(index, 1);
+		let index = -1;
+		fields = fields.filter((field, i) => {
+			if (field === 'email') {
+				index = i;
+				return false;
+			} else return true;
+		});
+		if (index >= 0) data.splice(index, 1);
 
-    console.log(fields, data);
+		console.log(fields, data);
 
-    let query = `UPDATE Dashboard SET ${fieldUpdates(
-      fields,
-      data
-    )} WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
+		let query = `UPDATE Dashboard SET ${fieldUpdates(
+			fields,
+			data
+		)} WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
 
-  //==================GRAPHS===============
-  static async getGraphList(email, dashboardID) {
-    let query = ` SELECT g.* from graph as g join (
+	//==================GRAPHS===============
+	static async getGraphList(email, dashboardID) {
+		let query = ` SELECT g.* from graph as g join (
       SELECT * from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}')
     ) as de on (g.dashboardid=de.id);`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
-  static async addGraph(email, dashboardID, title, options, metadata) {
-    options = JSON.stringify(options);
-    metadata = JSON.stringify(metadata);
-    let query = `INSERT INTO GRAPH (dashboardid, title, metadata, options)
-    SELECT ${dashboardID}, '${title}', '${metadata}','${options}'
-    WHERE EXISTS (SELECT '${email}' FROM dashboard AS d WHERE (d.email = '${email}') AND (d.ID = ${dashboardID}))`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
-  static async removeGraph(email, dashboardID, graphID) {
-    let query = `DELETE FROM Graph as g WHERE (
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
+	static async addGraph(email, dashboardID, graphID, title, options, metadata) {
+		options = JSON.stringify(options);
+		metadata = JSON.stringify(metadata);
+		let query = `INSERT INTO GRAPH (id, dashboardid, title, metadata, options)
+    SELECT '${graphID}', '${dashboardID}', '${title}', '${metadata}','${options}'
+    WHERE EXISTS (SELECT '${email}' FROM dashboard AS d WHERE (d.email = '${email}') AND (d.ID = '${dashboardID}'))`;
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
+	static async removeGraph(email, dashboardID, graphID) {
+		let query = `DELETE FROM Graph as g WHERE (
       g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
     ) AND (g.ID = '${graphID}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
-  static async updateGraph(email, dashboardID, graphID, fields, data) {
-    data = data.map((item, i) =>
-      i < fields.length && (fields[i] === 'metadata' || fields[i] === 'options') ? JSON.stringify(item) : item
-    );
-    let query = `UPDATE Graph as g SET ${fieldUpdates(fields, data)} WHERE (
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
+	static async updateGraph(email, dashboardID, graphID, fields, data) {
+		data = data.map((item, i) =>
+			i < fields.length && (fields[i] === 'metadata' || fields[i] === 'options') ? JSON.stringify(item) : item
+		);
+		let query = `UPDATE Graph as g SET ${fieldUpdates(fields, data)} WHERE (
       g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
     ) AND (g.ID = '${graphID}');`;
-    return new Promise((resolve, reject) => {
-      Database.sendQuery(query)
-        .then((result) => resolve(result.rows))
-        .catch((result) => reject(result));
-    });
-  }
+		return new Promise((resolve, reject) => {
+			Database.sendQuery(query)
+				.then((result) => resolve(result.rows))
+				.catch((result) => reject(result));
+		});
+	}
 }
 Database.pg_pool = new Pool(config);
 
 function fieldUpdates(fields, data) {
-  let output = '';
-  for (let i = 0; i < fields.length; i++) {
-    output = output + ` ${fields[i]} = '${data[i]}'${i < fields.length - 1 ? ', ' : ''}`;
-  }
-  return output;
+	let output = '';
+	for (let i = 0; i < fields.length; i++) {
+		output = output + ` ${fields[i]} = '${data[i]}'${i < fields.length - 1 ? ', ' : ''}`;
+	}
+	return output;
 }
 function generateApiKey() {
-  let result = '';
-  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let charactersLength = characters.length;
-  for (let i = 0; i < 20; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
+	let result = '';
+	let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let charactersLength = characters.length;
+	for (let i = 0; i < 20; i++) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
 }
 
 function DBerror(err) {
-  let { table, code, routine, hint, detail } = err;
-  if (code === '23505') routine = 'userAlreadyExists';
-  if (typeof hint === 'undefined') hint = detail;
-  return { origin: 'database', table, code, error: routine, hint };
+	let { table, code, routine, hint, detail } = err;
+	if (code === '23505') routine = 'userAlreadyExists';
+	if (typeof hint === 'undefined') hint = detail;
+	return { origin: 'database', table, code, error: routine, hint };
 }
 
 function UndefinedResponseFromDBerror() {
-  return {
-    table: undefined,
-    code: undefined,
-    routine: 'undefinedResponseFromDatabase',
-    hint: undefined,
-    detail: 'Query Sent: ' + SQL_query,
-  };
+	return {
+		table: undefined,
+		code: undefined,
+		routine: 'undefinedResponseFromDatabase',
+		hint: undefined,
+		detail: 'Query Sent: ' + SQL_query,
+	};
 }
 
 /*
