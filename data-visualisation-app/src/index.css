@@ -1,3 +1,23 @@
+/**
+ * @file index.css
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             Changes
+ * -------------------------------------------------------------------------------
+ * 1/06/2020   Phillip Schulze    Original
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file is used to style the REACT application
+ *
+ * Error Messages: None.
+ * Assumptions: None.
+ * Constraints: None.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
 
 body {
