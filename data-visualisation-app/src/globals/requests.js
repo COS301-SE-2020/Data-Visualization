@@ -67,13 +67,13 @@ const API = {
         list: (apikey) => axios.post(constants.URL.DASHBOARD.LIST, {apikey}),
         add: (apikey, dashboardID, name, description) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, dashboardID, name, description }),
         delete: (apikey, dashboardID) => axios.post(constants.URL.DASHBOARD.REMOVE, { apikey, dashboardID }),
-        update: (apikey, dashboardID, fields, data) => axios.post(constants.URL.DASHBOARD.UPDATE, { apikey, dashboardID, fields, data }),
+        update: (apikey, dashboardID, fields, data) => axios.post(constants.URL.DASHBOARD.UPDATE, { apikey, dashboardID, fields, data })
     },
     graph: {
         list: (apikey, dashboardID) => axios.post(constants.URL.GRAPH.LIST, {apikey, dashboardID}),
-        add: (dashboardID, graphTypeID) => axios.post(getAPIurl() + 'graph', { dashboardID, graphTypeID }),
+        add: (apikey, dashboardID, title, graphID, options, metadata) => axios.post(constants.URL.GRAPH.ADD, { apikey, dashboardID, title, graphID, options, metadata }),
         delete: (apikey, dashboardID, graphID) => axios.post(constants.URL.GRAPH.REMOVE, { apikey, dashboardID, graphID }),
-        update: (apikey, dashboardID, graphID, fields, data) => axios.post(constants.URL.GRAPH.UPDATE, { apikey, dashboardID, graphID, fields, data }),
+        update: (apikey, dashboardID, graphID, fields, data) => axios.post(constants.URL.GRAPH.UPDATE, { apikey, dashboardID, graphID, fields, data })
     },
     user: {
         login: (email, password) => axios.post(getAPIurl() + 'users/login', {email, password}),
@@ -83,7 +83,10 @@ const API = {
     dataSources: {
         list: (apikey) => axios.post(getAPIurl() + 'datasource/list', {apikey}),
         add: (apikey, dataSourceID, dataSourceUrl) => axios.post(getAPIurl() + 'datasource/add', {apikey, dataSourceID, dataSourceUrl}),
-        delete: (dataSourceID, apikey) => axios.post(getAPIurl() + 'datasource/remove', {dataSourceID, apikey}),
+        delete: (dataSourceID, apikey) => axios.post(getAPIurl() + 'datasource/remove', {dataSourceID, apikey})
+    },
+    suggestion: {
+        graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl })
     }
 };
 
@@ -150,6 +153,22 @@ const request = {
         }
     },
     graph: {
+        add: (dashboardID, title, options, metadata, callback) => {
+            console.debug('Requesting graph.add with:', dashboardID, title, options, metadata);
+            if (canRequest()) {
+                API.graph
+                    .add(request.user.apikey, dashboardID, title, generateID(), options, metadata)
+                    .then((res) => {
+                        if (callback !== undefined) {
+                            console.debug('Response from graph.add:', res);
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        }
+                    })
+                    .catch((err) => console.error(err));
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        },
         list: (dashboardID, callback) => {
             if (canRequest()) {
                 API.graph
@@ -166,6 +185,7 @@ const request = {
             }
         },
         delete: (dashboardID, graphID, callback) => {
+            console.debug('Requesting graph.delete with:', dashboardID, graphID);
             if (canRequest()) {
                 API.graph
                     .delete(request.user.apikey, dashboardID, graphID)
@@ -213,14 +233,12 @@ const request = {
     },
     user: {
         login: (email, password, callback) => {
-            console.log('calling login with ' + email + ' ' + password);
+
             API.user.login(email, password)
                 .then((res) => {
-                    console.log('got response from login');
-                    console.log(res);
+
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
-                            console.log(res.data.message);
                             //localStorage.setItem('apikey', res.data.apikey);
                             //localStorage.setItem('loggedInFlag', true);
                             request.user.apikey = res.data.apikey;
@@ -242,7 +260,6 @@ const request = {
 
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
-                            console.log(res);
                             request.user.apikey = res.data.apikey;
                             request.user.email = email;
                             callback(constants.RESPONSE_CODES.SUCCESS);
@@ -261,7 +278,6 @@ const request = {
                 .then((res) => {
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
-                            console.log(res);
                             request.user.isLoggedIn = false;
                             callback(constants.RESPONSE_CODES.SUCCESS);
                         } else {
@@ -278,6 +294,11 @@ const request = {
         apikey: localStorage.getItem('apikey'),
         isLoggedIn: false,
         dataSources: [
+            {
+                'id': 6,
+                'email': 'elna@gmail.com',
+                'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
+            },
             {
                 'id': 6,
                 'email': 'elna@gmail.com',
@@ -334,7 +355,7 @@ const request = {
             }
         },
         delete: (dataSourceID, apikey, callback) => {
-            console.log('deleting charts');
+            console.debug('Requesting dataSources.delete');
             if (request.user.isLoggedIn) {
                 API.dataSources.delete(dataSourceID, apikey).then((res) => {
                     console.log(res);
@@ -356,6 +377,57 @@ const request = {
             }
         }
     },
+
+    suggestions: {
+        graph: (sourceurl, callback) => {
+            console.debug('Requesting suggestion.graph with:', sourceurl);
+            if (true || canRequest()) {
+                API.suggestion
+                    .graph(sourceurl)
+                    .then((res) => {
+                        if (callback !== undefined) {
+
+                            console.debug('Response from suggestion.graph:', res);
+                            request.cache.suggestions.graph.current = res.data;
+
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        }
+                    })
+                    .catch((err) => console.error('from heere' + err));
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        },
+        graphs: (sourceurl, amount, callback) => {
+            console.debug('Requesting suggestion.graphs with:', sourceurl, amount);
+            if (true || canRequest()) {
+
+
+                let shouldcontinue = true;
+                (async function() {
+                    for (let r = 0; shouldcontinue && r < amount; r++) {
+                        await new Promise(function(resolve){
+                            request.suggestions.graph(sourceurl, function(result) {
+                            if (result === constants.RESPONSE_CODES.SUCCESS) {
+                                resolve(request.cache.suggestions.graph.current);
+                            } else {
+                                shouldcontinue = false;
+                            }
+                        });
+                        } ).then(function(fetchedGraph){
+                            request.cache.suggestions.graph.list.push(fetchedGraph);
+                        });
+                    }
+                })().then(function() {
+                    callback(shouldcontinue ? constants.RESPONSE_CODES.SUCCESS : constants.RESPONSE_CODES.ERROR);
+                });
+
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        }
+    },
+
     cache: {
         dashboard: {
             list: {
@@ -372,6 +444,12 @@ const request = {
         user: {
             email: '',
             apikey: ''
+        },
+        suggestions: {
+            graph: {
+                current: null,
+                list: []
+            }
         }
     }
 };
