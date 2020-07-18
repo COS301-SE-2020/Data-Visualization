@@ -11,7 +11,7 @@ import API from '../../helpers/apiRequests';
 // import Cookies from 'universal-cookie';
 
 
-const { Title } = Typography;
+const { Title, Paragraph } = Typography;
 
 function HomePanelButton(props) {
     const sizeStyles = {
@@ -54,10 +54,8 @@ function HomePanelButton(props) {
                     className='panelLayout panelStyling'
                     style={{...getSizeStyle(),  ...props.colour}}
                     onClick={() => props.action()}>
-                    <div>
-                        <Title level={2} style={{...getContentPositionStyle(), color: 'white'}}>{props.data.name}</Title>
-                        <div style={getContentPositionStyle1()}>{props.data.description}</div>
-                    </div>
+                        <Title ellipsis level={(props.data.name.length < 14 ? 2 : (props.data.name.length > 20 ? 4 : 3))} style={{...getContentPositionStyle(), color: 'white'}}>{props.data.name}</Title>
+                        <Paragraph ellipsis={{rows: 7}} style={ {...getContentPositionStyle1(), color: 'white'}} >{props.data.description}</Paragraph>
                 </div>
             );
         }
@@ -101,6 +99,10 @@ function HomePage(props) {
         background: 'linear-gradient(16deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 79%)'
     }];
 
+    let colorStack = [];
+    for (let c = 0; c < backgrounds.length; c++) {
+        colorStack.push(c);
+    }
 
     return (
         <div className='content--padding'>
@@ -112,7 +114,7 @@ function HomePage(props) {
                             return dashboardList.map((dashboard) => {
                                 return (
                                     <HomePanelButton
-                                        colour={backgrounds[Math.floor(Math.random() * Math.floor(backgrounds.length))]}
+                                        colour={backgrounds[(colorStack.length > 0 ? colorStack.pop() : Math.floor(Math.random() * Math.floor(backgrounds.length)))]}
                                         data={dashboard}
                                         key={dashboard.id}
                                         isAddButton={false}
@@ -123,13 +125,15 @@ function HomePage(props) {
                         }
                     )()}
                     <HomePanelButton
-                        colour={backgrounds[Math.floor(Math.random() * Math.floor(backgrounds.length))]}
+                        colour={backgrounds[(colorStack.length > 0 ? colorStack.pop() : Math.floor(Math.random() * Math.floor(backgrounds.length)))]}
                         isAddButton={true}
                         action={() => props.onAddButtonClick(true)}
                     />
                 </React.Fragment>
             :
-                constants.LOADER
+                <div style={{textAlign: 'center'}}>
+                    {constants.LOADER}
+                </div>
             }
 
         </div>

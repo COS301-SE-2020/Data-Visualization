@@ -1,12 +1,9 @@
-import React, { Component } from "react";
-import * as THREE from "three";
-const OrbitControls = require("three-orbitcontrols");
+import React, { Component } from 'react';
+import * as THREE from 'three';
+// const OrbitControls = require('three-orbitcontrols');
 
 
 var SEPARATION = 70, AMOUNTX = 50, AMOUNTY = 50;
-
-var container, stats;
-var camera, scene, renderer;
 
 var particles, count = 0;
 
@@ -183,9 +180,16 @@ class BackgroundDots extends Component {
 
         return (
             <div>
+                {/*<div*/}
+                {/*    id="boardCanvas"*/}
+                {/*    style={{ width: this.props.width + 'px', height: this.props.width + 'px' }}*/}
+                {/*    ref={mount => {*/}
+                {/*        this.mount = mount;*/}
+                {/*    }}*/}
+                {/*/>*/}
                 <div
                     id="boardCanvas"
-                    style={{ width: this.props.width + 'px', height: this.props.width + 'px' }}
+                    style={{ width: '1920px', height: '1080px',  }}
                     ref={mount => {
                         this.mount = mount;
                     }}
