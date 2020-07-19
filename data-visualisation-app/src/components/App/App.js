@@ -243,7 +243,7 @@ function App(props) {
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';
 		if(exploreStage === 'dataConnection'){
-			pageTitle = 'Connection';
+			pageTitle = 'Connections';
 		}
 		if(exploreStage === 'entities'){
 			pageTitle = 'Entities';
