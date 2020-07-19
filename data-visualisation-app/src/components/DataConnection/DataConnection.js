@@ -103,11 +103,9 @@ class DataConnection extends React.Component {
       }));
     }
    
-    
   }
 
     
-
   addItem = (values) => {
 
     var newID = generateID();
@@ -185,12 +183,6 @@ class DataConnection extends React.Component {
 
     return (
      <div>
-        <span id = 'headingSpan'>
-          <Button id = 'firstBackButton' icon={<ArrowBackIosIcon />} visible = 'false'></Button>
-          <Typography>
-            <Title id = 'titleText'>Connections</Title>
-          </Typography>
-        </span>
         <List
           className="dataSourceList"
           loading={initLoading}

@@ -101,10 +101,6 @@ function Suggestions(props) {
 
     }, []);
 
-    const back = () => {
-        props.setStage('entities');
-    };
-
     const [filterState, setFilterState] = React.useState(false);
 
     const classes = useStyles();
@@ -225,12 +221,6 @@ function Suggestions(props) {
 
     return (isReady ?
                 <div className={classes.root}>
-            <span id = 'headingSpan'>
-                <Button id = 'backButton' icon={<ArrowBackIosIcon />} onClick={back}></Button>
-                <Typography>
-                    <Title id = 'titleText'>Suggestions</Title>
-                </Typography>
-            </span>
                     <div id = 'filterDiv'>
                         <Button id = 'filterButton' icon={<FilterOutlined />} onClick={() => setFilterState(true)}>Filter</Button>
                     </div>

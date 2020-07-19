@@ -298,11 +298,6 @@ const request = {
                 'id': 6,
                 'email': 'elna@gmail.com',
                 'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
-            },
-            {
-                'id': 6,
-                'email': 'elna@gmail.com',
-                'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
             }
         ]
     },

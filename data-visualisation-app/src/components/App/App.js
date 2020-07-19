@@ -27,6 +27,7 @@ import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Button } from 'antd';
 import { Database } from '@styled-icons/feather';
@@ -40,14 +41,15 @@ import 'react-resizable/css/styles.css';
 
 import './App.scss';
 
-
+//global
+import request from '../../globals/requests';
 
 //pages
 import Dashboard from '../../pages/Dashboard';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
 import LoginDialog from '../../pages/LoginDialog/LoginDialog';
-// import AddConnection from '../AddConnection';
+import LoginPopup from '../LoginPopup';
 import Home from '../../pages/Home';
 import Explore from '../../pages/Explore';
 import { MuiThemeProvider } from '@material-ui/core';
@@ -160,7 +162,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function App(props) {
-	
+
 	const { window } = props;
 	const classes = useStyles();
 	const theme = useTheme();
@@ -193,6 +195,10 @@ function App(props) {
 	//handle page state
 	const [pageType, setPageType] = React.useState('home');
 	const [exploreStage, setExploreStage] = React.useState('dataConnection');
+	const [dashboardStage, setDashboardStage] = React.useState('dashboardHome');
+	const [dashboardName, setDashboardName] = React.useState('Dashboard1');
+	const [isAddingDashboard, setIsAddingDashboard] = useState(false);
+	const [dashboardIndex, setDashboardIndex] = useState('');
 
 	const handlePageType = (t) => {
 		setPageType(t);
@@ -200,6 +206,105 @@ function App(props) {
 			mobileOpen === true ? handleDrawerToggle() : null
 		);
 	};
+	
+
+	//backButton
+	const handleBack = () => {
+		if(pageType === 'explore' && exploreStage === 'entities'){
+			setExploreStage('dataConnection');
+		}
+		if(pageType === 'explore' && exploreStage === 'suggestions'){
+			setExploreStage('entities');
+		}
+		if(pageType === 'dashboards' && dashboardStage === 'selected'){
+			setDashboardStage('dashboardHome');
+			setDashboardIndex('');
+			setIsAddingDashboard(false);
+		}		
+	};
+
+	var backButton;
+	if(pageType === 'dashboards' && dashboardStage === 'selected'){
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+	else if(pageType === 'explore' && (exploreStage === 'entities' || exploreStage === 'suggestions')){
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+	else{
+		backButton = <Button id = 'backButton'  type="primary" disabled = 'true' icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+
+
+	//handle pageTitle
+	var pageTitle = 'Home';
+	if(pageType === 'home'){
+		pageTitle = 'Home';
+	}
+	if(pageType === 'explore'){
+		pageTitle = 'Expore';
+		if(exploreStage === 'dataConnection'){
+			pageTitle = 'Connection';
+		}
+		if(exploreStage === 'entities'){
+			pageTitle = 'Entities';
+		}
+		if(exploreStage === 'suggestions'){
+			pageTitle = 'Suggestions';
+		}
+	}
+	if(pageType === 'dashboards'){
+		pageTitle = 'Dashboards';
+		if(dashboardStage === 'dashboardHome'){
+			pageTitle = 'Dashboards';	
+		}
+		if(dashboardStage === 'adding'){
+			
+		}
+		if(dashboardStage === 'selected'){
+			pageTitle = dashboardName;
+		}
+	}
+	if(pageType === 'about'){
+		pageTitle = 'About';
+	}
+	if(pageType === 'trash'){
+		pageTitle = 'Trash';
+	}
+
+	//handle Page
+	var page;
+	if(pageType === 'home'){
+		//setDashboardStage('dashboadHome');
+		//setDashboardIndex('');
+		//setIsAddingDashboard(false);
+		page = <Home pType={pageType} handlePageType={handlePageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />;
+	}
+	if(pageType === 'explore'){
+		page = <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />;
+	}
+	
+	if(pageType === 'trash'){
+		page = <Trash />;
+	}
+	if(pageType === 'about'){
+		page = <About />;
+	}
+	if(pageType === 'dashboards'){
+		page = <Dashboard 
+			dashboardStage = {dashboardStage} 
+			setDashboardStage = {setDashboardStage} 
+			dashboardName = {dashboardName}
+			setDashboardName = {setDashboardName}
+			handlePageType={handlePageType}
+			dashboardIndex = {dashboardIndex}
+			setDashboardIndex = {setDashboardIndex}
+			isAddingDashboard = {isAddingDashboard}
+			setIsAddingDashboard = {setIsAddingDashboard}
+		/>;	
+	}
+
+	
+
 
 	const drawer = (
 		<div>
@@ -230,7 +335,7 @@ function App(props) {
 				</MenuItem>
 
 
-				<MenuItem button onClick={handleOpenIcon} selected={pageType === 'connections'} classes={{selected: classes.selected}}>
+				{/* <MenuItem button onClick={handleOpenIcon} selected={pageType === 'connections'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
 						<Database size='25' style={(pageType === 'connections' ? {color: 'white'} : {})} />
 					</ListItemIcon>
@@ -253,14 +358,14 @@ function App(props) {
 						</ListItemIcon>
 					</ListItem>
 
-				</Collapse>
+				</Collapse> */}
 
-				<ListItem button >
+				{/* <ListItem button >
 					<ListItemIcon className={classes.icon}>
 						<LockIcon />
 					</ListItemIcon>
 					<ListItemText primary="Lock" />
-				</ListItem>
+				</ListItem> */}
 
 				<ListItem button onClick={() => handlePageType('trash')}>
 					<ListItemIcon className={classes.icon}>
@@ -306,24 +411,25 @@ function App(props) {
 							<MenuIcon />
 						</IconButton>
 
+						{
+							backButton
+						}
+						
+
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
 
-							pageType === 'home' ? 'Home'
-								:
-								pageType === 'explore' ? 'Explore'
-									:
-									pageType === 'dashboards' ? 'Dashboards'
-										:
-										pageType === 'about' ? 'About'
-											:
-											pageType === 'trash' ? 'Trash'
-												:
-												'Home'
+							pageTitle
+							
 						} >
 
 						</Typography>
-
-						<LoginDialog handlePageType ={handlePageType}/>
+						<LoginDialog 
+							handlePageType ={handlePageType}
+							setDashboardIndex = {setDashboardIndex}
+							setDashboardStage = {setDashboardStage}
+							setIsAddingDashboard = {setIsAddingDashboard}
+							setExploreStage = {setExploreStage}
+						/>
 					</Toolbar>
 				</AppBar>
 
@@ -363,24 +469,9 @@ function App(props) {
 
 					<div className={classes.toolbar} />
 					{
-
-						pageType === 'home' ?
-							<Home pType={pageType} setpType={setPageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />
-							:
-							pageType === 'explore' ?
-								<Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />
-								:
-								pageType === 'dashboards' ?
-									<Dashboard />
-									:
-									pageType === 'about' ?
-										<About />
-										:
-										pageType === 'trash' ?
-											<Trash />
-											:
-											null
-
+						
+						page
+												
 					}
 
 
