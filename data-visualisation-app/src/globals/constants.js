@@ -56,13 +56,14 @@ export const URL_HOST = {
 
 };
 
-export const URL_HOST_DEFAULT = (PRODUCTION_MODE ? URL_HOST.PRODUCTION : URL_HOST.LOCALHOST);
+export const URL_HOST_DEFAULT = (PRODUCTION_MODE ? URL_HOST.DEVELOPMENT : URL_HOST.LOCALHOST);
 
 export const URL_ROOT = {
     USER: URL_HOST_DEFAULT + '/' + 'users',
     DASHBOARD: URL_HOST_DEFAULT + '/' + 'dashboards',
     DATASOURCE: URL_HOST_DEFAULT + '/' + 'datasource',
-    GRAPH: URL_HOST_DEFAULT + '/' + 'graphs'
+    GRAPH: URL_HOST_DEFAULT + '/' + 'graphs',
+    SUGGESTIONS: URL_HOST_DEFAULT + '/' + 'suggestions'
 };
 
 export const URL = {
@@ -88,6 +89,9 @@ export const URL = {
         REMOVE: URL_ROOT.GRAPH + '/' + 'remove',
         UPDATE: URL_ROOT.GRAPH + '/' + 'update'
     },
+    SUGGESTIONS: {
+        GRAPHS: URL_ROOT.SUGGESTIONS + '/' + 'graphs'
+    }
 };
 
 /**
@@ -116,6 +120,12 @@ export const RESPONSE_CODES = {
         id: 2,
         color: 'red',
         description: 'Operation successful.',
+        icon: ICONS.ERROR
+    },
+    ERROR: {
+        id: 2,
+        color: 'red',
+        description: 'An error has occured.',
         icon: ICONS.ERROR
     }
 };

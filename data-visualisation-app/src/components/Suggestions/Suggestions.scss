@@ -3,26 +3,8 @@
   padding: 15px 20px 15px 20px;
 }
 
-#headingSpan{
 
-}
 
-#backButton{
-  background-color: transparent;
-  background-repeat:no-repeat;
-  border: none;
-  cursor:pointer;
-  overflow: hidden;
-  outline:none;
-  margin-right: 10px;
-}
-
-#titleText{
-  margin-top: 12px;
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10+ and Edge */
-  user-select: none; /* Standard syntax */
-}
 
 #filterButton{
   cursor:pointer;
@@ -46,4 +28,10 @@
   left: 50%;
   -ms-transform: translateX(-50%);
   transform: translateX(-50%);
+}
+
+#igaloading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
 }

@@ -107,7 +107,6 @@ function HomePage(props) {
     return (
         <div className='content--padding'>
 
-            <PageTitle>Dashboards</PageTitle>
             {isReady ?
                 <React.Fragment>
                     {(() => {

@@ -9,7 +9,7 @@ import * as constants from '../../globals/constants';
 import API from '../../helpers/apiRequests';
 
 import {useGlobalState} from '../../globals/Store';
-import './LoginDialog.scss';
+import './LoginPopup.scss';
 import { notification } from 'antd';
 
 
@@ -97,7 +97,8 @@ function SignUpDialog(props) {
 
 
     });
-    
+
+    props.handlePageType('home');
   };
 
 
@@ -118,6 +119,7 @@ function SignUpDialog(props) {
  
   function handleCancel(e) {
       setVisible(false);
+      props.handlePageType('home');
   };
 
 
@@ -246,10 +248,10 @@ function SignUpDialog(props) {
 
 
 //login function
-function LoginDialog(props) {
+function LoginPopup(props) {
 
   
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [signup, setSignUp] = React.useState('false');
   
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -293,6 +295,7 @@ function LoginDialog(props) {
 
   function handleCancel() {
       setVisible(false);
+      props.handlePageType('home');
   };
   function handleSignUp(e) {
     setVisible(false);
@@ -309,7 +312,7 @@ function LoginDialog(props) {
     request.user.logout(function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
-
+        dispatch({ isLoggedIn: false }); 
         //reset datasource list
         request.user.dataSources = [
           {
@@ -320,11 +323,6 @@ function LoginDialog(props) {
         ];
         //set page type to home
         props.handlePageType('home');
-        props.setDashboardIndex('');
-        props.setDashboardStage('dashboardHome');
-        props.setIsAddingDashboard(false);
-        props.setExploreStage('dataConnection');
-        dispatch({ isLoggedIn: false }); 
         logoutSuccessNotification('bottomRight');
       }
     });
@@ -364,13 +362,6 @@ function LoginDialog(props) {
 
   return (
     <div id = 'loginDiv'>
-    
-        {
-          state.isLoggedIn === false ?
-            <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button> 
-            :
-            <Button id = 'logout' type="dashed" style={{ color: '#3C6A7F' }} onClick={handleLogout}>Logout</Button> 
-        }
       <Modal
           title="Login"
           visible={visible}
@@ -440,7 +431,7 @@ function LoginDialog(props) {
       <main>
         {
           signup === 'true' ?
-            <SignUpDialog/>
+            <SignUpDialog handlePageType = {props.handlePageType}/>
             :
             null
         }
@@ -453,4 +444,4 @@ function LoginDialog(props) {
   );
 }
 
-export default LoginDialog;
+export default LoginPopup;

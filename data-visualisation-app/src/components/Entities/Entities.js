@@ -11,6 +11,8 @@ const { Title } = Typography;
 const count = 3;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
 
+
+
 class Entities extends React.Component {
 
   onFinish = values => {
@@ -30,13 +32,11 @@ class Entities extends React.Component {
     console.log(item.name.last);
   };
 
-  back = () => {
-    this.props.setStage('dataConnection');
-  };
 
   next = () => {
     this.props.setStage('suggestions');
   };
+
 
   componentDidMount() {
     this.getData(res => {
@@ -80,12 +80,7 @@ class Entities extends React.Component {
     return (
       
      <div>
-        <span id = 'headingSpan'>
-          <Button id = 'backButton' icon={<ArrowBackIosIcon />} onClick={this.back}></Button>
-          <Typography>
-            <Title id = 'titleText'>Data</Title>
-          </Typography>
-        </span>
+       
         <Form
             name="entitiesForm"
             onFinish={this.onFinish}
@@ -126,7 +121,7 @@ class Entities extends React.Component {
           />
           <Form.Item>
             <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' icon={<CompassOutlined />}>
-              Explore
+              Generate Suggestions
             </Button>
           </Form.Item>
         </Form>

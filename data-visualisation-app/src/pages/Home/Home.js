@@ -11,11 +11,11 @@ import './Home.scss';
 function Home(props) {
 
   function exploreClick() {
-    props.setpType('explore');
+    props.handlePageType('explore');
   };
 
   function dashboardsClick(){
-    props.setpType('dashboards');
+    props.handlePageType('dashboards');
   };
 
   return (
