@@ -1,3 +1,24 @@
+/**
+ *   @file Entities.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   15/7/2020   Byron Tominson      Original
+ *
+ *   Test Cases: data-visualisation-app/src/tests/Entities.test.js
+ *
+ *   Functional Description:
+ *   Displays entities for the user to choose from.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import './Entities.css';
 import React, { useState, Fragment } from 'react';
 import { List, Avatar, Button, Skeleton, Form, Input, Checkbox ,Typography} from 'antd';

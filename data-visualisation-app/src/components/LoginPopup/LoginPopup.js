@@ -1,3 +1,24 @@
+/**
+ *   @file LoginPopup.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   19/7/2020   Byron Tominson      Original
+ *
+ *   Test Cases: data-visualisation-app/src/tests/LoginPopup.test.js
+ *
+ *   Functional Description:
+ *   Provides a modal that promtes the user to login in or sign up.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React, { Fragment, useContext } from 'react';
 import {useState} from 'react';
 import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
