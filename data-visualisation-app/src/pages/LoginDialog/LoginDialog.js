@@ -342,6 +342,7 @@ function LoginDialog(props) {
           dispatch({ isLoggedIn: true });
           setVisible(false);
           props.handlePageType('home');
+          props.setExploreStage('dataConnection');
           loginSuccessNotification('bottomRight');
 
           // request.dashboard.list(request.user.email, function(result) {
