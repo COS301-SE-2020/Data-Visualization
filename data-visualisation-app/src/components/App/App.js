@@ -1,3 +1,28 @@
+/**
+ *   @file App.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   1/7/2020    Byron Tominson      Original
+ *   19/7/2020   Byron Tominson      Changed how the routing occurs
+ *
+ *   Test Cases: data-visualisation-app/src/tests/App.test.js
+ *
+ *   Functional Description:
+ *   Core comonent from which other components are rendered.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
+/**
+ *   imports
+*/
 import React, { Fragment, useEffect, useRef, useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -6,7 +31,6 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -17,6 +41,12 @@ import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import MenuItem from '@material-ui/core/MenuItem';
+import { Button } from 'antd';
+import {Home as HomeIcon} from '@styled-icons/feather';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
 import LockIcon from '@material-ui/icons/Lock';
 import InputIcon from '@material-ui/icons/Input';
 import InfoIcon from '@material-ui/icons/Info';
@@ -26,25 +56,21 @@ import Collapse from '@material-ui/core/Collapse';
 import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import MenuItem from '@material-ui/core/MenuItem';
-import { Button } from 'antd';
 import { Database } from '@styled-icons/feather';
-import {Home as HomeIcon} from '@styled-icons/feather';
-
 import Suggestions from '../Suggestions';
-
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-
 import './App.scss';
 
-//global
+/**
+ *   globals import
+*/
 import request from '../../globals/requests';
 
-//pages
+/**
+ *   pages import
+*/
 import Dashboard from '../../pages/Dashboard';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
@@ -54,9 +80,8 @@ import Home from '../../pages/Home';
 import Explore from '../../pages/Explore';
 import { MuiThemeProvider } from '@material-ui/core';
 
-
 /**
- *   State Variables
+ *   State Variables import
 */
 import GlobalStateProvider  from '../../globals/Store';
 import {useGlobalState} from '../../globals/Store';
@@ -154,13 +179,14 @@ const useStyles = makeStyles((theme) => ({
 		color: '#969698',
 	},
 
-	//05192F primary -> 3C6A7F//lighter
-	//70D3FF secondary
-	//8D66E3 tertiary
 }));
 
 
 
+/**
+  * @param props
+  * Core component 
+*/
 function App(props) {
 
 	const { window } = props;
@@ -192,7 +218,6 @@ function App(props) {
 	};
 	const [loginNameState, setLoginNameState] = React.useState('Login/Sign up');
 
-	//handle page state
 	const [pageType, setPageType] = React.useState('home');
 	const [exploreStage, setExploreStage] = React.useState('dataConnection');
 	const [dashboardStage, setDashboardStage] = React.useState('dashboardHome');
@@ -208,7 +233,9 @@ function App(props) {
 	};
 	
 
-	//backButton
+	/**
+  	  * back function 
+    */
 	const handleBack = () => {
 		if(pageType === 'explore' && exploreStage === 'entities'){
 			setExploreStage('dataConnection');
@@ -223,6 +250,9 @@ function App(props) {
 		}		
 	};
 
+	/**
+  	  * back button variable
+    */
 	var backButton;
 	if(pageType === 'dashboards' && dashboardStage === 'selected'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
@@ -235,7 +265,9 @@ function App(props) {
 	}
 
 
-	//handle pageTitle
+	/**
+  	  * hanlde page title
+    */
 	var pageTitle = 'Home';
 	if(pageType === 'home'){
 		pageTitle = 'Home';
@@ -271,7 +303,9 @@ function App(props) {
 		pageTitle = 'Trash';
 	}
 
-	//handle Page
+	/**
+  	  * handle page 
+    */
 	var page;
 	if(pageType === 'home'){
 		//setDashboardStage('dashboadHome');
@@ -304,8 +338,9 @@ function App(props) {
 	}
 
 	
-
-
+	/**
+  	  * drawer (Material UI)
+    */
 	const drawer = (
 		<div>
 			<div className={classes.toolbar} />

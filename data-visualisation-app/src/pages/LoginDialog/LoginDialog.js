@@ -1,3 +1,24 @@
+/**
+ *   @file LoginDialog.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   14/7/2020   Byron Tominson      Original
+ *
+ *   Test Cases: data-visualisation-app/src/tests/LoginDialog.test.js
+ *
+ *   Functional Description:
+ *   Provides a modal that promtes the user to login in or sign up.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React, { Fragment, useContext } from 'react';
 import {useState} from 'react';
 import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
@@ -14,7 +35,6 @@ import { notification } from 'antd';
 
 
 
-//sign up constants
 const { Option } = Select;
 const AutoCompleteOption = AutoComplete.Option;
 
@@ -41,7 +61,9 @@ const tailFormItemLayout = {
   },
 };
 
-//login constants
+/**
+  * Constants 
+*/
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -52,11 +74,17 @@ const tailLayout = {
 
 
 
-//sign up function
+/**
+  * @param props passed from LoginDialog function.
+  * @return React Component
+*/
 function SignUpDialog(props) {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
+  /**
+    * Notifications
+  */
   const openNotification = placement => {
     notification.info({
       message: 'Invalid data',
@@ -65,7 +93,6 @@ function SignUpDialog(props) {
       placement,
     });
   };
-
   const signUpSuccessNotification = placement => {
     notification.info({
       message: 'Sign up success',
@@ -78,44 +105,47 @@ function SignUpDialog(props) {
 
   const [form] = Form.useForm();
 
+
+  /**
+    * Send request to backend with form infomation.
+  */
   const onFinish = values => {
-    //send to backend
     setConfirmLoading(true);
     request.user.register(values.name, values.surname, values.email, values.password, values.confirm, function(result) {
       console.log(result);
-
       if (result === constants.RESPONSE_CODES.SUCCESS) {
+        /**
+          * On Success
+        */
         setConfirmLoading(false);
         setVisible(false);
         signUpSuccessNotification('bottomRight');
-
       }
       else{
+        /**
+          * On fail
+        */
         setConfirmLoading(false);
         openNotification('bottomRight');
       }
-
-
     });
     
   };
 
-
+  /**
+    * Autocomplete
+  */
   const [autoCompleteResult, setAutoCompleteResult] = useState([]);
-
-
   const websiteOptions = autoCompleteResult.map(website => ({
     label: website,
     value: website,
   }));
 
-
   const [visible, setVisible] = useState(true);
 
-  //const [confirmLoading, setConfirmLoading] = useState(false);
-  //const [finished, setFinished] = useState(false);
-
- 
+  /**
+    * Actions for cancel
+  */
   function handleCancel(e) {
       setVisible(false);
   };
@@ -123,7 +153,6 @@ function SignUpDialog(props) {
 
   return (
     <div >
-      
       <Modal
           title='Sign Up'
           visible={visible}
@@ -245,19 +274,22 @@ function SignUpDialog(props) {
 
 
 
-//login function
+
+/**
+  * @param props passed from App function.
+  * @return React Component
+*/
 function LoginDialog(props) {
 
   
   const [visible, setVisible] = useState(false);
   const [signup, setSignUp] = React.useState('false');
-  
   const [confirmLoading, setConfirmLoading] = useState(false);
-  //const [finished, setFinished] = useState(false);
-  //const [currentOkText, setCurrentOkText] = useState('Login');
-  //const [open, setOpen] = React.useState(true);
  
   
+  /**
+    * Notifications
+  */
   const openNotification = placement => {
     notification.info({
       message: 'Invalid credentials',
@@ -266,7 +298,6 @@ function LoginDialog(props) {
       placement,
     });
   };
-
   const loginSuccessNotification = placement => {
     notification.info({
       message: 'Welcome',
@@ -275,7 +306,6 @@ function LoginDialog(props) {
       placement,
     });
   };
-
   const logoutSuccessNotification = placement => {
     notification.info({
       message: 'Bye',
@@ -285,32 +315,57 @@ function LoginDialog(props) {
     });
   };
 
-  
+  /**
+    * Make modal visible or not
+  */
   function showModal() {
     setVisible(true);
     setSignUp(false);
   };
 
+  /**
+    * Actions for cancel
+  */
   function handleCancel() {
       setVisible(false);
   };
+
+  /**
+    * Function to change signUp state to 'true'
+  */
   function handleSignUp(e) {
     setVisible(false);
     setSignUp('true');
   };
 
 
-
+  /**
+    * useGlobalState used and deglared from Store.js
+  */
   const [state, dispatch] = useGlobalState();
  
+
+  /**
+    * Logs the user out.
+    * Sends the request to backend.
+    * After success: 
+    * Resets the data sources list
+    * Resets the page type back to home
+    * Resets the explore stage
+    * Resets the dashbaord stage
+    * Changes global isLoggedIn variable to false
+    * Displays notification 
+  */
   function handleLogout(){
-    
-    //send to backend
+    /**
+     * Send request to backend
+    */
     request.user.logout(function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
-
-        //reset datasource list
+        /**
+          * Reset on success
+        */
         request.user.dataSources = [
           {
             'id': 6,
@@ -318,7 +373,6 @@ function LoginDialog(props) {
             'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
           }
         ];
-        //set page type to home
         props.handlePageType('home');
         props.setDashboardIndex('');
         props.setDashboardStage('dashboardHome');
@@ -328,37 +382,40 @@ function LoginDialog(props) {
         logoutSuccessNotification('bottomRight');
       }
     });
-
-    
  }
 
+
+  /**
+    * Sends request to backend with form infomation.
+  */   
   const onFinish = values => {
     setConfirmLoading(true);
-    //send to backend
     request.user.login(values.email, values.password, function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
+          /**
+            * On success
+          */
           setConfirmLoading(false);
           dispatch({ isLoggedIn: true });
           setVisible(false);
           props.handlePageType('home');
           props.setExploreStage('dataConnection');
           loginSuccessNotification('bottomRight');
-
-          // request.dashboard.list(request.user.email, function(result) {
-          //     console.log(result);
-          // });
       }
       else{
+        /**
+          * On fail
+        */
         setConfirmLoading(false);
         openNotification('bottomRight');
       }
-
     });
-
-    
  };
 
+  /**
+    * Handle finish error.
+  */  
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
@@ -445,8 +502,6 @@ function LoginDialog(props) {
             :
             null
         }
-        
-        
       </main>
     </div>
     

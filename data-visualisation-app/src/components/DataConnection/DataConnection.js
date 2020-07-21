@@ -1,3 +1,25 @@
+/**
+ *   @file DataConnection.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   8/7/2020   Byron Tominson      Original
+ *   15/7/2020  Byron Tominson      API calls added
+ *
+ *   Test Cases: data-visualisation-app/src/tests/DataConnection.test.js
+ *
+ *   Functional Description:
+ *   Displays data connections to the user.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React from 'react';
 import { List, Avatar, Button, Skeleton, Typography } from 'antd';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -11,13 +33,13 @@ import {useGlobalState} from '../../globals/Store';
 import update from 'react-addons-update';
 import { ListAlt } from 'styled-icons/material';
 
-const { Title } = Typography;
-
-const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
 
 
-function generateID() {
+/**
+  * takes no arguments and returns a random string of length 10.
+  * @return result
+*/
+export function generateID() {
   let result = '';
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let charactersLength = characters.length;
@@ -28,10 +50,16 @@ function generateID() {
 }
 
 
-
+/**
+  * a class comonent that renders the data connection list.
+  * @returns React Component
+*/
 class DataConnection extends React.Component {
 
   
+  /**
+    * States that belong to the Data Connection class component.
+  */
   state = {
     initLoading: true,
     loading: false,
@@ -40,7 +68,10 @@ class DataConnection extends React.Component {
     addConnection : false,
   };
 
-  
+
+  /**
+    * invoked immediately after a component is mounted (inserted into the tree).
+  */
   componentDidMount() {
     console.log(request.user.isLoggedIn);
       this.getData(res => {
@@ -49,35 +80,39 @@ class DataConnection extends React.Component {
           data: request.user.dataSources,
           list: request.user.dataSources,
         });
-
       });
-  
   }
-
   
+  /**
+    * Calls the function to send the request to get the list of data sources.
+    * The function called updates the 'requests.user.dataSources' object with the correct array of data sources for the user. 
+  */
   getData = callback => {
-
     if(request.user.isLoggedIn){
       request.dataSources.list(request.user.apikey, function(result) {
         console.log(result);
         
         if (result === constants.RESPONSE_CODES.SUCCESS) {
           callback(request.user.dataSources);
-        
         }
       });
     }
     else{
       callback(request.user.dataSources);
-    }
-    
+    } 
   };
 
-
+  /**
+    * Deletes item from the 'list'.
+    * If user is logged in, delete on backend and front end.
+    * If the user is not logged in, delete only on front end.
+  */
   deleteItem = (itemToDelete) => {
-    
+    /**
+      * If user is logged in, delete on backend and front end.
+    */
     if(request.user.isLoggedIn){
-      //delete on back end
+      
       request.dataSources.delete(itemToDelete.id, request.user.apikey, function(result) {
         console.log(result);
         if (result === constants.RESPONSE_CODES.SUCCESS) {
@@ -85,7 +120,6 @@ class DataConnection extends React.Component {
         }
       });
 
-      //delete on front end
       request.user.dataSources = this.state.list.filter(list => list.id !== itemToDelete.id);
 
       this.setState(previousState => ({
@@ -94,7 +128,9 @@ class DataConnection extends React.Component {
       }));
     }
     else{
-      //delete on front end
+      /**
+        * User is not logged in, delete only on front end.
+      */
       request.user.dataSources = this.state.list.filter(list => list.id !== itemToDelete.id);
 
       this.setState(previousState => ({
@@ -105,14 +141,19 @@ class DataConnection extends React.Component {
    
   }
 
-    
+
+  /**
+    * Adds item to the 'list'.
+    * If user is logged in, delete on backend and front end.
+    * If user is not logged in, add item only front end.
+  */
   addItem = (values) => {
-
     var newID = generateID();
-
     console.log(request.user.apikey);
+    /**
+      * If user is logged in, add item on backend and front end.
+    */
     if(request.user.isLoggedIn){
-      //add item on back end
       request.dataSources.add(request.user.apikey, newID , values.uri, function(result) {
         console.log(result);
         console.log(request.user.dataSources);
@@ -120,8 +161,6 @@ class DataConnection extends React.Component {
           
         }
       });
-
-      //added item on front end
       request.user.dataSources.push({
         'id': newID,
         'email': request.user.email,
@@ -134,7 +173,9 @@ class DataConnection extends React.Component {
       }));
     }
     else{
-      //added item on front end
+      /**
+        * User is not logged in, add item only front end.
+      */
       request.user.dataSources.push({
         'id': newID,
         'email': request.user.email,
@@ -150,19 +191,25 @@ class DataConnection extends React.Component {
   }
 
  
-
-
+  /**
+    * handles the addConnection state
+  */
   changeAddState = () => {
     this.setState({
       addConnection : !this.state.addConnection,
     });
   };
 
+  /**
+    * sets the stage of explore to entities (the next stage)
+  */
   next = () => {
     this.props.setStage('entities');
   };
 
-
+  /**
+    * renders elements
+  */
   render() {
     const { initLoading, loading, list } = this.state;
     const loadMore =
@@ -219,7 +266,6 @@ class DataConnection extends React.Component {
             :
             null
         }
-        
         </main>
       </div>
     );

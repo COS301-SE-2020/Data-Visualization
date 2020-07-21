@@ -7,7 +7,8 @@
  *   Update History:
  *   Date        Author              Changes
  *   -------------------------------------------------------
- *   3/7/2929   Gian Uys            Original
+ *   3/7/2020   Gian Uys            Original
+ *   5/7/2020   Byron Tominson      Data Sources object added
  *
  *   Test Cases: data-visualisation-app/tests/App/App.js
  *
