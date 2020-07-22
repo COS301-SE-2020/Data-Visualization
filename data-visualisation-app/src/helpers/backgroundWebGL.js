@@ -22,16 +22,17 @@ var UPDATEX, UPDATEY, UPDATEZ;
  *   @details Renders WebGL points in a sine function motion.
  */
 class BackgroundDots extends Component {
+
     constructor(props) {
         super(props);
         this.animate = this.animate.bind(this);
         this.addCube = this.addCube.bind(this);
         this.initializeCamera = this.initializeCamera.bind(this);
-        this.initializeOrbits = this.initializeOrbits.bind(this);
 
         this.canvasWidth = this.props.width + 'px';
         this.canvasHeight = this.props.height + 'px';
     }
+
     componentDidMount() {
 
         this.scene = new THREE.Scene();
@@ -68,10 +69,7 @@ class BackgroundDots extends Component {
             }
 
         }
-//242424
-        //0xd9d9d9
 
-        // F8F9FB was 0xffffff
         var geometry = new THREE.BufferGeometry();
         geometry.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
         geometry.setAttribute( 'scale', new THREE.BufferAttribute( scales, 1 ) );
@@ -85,8 +83,6 @@ class BackgroundDots extends Component {
             fragmentShader: document.getElementById( 'fragmentshader' ).textContent
 
         } );
-
-        //
 
         this.particles = new THREE.Points( geometry, material );
         this.scene.add( this.particles );
@@ -103,16 +99,8 @@ class BackgroundDots extends Component {
         // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.renderer.setSize(this.props.width, this.props.height);
         this.mount.appendChild(this.renderer.domElement);
-        this.initializeOrbits();
-        // this.initializeCamera();
 
-        // const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        // const material = new THREE.MeshBasicMaterial( { color: 0xFF00FF } );
-        // this.cube = new THREE.Mesh( geometry, material );
-        // this.scene.add( this.cube );
         this.animate();
-
-
 
         this.canvasWidth = this.props.width + 'px';
         this.canvasHeight = this.props.height + 'px';
@@ -121,19 +109,14 @@ class BackgroundDots extends Component {
         cancelAnimationFrame(this.frameId);
         this.mount.removeChild(this.renderer.domElement);
     }
-    initializeOrbits() {
-        // this.controls.rotateSpeed = 1.0;
-        // this.controls.zoomSpeed = 1.2;
-        // this.controls.panSpeed = 0.8;
-    }
+
     initializeCamera() {
         this.camera.position.x = 0;
         this.camera.position.y = 0;
         this.camera.position.z = 4;
     }
+
     animate() {
-
-
         this.frameId = window.requestAnimationFrame(this.animate);
         this.renderer.render(this.scene, this.camera);
 
@@ -167,14 +150,9 @@ class BackgroundDots extends Component {
         this.particles.geometry.attributes.position.needsUpdate = true;
         this.particles.geometry.attributes.scale.needsUpdate = true;
 
-        // renderer.render( scene, camera );
-        // this.renderer.render(this.scene, this.camera);
-
         count += 0.06;
-
-
-
     }
+
     addCube(cube) {
         this.scene.add(cube);
     }

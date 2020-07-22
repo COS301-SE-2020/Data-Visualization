@@ -1,3 +1,20 @@
+/**
+ *   @file DisplayDashboard.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   1/7/2020    Byron Tominson      Original
+ *   19/7/2020   Gian Uys            Added edit dashboard functionality.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React, {useEffect, useState} from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import ReactEcharts from 'echarts-for-react';
@@ -44,19 +61,14 @@ function DisplayDashboard(props) {
 	const { present: presentDashboard } = dashboardState;
 
 	useEffect(() => {
-
-		console.debug('currently using:', props);
-		setDashboardState({name: props.name, description: props.description, chartNames: []});
-
 		request.graph.list(props.dashboardID, function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
 				if (request.cache.graph.list.data !== null && request.cache.graph.list.data.length > 0) {
 					constructLayout(request.cache.graph.list.data.length);
-					showAllCharts();
+					showAllCharts(true);
 
 					setHasCharts(true);
 					setIsLoading(false);
-
 				} else {
 					setIsLoading(false);
 					setHasCharts(false);
@@ -112,7 +124,7 @@ function DisplayDashboard(props) {
 		setLayoutGrid({...layoutParameters});
 	}
 
-	function showAllCharts() {
+	function showAllCharts(doReset) {
 		let newvisiblecharts = [];
 		currentCharts = [];
 		request.cache.graph.list.data.forEach((chart, index) => {
@@ -121,7 +133,11 @@ function DisplayDashboard(props) {
 		});
 
 		setVisibleCharts(newvisiblecharts);
-		setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentCharts});
+		if (doReset) {
+			resetDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentCharts});
+		} else {
+			setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentCharts});
+		}
 	}
 
 	function onEditDashboardClick() {
@@ -157,9 +173,27 @@ function DisplayDashboard(props) {
 		});
 	}
 
+	function onSaveDashboardClick() {
+		message.loading('Saving dashboard...');
+
+		(async function() {
+			for (let r = 0; r < presentDashboard.chartNames.length; r++) {
+				await new Promise(function(resolve){
+					request.graph.update(props.dashboardID, request.cache.graph.list.data[r].id, ['title'], [presentDashboard.chartNames[r]], function(result) {
+						// todo: handle error
+					});
+				} );
+			}
+		})().then(function() {
+			message.success('Changes saved!');
+
+			setEditMode(!editMode);
+		});
+	}
+
 	function onSearchPressEnter(e) {
 		if (e.target.value === '' && searchString !== '') {
-			showAllCharts();
+			showAllCharts(false);
 			constructLayout(request.cache.graph.list.data.length);
 		} else {
 			let newvisiblecharts = [];
@@ -184,7 +218,7 @@ function DisplayDashboard(props) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
 				message.success('Chart was successfully deleted.', 2.5);
 
-				showAllCharts();
+				showAllCharts(false);
 
 				resetDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
 
@@ -197,7 +231,7 @@ function DisplayDashboard(props) {
 	}
 
 	function onChartTitleEdit(e, chartid, chartindex) {
-		// todo: remove hared coded values below
+		// todo: remove hard coded values below
 		request.graph.update(props.dashboardID, chartid, ['title'], [e], function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
 				let currentnames = [];
@@ -208,7 +242,8 @@ function DisplayDashboard(props) {
 						currentnames.push(name);
 					}
 				});
-				resetDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentnames});
+
+				setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentnames});
 
 				setVisibleCharts(visibleCharts);
 			} else {
@@ -232,7 +267,7 @@ function DisplayDashboard(props) {
 
 						<Space size={9}>
 						{hasCharts &&
-						<Button ghost={!editMode} onClick={onEditDashboardClick}>
+						<Button ghost={!editMode} onClick={(editMode ? onSaveDashboardClick : onEditDashboardClick)}>
 							 {(editMode ? 'Save Dashboard' : 'Edit Dashboard')}
 						</Button>}
 						{editMode &&

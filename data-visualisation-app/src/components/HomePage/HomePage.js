@@ -74,16 +74,16 @@ function HomePage(props) {
 
     useEffect(() => {
 
-        request.user.login('peter@neverland.com', 'Password@301', function(result) {
-            if (result === constants.RESPONSE_CODES.SUCCESS) {
-                request.dashboard.list(function(result) {
-                    setDashboardList(request.cache.dashboard.list.data);
-                    setIsReady(true);
-                });
-            } else {
-                // todo: handle when user is not logged in
-            }
-        });
+
+        if (request.user.isLoggedIn) {
+            request.dashboard.list(function(result) {
+                setDashboardList(request.cache.dashboard.list.data);
+                setIsReady(true);
+            });
+        } else {
+            // todo: handle when user is not logged in
+        }
+
 
     }, []);
 

@@ -5,3 +5,27 @@
 #loginButton{
     
 }
+
+.button__login {
+    color: #818481;
+    border-color: #818481;
+}
+
+.button__login:focus {
+    color: #818481;
+    border-color: #818481;
+}
+
+.button__login:hover {
+    border-color: white;
+    color: white;
+}
+
+#logout:hover {
+    color: white;
+}
+
+
+#loginButton:hover {
+    color: white;
+}
