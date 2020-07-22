@@ -21,7 +21,7 @@
  * Constraints: None
  */
 require('dotenv').config();
-const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
+// const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 const Pool = require('pg-pool');
 const params = require('url').parse(process.env.DATABASE_URL);
@@ -37,7 +37,7 @@ const config = {
 	database: params.pathname.split('/')[1],
 	hostnossl: true,
 	ssl: {
-		rejectUnauthorized: PRODUCTION, //@todo check this
+		rejectUnauthorized: false, //@todo check this
 	},
 };
 
