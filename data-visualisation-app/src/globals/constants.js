@@ -48,6 +48,8 @@ export const LOADER = <Spin />;
  */
 export const PRODUCTION_MODE = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
 // export const PRODUCTION_MODE = true;
+console.debug('Production mode set to: ', PRODUCTION_MODE);
+
 export const URL_HOST = {
 	PRODUCTION: 'https://data-visualisation-prod.herokuapp.com',
 	DEVELOPMENT: 'https://data-visualisation-dev.herokuapp.com',

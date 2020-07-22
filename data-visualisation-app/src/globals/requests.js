@@ -279,11 +279,13 @@ const request = {
          *  @param callback Function called at end of execution.
          */
         update: (dashboardID, graphID, updateFields, fieldData, callback) => {
+            console.debug('Requesting graph.update with:', dashboardID, graphID, updateFields, fieldData);
             if (canRequest()) {
                 API.graph
                     .update(request.user.apikey, dashboardID, graphID, updateFields, fieldData)
                     .then((res) => {
                         if (callback !== undefined) {
+                            console.debug('Response from graph.update:', res);
 
                             if (request.cache.graph.list.data !== null) {
                                 for (let g = 0; g < request.cache.graph.list.data.length; g++) {

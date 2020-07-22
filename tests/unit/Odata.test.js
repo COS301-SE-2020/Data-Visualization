@@ -1,3 +1,27 @@
+/**
+ * @file Odata.test.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             Changes
+ * -------------------------------------------------------------------------------
+ * 16/07/2020   Phillip Schulze     Original
+ * 22/07/2020   Phillip Schulze     Final
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a unit test to see if the Odata component is working properly.
+ * This test executes some commands to see if the commands are executed properly, if an error does occur it will stop execution, if it
+ * was successful then the test would complete and success would occur.
+ *
+ * Error Messages: "Error"
+ * Assumptions: None
+ * Constraints: None
+ */
+
 const rewire = require('rewire');
 const Odata = rewire('../../controllers/dataSource/Odata.js');
 const format = Odata.__get__('format');

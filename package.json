@@ -17,7 +17,8 @@
 		"test:int:seq": "jest -u --runInBand sequential --verbose",
 		"test:int:par": "jest -u parallel --verbose",
 		"test:int:seq:update": "jest -u --runInBand sequential --updateSnapshot",
-		"test:int:par:update": "jest -u parallel --updateSnapshot"
+		"test:int:par:update": "jest -u parallel --updateSnapshot",
+		"posttest": "npm test --prefix ./data-visualisation-app"
 	},
 	"repository": {
 		"type": "git",
