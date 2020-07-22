@@ -18,7 +18,7 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 * Project Management tool can be found [here](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939). ![ZenHub](https://i.imgur.com/EQ663Fn.png)
 
-* Sprint Planning can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_Sprint%20Planning.pdf).
+## Demos
 
 <details> 
 <summary><b>Demo 1</b></summary>
@@ -49,6 +49,8 @@ This repository represents the visualisation of Big Data. However, the catch com
 * User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Demo2_UserManual.pdf).
 
 * API Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_API_Manual.pdf).
+
+* Sprint Planning can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_Sprint%20Planning.pdf).
 
 </details>
 
@@ -131,7 +133,8 @@ npm test
 
 [Profile Page](https://elnapistorius.github.io/my-website/index.html)
 
-> I am an adaptive software engineer in the making, I like to learn new things. I am interested in Artificial Intelligence, in particular Genetic Algorithms.
+> I am currently enrolled at the University of Pretoria, doing a BSc degree in Computer Science. 
+> I have a passion for learning new things and being challenged. I love nature and spending time outside with my beagle.
 
 #### What I Did 
 * SRS documentations.
