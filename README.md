@@ -46,7 +46,7 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 * Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_CodingStandards.pdf).
 
-* User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Demo2_UserManual.pdf).
+* User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_UserManual.pdf).
 
 * API Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_API_Manual.pdf).
 
