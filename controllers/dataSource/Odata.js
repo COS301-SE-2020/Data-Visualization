@@ -19,7 +19,7 @@
  * Constraints: None
  */
 const axios = require('axios');
-const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
+// const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 /**
  * Purpose: This class is responsible for getting Odata.
  * Usage Instructions: Use the corresponding getters to retrieve class variables. And use the format to format this Odata
