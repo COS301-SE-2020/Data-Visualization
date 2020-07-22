@@ -5,8 +5,7 @@
 	"main": "server.js",
 	"scripts": {
 		"start": "npm run lint && node server.js",
-		"lint": "if [ \"$NODE_ENV\" = \"development\" ]; then eslint . --fix; fi",
-		"heroku-postbuild": "env NODE_ENV=production npm install --prefix ./data-visualisation-app",
+		"lint": "if [ ! \"$NODE_ENV\" = \"production\" ]; then eslint . --fix; fi",
 		"build": "npm run build --prefix ./data-visualisation-app",
 		"test": "npm run test:unit && npm run test:int",
 		"test:update": "npm run test:unit:update && npm run test:int:update",
@@ -18,7 +17,8 @@
 		"test:int:par": "jest -u parallel --verbose",
 		"test:int:seq:update": "jest -u --runInBand sequential --updateSnapshot",
 		"test:int:par:update": "jest -u parallel --updateSnapshot",
-		"posttest": "npm test --prefix ./data-visualisation-app"
+		"posttest": "npm test --prefix ./data-visualisation-app",
+		"postinstall": "if [ ! \"$NODE_ENV\" = \"development\" ]; then npm install --prefix ./data-visualisation-app; fi"
 	},
 	"repository": {
 		"type": "git",
