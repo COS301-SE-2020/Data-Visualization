@@ -104,7 +104,6 @@ let graphSuggesterControllerMaker = (function () {
 					associations[index][j] = links[j].attributes.getNamedItem('Name').value;
 				}
 			}
-
 			this.suggester.setMetadata(items, associations);
 
 			return { items, associations, sets };
