@@ -9,7 +9,7 @@ It proves to be extremely valuable for companies and governments to be able to e
 
 This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc. 
 
-####Links
+## Links
 * [Production Application](https://data-visualisation-prod.herokuapp.com)
 
 * [Development Stage](https://data-visualisation-dev.herokuapp.com)
@@ -21,7 +21,8 @@ This repository represents the visualisation of Big Data. However, the catch com
 * Sprint Planning can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_Sprint%20Planning.pdf).
 
 <details> 
-<summary><b>Demo 1</b></summary>
+<summary><b>Demo 1</b></summary> <br />
+<br />
 
 * [Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
 
@@ -32,7 +33,8 @@ This repository represents the visualisation of Big Data. However, the catch com
 </details>
 
 <details> 
-<summary><b>Demo 2</b></summary>
+<summary><b>Demo 2</b></summary> <br />
+<br />
 
 * [Demo 2 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
 
