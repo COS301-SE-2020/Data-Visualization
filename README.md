@@ -124,13 +124,11 @@ npm test
 
 #### Contribution 
 ###### Demo 1
-* Integration of react page-components and state management.
-* Edit Dashboard functionality. 
-* Client-Side requests to REST-endpoint 
-* Database Setup
-* Heroku Setup.
+* Front-end: Integration of react page-components and state management. The Edit Dashboard functionality. Client-Side requests to REST-endpoint.
+* Backend: Database Setup and Heroku Setup.
 ###### Demo 2
-* 
+* Documentation:
+* Backend:
 
 ### Elna Pistorius
 
@@ -141,14 +139,12 @@ npm test
 
 #### Contribution 
 ###### Demo 1
-* SRS documentations.
-* The edit suggestions page.
-* The express node server to set up our endpoints.
-* Application styling.
+* Documentation: SRS documentations: Introduction, User Stories, Product Backlog, Use Cases, Functional Requirements, Domain Model.
+* Front-end: The edit suggestions page. Application styling.
+* Backend: Set up of express node server for endpoints.
 ###### Demo 2
-* SRS documentation
-* API Manual
-* Backend: Set up and the functionality of the roots and controllers
+* Documentation: SRS documentation: Architectural Design, Fixed Domain Model, Quality Requirements. API Manual Documentation
+* Backend: Set up and the functionality of the roots and controllers. 
 
 ### Byron Tomkinson
 
@@ -158,9 +154,11 @@ npm test
 
 #### Contribution 
 ###### Demo 1
-* Add dashboard functionality.
-* Add dashboard unit testing.
-* Assist in the writing of the SRS such as the traceability matrix. 
+* Documentation: SRS documentation: Functional Requirements, Subsystems and Traceability matrix. 
+* Front-End: Add dashboard functionality and unit testing.
+###### Demo 2
+* Documentation: SRS documentation: Technology requirements and decisions, constraints and architectural design
+* Front-End Components: App routing and UI drawer, Login/Register use case and the data source use cases.
 
 ### Marco Lombaard
 
@@ -170,10 +168,12 @@ npm test
 
 #### Contribution 
 ###### Demo 1
-* Display dashboard functionality and a bit of EditDashboard + unit tests for both and a unit test for DisplayGraph.
-* CircleCI setup.
+* Front-end: Display dashboard functionality and a bit of EditDashboard. Unit tests for both and also a unit test for DisplayGraph.
+* Continuous Integration: CircleCI setup.
 
 ###### Demo 2
+* Documentation: User manual and Coding Standards
+* Backend: Set up the Graph Suggester (IGA) and the Graph Suggester Controller.
 
 ### Gian Uys
 
@@ -183,9 +183,8 @@ npm test
 
 #### Contribution 
 ###### Demo 1
-* Select dashboard functionality as well as the unit testing.
-* Assist in the writting of the readme.
-* Assist in the writting of the SRS such as the use cases. 
-* Compiling the video and the creation of graphics such as the logo.
+* Documentation: README, SRS: Use Cases, Product Backlog, User Stories and Use Case Diagrams. 
+* Font-end: Select dashboard functionality as well as the unit testing.
+* Creations: Creation of graphics such as the logo. Compiling of the demo video.
 
 ###### Demo 2
