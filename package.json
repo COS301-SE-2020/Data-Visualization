@@ -5,7 +5,7 @@
 	"main": "server.js",
 	"scripts": {
 		"start": "npm run lint && node server.js",
-		"lint": "if [ ! \"$NODE_ENV\" = \"production\" ]; then eslint . --fix; fi",
+		"lint": "if [ \"$NODE_ENV\" = \"development\" ]; then eslint . --fix; fi",
 		"build": "npm run build --prefix ./data-visualisation-app",
 		"test": "npm run test:unit && npm run test:int",
 		"test:update": "npm run test:unit:update && npm run test:int:update",

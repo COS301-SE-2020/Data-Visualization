@@ -46,17 +46,17 @@ export const LOADER = <Spin />;
 /**
  *   Server Constants
  */
-export const PRODUCTION_MODE = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
+export const PRODUCTION_MODE = process.env.NODE_ENV && process.env.NODE_ENV === 'development' ? 0 : process.env.NODE_ENV === 'production' ? 1 : 2;
 // export const PRODUCTION_MODE = true;
 console.debug('Production mode set to: ', PRODUCTION_MODE);
 
 export const URL_HOST = {
 	PRODUCTION: 'https://data-visualisation-prod.herokuapp.com',
-	DEVELOPMENT: 'https://data-visualisation-dev.herokuapp.com',
+	STAGING_DEV: 'https://data-visualisation-dev.herokuapp.com',
 	LOCALHOST: 'http://localhost:8000',
 };
 
-export const URL_HOST_DEFAULT = PRODUCTION_MODE ? URL_HOST.DEVELOPMENT : URL_HOST.LOCALHOST;
+export const URL_HOST_DEFAULT = PRODUCTION_MODE == 0 ? URL_HOST.LOCALHOST : PRODUCTION_MODE == 1 ? URL_HOST.PRODUCTION : URL_HOST.STAGING_DEV;
 
 export const URL_ROOT = {
 	USER: URL_HOST_DEFAULT + '/' + 'users',
