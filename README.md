@@ -9,21 +9,44 @@ It proves to be extremely valuable for companies and governments to be able to e
 
 This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc. 
 
-##### Links:
+####Links
+* [Production Application](https://data-visualisation-prod.herokuapp.com)
 
-[Development Stage](https://data-visualisation-dev.herokuapp.com)
-
-[Production Application](https://data-visualisation-dev.herokuapp.com)
-
-[Doofenshmirtz Evil Inc Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
-
-## Documentation
-
-A link to our Software Requirements Specification (SRS) document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
+* [Development Stage](https://data-visualisation-dev.herokuapp.com)
 
 ## Project Management
 
-A link to our Project Management tool can be found [here](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939). ![ZenHub](https://i.imgur.com/EQ663Fn.png)
+* Project Management tool can be found [here](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939). ![ZenHub](https://i.imgur.com/EQ663Fn.png)
+
+* Sprint Planning can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf).
+
+<details> 
+<summary><b>Demo 1</b></summary>
+
+* [Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
+
+##### Documentation
+
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf).
+
+</details>
+
+<details> 
+<summary><b>Demo 2</b></summary>
+
+* [Demo 2 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
+
+##### Documentation
+
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf).
+
+* Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf).
+
+* User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf).
+
+* API Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf).
+
+</details>
 
 ## Installation Instruction
 
