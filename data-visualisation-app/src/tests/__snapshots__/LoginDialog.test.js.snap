@@ -5,14 +5,9 @@ exports[`LoginDialog component renders correctly renders correctly 1`] = `
   id="loginDiv"
 >
   <button
-    className="ant-btn ant-btn-dashed"
+    className="ant-btn button__login ant-btn-dashed ant-btn-background-ghost"
     id="loginButton"
     onClick={[Function]}
-    style={
-      Object {
-        "color": "#3C6A7F",
-      }
-    }
     type="button"
   >
     <span>

@@ -337,6 +337,10 @@ function App(props) {
 		/>;	
 	}
 
+
+	// request.user.apikey = 'bAjZ4SctoWGDYQsNYCNq';
+	// request.user.isLoggedIn = true;
+
 	
 	/**
   	  * drawer (Material UI)

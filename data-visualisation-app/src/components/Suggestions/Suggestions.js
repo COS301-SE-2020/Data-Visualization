@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function IGALoading() {
-    return <div id='igaloading'>{constants.LOADER}</div>;
+    return <div id='igaloading'>{constants.LOADER} <br/> <br/> <br/> Generating chart suggestions by the IGA...</div>;
 }
 
 /**
@@ -40,7 +40,7 @@ function Suggestions(props) {
     const [isReady, setIsReady] = useState(false);
     const [currentCharts, setCurrentCharts] = useState(null);
     const [dashboardSelection, setDashboardSelection] = useState([[true, false, true]]);
-    const [dashboardList, setDashboardList] = useState(['sdfjklsdf', 'alskdjfsdfs', 'asdfsdfsdf']);
+    const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
 
     useEffect(() => {
 
