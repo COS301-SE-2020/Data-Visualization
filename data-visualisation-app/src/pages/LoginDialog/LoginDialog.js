@@ -19,10 +19,6 @@
  *   Constraints: None
  */
 
-
-/**
-  * Imports
-*/
 import React, { Fragment, useContext } from 'react';
 import {useState} from 'react';
 import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
@@ -38,16 +34,10 @@ import './LoginDialog.scss';
 import { notification } from 'antd';
 
 
-/**
-  * Sign up constants 
-*/
+
 const { Option } = Select;
 const AutoCompleteOption = AutoComplete.Option;
 
-
-/**
-  * Constants 
-*/
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -71,6 +61,9 @@ const tailFormItemLayout = {
   },
 };
 
+/**
+  * Constants 
+*/
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -136,7 +129,7 @@ function SignUpDialog(props) {
         openNotification('bottomRight');
       }
     });
-    props.handlePageType('home');
+    
   };
 
   /**
@@ -288,6 +281,7 @@ function SignUpDialog(props) {
 */
 function LoginDialog(props) {
 
+  
   const [visible, setVisible] = useState(false);
   const [signup, setSignUp] = React.useState('false');
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -430,9 +424,9 @@ function LoginDialog(props) {
     
         {
           state.isLoggedIn === false ?
-            <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button> 
+            <Button ghost className='button__login' id = 'loginButton' type="dashed"  onClick={showModal}>Login/Sign Up</Button>
             :
-            <Button id = 'logout' type="dashed" style={{ color: '#3C6A7F' }} onClick={handleLogout}>Logout</Button> 
+            <Button ghost className='button__login' id = 'logout' type="dashed" onClick={handleLogout}>Logout</Button>
         }
       <Modal
           title="Login"
