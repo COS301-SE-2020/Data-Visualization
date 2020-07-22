@@ -38,7 +38,7 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 ##### Documentation
 
-* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf).
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Capstone__Data_Visualization_Demo_2.pdf).
 
 * Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf).
 
