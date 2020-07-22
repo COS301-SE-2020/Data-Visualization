@@ -1,18 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import '../../globals/globals.scss';
 import './HomePage.scss';
-import PageTitle from '../../components/PageTitle';
 import {Typography, message} from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-import API from '../../helpers/apiRequests';
-
-
-// import Cookies from 'universal-cookie';
-
 
 const { Title, Paragraph } = Typography;
 
+/**
+ *   @class HomePanelButton
+ *   @brief Component to display the dashboard name and description.
+ */
 function HomePanelButton(props) {
     const sizeStyles = {
         width: 300,
@@ -64,6 +62,11 @@ function HomePanelButton(props) {
     return <div>{comp()}</div>;
 }
 
+/**
+ *   @class HomePage
+ *   @brief Component to display the the list of dashboards.
+ *   @details Displays every dashboard name and description in a block grid.
+ */
 function HomePage(props) {
 
     const [isReady, setIsReady] = useState(false);

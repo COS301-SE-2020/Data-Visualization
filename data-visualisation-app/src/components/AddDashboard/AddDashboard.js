@@ -4,6 +4,11 @@ import { Form, Input, Button, Layout, Row, Col, Typography, Space, message } fro
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 
+
+/**
+ *   @class AddDashboard
+ *   @brief Component for form input from user to create a new dashboard.
+ */
 function AddDashboard(props) {
 	const [dashBoardName, setDashboardName] = useState('');
 	const [dashBoardDescription, setDashboardDescription] = useState('');

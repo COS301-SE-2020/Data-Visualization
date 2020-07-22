@@ -13,6 +13,12 @@ import useUndo from 'use-undo';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 
+/**
+ *   @class DisplayDashboard
+ *   @brief Component to display the selected dashboard.
+ *   @details Displays all charts within the dashboard along with the dashboard name and description. This component
+ *   		  also allows the user to edit the dashboard.
+ */
 function DisplayDashboard(props) {
 
 	const [editMode, setEditMode] = useState(false);

@@ -26,18 +26,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-//// keep below code if reactcharts width/height misbehaves ///
-// window.addEventListener('resize', function() {
-//     for (let n = 0; n < demotempoptions.length; n++) {
-//         tmp = chartPointers[n].getEchartsInstance();
-//         tmp.resize();
-//     }
-// });
-
 function IGALoading() {
     return <div id='igaloading'>{constants.LOADER}</div>;
 }
 
+/**
+ *   @class Suggestions
+ *   @brief Component to display the chart suggestions.
+ *   @details Displays a list of generated chart suggestions.
+ */
 function Suggestions(props) {
 
     const [isReady, setIsReady] = useState(false);
@@ -255,6 +252,17 @@ export default Suggestions;
 
 
 
+
+/**
+ *   @remark Code below may be required in the case of echarts width/height misbehaves.
+ *   window.addEventListener('resize', function() {
+        for (let n = 0; n < demotempoptions.length; n++) {
+            tmp = chartPointers[n].getEchartsInstance();
+            tmp.resize();
+        }
+    });
+ *
+ */
 
 
 
