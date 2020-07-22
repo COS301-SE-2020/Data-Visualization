@@ -1,5 +1,30 @@
+/**
+ *   @file FilterDialog.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   15/7/2020   Byron Tominson      Original
+ *
+ *   Test Cases: data-visualisation-app/src/tests/FilterDialog.test.js
+ *
+ *   Functional Description:
+ *   Modal for filtering dashboard suggestions
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
+/**
+  * Imports
+*/
 import React, {useState} from 'react';
 import {Button, Modal, Select, Tag, Form} from 'antd';
+
 
 
 //API call (to get options)

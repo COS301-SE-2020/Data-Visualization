@@ -19,6 +19,10 @@
  *   Constraints: None
  */
 
+
+/**
+  * Imports
+*/
 import React, { Fragment, useContext } from 'react';
 import {useState} from 'react';
 import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
@@ -35,10 +39,16 @@ import { notification } from 'antd';
 
 
 
-//sign up constants
+/**
+  * Sign up constants 
+*/
 const { Option } = Select;
 const AutoCompleteOption = AutoComplete.Option;
 
+
+/**
+  * Constants
+*/
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -62,7 +72,6 @@ const tailFormItemLayout = {
   },
 };
 
-//login constants
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -73,11 +82,17 @@ const tailLayout = {
 
 
 
-//sign up function
+/**
+  * @param props passed from LoginDialog function.
+  * @return React Component
+*/
 function SignUpDialog(props) {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
+  /**
+    * Notifications
+  */
   const openNotification = placement => {
     notification.info({
       message: 'Invalid data',
@@ -99,12 +114,16 @@ function SignUpDialog(props) {
 
   const [form] = Form.useForm();
 
+  /**
+    * Send request to backend with form infomation.
+  */
   const onFinish = values => {
-    //send to backend
     setConfirmLoading(true);
     request.user.register(values.name, values.surname, values.email, values.password, values.confirm, function(result) {
       console.log(result);
-
+      /**
+        * On Success
+      */
       if (result === constants.RESPONSE_CODES.SUCCESS) {
         setConfirmLoading(false);
         setVisible(false);
@@ -112,17 +131,20 @@ function SignUpDialog(props) {
 
       }
       else{
+        /**
+          * On fail
+        */
         setConfirmLoading(false);
         openNotification('bottomRight');
       }
-
-
     });
 
     props.handlePageType('home');
   };
 
-
+  /**
+    * Autocomplete
+  */
   const [autoCompleteResult, setAutoCompleteResult] = useState([]);
 
 
@@ -132,12 +154,12 @@ function SignUpDialog(props) {
   }));
 
 
+
   const [visible, setVisible] = useState(true);
 
-  //const [confirmLoading, setConfirmLoading] = useState(false);
-  //const [finished, setFinished] = useState(false);
-
- 
+  /**
+    * Actions for cancel
+  */
   function handleCancel(e) {
       setVisible(false);
       props.handlePageType('home');
@@ -268,19 +290,21 @@ function SignUpDialog(props) {
 
 
 
-//login function
+/**
+  * @param props passed from App function.
+  * @return React Component
+*/
 function LoginPopup(props) {
 
   
   const [visible, setVisible] = useState(true);
   const [signup, setSignUp] = React.useState('false');
-  
   const [confirmLoading, setConfirmLoading] = useState(false);
-  //const [finished, setFinished] = useState(false);
-  //const [currentOkText, setCurrentOkText] = useState('Login');
-  //const [open, setOpen] = React.useState(true);
  
-  
+ 
+  /**
+    * Notifications
+  */
   const openNotification = placement => {
     notification.info({
       message: 'Invalid credentials',
@@ -308,33 +332,58 @@ function LoginPopup(props) {
     });
   };
 
-  
+  /**
+    * Make modal visible or not
+  */
   function showModal() {
     setVisible(true);
     setSignUp(false);
   };
 
+  /**
+    * Actions for cancel
+  */
   function handleCancel() {
       setVisible(false);
       props.handlePageType('home');
   };
+
+  /**
+    * Function to change signUp state to 'true'
+  */
   function handleSignUp(e) {
     setVisible(false);
     setSignUp('true');
   };
 
 
-
+  /**
+    * useGlobalState used and deglared from Store.js
+  */
   const [state, dispatch] = useGlobalState();
  
+  /**
+    * Logs the user out.
+    * Sends the request to backend.
+    * After success: 
+    * Resets the data sources list
+    * Resets the page type back to home
+    * Resets the explore stage
+    * Resets the dashbaord stage
+    * Changes global isLoggedIn variable to false
+    * Displays notification 
+  */
   function handleLogout(){
-    
-    //send to backend
+    /**
+     * Send request to backend
+    */
     request.user.logout(function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
-        dispatch({ isLoggedIn: false }); 
-        //reset datasource list
+        /**
+          * Reset on success
+        */
+        
         request.user.dataSources = [
           {
             'id': 6,
@@ -342,32 +391,34 @@ function LoginPopup(props) {
             'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
           }
         ];
-        //set page type to home
+        dispatch({ isLoggedIn: false }); 
         props.handlePageType('home');
         logoutSuccessNotification('bottomRight');
       }
     });
-
-    
  }
 
+  /**
+    * Sends request to backend with form infomation.
+  */
   const onFinish = values => {
     setConfirmLoading(true);
-    //send to backend
     request.user.login(values.email, values.password, function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
+          /**
+            * On success
+          */
           setConfirmLoading(false);
           dispatch({ isLoggedIn: true });
           setVisible(false);
           props.handlePageType('home');
           loginSuccessNotification('bottomRight');
-
-          // request.dashboard.list(request.user.email, function(result) {
-          //     console.log(result);
-          // });
       }
       else{
+        /**
+          * On fail
+        */
         setConfirmLoading(false);
         openNotification('bottomRight');
       }
@@ -376,7 +427,10 @@ function LoginPopup(props) {
 
     
  };
-
+ 
+  /**
+    * Handle finish error.
+  */  
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
