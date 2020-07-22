@@ -21,8 +21,9 @@ This repository represents the visualisation of Big Data. However, the catch com
 * Sprint Planning can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_Sprint%20Planning.pdf).
 
 <details> 
-<summary><b>Demo 1</b></summary> <br />
-<br />
+<summary><b>Demo 1</b></summary>
+
+##### Video Demo
 
 * [Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
 
@@ -33,8 +34,9 @@ This repository represents the visualisation of Big Data. However, the catch com
 </details>
 
 <details> 
-<summary><b>Demo 2</b></summary> <br />
-<br />
+<summary><b>Demo 2</b></summary>
+
+##### Video Demo
 
 * [Demo 2 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
 
