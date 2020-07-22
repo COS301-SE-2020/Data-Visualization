@@ -1,3 +1,27 @@
+/**
+ * @file user.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             				Changes
+ * -------------------------------------------------------------------------------
+ * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
+ * 30/06/2020   Elna Pistorius & Phillip Schulze    Added more functionality
+ * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a user router that handles any client requests and these requests are
+ * forwarded to the application’s REST controller.
+ *
+ * Error Messages: "Error"
+ * Assumptions: Requests should be POST methods and have a JSON body (if so is needed). The correct endpoint name must also be used.
+ * Check the API manual for more detail.
+ * Constraints: The API manual must be followed when making requests otherwise no requests will work properly.
+ */
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
@@ -74,12 +98,20 @@ router.post('/logout', (req, res) => {
 	//   }
 	// });
 });
-
+/**
+ * This function displays the error's message if one occurred in the console.
+ * @param res the response message in JSON format
+ * @param err the error message
+ * @param status the status code
+ */
 function error(res, err, status = 400) {
 	console.error(err);
 	res.status(status).json(err);
 }
-
+/**
+ * This function validates the client's input, the users username and surname.
+ * @param name the name of the user that needs to be tested (username or surname)
+ */
 function checkName(name) {
 	let re = /^\w+$/;
 	let valid = true;
@@ -91,6 +123,10 @@ function checkName(name) {
 	}
 	return valid;
 }
+/**
+ * This function validates the users email address
+ * @param email the email that needs to be validated
+ */
 function checkUserEmail(email) {
 	let emailReg = new RegExp(
 		/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
@@ -105,6 +141,10 @@ function checkUserEmail(email) {
 	}
 	return valid;
 }
+/**
+ * This function validates the client's password.
+ * @param password the users password that needs to be validated
+ */
 function checkUserPasswordLogin(password) {
 	let valid = true;
 	let re;
@@ -112,12 +152,19 @@ function checkUserPasswordLogin(password) {
 		// password cannot be empty
 		valid = false;
 	} else {
-		re = /^[0-9a-zA-Z!@#\$%\^&\*]{9,}$/;
+		re = /^[0-9a-zA-Z!@#\$%\^&\*]{9,}$/; //eslint-disable-line
 		return re.test(password);
 	}
 
 	return valid;
 }
+/**
+ * This function validates the client's input, the users password, confirm password and name.
+ * @param password the users password that needs to be validated
+ * @param confirmPassword the users confirm password that needs to be validated
+ * @param name the name of the user that needs to be tested (username or surname)
+ *
+ */
 function checkUserPasswordRegister(password, confirmPassword, name) {
 	let valid = true;
 	let re;

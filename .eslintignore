@@ -1,0 +1,8 @@
+controllers/graphSuggester/suggesterTest.js
+jest.*
+
+node_modules
+documentation
+img
+data-visualisation-app
+.apitest
