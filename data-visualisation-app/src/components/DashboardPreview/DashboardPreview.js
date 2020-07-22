@@ -9,12 +9,10 @@ function DashboardPreview({ dashboard, remove }) {
         {(() => {
 
             let cols;
-            let output = [], d_i = 0, tmp;
-            let whatisthis = () => remove(tmp);
+            let output = [], d_i = 0;
             for (let r = 0; r < 3; r++) {
                 cols = [];
                 for (let c = 0; c < (r === 0 ? 2 : 3); c++) {
-                    // tmp = dashboard.graphs[d_i].id;
                     if (d_i < dashboard.graphs.length) {
                         cols.push(<Col span={(r === 0 ? 12 : 8)}>
                             <GraphPreview key={d_i} isPanel={true} data={dashboard.graphs[d_i]} onClick={(theid) => remove(theid)} />

@@ -16,6 +16,11 @@ var windowHalfY = window.innerHeight / 2;
 var UPDATEX, UPDATEY, UPDATEZ;
 
 
+/**
+ *   @class BackgroundDots
+ *   @brief Component for background of home screen.
+ *   @details Renders WebGL points in a sine function motion.
+ */
 class BackgroundDots extends Component {
     constructor(props) {
         super(props);
@@ -26,8 +31,6 @@ class BackgroundDots extends Component {
 
         this.canvasWidth = this.props.width + 'px';
         this.canvasHeight = this.props.height + 'px';
-        console.log('width ' + this.canvasWidth + 'height ' + this.canvasHeight);
-        console.log(props);
     }
     componentDidMount() {
 

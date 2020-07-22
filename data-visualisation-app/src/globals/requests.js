@@ -91,9 +91,23 @@ const API = {
     }
 };
 
+/**
+ *  @class request
+ *  @brief Manages all requests to the API and stores the retrieved data locally.
+ *
+ *  All functions defined within request object implicitly manipulates the database and will always populate the
+ *  request.cache object with the retrieved results. Each function should have a callback function provided as the
+ *  last parameter passed. This function will be called at the end of request function and will always be passed
+ *  any of the defined RESPONSE_CODE's within the constants.js file.
+ */
 const request = {
     API: API,
     dashboard: {
+        /**
+         *  Requests the list of dashboards.
+         *
+         *  @param callback Function called at end of execution.
+         */
         list: (callback) => {
             if (canRequest()) {
                 API.dashboard
@@ -109,6 +123,13 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Adds a new dashboard.
+         *
+         *  @param name Name of the new dashboard.
+         *  @param description Description of the new dashboard.
+         *  @param callback Function called at end of execution.
+         */
         add: (name, description, callback) => {
             if (canRequest) {
                 API.dashboard
@@ -124,6 +145,12 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Deletes an existing dashboard.
+         *
+         *  @param dashboardID Unique dashboard id string value.
+         *  @param callback Function called at end of execution.
+         */
         delete: (dashboardID, callback) => {
             if (canRequest) {
                 API.dashboard
@@ -138,6 +165,15 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Generic update of an existing dashboard.
+         *
+         *  @param dashboardID Unique dashboard id string value.
+         *  @param updateFields Database fields to be updated.
+         *  @param fieldData Data of the fields that are to be updated. The ordering of the data is parallel to the
+         *                  parameter updateFields.
+         *  @param callback Function called at end of execution.
+         */
         update: (dashboardID, updateFields, fieldData, callback) => {
             if (canRequest) {
                 API.dashboard
@@ -154,6 +190,17 @@ const request = {
         }
     },
     graph: {
+        /**
+         *  Adds a new graph.
+         *
+         *  @param dashboardID Unique dashboard id string value of the dashboard in which the graph resides.
+         *  @param title Title of the newly added graph.
+         *  @param options JSON object that stores all possible data concerning the graph. Such as the type and data
+         *                 points.
+         *  @param metadata JSON object that stores data concerning the graph in the context of the application. Such
+         *                  as data specifying the representation of the graph on the dashboard.
+         *  @param callback Function called at end of execution.
+         */
         add: (dashboardID, title, options, metadata, callback) => {
             console.debug('Requesting graph.add with:', dashboardID, title, options, metadata);
             if (canRequest()) {
@@ -170,6 +217,12 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Requests the list of graphs.
+         *
+         *  @param dashboardID Unique dashboard id string value of the dashboard in which the graph resides.
+         *  @param callback Function called at end of execution.
+         */
         list: (dashboardID, callback) => {
             if (canRequest()) {
                 API.graph
@@ -185,6 +238,13 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Deletes an existing graph.
+         *
+         *  @param dashboardID Unique dashboard id string value of the dashboard in which the graph resides.
+         *  @param graphID Unique graph id string value.
+         *  @param callback Function called at end of execution.
+         */
         delete: (dashboardID, graphID, callback) => {
             console.debug('Requesting graph.delete with:', dashboardID, graphID);
             if (canRequest()) {
@@ -208,6 +268,16 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Generic update of an existing graph.
+         *
+         *  @param dashboardID Unique dashboard id string value.
+         *  @param graphID Unique graph id string value.
+         *  @param updateFields Database fields to be updated.
+         *  @param fieldData Data of the fields that are to be updated. The ordering of the data is parallel to the
+         *                  parameter updateFields.
+         *  @param callback Function called at end of execution.
+         */
         update: (dashboardID, graphID, updateFields, fieldData, callback) => {
             if (canRequest()) {
                 API.graph
@@ -233,6 +303,13 @@ const request = {
         }
     },
     user: {
+        /**
+         *  Requests an existing user to be logged in.
+         *
+         *  @param email Email of the existing user account.
+         *  @param password Password of the existing user account.
+         *  @param callback Function called at end of execution.
+         */
         login: (email, password, callback) => {
 
             API.user.login(email, password)
@@ -255,7 +332,18 @@ const request = {
                         callback(constants.RESPONSE_CODES.NETWORK_ERROR);
                     }
                 });
-        }, register: (name, surname, email, password, confirmPassword, callback) => {
+        },
+        /**
+         *  Registers a new user account.
+         *
+         *  @param name First name of the new user.
+         *  @param surname Surname of the new user.
+         *  @param email Email of the existing user account.
+         *  @param password Password of the existing user account.
+         *  @param confirmPassword Password entered again for confirmation.
+         *  @param callback Function called at end of execution.
+         */
+        register: (name, surname, email, password, confirmPassword, callback) => {
             API.user.register(name, surname, email, password, confirmPassword)
                 .then((res) => {
 
@@ -274,7 +362,13 @@ const request = {
                         callback(constants.RESPONSE_CODES.NETWORK_ERROR);
                     }
                 });
-        }, logout: (callback) => {
+        },
+        /**
+         *  Logs out an existing user account.
+         *
+         *  @param callback Function called at end of execution.
+         */
+        logout: (callback) => {
             API.user.logout()
                 .then((res) => {
                     if (callback !== undefined) {
@@ -305,6 +399,11 @@ const request = {
 
 
     dataSources: {
+        /**
+         *  Request a list of data sources.
+         *
+         *  @param callback Function called at end of execution.
+         */
         list: (apikey, callback) => {
             if (request.user.isLoggedIn) {
                 API.dataSources.list(apikey).then((res) => {
@@ -326,6 +425,13 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Adds a new data source.
+         *
+         *  @param dataSourceID Unique data source id string value.
+         *  @param dataSourceUrl Fully qualified url of the new data source.
+         *  @param callback Function called at end of execution.
+         */
         add: (apikey, dataSourceID, dataSourceUrl, callback) => {
             if (request.user.isLoggedIn) {
                 API.dataSources.add(apikey, dataSourceID, dataSourceUrl).then((res) => {
@@ -350,6 +456,12 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Deletes an existing data source.
+         *
+         *  @param dataSourceID Unique data source id string value.
+         *  @param callback Function called at end of execution.
+         */
         delete: (dataSourceID, apikey, callback) => {
             console.debug('Requesting dataSources.delete');
             if (request.user.isLoggedIn) {
@@ -375,6 +487,14 @@ const request = {
     },
 
     suggestions: {
+        /**
+         *  Requests a single graph suggestion.
+         *
+         *  request.cache.suggestions.graph.current will be populated with the retrieved suggestion.
+         *
+         *  @param sourceurl Source from which the suggestions be made of.
+         *  @param callback Function called at end of execution.
+         */
         graph: (sourceurl, callback) => {
             console.debug('Requesting suggestion.graph with:', sourceurl);
             if (true || canRequest()) {
@@ -394,6 +514,13 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Requests an amount of graph suggestions.
+         *
+         *  @param sourceurl Source from which the suggestions be made of.
+         *  @param amount Amount of graph suggestions.
+         *  @param callback Function called at end of execution.
+         */
         graphs: (sourceurl, amount, callback) => {
             console.debug('Requesting suggestion.graphs with:', sourceurl, amount);
             if (true || canRequest()) {
@@ -449,86 +576,5 @@ const request = {
         }
     }
 };
-
-
-// Todo: incorporate the code below into requests
-//
-// const reqDashboardList = () => {
-//     API.dashboard
-//         .list()
-//         .then((res) => {
-//             console.log(res);
-//             setDashboardList(res.data);
-//         })
-//         .catch((err) => console.error(err));
-// };
-//
-// const reqDashboardAdd = (newDash) => {
-//     API.dashboard
-//         .add(newDash.name, newDash.description)
-//         .then((res) => {
-//             console.log(res);
-//             reqDashboardList();
-//             backToHome();
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqDashboardDelete = () => {
-//     API.dashboard
-//         .delete(DashboardList[DashboardIndex].id)
-//         .then((res) => {
-//             console.log(res);
-//             reqDashboardList();
-//             backToHome();
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqDashboardUpdate = () => {
-//     API.dashboard
-//         .update()
-//         .then((res) => {
-//             console.log(res);
-//             // setDashboardList(res.data);
-//         })
-//         .catch((err) => console.error(err));
-// };
-//
-// const reqGraphList = () => {
-//     console.log(DashboardList[DashboardIndex].id);
-//     API.graph
-//         .list(DashboardList[DashboardIndex].id)
-//         .then((res) => {
-//             console.log(res);
-//             setGraphList(res.data);
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqGraphAdd = (newGraph) => {
-//     API.graph
-//         .add(newGraph.dashboardID, newGraph.graphtypeid)
-//         .then((res) => {
-//             console.log(res);
-//             reqGraphList();
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqGraphDelete = (gID) => {
-//     API.graph
-//         .delete(gID)
-//         .then((res) => {
-//             console.log(res);
-//             reqGraphList();
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqGraphUpdate = () => {
-//     API.graph
-//         .update()
-//         .then((res) => {
-//             console.log(res);
-//             // setGraphList(res.data);
-//         })
-//         .catch((err) => console.error(err));
-// };
 
 export default request;

@@ -66,6 +66,14 @@ export const URL_ROOT = {
     SUGGESTIONS: URL_HOST_DEFAULT + '/' + 'suggestions'
 };
 
+
+/**
+ *   URL Constants.
+ *
+ *   @details Each endpoint of the API is specified inside this object and serves as the only source of truth
+ *            in terms of the possible URL's. Therefore, all requests should be done with only the URL's defined
+ *            within this object.
+ */
 export const URL = {
     USER: {
         LOGIN: URL_ROOT.USER + '/' + 'login',
@@ -95,7 +103,11 @@ export const URL = {
 };
 
 /**
- *   Response Codes
+ *   Response Codes.
+ *
+ *   @details A response code identifies a response of a certain event with an associated behavior. For example, if
+ *            the user is not logged in then the appropriate object within RESPONSE_CODES can be returned that will
+ *            contain the message that should be displayed along with other necessary elements.
  */
 export const RESPONSE_CODES = {
     NETWORK_ERROR: {
@@ -105,25 +117,25 @@ export const RESPONSE_CODES = {
         icon: ICONS.ERROR
     },
     BAD_REQUEST_NETWORK_ERROR: {
-        id: 0,
+        id: 1,
         color: 'red',
         description: 'Requested page is not found.',
         icon: ICONS.ERROR
     },
     LOGGED_OUT_ERROR: {
-        id: 1,
+        id: 2,
         color: 'red',
         description: 'You\'re not current logged in.',
         icon: ICONS.ERROR
     },
     SUCCESS: {
-        id: 2,
+        id: 3,
         color: 'red',
         description: 'Operation successful.',
         icon: ICONS.ERROR
     },
     ERROR: {
-        id: 2,
+        id: 4,
         color: 'red',
         description: 'An error has occured.',
         icon: ICONS.ERROR
