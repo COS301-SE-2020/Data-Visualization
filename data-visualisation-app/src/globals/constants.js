@@ -44,7 +44,7 @@ export const ICONS = {
 export const LOADER = <Spin />;
 
 /**
- *   Server Constants
+ *   Server Constants.
  */
 export const PRODUCTION_MODE = process.env.NODE_ENV && process.env.NODE_ENV === 'development' ? 0 : process.env.NODE_ENV === 'production' ? 1 : 2;
 // export const PRODUCTION_MODE = true;
