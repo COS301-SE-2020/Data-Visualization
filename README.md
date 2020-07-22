@@ -9,21 +9,50 @@ It proves to be extremely valuable for companies and governments to be able to e
 
 This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc. 
 
-##### Links:
+## Links
+* [Production Application](https://data-visualisation-prod.herokuapp.com)
 
-[Development Stage](https://data-visualisation-dev.herokuapp.com)
-
-[Production Application](https://data-visualisation-dev.herokuapp.com)
-
-[Doofenshmirtz Evil Inc Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
-
-## Documentation
-
-A link to our Software Requirements Specification (SRS) document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/develop/documentation/Data_Visualization_Generator_SRS.pdf). ![Overleaf](https://i.imgur.com/7ru8XMc.png)
+* [Development Stage](https://data-visualisation-dev.herokuapp.com)
 
 ## Project Management
 
-A link to our Project Management tool can be found [here](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939). ![ZenHub](https://i.imgur.com/EQ663Fn.png)
+* Project Management tool can be found [here](https://github.com/COS301-SE-2020/Data-Visualisation#workspaces/data-visualization-5ed11ab3600f3c0e9851753e/board?repos=266792939). ![ZenHub](https://i.imgur.com/EQ663Fn.png)
+
+## Demos
+
+<details> 
+<summary><b>Demo 1</b></summary>
+
+##### Video Demo
+
+* [Demo 1 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
+
+##### Documentation
+
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo1_SRS.pdf).
+
+</details>
+
+<details> 
+<summary><b>Demo 2</b></summary>
+
+##### Video Demo
+
+* [Demo 2 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
+
+##### Documentation
+
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_SRS.pdf).
+
+* Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_CodingStandards.pdf).
+
+* User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_UserManual.pdf).
+
+* API Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_API_Manual.pdf).
+
+* Sprint Planning can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_Sprint%20Planning.pdf).
+
+</details>
 
 ## Installation Instruction
 
@@ -91,26 +120,31 @@ npm test
 
 [Profile Page](https://phillipstemmlar.github.io)
 
-> I was born in Dundee, KwaZulu Natal, where I lived for 15 years.​ In 2014 I moved to Brits, North‑West.​ I graduated matric in 2017 from Brits Hoërskool with 6 distinctions. In 2018 I started studying BSc Computer Science at the University of Pretoria and I am currently (2020) in my final year. I am also a resident of the Republic of Kollegetehuis, where I have been elected to the Executive Council for the 2019/2020 term.
+> I am a dependable software engineer trained to solve problems in an agile manner and am able to plan and execute work both independently and as a team member. I enjoy learning about new technologies and I am a quick learner. I have good communication skills and work well with others. I am solution-oriented, enjoy problem-solving and strive to follow the SOLID design principle.
 
-#### What I Did 
-* Integration of react page-components and state management.
-* Edit Dashboard functionality. 
-* Client-Side requests to REST-endpoint 
-* Database Setup
-* Heroku Setup.
+#### Contribution 
+###### Demo 1
+* Front-end: Integration of react page-components and state management. The Edit Dashboard functionality. Client-Side requests to REST-endpoint.
+* Backend: Database Setup and Heroku Setup.
+###### Demo 2
+* Documentation: SRS documentation:Architectural Design, Deployment Model. API Manual Documentation
+* Backend: Setup  the Rest-Controller, Database-Controller, and Data-Source-Controller. Integration and unit testing of backend-server
 
 ### Elna Pistorius
 
 [Profile Page](https://elnapistorius.github.io/my-website/index.html)
 
-> I am an adaptive software engineer in the making, I like to learn new things. I am interested in Artificial Intelligence, in particular Genetic Algorithms.
+> I am currently enrolled at the University of Pretoria, doing a BSc degree in Computer Science. 
+> I have a passion for learning new things and being challenged. I love nature and spending time outside with my beagle.
 
-#### What I Did 
-* SRS documentations.
-* The edit suggestions page.
-* The express node server to set up our endpoints.
-* Application styling.
+#### Contribution 
+###### Demo 1
+* Documentation: SRS documentations: Introduction, User Stories, Product Backlog, Use Cases, Functional Requirements, Domain Model.
+* Front-end: The edit suggestions page. Application styling.
+* Backend: Set up of express node server for endpoints.
+###### Demo 2
+* Documentation: SRS documentation: Architectural Design, Fixed Domain Model, Quality Requirements. API Manual Documentation
+* Backend: Set up and the functionality of the roots and controllers. 
 
 ### Byron Tomkinson
 
@@ -118,21 +152,28 @@ npm test
 
  > I am student at the University of Pretoria, currently studying in my final year of Computer Science. Some of my skills include conflict resolution, problem solving, rapport building and reliability. I am open minded when it comes to different ideas that are shared and helpful wherever I can be. I have a passion for learning new things, especially in the field of human anatomy and physiology. I am crazy about Jesus and my hobbies include running, gymming and football.
 
-#### What I Did 
-* Add dashboard functionality.
-* Add dashboard unit testing.
-* Assist in the writing of the SRS such as the traceability matrix. 
+#### Contribution 
+###### Demo 1
+* Documentation: SRS documentation: Functional Requirements, Subsystems and Traceability matrix. 
+* Front-End: Add dashboard functionality and unit testing.
+###### Demo 2
+* Documentation: SRS documentation: Technology requirements and decisions, constraints and architectural design
+* Front-End Components: App routing and UI drawer, Login/Register use case and the data source use cases.
 
 ### Marco Lombaard
 
 [Profile Page](https://FlameReynard.github.io)
 
-
 > I am currently studying third year Computer Science at the University of Pretoria. Our work provided many challenges, requiring us to come up with effective and efficient solutions to different problems - developing our critical thinking and problem-solving abilities. We have also been exposed to a variety of programming languages which we were expected to code in fluently, which allowed me to build a collection of programming languages.
 
-#### What I Did 
-* Display dashboard functionality and a bit of EditDashboard + unit tests for both and a unit test for DisplayGraph.
-* CircleCI setup.
+#### Contribution 
+###### Demo 1
+* Front-end: Display dashboard functionality and a bit of EditDashboard. Unit tests for both and also a unit test for DisplayGraph.
+* Continuous Integration: CircleCI setup.
+
+###### Demo 2
+* Documentation: User manual and Coding Standards
+* Backend: Set up the Graph Suggester (IGA) and the Graph Suggester Controller.
 
 ### Gian Uys
 
@@ -140,72 +181,13 @@ npm test
 
 > Confident and ambitious third-year student from the University of Pretoria. I align myself with positive, exuberant people that can challenge my way of thought. I, however, enjoy all different types of people from different backgrounds, religion and culture. I believe human interaction is the most effective way to enrich one’s personality. My duties are done with extreme care and attention to detail. I thrive for perfection, orderliness and quality. Alongside my candid attributes, I am also a very good-humored person and kind heart. Very open minded and supportive of social issues.
 
-#### What I Did 
-* Select dashboard functionality as well as the unit testing.
-* Assist in the writting of the readme.
-* Assist in the writting of the SRS such as the use cases. 
-* Compiling the video and the creation of graphics such as the logo.
+#### Contribution 
+###### Demo 1
+* Documentation: README, SRS: Use Cases, Product Backlog, User Stories and Use Case Diagrams. 
+* Font-end: Select dashboard functionality as well as the unit testing.
+* Creations: Creation of graphics such as the logo. Compiling of the demo video.
 
-# Development Specifics
-
-## File Organization
-
-The following shows the file structure of the complete React application:
-
-```
-├── public
-└── src
-   ├── assets
-   ├── components
-   │   ├── App
-   │   ├── Dashboard
-   │   └── Panel
-   ├── globals
-   ├── helpers
-   └── tests
-```
-
-The purpose of each folder is listed below:
-
-| Folder       | Content & Purpose                                                                                     |
-|--------------|-------------------------------------------------------------------------------------------------------|
-| `public`     | Public output files that contains the build application and is not of any concern during development. |
-| `src`        | Source files which contains the succeeding folders.                                                   |
-| `assets`     | Non-source code related items.                                                                        |
-| `components` | React components. See below for further details.                                                      |
-| `globals`    | Resources that can be applied globally throughout the web application.                                |
-| `helpers`    | Files accompanying other classes or components.                                                       |
-| `tests`      | All unit testing files are placed in this folder.                                                     |
-
-
-## Filename Conventions
-
-### React Components
-
-Each reach components is contained within its own folder. The name of the folder and main JavaScript file is the name of the component and starts with a capital letter. Each component folder contains a package.json file that indicates the entry point of each component.
-
-### CSS Files
-
-CSS that pertains to all components of the system is placed in globals/globals.css If not, then the .css file should be placed within the component folder with the name of the component.
-
-### Test Files
-
-All test files should have the name of the file on which tests are conducted along with a ".test." extension.
-
-## Coding Standards
-
-All coding standards are enforced with ESLint. These standards are listed here for completeness.
-
-### Naming Conventions
-
-All standard React conventions are in place. E.g. all components start with a capital letter and custom hook functions start with a `use` prefix.
-Only single quotes are used.
-
-## GitHub Workflow
-
-Gitflow workflow is employed to the fullest extent. Therefore, our master branch will only ever contain working code and every commit to the master branch contains the version number of the application. The master branch is accompanied with a develop branch that is used during development. A feature is added by branching from the develop branch which is then merged back to develop. Hotfixes can branch from master and merge back to master.
-
-### Naming Conventions
-
-All branch names have each word separated with a dash ("-") character.
+###### Demo 2
+* Documentation: SRS document: Use cases, Use case diagrams, Architectural Design, Coding Standards
+* Front-end: Dashboard: Display and edit dashboard data. Filter by chart title. Redo/undo changes. Suggestions: View chart suggestions and allow user to add or remove suggestion from dashboard. Home page: Added background animation.
 
