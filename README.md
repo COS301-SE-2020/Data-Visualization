@@ -122,12 +122,15 @@ npm test
 
 > I was born in Dundee, KwaZulu Natal, where I lived for 15 years.​ In 2014 I moved to Brits, North‑West.​ I graduated matric in 2017 from Brits Hoërskool with 6 distinctions. In 2018 I started studying BSc Computer Science at the University of Pretoria and I am currently (2020) in my final year. I am also a resident of the Republic of Kollegetehuis, where I have been elected to the Executive Council for the 2019/2020 term.
 
-#### What I Did 
+#### Contribution 
+###### Demo 1
 * Integration of react page-components and state management.
 * Edit Dashboard functionality. 
 * Client-Side requests to REST-endpoint 
 * Database Setup
 * Heroku Setup.
+###### Demo 2
+* 
 
 ### Elna Pistorius
 
@@ -136,11 +139,16 @@ npm test
 > I am currently enrolled at the University of Pretoria, doing a BSc degree in Computer Science. 
 > I have a passion for learning new things and being challenged. I love nature and spending time outside with my beagle.
 
-#### What I Did 
+#### Contribution 
+###### Demo 1
 * SRS documentations.
 * The edit suggestions page.
 * The express node server to set up our endpoints.
 * Application styling.
+###### Demo 2
+* SRS documentation
+* API Manual
+* Backend: Set up and the functionality of the roots and controllers
 
 ### Byron Tomkinson
 
@@ -148,7 +156,8 @@ npm test
 
  > I am student at the University of Pretoria, currently studying in my final year of Computer Science. Some of my skills include conflict resolution, problem solving, rapport building and reliability. I am open minded when it comes to different ideas that are shared and helpful wherever I can be. I have a passion for learning new things, especially in the field of human anatomy and physiology. I am crazy about Jesus and my hobbies include running, gymming and football.
 
-#### What I Did 
+#### Contribution 
+###### Demo 1
 * Add dashboard functionality.
 * Add dashboard unit testing.
 * Assist in the writing of the SRS such as the traceability matrix. 
@@ -157,12 +166,14 @@ npm test
 
 [Profile Page](https://FlameReynard.github.io)
 
-
 > I am currently studying third year Computer Science at the University of Pretoria. Our work provided many challenges, requiring us to come up with effective and efficient solutions to different problems - developing our critical thinking and problem-solving abilities. We have also been exposed to a variety of programming languages which we were expected to code in fluently, which allowed me to build a collection of programming languages.
 
-#### What I Did 
+#### Contribution 
+###### Demo 1
 * Display dashboard functionality and a bit of EditDashboard + unit tests for both and a unit test for DisplayGraph.
 * CircleCI setup.
+
+###### Demo 2
 
 ### Gian Uys
 
@@ -170,72 +181,11 @@ npm test
 
 > Confident and ambitious third-year student from the University of Pretoria. I align myself with positive, exuberant people that can challenge my way of thought. I, however, enjoy all different types of people from different backgrounds, religion and culture. I believe human interaction is the most effective way to enrich one’s personality. My duties are done with extreme care and attention to detail. I thrive for perfection, orderliness and quality. Alongside my candid attributes, I am also a very good-humored person and kind heart. Very open minded and supportive of social issues.
 
-#### What I Did 
+#### Contribution 
+###### Demo 1
 * Select dashboard functionality as well as the unit testing.
 * Assist in the writting of the readme.
 * Assist in the writting of the SRS such as the use cases. 
 * Compiling the video and the creation of graphics such as the logo.
 
-# Development Specifics
-
-## File Organization
-
-The following shows the file structure of the complete React application:
-
-```
-├── public
-└── src
-   ├── assets
-   ├── components
-   │   ├── App
-   │   ├── Dashboard
-   │   └── Panel
-   ├── globals
-   ├── helpers
-   └── tests
-```
-
-The purpose of each folder is listed below:
-
-| Folder       | Content & Purpose                                                                                     |
-|--------------|-------------------------------------------------------------------------------------------------------|
-| `public`     | Public output files that contains the build application and is not of any concern during development. |
-| `src`        | Source files which contains the succeeding folders.                                                   |
-| `assets`     | Non-source code related items.                                                                        |
-| `components` | React components. See below for further details.                                                      |
-| `globals`    | Resources that can be applied globally throughout the web application.                                |
-| `helpers`    | Files accompanying other classes or components.                                                       |
-| `tests`      | All unit testing files are placed in this folder.                                                     |
-
-
-## Filename Conventions
-
-### React Components
-
-Each reach components is contained within its own folder. The name of the folder and main JavaScript file is the name of the component and starts with a capital letter. Each component folder contains a package.json file that indicates the entry point of each component.
-
-### CSS Files
-
-CSS that pertains to all components of the system is placed in globals/globals.css If not, then the .css file should be placed within the component folder with the name of the component.
-
-### Test Files
-
-All test files should have the name of the file on which tests are conducted along with a ".test." extension.
-
-## Coding Standards
-
-All coding standards are enforced with ESLint. These standards are listed here for completeness.
-
-### Naming Conventions
-
-All standard React conventions are in place. E.g. all components start with a capital letter and custom hook functions start with a `use` prefix.
-Only single quotes are used.
-
-## GitHub Workflow
-
-Gitflow workflow is employed to the fullest extent. Therefore, our master branch will only ever contain working code and every commit to the master branch contains the version number of the application. The master branch is accompanied with a develop branch that is used during development. A feature is added by branching from the develop branch which is then merged back to develop. Hotfixes can branch from master and merge back to master.
-
-### Naming Conventions
-
-All branch names have each word separated with a dash ("-") character.
-
+###### Demo 2
