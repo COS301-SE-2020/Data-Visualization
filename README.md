@@ -120,15 +120,15 @@ npm test
 
 [Profile Page](https://phillipstemmlar.github.io)
 
-> I was born in Dundee, KwaZulu Natal, where I lived for 15 years.​ In 2014 I moved to Brits, North‑West.​ I graduated matric in 2017 from Brits Hoërskool with 6 distinctions. In 2018 I started studying BSc Computer Science at the University of Pretoria and I am currently (2020) in my final year. I am also a resident of the Republic of Kollegetehuis, where I have been elected to the Executive Council for the 2019/2020 term.
+> I am a dependable software engineer trained to solve problems in an agile manner and am able to plan and execute work both independently and as a team member. I enjoy learning about new technologies and I am a quick learner. I have good communication skills and work well with others. I am solution-oriented, enjoy problem-solving and strive to follow the SOLID design principle.
 
 #### Contribution 
 ###### Demo 1
 * Front-end: Integration of react page-components and state management. The Edit Dashboard functionality. Client-Side requests to REST-endpoint.
 * Backend: Database Setup and Heroku Setup.
 ###### Demo 2
-* Documentation:
-* Backend:
+* Documentation: SRS documentation:Architectural Design, Deployment Model. API Manual Documentation
+* Backend: Setup  the Rest-Controller, Database-Controller, and Data-Source-Controller. Integration and unit testing of backend-server
 
 ### Elna Pistorius
 
