@@ -188,3 +188,6 @@ npm test
 * Creations: Creation of graphics such as the logo. Compiling of the demo video.
 
 ###### Demo 2
+* Documentation: SRS document: Use cases, Use case diagrams, Architectural Design, Coding Standards
+* Front-end: Dashboard: Display and edit dashboard data. Filter by chart title. Redo/undo changes. Suggestions: View chart suggestions and allow user to add or remove suggestion from dashboard. Home page: Added background animation.
+
