@@ -1,4 +1,26 @@
 /**
+ * @file restController.test.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             Changes
+ * -------------------------------------------------------------------------------
+ * 16/07/2020   Phillip Schulze     Original
+ * 22/07/2020   Phillip Schulze     Final
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a integration test to see if the rest controller is working properly
+ * with the other components. This test executes some commands to see if the subsystems work together properly.
+ *
+ * Error Messages: "Error"
+ * Assumptions: None
+ * Constraints: None
+ */
+/**
  * @jest-environment node
  */
 const { Rest, Database } = require('../../../controllers/controllers');
