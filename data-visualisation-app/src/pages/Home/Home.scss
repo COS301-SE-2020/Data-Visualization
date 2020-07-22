@@ -19,7 +19,7 @@
 @mixin button--layout {
     height:300px;
     width:300px;
-    margin: 30px;
+    //margin: 30px;
 }
 
 .button__home {
@@ -27,6 +27,7 @@
     width:300px;
     margin: 30px;
     color: white;
+    //color: $color-primary;
     box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.8);
     overflow: hidden;
     border: none;
@@ -102,9 +103,32 @@
 }
 
 #masterPalette{
+    width: 750px;
     position: absolute;
     top: 50%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+}
+
+@media only screen and (max-width: 1200px) {
+    #masterPalette{
+        left: 60%;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    #masterPalette{
+        left: 65%;
+        width: 400px;
+    }
+    #button__dashboard {
+        float: left;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #masterPalette{
+        width: 100%;
+    }
 }

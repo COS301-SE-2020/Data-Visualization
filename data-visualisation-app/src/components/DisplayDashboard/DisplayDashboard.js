@@ -13,6 +13,12 @@ import useUndo from 'use-undo';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 
+/**
+ *   @class DisplayDashboard
+ *   @brief Component to display the selected dashboard.
+ *   @details Displays all charts within the dashboard along with the dashboard name and description. This component
+ *   		  also allows the user to edit the dashboard.
+ */
 function DisplayDashboard(props) {
 
 	const [editMode, setEditMode] = useState(false);
@@ -34,10 +40,13 @@ function DisplayDashboard(props) {
 			canUndo,
 			canRedo
 		}
-	] = useUndo({name: 'dashboardname', description: 'dashboarddesciption', chartNames: []}); //{name: 'dashboardname', description: 'dashboarddesciption'}
+	] = useUndo({name: props.name, description: props.description, chartNames: []}); //{name: 'dashboardname', description: 'dashboarddesciption'}
 	const { present: presentDashboard } = dashboardState;
 
 	useEffect(() => {
+
+		console.debug('currently using:', props);
+		setDashboardState({name: props.name, description: props.description, chartNames: []});
 
 		request.graph.list(props.dashboardID, function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
@@ -296,8 +305,6 @@ function DisplayDashboard(props) {
 									layoutkey++;
 									return <div key={layoutkey} className='panel__shadow panel'>
 										<div>
-
-											<div>whathat {v}</div>
 											<Grid container spacing={3}>
 												<Grid item xs={11}>
 													<Typography.Title level={4} editable={editMode && {onChange: ev => {onChartTitleEdit(ev, request.cache.graph.list.data[v].id, v);}}} >{presentDashboard.chartNames[v]}</Typography.Title>
@@ -316,7 +323,6 @@ function DisplayDashboard(props) {
 												</Grid>
 											</Grid>
 										</div>
-										<div>v</div>
 										<ReactEcharts option={request.cache.graph.list.data[v].options} style={{height: '300px', width: '100%'}} />
 									</div>;
 								});

@@ -7,7 +7,8 @@
  *   Update History:
  *   Date        Author              Changes
  *   -------------------------------------------------------
- *   3/7/2929   Gian Uys            Original
+ *   3/7/2020   Gian Uys            Original
+ *   5/7/2020   Byron Tominson      Data Sources object added
  *
  *   Test Cases: data-visualisation-app/tests/App/App.js
  *
@@ -29,7 +30,7 @@ import {useGlobalState} from './Store';
  */
 let currentURL = (constants.PRODUCTION_MODE ? constants.URL.production : constants.URL.localhost);
 
-// deprecated functions:
+///// deprecated functions: /////
 const inPROD = false;
 const inDEV_PORT = 8000;
 
@@ -48,18 +49,32 @@ function canRequest() {
     return request.user.isLoggedIn && request.user.apikey !== '';
 }
 
+
+
+function generateID() {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < 10; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+
+
 const API = {
     dashboard: {
         list: (apikey) => axios.post(constants.URL.DASHBOARD.LIST, {apikey}),
-        add: (apikey, name, description) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, name, description }),
+        add: (apikey, dashboardID, name, description) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, dashboardID, name, description }),
         delete: (apikey, dashboardID) => axios.post(constants.URL.DASHBOARD.REMOVE, { apikey, dashboardID }),
-        update: (apikey, dashboardID, fields, data) => axios.post(constants.URL.DASHBOARD.UPDATE, { apikey, dashboardID, fields, data }),
+        update: (apikey, dashboardID, fields, data) => axios.post(constants.URL.DASHBOARD.UPDATE, { apikey, dashboardID, fields, data })
     },
     graph: {
         list: (apikey, dashboardID) => axios.post(constants.URL.GRAPH.LIST, {apikey, dashboardID}),
-        add: (dashboardID, graphTypeID) => axios.post(getAPIurl() + 'graph', { dashboardID, graphTypeID }),
+        add: (apikey, dashboardID, title, graphID, options, metadata) => axios.post(constants.URL.GRAPH.ADD, { apikey, dashboardID, title, graphID, options, metadata }),
         delete: (apikey, dashboardID, graphID) => axios.post(constants.URL.GRAPH.REMOVE, { apikey, dashboardID, graphID }),
-        update: (apikey, dashboardID, graphID, fields, data) => axios.post(constants.URL.GRAPH.UPDATE, { apikey, dashboardID, graphID, fields, data }),
+        update: (apikey, dashboardID, graphID, fields, data) => axios.post(constants.URL.GRAPH.UPDATE, { apikey, dashboardID, graphID, fields, data })
     },
     user: {
         login: (email, password) => axios.post(getAPIurl() + 'users/login', {email, password}),
@@ -68,14 +83,31 @@ const API = {
     },
     dataSources: {
         list: (apikey) => axios.post(getAPIurl() + 'datasource/list', {apikey}),
-        add: (id ,apikey, dataSourceUrl) => axios.post(getAPIurl() + 'datasource/add', {id, apikey, dataSourceUrl}),
-        delete: (dataSourceID, apikey) => axios.post(getAPIurl() + 'datasource/remove', {dataSourceID, apikey}),
+        add: (apikey, dataSourceID, dataSourceUrl) => axios.post(getAPIurl() + 'datasource/add', {apikey, dataSourceID, dataSourceUrl}),
+        delete: (dataSourceID, apikey) => axios.post(getAPIurl() + 'datasource/remove', {dataSourceID, apikey})
+    },
+    suggestion: {
+        graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl })
     }
 };
 
+/**
+ *  @class request
+ *  @brief Manages all requests to the API and stores the retrieved data locally.
+ *
+ *  All functions defined within request object implicitly manipulates the database and will always populate the
+ *  request.cache object with the retrieved results. Each function should have a callback function provided as the
+ *  last parameter passed. This function will be called at the end of request function and will always be passed
+ *  any of the defined RESPONSE_CODE's within the constants.js file.
+ */
 const request = {
     API: API,
     dashboard: {
+        /**
+         *  Requests the list of dashboards.
+         *
+         *  @param callback Function called at end of execution.
+         */
         list: (callback) => {
             if (canRequest()) {
                 API.dashboard
@@ -91,10 +123,17 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Adds a new dashboard.
+         *
+         *  @param name Name of the new dashboard.
+         *  @param description Description of the new dashboard.
+         *  @param callback Function called at end of execution.
+         */
         add: (name, description, callback) => {
             if (canRequest) {
                 API.dashboard
-                    .add(request.user.apikey, name, description)
+                    .add(request.user.apikey, generateID(), name, description)
                     .then((res) => {
                         if (callback !== undefined) {
                             request.cache.dashboard.list.data = res.data;
@@ -106,6 +145,12 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Deletes an existing dashboard.
+         *
+         *  @param dashboardID Unique dashboard id string value.
+         *  @param callback Function called at end of execution.
+         */
         delete: (dashboardID, callback) => {
             if (canRequest) {
                 API.dashboard
@@ -120,6 +165,15 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Generic update of an existing dashboard.
+         *
+         *  @param dashboardID Unique dashboard id string value.
+         *  @param updateFields Database fields to be updated.
+         *  @param fieldData Data of the fields that are to be updated. The ordering of the data is parallel to the
+         *                  parameter updateFields.
+         *  @param callback Function called at end of execution.
+         */
         update: (dashboardID, updateFields, fieldData, callback) => {
             if (canRequest) {
                 API.dashboard
@@ -136,6 +190,39 @@ const request = {
         }
     },
     graph: {
+        /**
+         *  Adds a new graph.
+         *
+         *  @param dashboardID Unique dashboard id string value of the dashboard in which the graph resides.
+         *  @param title Title of the newly added graph.
+         *  @param options JSON object that stores all possible data concerning the graph. Such as the type and data
+         *                 points.
+         *  @param metadata JSON object that stores data concerning the graph in the context of the application. Such
+         *                  as data specifying the representation of the graph on the dashboard.
+         *  @param callback Function called at end of execution.
+         */
+        add: (dashboardID, title, options, metadata, callback) => {
+            console.debug('Requesting graph.add with:', dashboardID, title, options, metadata);
+            if (canRequest()) {
+                API.graph
+                    .add(request.user.apikey, dashboardID, title, generateID(), options, metadata)
+                    .then((res) => {
+                        if (callback !== undefined) {
+                            console.debug('Response from graph.add:', res);
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        }
+                    })
+                    .catch((err) => console.error(err));
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        },
+        /**
+         *  Requests the list of graphs.
+         *
+         *  @param dashboardID Unique dashboard id string value of the dashboard in which the graph resides.
+         *  @param callback Function called at end of execution.
+         */
         list: (dashboardID, callback) => {
             if (canRequest()) {
                 API.graph
@@ -151,7 +238,15 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Deletes an existing graph.
+         *
+         *  @param dashboardID Unique dashboard id string value of the dashboard in which the graph resides.
+         *  @param graphID Unique graph id string value.
+         *  @param callback Function called at end of execution.
+         */
         delete: (dashboardID, graphID, callback) => {
+            console.debug('Requesting graph.delete with:', dashboardID, graphID);
             if (canRequest()) {
                 API.graph
                     .delete(request.user.apikey, dashboardID, graphID)
@@ -173,6 +268,16 @@ const request = {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Generic update of an existing graph.
+         *
+         *  @param dashboardID Unique dashboard id string value.
+         *  @param graphID Unique graph id string value.
+         *  @param updateFields Database fields to be updated.
+         *  @param fieldData Data of the fields that are to be updated. The ordering of the data is parallel to the
+         *                  parameter updateFields.
+         *  @param callback Function called at end of execution.
+         */
         update: (dashboardID, graphID, updateFields, fieldData, callback) => {
             if (canRequest()) {
                 API.graph
@@ -198,82 +303,107 @@ const request = {
         }
     },
     user: {
+        /**
+         *  Requests an existing user to be logged in.
+         *
+         *  @param email Email of the existing user account.
+         *  @param password Password of the existing user account.
+         *  @param callback Function called at end of execution.
+         */
         login: (email, password, callback) => {
-            console.log('calling login with ' + email + ' ' + password);
+
             API.user.login(email, password)
-            .then((res) => {
-                console.log('got response from login');
-                console.log(res);
-                if (callback !== undefined) {
-                    if (successfulResponse(res)) {
-                        console.log(res.data.message);
-                        localStorage.setItem('apikey', res.data.apikey);
-                        localStorage.setItem('loggedInFlag', true);
-                        request.user.apikey = res.data.apikey;
-                        request.user.isLoggedIn = true;
-                        callback(constants.RESPONSE_CODES.SUCCESS);
-                    } else {
-                        callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                .then((res) => {
+
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            //localStorage.setItem('apikey', res.data.apikey);
+                            //localStorage.setItem('loggedInFlag', true);
+                            request.user.apikey = res.data.apikey;
+                            request.user.isLoggedIn = true;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                if (callback !== undefined) {
-                    callback(constants.RESPONSE_CODES.NETWORK_ERROR);
-                }
-            });
-        }, register: (name, surname, email, password, confirmPassword, callback) => {
+                })
+                .catch((err) => {
+                    if (callback !== undefined) {
+                        callback(constants.RESPONSE_CODES.NETWORK_ERROR);
+                    }
+                });
+        },
+        /**
+         *  Registers a new user account.
+         *
+         *  @param name First name of the new user.
+         *  @param surname Surname of the new user.
+         *  @param email Email of the existing user account.
+         *  @param password Password of the existing user account.
+         *  @param confirmPassword Password entered again for confirmation.
+         *  @param callback Function called at end of execution.
+         */
+        register: (name, surname, email, password, confirmPassword, callback) => {
             API.user.register(name, surname, email, password, confirmPassword)
-            .then((res) => {
-              
-                if (callback !== undefined) {
-                    if (successfulResponse(res)) {
-                        console.log(res);
-                        request.user.apikey = res.data.apikey;
-                        request.user.email = email;
-                        callback(constants.RESPONSE_CODES.SUCCESS);
-                    } else {
-                        callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                .then((res) => {
+
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            request.user.apikey = res.data.apikey;
+                            request.user.email = email;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                if (callback !== undefined) {
-                    callback(constants.RESPONSE_CODES.NETWORK_ERROR);
-                }
-            });
-        }, logout: (callback) => {
+                })
+                .catch((err) => {
+                    if (callback !== undefined) {
+                        callback(constants.RESPONSE_CODES.NETWORK_ERROR);
+                    }
+                });
+        },
+        /**
+         *  Logs out an existing user account.
+         *
+         *  @param callback Function called at end of execution.
+         */
+        logout: (callback) => {
             API.user.logout()
-            .then((res) => {
-                if (callback !== undefined) {
-                    if (successfulResponse(res)) {
-                        console.log(res);
-                        request.user.isLoggedIn = false;
-                        callback(constants.RESPONSE_CODES.SUCCESS);
-                    } else {
-                        callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                .then((res) => {
+                    if (callback !== undefined) {
+                        if (successfulResponse(res)) {
+                            request.user.isLoggedIn = false;
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        } else {
+                            callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                if (callback !== undefined) {
-                    callback(constants.RESPONSE_CODES.NETWORK_ERROR);
-                }
-            });
+                })
+                .catch((err) => {
+                    if (callback !== undefined) {
+                        callback(constants.RESPONSE_CODES.NETWORK_ERROR);
+                    }
+                });
         },
         apikey: localStorage.getItem('apikey'),
-        isLoggedIn: localStorage.getItem('loggedInFlag'),
-                dataSources: [
-			{
-				'id': 6,
-				'email': 'elna@gmail.com',
-				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
-			}
-		]
+        isLoggedIn: false,
+        dataSources: [
+            {
+                'id': 6,
+                'email': 'elna@gmail.com',
+                'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
+            }
+        ]
     },
 
 
     dataSources: {
+        /**
+         *  Request a list of data sources.
+         *
+         *  @param callback Function called at end of execution.
+         */
         list: (apikey, callback) => {
             if (request.user.isLoggedIn) {
                 API.dataSources.list(apikey).then((res) => {
@@ -281,32 +411,39 @@ const request = {
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
                             console.log(res);
-                            
+
                             request.user.dataSources = res.data;
-                            
+
                             callback(constants.RESPONSE_CODES.SUCCESS);
                         } else {
                             callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
                         }
                     }
                 })
-                .catch((err) => console.error(err));
+                    .catch((err) => console.error(err));
             } else {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
-        add: (id, apikey, dataSourceUrl, callback) => {
+        /**
+         *  Adds a new data source.
+         *
+         *  @param dataSourceID Unique data source id string value.
+         *  @param dataSourceUrl Fully qualified url of the new data source.
+         *  @param callback Function called at end of execution.
+         */
+        add: (apikey, dataSourceID, dataSourceUrl, callback) => {
             if (request.user.isLoggedIn) {
-                API.dataSources.add(id, apikey, dataSourceUrl).then((res) => {
+                API.dataSources.add(apikey, dataSourceID, dataSourceUrl).then((res) => {
                     console.log(res);
                     if (callback !== undefined) {
                         if (successfulResponse(res)) {
                             console.log(res);
-                            
-                            //add to request.user.dataSources array
-                            //request.user.dataSources = res.data;  
 
-                           
+                            //add to request.user.dataSources array
+                            //request.user.dataSources = res.data;
+
+
 
                             callback(constants.RESPONSE_CODES.SUCCESS);
                         } else {
@@ -314,13 +451,19 @@ const request = {
                         }
                     }
                 })
-                .catch((err) => console.error(err));
+                    .catch((err) => console.error(err));
             } else {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         },
+        /**
+         *  Deletes an existing data source.
+         *
+         *  @param dataSourceID Unique data source id string value.
+         *  @param callback Function called at end of execution.
+         */
         delete: (dataSourceID, apikey, callback) => {
-            console.log('deleting charts');
+            console.debug('Requesting dataSources.delete');
             if (request.user.isLoggedIn) {
                 API.dataSources.delete(dataSourceID, apikey).then((res) => {
                     console.log(res);
@@ -336,12 +479,78 @@ const request = {
                         }
                     }
                 })
-                .catch((err) => console.error(err));
+                    .catch((err) => console.error(err));
             } else {
                 callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
             }
         }
     },
+
+    suggestions: {
+        /**
+         *  Requests a single graph suggestion.
+         *
+         *  request.cache.suggestions.graph.current will be populated with the retrieved suggestion.
+         *
+         *  @param sourceurl Source from which the suggestions be made of.
+         *  @param callback Function called at end of execution.
+         */
+        graph: (sourceurl, callback) => {
+            console.debug('Requesting suggestion.graph with:', sourceurl);
+            if (true || canRequest()) {
+                API.suggestion
+                    .graph(sourceurl)
+                    .then((res) => {
+                        if (callback !== undefined) {
+
+                            console.debug('Response from suggestion.graph:', res);
+                            request.cache.suggestions.graph.current = res.data;
+
+                            callback(constants.RESPONSE_CODES.SUCCESS);
+                        }
+                    })
+                    .catch((err) => console.error('from heere' + err));
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        },
+        /**
+         *  Requests an amount of graph suggestions.
+         *
+         *  @param sourceurl Source from which the suggestions be made of.
+         *  @param amount Amount of graph suggestions.
+         *  @param callback Function called at end of execution.
+         */
+        graphs: (sourceurl, amount, callback) => {
+            console.debug('Requesting suggestion.graphs with:', sourceurl, amount);
+            if (true || canRequest()) {
+
+
+                let shouldcontinue = true;
+                (async function() {
+                    for (let r = 0; shouldcontinue && r < amount; r++) {
+                        await new Promise(function(resolve){
+                            request.suggestions.graph(sourceurl, function(result) {
+                            if (result === constants.RESPONSE_CODES.SUCCESS) {
+                                resolve(request.cache.suggestions.graph.current);
+                            } else {
+                                shouldcontinue = false;
+                            }
+                        });
+                        } ).then(function(fetchedGraph){
+                            request.cache.suggestions.graph.list.push(fetchedGraph);
+                        });
+                    }
+                })().then(function() {
+                    callback(shouldcontinue ? constants.RESPONSE_CODES.SUCCESS : constants.RESPONSE_CODES.ERROR);
+                });
+
+            } else {
+                callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+            }
+        }
+    },
+
     cache: {
         dashboard: {
             list: {
@@ -358,89 +567,14 @@ const request = {
         user: {
             email: '',
             apikey: ''
+        },
+        suggestions: {
+            graph: {
+                current: null,
+                list: []
+            }
         }
     }
 };
-
-
-// Todo: incorporate the code below into requests
-//
-// const reqDashboardList = () => {
-//     API.dashboard
-//         .list()
-//         .then((res) => {
-//             console.log(res);
-//             setDashboardList(res.data);
-//         })
-//         .catch((err) => console.error(err));
-// };
-//
-// const reqDashboardAdd = (newDash) => {
-//     API.dashboard
-//         .add(newDash.name, newDash.description)
-//         .then((res) => {
-//             console.log(res);
-//             reqDashboardList();
-//             backToHome();
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqDashboardDelete = () => {
-//     API.dashboard
-//         .delete(DashboardList[DashboardIndex].id)
-//         .then((res) => {
-//             console.log(res);
-//             reqDashboardList();
-//             backToHome();
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqDashboardUpdate = () => {
-//     API.dashboard
-//         .update()
-//         .then((res) => {
-//             console.log(res);
-//             // setDashboardList(res.data);
-//         })
-//         .catch((err) => console.error(err));
-// };
-//
-// const reqGraphList = () => {
-//     console.log(DashboardList[DashboardIndex].id);
-//     API.graph
-//         .list(DashboardList[DashboardIndex].id)
-//         .then((res) => {
-//             console.log(res);
-//             setGraphList(res.data);
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqGraphAdd = (newGraph) => {
-//     API.graph
-//         .add(newGraph.dashboardID, newGraph.graphtypeid)
-//         .then((res) => {
-//             console.log(res);
-//             reqGraphList();
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqGraphDelete = (gID) => {
-//     API.graph
-//         .delete(gID)
-//         .then((res) => {
-//             console.log(res);
-//             reqGraphList();
-//         })
-//         .catch((err) => console.error(err));
-// };
-// const reqGraphUpdate = () => {
-//     API.graph
-//         .update()
-//         .then((res) => {
-//             console.log(res);
-//             // setGraphList(res.data);
-//         })
-//         .catch((err) => console.error(err));
-// };
 
 export default request;

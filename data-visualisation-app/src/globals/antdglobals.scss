@@ -114,5 +114,22 @@
 }
 
 .ant-typography-edit {
+  color: $color-border-active;
+}
+
+.ant-typography-edit:hover {
   color: $color-primary;
+}
+
+.ant-typography-edit:focus {
+  color: $color-primary;
+}
+
+.ant-typography-edit:active {
+  color: $color-primary;
+}
+
+.ant-btn:after {
+  animation: 0s !important;
+  // border-color: transparent !important;
 }

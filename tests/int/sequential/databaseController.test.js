@@ -25,7 +25,7 @@ const DASHBOARD_DATA = [DASHBOARD_NEW_NAME, DASHBOARD_NEW_DESC];
 
 const GRAPH_ID = 'slajkbfhsbajf';
 const GRAPH_TITLE = 'Graph Title';
-const GRAPH_OPTIONS = { data: [1, 2, 3, 4], x: 'dependent', y: 'independent' };
+const GRAPH_OPTIONS = { data: [ 1, 2, 3, 4 ], x: 'dependent', y: 'independent' };
 const GRAPH_META = { w: 100, h: 200, x: 10, y: 20 };
 
 const GRAPH_NEW_TITLE = 'New Graph Title';
@@ -201,7 +201,11 @@ describe('Testing with an existing user', () => {
 			});
 		});
 
+<<<<<<< HEAD:tests/int/sequential/databaseController.test.js
 		test('Adding a graph that a user dashbaord already has', () => {
+=======
+		test('Adding a graph that a user\'s dashbaord already has', () => {
+>>>>>>> 995d3bc72dfb333ccc2724e05d9bc6579ee762c6:tests/int/databaseController.test.js
 			return Database.addGraph(EMAIL, DASHBOARD_ID, GRAPH_ID, GRAPH_TITLE, GRAPH_OPTIONS, GRAPH_META).catch(({ error }) => {
 				expect(error).toBe(ITEM_ALREADY_EXISTS_ERROR);
 			});

@@ -1,18 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import '../../globals/globals.scss';
 import './HomePage.scss';
-import PageTitle from '../../components/PageTitle';
 import {Typography, message} from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-import API from '../../helpers/apiRequests';
 
+const { Title, Paragraph } = Typography;
 
-// import Cookies from 'universal-cookie';
-
-
-const { Title } = Typography;
-
+/**
+ *   @class HomePanelButton
+ *   @brief Component to display the dashboard name and description.
+ */
 function HomePanelButton(props) {
     const sizeStyles = {
         width: 300,
@@ -43,7 +41,7 @@ function HomePanelButton(props) {
                     className='panelLayout home-panel-add'
                     style={{...getSizeStyle()}}
                     onClick={() => props.action()}>
-                    <div onClick={() => props.action()}>
+                    <div>
                         <div style={{marginTop: '35px'}}>+</div>
                     </div>
                 </div>
@@ -54,10 +52,8 @@ function HomePanelButton(props) {
                     className='panelLayout panelStyling'
                     style={{...getSizeStyle(),  ...props.colour}}
                     onClick={() => props.action()}>
-                    <div>
-                        <Title level={2} style={{...getContentPositionStyle(), color: 'white'}}>{props.data.name}</Title>
-                        <div style={getContentPositionStyle1()}>{props.data.description}</div>
-                    </div>
+                        <Title ellipsis level={(props.data.name.length < 14 ? 2 : (props.data.name.length > 20 ? 4 : 3))} style={{...getContentPositionStyle(), color: 'white'}}>{props.data.name}</Title>
+                        <Paragraph ellipsis={{rows: 7}} style={ {...getContentPositionStyle1(), color: 'white'}} >{props.data.description}</Paragraph>
                 </div>
             );
         }
@@ -66,6 +62,11 @@ function HomePanelButton(props) {
     return <div>{comp()}</div>;
 }
 
+/**
+ *   @class HomePage
+ *   @brief Component to display the the list of dashboards.
+ *   @details Displays every dashboard name and description in a block grid.
+ */
 function HomePage(props) {
 
     const [isReady, setIsReady] = useState(false);
@@ -76,7 +77,6 @@ function HomePage(props) {
         request.user.login('peter@neverland.com', 'Password@301', function(result) {
             if (result === constants.RESPONSE_CODES.SUCCESS) {
                 request.dashboard.list(function(result) {
-                    console.log('this is called');
                     setDashboardList(request.cache.dashboard.list.data);
                     setIsReady(true);
                 });
@@ -102,11 +102,13 @@ function HomePage(props) {
         background: 'linear-gradient(16deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 79%)'
     }];
 
+    let colorStack = [];
+    for (let c = 0; c < backgrounds.length; c++) {
+        colorStack.push(c);
+    }
 
     return (
         <div className='content--padding'>
-
-              <PageTitle>Dashboards</PageTitle>
 
             {isReady ?
                 <React.Fragment>
@@ -114,24 +116,26 @@ function HomePage(props) {
                             return dashboardList.map((dashboard) => {
                                 return (
                                     <HomePanelButton
-                                        colour={backgrounds[Math.floor(Math.random() * Math.floor(backgrounds.length))]}
+                                        colour={backgrounds[(colorStack.length > 0 ? colorStack.pop() : Math.floor(Math.random() * Math.floor(backgrounds.length)))]}
                                         data={dashboard}
                                         key={dashboard.id}
                                         isAddButton={false}
-                                        action={() => props.setDashboardIndex(dashboard.id)}
+                                        action={() => {props.setDetails(dashboard.name, dashboard.description); props.setDashboardIndex(dashboard.id);}}
                                     />
                                 );
                             });
                         }
                     )()}
                     <HomePanelButton
-                        colour={backgrounds[Math.floor(Math.random() * Math.floor(backgrounds.length))]}
+                        colour={backgrounds[(colorStack.length > 0 ? colorStack.pop() : Math.floor(Math.random() * Math.floor(backgrounds.length)))]}
                         isAddButton={true}
                         action={() => props.onAddButtonClick(true)}
                     />
                 </React.Fragment>
             :
-                constants.LOADER
+                <div style={{textAlign: 'center'}}>
+                    {constants.LOADER}
+                </div>
             }
 
         </div>

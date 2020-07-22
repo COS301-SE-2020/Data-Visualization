@@ -281,7 +281,7 @@ class RestController {
 				const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
 
 				let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
-				const itemsKeys = Meta.items.keys(); //this is a list of the items keys
+				const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
 				let chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
 
 				while (chosen !== null && chosen.length === 0) {

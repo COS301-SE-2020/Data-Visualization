@@ -102,15 +102,15 @@ class graphSuggesterAI {
 		// object = object [ 'd' ];            //OData always starts with 'd' as the main key
 		let results = object['results']; //OData follows up with 'results' key
 
-		if (results === null) {
+		if (results == null) { //eslint-disable-line
 			results = object;
 		}
-		if (results === null || results.length === 0) {
+		if (results == null || results.length === 0) { //eslint-disable-line
 			console.log('RESULTS array has length of 0.');
 			return null;
 		}
 
-		if (results === null) {
+		if (results == null) { //eslint-disable-line
 			//Didn't follow with 'results' key, will have to go to a deeper layer
 			console.log('Need to go a layer deeper');
 			return null;
@@ -148,7 +148,7 @@ class graphSuggesterAI {
 				) {
 					//trim out the "useless" keys
 					options[count++] = keys[key]; //add the key if it is meaningful data
-				} else if ((name.includes('Name') || name.includes('ID')) && nameKey === null) {
+				} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) { //eslint-disable-line
 					//store the name key for later access
 					nameKey = name;
 				}
@@ -157,7 +157,7 @@ class graphSuggesterAI {
 			let hasData = false; //check variable used to see if data exists or if a deeper thread is followed
 
 			for (let i = 0; i < options.length; i++) {
-				if (results[0][options[i]]['__deferred'] === null) {
+				if (results[0][options[i]]['__deferred'] == null) { //eslint-disable-line
 					//if this isn't a link then we have data
 					hasData = true;
 					break;
