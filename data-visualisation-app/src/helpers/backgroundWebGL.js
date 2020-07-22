@@ -1,12 +1,9 @@
-import React, { Component } from "react";
-import * as THREE from "three";
-const OrbitControls = require("three-orbitcontrols");
+import React, { Component } from 'react';
+import * as THREE from 'three';
+// const OrbitControls = require('three-orbitcontrols');
 
 
 var SEPARATION = 70, AMOUNTX = 50, AMOUNTY = 50;
-
-var container, stats;
-var camera, scene, renderer;
 
 var particles, count = 0;
 
@@ -19,6 +16,11 @@ var windowHalfY = window.innerHeight / 2;
 var UPDATEX, UPDATEY, UPDATEZ;
 
 
+/**
+ *   @class BackgroundDots
+ *   @brief Component for background of home screen.
+ *   @details Renders WebGL points in a sine function motion.
+ */
 class BackgroundDots extends Component {
     constructor(props) {
         super(props);
@@ -29,8 +31,6 @@ class BackgroundDots extends Component {
 
         this.canvasWidth = this.props.width + 'px';
         this.canvasHeight = this.props.height + 'px';
-        console.log('width ' + this.canvasWidth + 'height ' + this.canvasHeight);
-        console.log(props);
     }
     componentDidMount() {
 
@@ -68,7 +68,10 @@ class BackgroundDots extends Component {
             }
 
         }
+//242424
+        //0xd9d9d9
 
+        // F8F9FB was 0xffffff
         var geometry = new THREE.BufferGeometry();
         geometry.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
         geometry.setAttribute( 'scale', new THREE.BufferAttribute( scales, 1 ) );
@@ -76,7 +79,7 @@ class BackgroundDots extends Component {
         var material = new THREE.ShaderMaterial( {
 
             uniforms: {
-                color: { value: new THREE.Color( 0xd9d9d9 ) },
+                color: { value: new THREE.Color( 0x242424 ) },
             },
             vertexShader: document.getElementById( 'vertexshader' ).textContent,
             fragmentShader: document.getElementById( 'fragmentshader' ).textContent
@@ -91,7 +94,7 @@ class BackgroundDots extends Component {
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
 
-        this.renderer.setClearColor(0xffffff, 1);
+        this.renderer.setClearColor(0xF8F9FB, 1);
 
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -180,9 +183,16 @@ class BackgroundDots extends Component {
 
         return (
             <div>
+                {/*<div*/}
+                {/*    id="boardCanvas"*/}
+                {/*    style={{ width: this.props.width + 'px', height: this.props.width + 'px' }}*/}
+                {/*    ref={mount => {*/}
+                {/*        this.mount = mount;*/}
+                {/*    }}*/}
+                {/*/>*/}
                 <div
                     id="boardCanvas"
-                    style={{ width: this.props.width + 'px', height: this.props.width + 'px' }}
+                    style={{ width: '1920px', height: '1080px',  }}
                     ref={mount => {
                         this.mount = mount;
                     }}

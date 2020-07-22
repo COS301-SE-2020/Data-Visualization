@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataConnection component renders correctly 1`] = `
+<div>
+  <div
+    className="ant-list dataSourceList ant-list-split ant-list-something-after-last-item"
+  >
+    <div
+      className="ant-spin-nested-loading"
+    >
+      <div
+        className="ant-spin-container"
+      >
+        <ul
+          className="ant-list-items"
+        >
+          <li
+            className="ant-list-item"
+          >
+            <div
+              className="ant-list-item-meta"
+            >
+              <div
+                className="ant-list-item-meta-avatar"
+              >
+                <span
+                  className="ant-avatar ant-avatar-circle ant-avatar-image"
+                  style={Object {}}
+                >
+                  <img
+                    onError={[Function]}
+                    src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png"
+                  />
+                </span>
+              </div>
+              <div
+                className="ant-list-item-meta-content"
+              >
+                <h4
+                  className="ant-list-item-meta-title"
+                >
+                  <a
+                    href="https://ant.design"
+                  >
+                    https://services.odata.org/V2/Northwind/Northwind.svc
+                  </a>
+                </h4>
+                <div
+                  className="ant-list-item-meta-description"
+                >
+                  6
+                </div>
+              </div>
+            </div>
+            <div />
+            <ul
+              className="ant-list-item-action"
+            >
+              <li>
+                <button
+                  className="ant-btn"
+                  id="deleteButton"
+                  onClick={[Function]}
+                  type="button"
+                >
+                  <span>
+                    delete
+                  </span>
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      style={
+        Object {
+          "height": 32,
+          "lineHeight": "32px",
+          "marginTop": 12,
+          "textAlign": "center",
+        }
+      }
+    >
+      <button
+        className="ant-btn ant-btn-round"
+        onClick={[Function]}
+        style={
+          Object {
+            "marginRight": "10px",
+          }
+        }
+        type="button"
+      >
+        <span>
+          Add Connection
+        </span>
+      </button>
+      <button
+        className="ant-btn ant-btn-primary ant-btn-round"
+        onClick={[Function]}
+        type="button"
+      >
+        <span>
+          Next
+        </span>
+      </button>
+    </div>
+  </div>
+  <main />
+</div>
+`;

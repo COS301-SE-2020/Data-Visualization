@@ -1,22 +1,4 @@
-#headingSpan{
-    display: inline-flex;
-    align-items: center;
-}
 
-#backButton{
-    background-color: transparent;
-    background-repeat:no-repeat;
-    border: none;
-    cursor:pointer;
-    overflow: hidden;
-    outline:none;
-    float: left;
-    margin-right: 10px;
-}
-
-#titleText{
-    margin-top: 12px;
-}
 
 #selectorDiv{
     background-color: blueviolet;

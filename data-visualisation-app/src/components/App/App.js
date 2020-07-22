@@ -1,3 +1,28 @@
+/**
+ *   @file App.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   1/7/2020    Byron Tominson      Original
+ *   19/7/2020   Byron Tominson      Changed how the routing occurs
+ *
+ *   Test Cases: data-visualisation-app/src/tests/App.test.js
+ *
+ *   Functional Description:
+ *   Core comonent from which other components are rendered.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
+/**
+ *   imports
+*/
 import React, { Fragment, useEffect, useRef, useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -6,7 +31,6 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -17,6 +41,12 @@ import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import MenuItem from '@material-ui/core/MenuItem';
+import { Button } from 'antd';
+import {Home as HomeIcon} from '@styled-icons/feather';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
 import LockIcon from '@material-ui/icons/Lock';
 import InputIcon from '@material-ui/icons/Input';
 import InfoIcon from '@material-ui/icons/Info';
@@ -26,34 +56,32 @@ import Collapse from '@material-ui/core/Collapse';
 import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
-import { Button } from 'antd';
 import { Database } from '@styled-icons/feather';
-import {Home as HomeIcon} from '@styled-icons/feather';
-
 import Suggestions from '../Suggestions';
-
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-
 import './App.scss';
 
+/**
+ *   globals import
+*/
+import request from '../../globals/requests';
 
-
-//pages
+/**
+ *   pages import
+*/
 import Dashboard from '../../pages/Dashboard';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
 import LoginDialog from '../../pages/LoginDialog/LoginDialog';
-// import AddConnection from '../AddConnection';
+import LoginPopup from '../LoginPopup';
 import Home from '../../pages/Home';
 import Explore from '../../pages/Explore';
 import { MuiThemeProvider } from '@material-ui/core';
 
-
 /**
- *   State Variables
+ *   State Variables import
 */
 import GlobalStateProvider  from '../../globals/Store';
 import {useGlobalState} from '../../globals/Store';
@@ -77,7 +105,10 @@ const globalMaterialUITheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		display: 'flex',
+		display: 'flex'
+	},
+	selected: {
+		color: 'white'
 	},
 	drawer: {
 		[theme.breakpoints.up('sm')]: {
@@ -116,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	drawerPaper: {
 		width: drawerWidth,
-		background: 'linear-gradient(302deg, rgba(255,255,255,1) 0%, rgba(242,242,242,1) 54%, rgba(195,195,195,1) 100%)',
+		background: '#242424',
 	},
 	content: {
 		flexGrow: 1,
@@ -125,7 +156,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	nested: {
 		paddingLeft: theme.spacing(11),
-		color: '#3C6A7F',
+		color: '#e6e6e6',
 	},
 	nestedNoIcon: {
 		paddingLeft: theme.spacing(9),
@@ -135,28 +166,29 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(9),
 	},
 	typographyHeading: {
-		color: '#2f2f2e',
+		color: 'white',
 		fontSize: '1.5em',
 	},
 	drawerList: {
-		color: '#2f2f2e',
+		color: '#969698',
 	},
 	icon: {
-		color: '#2f2f2e',
+		color: '#969698',
 	},
 	drawerListCollapse: {
-		color: '#3C6A7F',
+		color: '#969698',
 	},
 
-	//05192F primary -> 3C6A7F//lighter
-	//70D3FF secondary
-	//8D66E3 tertiary
 }));
 
 
 
+/**
+  * @param props
+  * Core component 
+*/
 function App(props) {
-	
+
 	const { window } = props;
 	const classes = useStyles();
 	const theme = useTheme();
@@ -186,9 +218,12 @@ function App(props) {
 	};
 	const [loginNameState, setLoginNameState] = React.useState('Login/Sign up');
 
-	//handle page state
 	const [pageType, setPageType] = React.useState('home');
 	const [exploreStage, setExploreStage] = React.useState('dataConnection');
+	const [dashboardStage, setDashboardStage] = React.useState('dashboardHome');
+	const [dashboardName, setDashboardName] = React.useState('Dashboard1');
+	const [isAddingDashboard, setIsAddingDashboard] = useState(false);
+	const [dashboardIndex, setDashboardIndex] = useState('');
 
 	const handlePageType = (t) => {
 		setPageType(t);
@@ -196,7 +231,116 @@ function App(props) {
 			mobileOpen === true ? handleDrawerToggle() : null
 		);
 	};
+	
 
+	/**
+  	  * back function 
+    */
+	const handleBack = () => {
+		if(pageType === 'explore' && exploreStage === 'entities'){
+			setExploreStage('dataConnection');
+		}
+		if(pageType === 'explore' && exploreStage === 'suggestions'){
+			setExploreStage('entities');
+		}
+		if(pageType === 'dashboards' && dashboardStage === 'selected'){
+			setDashboardStage('dashboardHome');
+			setDashboardIndex('');
+			setIsAddingDashboard(false);
+		}		
+	};
+
+	/**
+  	  * back button variable
+    */
+	var backButton;
+	if(pageType === 'dashboards' && dashboardStage === 'selected'){
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+	else if(pageType === 'explore' && (exploreStage === 'entities' || exploreStage === 'suggestions')){
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+	else{
+		backButton = <Button id = 'backButton'  type="primary" disabled = 'true' icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+
+
+	/**
+  	  * hanlde page title
+    */
+	var pageTitle = 'Home';
+	if(pageType === 'home'){
+		pageTitle = 'Home';
+	}
+	if(pageType === 'explore'){
+		pageTitle = 'Expore';
+		if(exploreStage === 'dataConnection'){
+			pageTitle = 'Connections';
+		}
+		if(exploreStage === 'entities'){
+			pageTitle = 'Entities';
+		}
+		if(exploreStage === 'suggestions'){
+			pageTitle = 'Suggestions';
+		}
+	}
+	if(pageType === 'dashboards'){
+		pageTitle = 'Dashboards';
+		if(dashboardStage === 'dashboardHome'){
+			pageTitle = 'Dashboards';	
+		}
+		if(dashboardStage === 'adding'){
+			
+		}
+		if(dashboardStage === 'selected'){
+			pageTitle = dashboardName;
+		}
+	}
+	if(pageType === 'about'){
+		pageTitle = 'About';
+	}
+	if(pageType === 'trash'){
+		pageTitle = 'Trash';
+	}
+
+	/**
+  	  * handle page 
+    */
+	var page;
+	if(pageType === 'home'){
+		//setDashboardStage('dashboadHome');
+		//setDashboardIndex('');
+		//setIsAddingDashboard(false);
+		page = <Home pType={pageType} handlePageType={handlePageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />;
+	}
+	if(pageType === 'explore'){
+		page = <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />;
+	}
+	
+	if(pageType === 'trash'){
+		page = <Trash />;
+	}
+	if(pageType === 'about'){
+		page = <About />;
+	}
+	if(pageType === 'dashboards'){
+		page = <Dashboard 
+			dashboardStage = {dashboardStage} 
+			setDashboardStage = {setDashboardStage} 
+			dashboardName = {dashboardName}
+			setDashboardName = {setDashboardName}
+			handlePageType={handlePageType}
+			dashboardIndex = {dashboardIndex}
+			setDashboardIndex = {setDashboardIndex}
+			isAddingDashboard = {isAddingDashboard}
+			setIsAddingDashboard = {setIsAddingDashboard}
+		/>;	
+	}
+
+	
+	/**
+  	  * drawer (Material UI)
+    */
 	const drawer = (
 		<div>
 			<div className={classes.toolbar} />
@@ -204,35 +348,35 @@ function App(props) {
 			<List className={classes.drawerList}>
 
 
-				<ListItem button onClick={() => handlePageType('home')}>
+				<MenuItem button onClick={() => handlePageType('home')} selected={pageType === 'home'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<HomeIcon size='25' />
+						<HomeIcon size='25' style={(pageType === 'home' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Home" />
-				</ListItem>
+				</MenuItem>
 
-				<ListItem button onClick={() => handlePageType('explore')}>
+				<MenuItem button onClick={() => handlePageType('explore')} selected={pageType === 'explore'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<ExploreOutlinedIcon />
+						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Explore" />
-				</ListItem>
+				</MenuItem>
 
-				<ListItem button onClick={() => handlePageType('dashboards')}>
+				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<DashboardIcon />
+						<DashboardIcon style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="My Dashboards" />
-				</ListItem>
+				</MenuItem>
 
 
-				<ListItem button onClick={handleOpenIcon}>
+				{/* <MenuItem button onClick={handleOpenIcon} selected={pageType === 'connections'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<Database size='25' />
+						<Database size='25' style={(pageType === 'connections' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Connections" />
 					{openIcon ? <ExpandLess /> : <ExpandMore />}
-				</ListItem>
+				</MenuItem>
 
 				<Collapse in={openIcon} timeout="auto" unmountOnExit>
 					<List component="div" disablePadding className={classes.drawerListCollapse}>
@@ -249,14 +393,14 @@ function App(props) {
 						</ListItemIcon>
 					</ListItem>
 
-				</Collapse>
+				</Collapse> */}
 
-				<ListItem button >
+				{/* <ListItem button >
 					<ListItemIcon className={classes.icon}>
 						<LockIcon />
 					</ListItemIcon>
 					<ListItemText primary="Lock" />
-				</ListItem>
+				</ListItem> */}
 
 				<ListItem button onClick={() => handlePageType('trash')}>
 					<ListItemIcon className={classes.icon}>
@@ -268,12 +412,12 @@ function App(props) {
 			</List>
 			<Divider />
 			<List component="nav" className={classes.drawerList}>
-				<ListItem button onClick={() => handlePageType('about')}>
+				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<InfoIcon />
+						<InfoIcon style={(pageType === 'connections' ? {color: 'about'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="About" />
-				</ListItem>
+				</MenuItem>
 			</List>
 		</div>
 	);
@@ -288,7 +432,7 @@ function App(props) {
 
 			<div className={classes.root}>
 				<CssBaseline />
-				<AppBar position="fixed" className={classes.appBar} style={{ background: 'linear-gradient(48deg, rgba(235,235,235,1) 0%, rgba(255,255,255,1) 100%)' }}>
+				<AppBar position="fixed" className={classes.appBar} style={{ background: '#242424' }}>
 					<Toolbar>
 						<IconButton
 							color="inherit"
@@ -302,24 +446,25 @@ function App(props) {
 							<MenuIcon />
 						</IconButton>
 
+						{
+							backButton
+						}
+						
+
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
 
-							pageType === 'home' ? 'Home'
-								:
-								pageType === 'explore' ? 'Explore'
-									:
-									pageType === 'dashboards' ? 'Dashboards'
-										:
-										pageType === 'about' ? 'About'
-											:
-											pageType === 'trash' ? 'Trash'
-												:
-												'Home'
+							pageTitle
+							
 						} >
 
 						</Typography>
-
-						<LoginDialog handlePageType ={handlePageType}/>
+						<LoginDialog 
+							handlePageType ={handlePageType}
+							setDashboardIndex = {setDashboardIndex}
+							setDashboardStage = {setDashboardStage}
+							setIsAddingDashboard = {setIsAddingDashboard}
+							setExploreStage = {setExploreStage}
+						/>
 					</Toolbar>
 				</AppBar>
 
@@ -357,28 +502,11 @@ function App(props) {
 
 				<main className={classes.content} style={(pageType === 'home' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
 
-					{/*<p>{dimensions.width}</p>*/}
-					{/*<p>{dimensions.height}</p>*/}
 					<div className={classes.toolbar} />
 					{
-
-						pageType === 'home' ?
-							<Home pType={pageType} setpType={setPageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />
-							:
-							pageType === 'explore' ?
-								<Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />
-								:
-								pageType === 'dashboards' ?
-									<Dashboard />
-									:
-									pageType === 'about' ?
-										<About />
-										:
-										pageType === 'trash' ?
-											<Trash />
-											:
-											null
-
+						
+						page
+												
 					}
 
 

@@ -10,15 +10,27 @@ import HomePage from '../../components/HomePage/HomePage';
 import DisplayDashboard from '../../components/DisplayDashboard/DisplayDashboard';
 import AddDashboard from '../../components/AddDashboard/AddDashboard';
 import EditDashboard from '../../components/EditDashboard/EditDashboard';
+import LoginPopup from '../../components/LoginPopup/LoginPopup';
 import {Layout, Menu} from 'antd';
 
 
 
-function Dashboard() {
-	const [DashboardIndex, setDashboardIndex] = useState(-1);
-	const [DashboardList, setDashboardList] = useState([]);
-	const [IsAddingDashboard, setIsAddingDashboard] = useState(false);
+function Dashboard(props) {
 
+
+
+
+	
+	const [dashboardName, setDashboardName] = useState('');
+	const [dashboardDescription, setDashboardDescription] = useState('');
+	const [DashboardList, setDashboardList] = useState([]);
+	//const [DashboardIndex, setDashboardIndex] = useState('');
+	//const [IsAddingDashboard, setIsAddingDashboard] = useState(false);
+
+	function setDashboardDetail(name, description) {
+		setDashboardName(name);
+		setDashboardDescription(description);
+	}
 
 	useEffect(() => {
 		// reqDashboardList();
@@ -26,11 +38,11 @@ function Dashboard() {
 	}, []);
 
 	//Boolean Checks
-	const isSelected = () => DashboardIndex >= 0;
+	const isSelected = () => props.dashboardIndex !== '';
 
 	//State Mutators
 	const deleteDashboard = () => {
-		DashboardList.splice(DashboardIndex, 1);
+		DashboardList.splice(props.dashboardIndex, 1);
 		setDashboardList(DashboardList);
 		backToHome();
 	};
@@ -40,7 +52,7 @@ function Dashboard() {
 	const setDashboard = (dash) => {
 		setDashboardList(
 			update(DashboardList, {
-				[DashboardIndex]: dash,
+				[props.dashboardIndex]: dash,
 			})
 		);
 	};
@@ -48,7 +60,7 @@ function Dashboard() {
 		console.log(list);
 		setDashboardList(
 			update(DashboardList, {
-				[DashboardIndex]: {
+				[props.dashboardIndex]: {
 					graphs: { $set: list },
 				},
 			})
@@ -98,7 +110,7 @@ function Dashboard() {
 	};
 	const reqDashboardDelete = () => {
 		request.API.dashboard
-			.delete(DashboardList[DashboardIndex].id)
+			.delete(DashboardList[props.dashboardIndex].id)
 			.then((res) => {
 				console.log(res);
 				reqDashboardList();
@@ -117,9 +129,9 @@ function Dashboard() {
 	};
 
 	const reqGraphList = () => {
-		console.log(DashboardList[DashboardIndex].id);
+		console.log(DashboardList[props.dashboardIndex].id);
 		request.API.graph
-			.list(DashboardList[DashboardIndex].id)
+			.list(DashboardList[props.dashboardIndex].id)
 			.then((res) => {
 				console.log(res);
 				setGraphList(res.data);
@@ -158,50 +170,74 @@ function Dashboard() {
 
 	//Navigation procedures
 	const backToHome = () => {
-		setDashboardIndex(-1);
-		setIsAddingDashboard(false);
+		props.setDashboardIndex('');
+		props.setIsAddingDashboard(false);
 	};
+
+	
 
 
 	function router() {
-	
 		if (isSelected()) {
-			if (IsAddingDashboard) {
-				return (
-					<EditDashboard
-						dashboard={DashboardList[DashboardIndex]}
-						Back={setIsAddingDashboard}
-						Delete={reqDashboardDelete}
-						Update={setDashboard}
-						addGraph={reqGraphAdd}
-						removeGraph={reqGraphDelete}
-					/>
-				);
-			} else {
-				return (
-					<DisplayDashboard
-						dashboardID={DashboardIndex}
-						backFunc={backToHome}
-						editDashboard={setIsAddingDashboard}
-					/>
-				);
-			}
+			// if (IsAddingDashboard) {
+			// 	return (
+			// 		<EditDashboard
+			// 			dashboard={DashboardList[DashboardIndex]}
+			// 			Back={setIsAddingDashboard}
+			// 			Delete={reqDashboardDelete}
+			// 			Update={setDashboard}
+			// 			addGraph={reqGraphAdd}
+			// 			removeGraph={reqGraphDelete}
+			// 		/>
+			// 	);
+			// } else {
+				props.setDashboardStage('selected');
+				props.setDashboardName(dashboardName);
+			// }
 		} else {
-			if (IsAddingDashboard) {
-				return <AddDashboard add={reqDashboardAdd} home={backToHome} />;
+			if (props.isAddingDashboard) {
+				props.setDashboardStage('adding');
 			} else {
-				return (
-					<HomePage
-						dashboardList={DashboardList}
-						setDashboardIndex={setDashboardIndex}
-						onAddButtonClick={setIsAddingDashboard}
-					/>
-				);
+				props.setDashboardStage('dashboardHome');
 			}
+		}
+
+
+		if(props.dashboardStage === 'dashboardHome'){
+			return (
+				<HomePage
+					dashboardList={DashboardList}
+					setDashboardIndex={props.setDashboardIndex}
+					onAddButtonClick={props.setIsAddingDashboard}
+					setDetails={setDashboardDetail}
+				/>
+			);
+		}
+		if(props.dashboardStage === 'selected'){
+			return (
+				<DisplayDashboard
+					dashboardID={props.dashboardIndex}
+					name={dashboardName}
+					description={dashboardDescription}
+					backFunc={backToHome}
+					editDashboard={props.setIsAddingDashboard}
+				/>
+			);
+		}
+		if(props.dashboardStage === 'adding'){
+			return <AddDashboard add={reqDashboardAdd} home={backToHome} setDetails={setDashboardDetail} />;
 		}
 	}
 
-	return router();
+	if(request.user.isLoggedIn){
+		return router();
+	}
+	else{
+		return <LoginPopup handlePageType = {props.handlePageType}/>;
+	}
+	
+					
+		
 }
 
 export default Dashboard;

@@ -3,20 +3,25 @@ import DataConnection from '../../components/DataConnection';
 import Entities from '../../components/Entities';
 import Suggestions from '../../components/Suggestions';
 
+
 function Explore(props) {
 
-  return (
 
-          props.exploreStage === 'dataConnection' ?
-          <DataConnection setStage= {props.setExploreStage}/>
-          :
-          props.exploreStage === 'entities' ?
-          <Entities setStage= {props.setExploreStage}/>
-          :
-          props.exploreStage === 'suggestions' ?
-          <Suggestions setStage= {props.setExploreStage}/>
-          :
-          null
+  var exploreHandler;
+  if (props.exploreStage === 'dataConnection') {
+    exploreHandler = <DataConnection setStage= {props.setExploreStage}/>;
+  } 
+  if(props.exploreStage === 'entities') {
+    exploreHandler = <Entities setStage= {props.setExploreStage}/>;
+  }
+  if(props.exploreStage === 'suggestions') {
+    exploreHandler = <Suggestions setStage= {props.setExploreStage}/>;
+  }
+ 
+  return (
+    <nav>
+      {exploreHandler}
+    </nav>
   );
 }
 
