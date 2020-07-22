@@ -212,6 +212,21 @@ class RestController {
 			.then((user) => done(user))
 			.catch((err) => error && error(err));
 	}
+
+	/**
+	 * This function unregisters a user.
+	 * @param userEmail the users email
+	 * @param userPassword the users password
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @returns a promise
+	 */
+	static unregisterUser(userEmail, userPassword, done, error) {
+		Database.unregister(userEmail, userPassword)
+			.then((user) => done())
+			.catch((err) => error && error(err));
+	}
+
 	/**
 	 * This function gets Odata.
 	 * @param src the source where this Odata must be retrieved from

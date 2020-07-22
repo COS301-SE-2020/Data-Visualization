@@ -37,7 +37,7 @@ const config = {
 	database: params.pathname.split('/')[1],
 	hostnossl: true,
 	ssl: {
-		rejectUnauthorized: PRODUCTION, //check this
+		rejectUnauthorized: PRODUCTION, //@todo check this
 	},
 };
 
@@ -54,7 +54,7 @@ class Database {
 	 * @returns a promise
 	 */
 	static sendQuery(querySql) {
-		if (!PRODUCTION) console.log(querySql);
+		// if (!PRODUCTION) console.log(querySql);
 		return new Promise((conResolve, conReject) => {
 			Database.pgPool
 				.connect()
@@ -85,20 +85,20 @@ class Database {
 
 	static authenticate(email, password) {
 		return new Promise((resolve, reject) => {
-			if (!PRODUCTION) console.log('==> AUTHENTICATING: ' + email);
+			// if (!PRODUCTION) console.log('==> AUTHENTICATING: ' + email);
 			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
 				.then((result) => {
 					if (typeof result !== 'undefined' && result.command === 'SELECT') {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
-							if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful');
+							// if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful');
 							delete result.rows[0].password;
 							resolve(result.rows[0]);
 						} else {
-							if (!PRODUCTION) console.log('==> AUTHENTICATION: failed');
+							// if (!PRODUCTION) console.log('==> AUTHENTICATION: failed');
 							resolve(false);
 						}
 					} else {
-						if (!PRODUCTION) console.log('==> AUTHENTICATION: error');
+						// if (!PRODUCTION) console.log('==> AUTHENTICATION: error');
 						reject(result);
 					}
 				})
@@ -117,14 +117,12 @@ class Database {
 		password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
 		const apikey = generateApiKey();
-		if (!PRODUCTION) console.log('==> REGISTER: ' + email + ' |' + apikey);
+		// if (!PRODUCTION) console.log('==> REGISTER: ' + email + ' |' + apikey);
 
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(
-				`INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`
-			)
+			Database.sendQuery(`INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`)
 				.then((response) => {
-					if (!PRODUCTION) console.log('REGISTER RESPONSE');
+					// if (!PRODUCTION) console.log('REGISTER RESPONSE');
 					resolve({ apikey });
 				})
 				.catch((err) => {
@@ -249,7 +247,7 @@ class Database {
 	 * @returns a promise
 	 */
 	static async updateDashboard(email, dashboardID, fields, data) {
-		console.log(fields, data);
+		// console.log(fields, data);
 
 		let index = -1;
 		fields = fields.filter((field, i) => {
@@ -260,7 +258,7 @@ class Database {
 		});
 		if (index >= 0) data.splice(index, 1);
 
-		console.log(fields, data);
+		// console.log(fields, data);
 
 		let query = `UPDATE Dashboard SET ${fieldUpdates(fields, data)} WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
 		return new Promise((resolve, reject) => {
@@ -378,7 +376,7 @@ function generateApiKey() {
  */
 function DBerror(err) {
 	let { table, code, routine, hint, detail } = err;
-	if (code === '23505') routine = 'userAlreadyExists';
+	if (code === '23505' || code === '23503') routine = 'userAlreadyExists';
 	if (typeof hint === 'undefined') hint = detail;
 	return { origin: 'database', table, code, error: routine, hint };
 }

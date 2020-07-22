@@ -32,7 +32,7 @@ class Odata {
 	 * @returns a promise of Odata
 	 */
 	static getMetaData(src) {
-		if (!PRODUCTION) console.log('Odata: ', formatMetaData(src));
+		// if (!PRODUCTION) console.log('Odata: ', formatMetaData(src));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(formatMetaData(src))
@@ -49,7 +49,7 @@ class Odata {
 	 * @returns a promise of the entity list
 	 */
 	static getEntityList(src) {
-		if (!PRODUCTION) console.log('Odata: ', format(src));
+		// if (!PRODUCTION) console.log('Odata: ', format(src));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(format(src))
@@ -67,7 +67,7 @@ class Odata {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity) {
-		if (!PRODUCTION) console.log('Odata: ', formatEntity(src, entity));
+		// if (!PRODUCTION) console.log('Odata: ', formatEntity(src, entity));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(formatEntity(src, entity))

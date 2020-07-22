@@ -1,1 +1,1 @@
-jest.setTimeout(30000); //30 000ms => 30s
+jest.setTimeout(1000000); //100 000ms => 100s

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-const { Database } = require('../../controllers/controllers');
+const { Database } = require('../../../controllers/controllers');
 
 const EMAIL = 'firstnamelastname@gmail.com';
 const PASSWORD = 'FirstnameLastname@1234';
@@ -18,23 +18,46 @@ const DASHBOARD_ID = 'ksbfnlsadnflnsa';
 const DASHBOARD_NAME = 'Dashboard Name';
 const DASHBOARD_DESC = 'Dashboard Description';
 
+const DASHBOARD_NEW_NAME = 'New Dashboard Name';
+const DASHBOARD_NEW_DESC = 'New Dashboard Description';
+const DASHBOARD_FIELDS = ['name', 'description'];
+const DASHBOARD_DATA = [DASHBOARD_NEW_NAME, DASHBOARD_NEW_DESC];
+
 const GRAPH_ID = 'slajkbfhsbajf';
 const GRAPH_TITLE = 'Graph Title';
 const GRAPH_OPTIONS = { data: [1, 2, 3, 4], x: 'dependent', y: 'independent' };
 const GRAPH_META = { w: 100, h: 200, x: 10, y: 20 };
 
+const GRAPH_NEW_TITLE = 'New Graph Title';
+const GRAPH_NEW_OPTIONS = { data: [1, 2, 3], x: 'x-axis', y: 'y-axis' };
+const GRAPH_NEW_META = { w: 150, h: 150, x: 20, y: 50 };
+const GRAPH_FIELDS = ['title', 'options', 'metadata'];
+const GRAPH_DATA = [GRAPH_NEW_TITLE, GRAPH_NEW_OPTIONS, GRAPH_NEW_META];
+
+beforeAll((done) => {
+	return Database.unregister(EMAIL, PASSWORD)
+		.then(() => done())
+		.catch(() => done());
+});
+
 describe('Testing user management', () => {
 	beforeEach((done) => {
-		return Database.unregister(EMAIL, PASSWORD).then(() => done());
+		return Database.unregister(EMAIL, PASSWORD)
+			.then(() => done())
+			.catch(() => done());
 	});
 
 	afterAll((done) => {
-		return Database.unregister(EMAIL, PASSWORD).then(() => done());
+		return Database.unregister(EMAIL, PASSWORD)
+			.then(() => done())
+			.catch(() => done());
 	});
 
 	test('Test registration of a new user', () => {
-		return Database.register(F_NAME, L_NAME, EMAIL, PASSWORD).then((response) => {
-			expect(response).toHaveProperty('apikey');
+		return Database.unregister(EMAIL, PASSWORD).then(() => {
+			Database.register(F_NAME, L_NAME, EMAIL, PASSWORD).then((response) => {
+				expect(response).toHaveProperty('apikey');
+			});
 		});
 	});
 
@@ -60,11 +83,15 @@ describe('Testing user management', () => {
 
 describe('Testing with an existing user', () => {
 	beforeAll((done) => {
-		return Database.register(F_NAME, L_NAME, EMAIL, PASSWORD).then((response) => done());
+		return Database.register(F_NAME, L_NAME, EMAIL, PASSWORD)
+			.then(() => done())
+			.catch(() => done());
 	});
 
 	afterAll((done) => {
-		return Database.unregister(EMAIL, PASSWORD).then(() => done());
+		return Database.unregister(EMAIL, PASSWORD)
+			.then(() => done())
+			.catch(() => done());
 	});
 
 	describe('Test data source management', () => {
@@ -125,6 +152,18 @@ describe('Testing with an existing user', () => {
 			});
 		});
 
+		test('Updating a dashboard', () => {
+			return Database.updateDashboard(EMAIL, DASHBOARD_ID, DASHBOARD_FIELDS, DASHBOARD_DATA).then((response) => {
+				Database.getDashboardList(EMAIL).then((list) => {
+					expect(list.length).toBe(1);
+					expect(list[0].id).toBe(DASHBOARD_ID);
+					expect(list[0].email).toBe(EMAIL);
+					expect(list[0].name).toBe(DASHBOARD_NEW_NAME);
+					expect(list[0].description).toBe(DASHBOARD_NEW_DESC);
+				});
+			});
+		});
+
 		test('Removing a dashboard', () => {
 			return Database.removeDashboard(EMAIL, DASHBOARD_ID).then((response) => {
 				Database.getDashboardList(EMAIL).then((list) => {
@@ -162,9 +201,22 @@ describe('Testing with an existing user', () => {
 			});
 		});
 
-		test("Adding a graph that a user's dashbaord already has", () => {
+		test('Adding a graph that a user dashbaord already has', () => {
 			return Database.addGraph(EMAIL, DASHBOARD_ID, GRAPH_ID, GRAPH_TITLE, GRAPH_OPTIONS, GRAPH_META).catch(({ error }) => {
 				expect(error).toBe(ITEM_ALREADY_EXISTS_ERROR);
+			});
+		});
+
+		test('Updating a graph', () => {
+			return Database.updateGraph(EMAIL, DASHBOARD_ID, GRAPH_ID, GRAPH_FIELDS, GRAPH_DATA).then((response) => {
+				Database.getGraphList(EMAIL, DASHBOARD_ID).then((list) => {
+					expect(list.length).toBe(1);
+					expect(list[0].id).toBe(GRAPH_ID);
+					expect(list[0].dashboardid).toBe(DASHBOARD_ID);
+					expect(list[0].title).toBe(GRAPH_NEW_TITLE);
+					expect(list[0].metadata).toMatchObject(GRAPH_NEW_META);
+					expect(list[0].options).toMatchObject(GRAPH_NEW_OPTIONS);
+				});
 			});
 		});
 
@@ -179,6 +231,17 @@ describe('Testing with an existing user', () => {
 });
 
 afterAll((done) => {
-	Database.pgPool.end();
-	done();
+	return Database.unregister(EMAIL, PASSWORD)
+		.then(() => {
+			Database.pgPool
+				.end()
+				.then(() => done())
+				.catch(() => done());
+		})
+		.catch(() => {
+			Database.pgPool
+				.end()
+				.then(() => done())
+				.catch(() => done());
+		});
 });

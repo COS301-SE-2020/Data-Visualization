@@ -8,12 +8,16 @@
 		"lint": "eslint . --fix",
 		"heroku-postbuild": "npm install --prefix ./data-visualisation-app",
 		"build": "npm run build --prefix ./data-visualisation-app",
-		"test": "jest -u tests",
-		"test:unit": "jest -u unit",
-		"test:int": "jest -u int",
-		"test:update": "jest -u tests --updateSnapshot",
+		"test": "npm run test:unit && npm run test:int",
+		"test:update": "npm run test:unit:update && npm run test:int:update",
+		"test:unit": "jest -u unit --verbose",
 		"test:unit:update": "jest -u unit --updateSnapshot",
-		"test:int:update": "jest -u int --updateSnapshot"
+		"test:int": "npm run test:int:par && npm run test:int:seq",
+		"test:int:update": "npm run test:int:par:update && npm run test:int:seq:update",
+		"test:int:seq": "jest -u --runInBand sequential --verbose",
+		"test:int:par": "jest -u parallel --verbose",
+		"test:int:seq:update": "jest -u --runInBand sequential --updateSnapshot",
+		"test:int:par:update": "jest -u parallel --updateSnapshot"
 	},
 	"repository": {
 		"type": "git",
