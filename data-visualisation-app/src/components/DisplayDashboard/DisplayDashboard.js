@@ -79,7 +79,7 @@ function DisplayDashboard(props) {
 	}, []);
 
 	const HEIGHT_DEFAULT = 14;
-	let currentCharts = ['apple dashboard', 'oranges dashboard', 'banana dashboard', 'peanut dashboard'];
+	let currentCharts = [];
 
 	function constructLayout(totalItems) {
 		 let layoutParameters = {
@@ -130,6 +130,7 @@ function DisplayDashboard(props) {
 		request.cache.graph.list.data.forEach((chart, index) => {
 			newvisiblecharts.push(index);
 			currentCharts.push(chart.title);
+
 		});
 
 		setVisibleCharts(newvisiblecharts);
@@ -138,6 +139,7 @@ function DisplayDashboard(props) {
 		} else {
 			setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentCharts});
 		}
+
 	}
 
 	function onEditDashboardClick() {
@@ -156,7 +158,8 @@ function DisplayDashboard(props) {
 	function onEditNameChange(name) {
 		request.dashboard.update(props.dashboardID, ['name'], [name], function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				setDashboardState({name: name, description: presentDashboard.description, chartNames: currentCharts});
+				// setDashboardState({name: name, description: presentDashboard.description, chartNames: currentCharts});
+				setDashboardState({name: name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
 			} else {
 				// todo:
 			}
@@ -166,7 +169,8 @@ function DisplayDashboard(props) {
 	function onEditDescriptionChange(description) {
 		request.dashboard.update(props.dashboardID, ['description'], [description], function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				setDashboardState({name: presentDashboard.name, description: description, chartNames: currentCharts});
+				// setDashboardState({name: presentDashboard.name, description: description, chartNames: currentCharts});
+				setDashboardState({name: presentDashboard.name, description: description, chartNames: presentDashboard.chartNames});
 			} else {
 				// todo:
 			}
@@ -192,13 +196,34 @@ function DisplayDashboard(props) {
 	}
 
 	function onSearchPressEnter(e) {
-		if (e.target.value === '' && searchString !== '') {
+		onSearchClick(e.target.value);
+		// if (e.target.value === '' && searchString !== '') {
+		// 	showAllCharts(false);
+		// 	constructLayout(request.cache.graph.list.data.length);
+		// } else {
+		// 	let newvisiblecharts = [];
+		// 	request.cache.graph.list.data.forEach((chart, index) => {
+		// 		if (chart.title.match(new RegExp(e.target.value, 'i'))) {
+		//
+		// 			newvisiblecharts.push(index);
+		// 		}
+		// 	});
+		//
+		// 	setVisibleCharts(newvisiblecharts);
+		//
+		// 	constructLayout(newvisiblecharts.length);
+		// }
+		// setSearchString(e.target.value);
+	}
+
+	function onSearchClick(value) {
+		if (value === '' && searchString !== '') {
 			showAllCharts(false);
 			constructLayout(request.cache.graph.list.data.length);
 		} else {
 			let newvisiblecharts = [];
 			request.cache.graph.list.data.forEach((chart, index) => {
-				if (chart.title.match(new RegExp(e.target.value, 'i'))) {
+				if (chart.title.match(new RegExp(value, 'i'))) {
 
 					newvisiblecharts.push(index);
 				}
@@ -208,7 +233,7 @@ function DisplayDashboard(props) {
 
 			constructLayout(newvisiblecharts.length);
 		}
-		setSearchString(e.target.value);
+		setSearchString(value);
 	}
 
 	function onChartDelete(chartid) {
@@ -243,7 +268,10 @@ function DisplayDashboard(props) {
 					}
 				});
 
+				console.debug('this is currentnames:', currentnames);
+
 				setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentnames});
+				// setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
 
 				setVisibleCharts(visibleCharts);
 			} else {
@@ -317,6 +345,7 @@ function DisplayDashboard(props) {
 										placeholder="Search Charts"
 										style={{ width: 200 }}
 										onPressEnter={onSearchPressEnter}
+										onSearch={value => onSearchClick(value)}
 									/>
 								</div>
 							</Grid>
