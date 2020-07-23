@@ -38,11 +38,11 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 ##### Video Demo
 
-* [Demo 2 Video Link](https://drive.google.com/drive/folders/1lFnGthxIPIuZHPTG4wG-Ffy6VKT2yWHK?usp=sharing)
+* [Demo 2 Video Link](https://drive.google.com/file/d/1jc5Jq6a_IRABYW3BcQpoOcCBPSwslHxB/view?usp=sharing)
 
 ##### Documentation
 
-* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_SRS.pdf).
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_SRS_Update.pdf).
 
 * Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_CodingStandards.pdf).
 
