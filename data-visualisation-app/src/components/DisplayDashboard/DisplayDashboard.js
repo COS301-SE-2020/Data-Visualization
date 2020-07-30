@@ -58,17 +58,60 @@ function DisplayDashboard(props) {
 			canRedo
 		}
 	] = useUndo({name: props.name, description: props.description, chartNames: []}); //{name: 'dashboardname', description: 'dashboarddesciption'}
+
 	const { present: presentDashboard } = dashboardState;
+	const HEIGHT_DEFAULT = 14;
+	let defaultLayout = true;
+	let currentCharts = [];
+	let currentLayout = null;
 
 	useEffect(() => {
 		request.graph.list(props.dashboardID, function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				if (request.cache.graph.list.data !== null && request.cache.graph.list.data.length > 0) {
-					constructLayout(request.cache.graph.list.data.length);
+				if (request.cache.graph.list !== null && request.cache.graph.list.length > 0) {
+
+					console.debug('layout ', request.cache.graph.list)
+
+					let newChartIndex = -1, nonemptycount = 0;
+					let bestX = Number.MAX_VALUE, bestY = Number.MIN_VALUE;
+					for (let c = 0; c < request.cache.graph.list.length; c++) {
+						if (Object.keys(request.cache.graph.list[c].metadata).length === 0 && request.cache.graph.list[c].metadata.constructor === Object) {
+							console.debug('this one is empty', request.cache.graph.list[c])
+							if (newChartIndex === -1) {
+								newChartIndex = c;
+								defaultLayout = false;
+							} else {
+								defaultLayout = true;
+								break;
+							}
+						} else {
+							nonemptycount++;
+							if (request.cache.graph.list[c].metadata.x < bestX)
+								bestX = request.cache.graph.list[c].metadata.x;
+							if (request.cache.graph.list[c].metadata.y + request.cache.graph.list[c].metadata.h > bestY)
+								bestY = request.cache.graph.list[c].metadata.y + request.cache.graph.list[c].metadata.h;
+						}
+					}
+
+					console.debug('bestX' , bestX, 'bestY', bestY)
+
+					defaultLayout = defaultLayout && nonemptycount !== request.cache.graph.list.length;
+
+					if (!defaultLayout && newChartIndex > -1) {
+						request.cache.graph.list[newChartIndex].metadata.x = bestX;
+						request.cache.graph.list[newChartIndex].metadata.y = bestY;
+						request.cache.graph.list[newChartIndex].metadata.w = 4;
+						request.cache.graph.list[newChartIndex].metadata.h = HEIGHT_DEFAULT;
+
+						// todo: update graph metadata
+					}
+					constructLayout(request.cache.graph.list.length);
+
 					showAllCharts(true);
 
 					setHasCharts(true);
 					setIsLoading(false);
+
 				} else {
 					setIsLoading(false);
 					setHasCharts(false);
@@ -77,9 +120,6 @@ function DisplayDashboard(props) {
 		});
 
 	}, []);
-
-	const HEIGHT_DEFAULT = 14;
-	let currentCharts = ['apple dashboard', 'oranges dashboard', 'banana dashboard', 'peanut dashboard'];
 
 	function constructLayout(totalItems) {
 		 let layoutParameters = {
@@ -111,14 +151,25 @@ function DisplayDashboard(props) {
 			layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
 			layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
 		} else {
-			for (let n = 0; n < totalItems; n++) {
-				layoutParameters.lg.push({w: 4, h: HEIGHT_DEFAULT, x: (n % 3)*4, y: HEIGHT_DEFAULT * Math.floor(n / 3), minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
-				layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: (n % 2)*6, y: HEIGHT_DEFAULT * Math.floor(n / 2), minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
-				layoutParameters.sm.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: HEIGHT_DEFAULT*n, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
-				layoutParameters.xs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: HEIGHT_DEFAULT*n, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
-				layoutParameters.xxs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: HEIGHT_DEFAULT*n, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+			console.debug('what ', defaultLayout)
+			if (defaultLayout) {
+				for (let n = 0; n < totalItems; n++) {
+					layoutParameters.lg.push({w: 4, h: HEIGHT_DEFAULT, x: (n % 3)*4, y: HEIGHT_DEFAULT * Math.floor(n / 3), minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+					layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: (n % 2)*6, y: HEIGHT_DEFAULT * Math.floor(n / 2), minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+					layoutParameters.sm.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: HEIGHT_DEFAULT*n, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+					layoutParameters.xs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: HEIGHT_DEFAULT*n, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+					layoutParameters.xxs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: HEIGHT_DEFAULT*n, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+				}
+			} else {
+				for (let n = 0; n < totalItems; n++) {
+					layoutParameters.lg.push({w: request.cache.graph.list[n].metadata.w, h: request.cache.graph.list[n].metadata.h, x: request.cache.graph.list[n].metadata.x, y: request.cache.graph.list[n].metadata.y, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+					layoutParameters.md.push({w: request.cache.graph.list[n].metadata.w, h: request.cache.graph.list[n].metadata.h, x: request.cache.graph.list[n].metadata.x, y: request.cache.graph.list[n].metadata.y, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+					layoutParameters.sm.push({w: request.cache.graph.list[n].metadata.w, h: request.cache.graph.list[n].metadata.h, x: request.cache.graph.list[n].metadata.x, y: request.cache.graph.list[n].metadata.y, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+					layoutParameters.xs.push({w: request.cache.graph.list[n].metadata.w, h: request.cache.graph.list[n].metadata.h, x: request.cache.graph.list[n].metadata.x, y: request.cache.graph.list[n].metadata.y, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+					layoutParameters.xxs.push({w: request.cache.graph.list[n].metadata.w, h: request.cache.graph.list[n].metadata.h, x: request.cache.graph.list[n].metadata.x, y: request.cache.graph.list[n].metadata.y, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
+				}
 			}
-			setLayoutGrid({...layoutParameters});
+			// setLayoutGrid({...layoutParameters});
 		}
 
 		setLayoutGrid({...layoutParameters});
@@ -127,9 +178,10 @@ function DisplayDashboard(props) {
 	function showAllCharts(doReset) {
 		let newvisiblecharts = [];
 		currentCharts = [];
-		request.cache.graph.list.data.forEach((chart, index) => {
+		request.cache.graph.list.forEach((chart, index) => {
 			newvisiblecharts.push(index);
 			currentCharts.push(chart.title);
+
 		});
 
 		setVisibleCharts(newvisiblecharts);
@@ -138,6 +190,7 @@ function DisplayDashboard(props) {
 		} else {
 			setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentCharts});
 		}
+
 	}
 
 	function onEditDashboardClick() {
@@ -156,7 +209,8 @@ function DisplayDashboard(props) {
 	function onEditNameChange(name) {
 		request.dashboard.update(props.dashboardID, ['name'], [name], function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				setDashboardState({name: name, description: presentDashboard.description, chartNames: currentCharts});
+				// setDashboardState({name: name, description: presentDashboard.description, chartNames: currentCharts});
+				setDashboardState({name: name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
 			} else {
 				// todo:
 			}
@@ -166,7 +220,8 @@ function DisplayDashboard(props) {
 	function onEditDescriptionChange(description) {
 		request.dashboard.update(props.dashboardID, ['description'], [description], function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				setDashboardState({name: presentDashboard.name, description: description, chartNames: currentCharts});
+				// setDashboardState({name: presentDashboard.name, description: description, chartNames: currentCharts});
+				setDashboardState({name: presentDashboard.name, description: description, chartNames: presentDashboard.chartNames});
 			} else {
 				// todo:
 			}
@@ -179,8 +234,28 @@ function DisplayDashboard(props) {
 		(async function() {
 			for (let r = 0; r < presentDashboard.chartNames.length; r++) {
 				await new Promise(function(resolve){
-					request.graph.update(props.dashboardID, request.cache.graph.list.data[r].id, ['title'], [presentDashboard.chartNames[r]], function(result) {
+					let fields = [];
+					let fielddata = [];
+					fielddata.push(presentDashboard.chartNames[r]);
+					fields.push('title');
+					if (currentLayout != null) {
+						fields.push('metadata');
+						fielddata.push({
+							// lg: {
+							w: currentLayout[r].w,
+							h: currentLayout[r].h,
+							x: currentLayout[r].x,
+							y: currentLayout[r].y
+							// },
+							// md: [],
+							// sm: [],
+							// xs: [],
+							// xxs: []
+						});
+					}
+					request.graph.update(props.dashboardID, request.cache.graph.list[r].id, fields, fielddata, function(result) {
 						// todo: handle error
+						resolve(true);
 					});
 				} );
 			}
@@ -192,13 +267,34 @@ function DisplayDashboard(props) {
 	}
 
 	function onSearchPressEnter(e) {
-		if (e.target.value === '' && searchString !== '') {
+		onSearchClick(e.target.value);
+		// if (e.target.value === '' && searchString !== '') {
+		// 	showAllCharts(false);
+		// 	constructLayout(request.cache.graph.list.length);
+		// } else {
+		// 	let newvisiblecharts = [];
+		// 	request.cache.graph.list.forEach((chart, index) => {
+		// 		if (chart.title.match(new RegExp(e.target.value, 'i'))) {
+		//
+		// 			newvisiblecharts.push(index);
+		// 		}
+		// 	});
+		//
+		// 	setVisibleCharts(newvisiblecharts);
+		//
+		// 	constructLayout(newvisiblecharts.length);
+		// }
+		// setSearchString(e.target.value);
+	}
+
+	function onSearchClick(value) {
+		if (value === '' && searchString !== '') {
 			showAllCharts(false);
-			constructLayout(request.cache.graph.list.data.length);
+			constructLayout(request.cache.graph.list.length);
 		} else {
 			let newvisiblecharts = [];
-			request.cache.graph.list.data.forEach((chart, index) => {
-				if (chart.title.match(new RegExp(e.target.value, 'i'))) {
+			request.cache.graph.list.forEach((chart, index) => {
+				if (chart.title.match(new RegExp(value, 'i'))) {
 
 					newvisiblecharts.push(index);
 				}
@@ -208,7 +304,7 @@ function DisplayDashboard(props) {
 
 			constructLayout(newvisiblecharts.length);
 		}
-		setSearchString(e.target.value);
+		setSearchString(value);
 	}
 
 	function onChartDelete(chartid) {
@@ -222,7 +318,7 @@ function DisplayDashboard(props) {
 
 				resetDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
 
-				constructLayout(request.cache.graph.list.data.length);
+				constructLayout(request.cache.graph.list.length);
 
 			} else {
 				message.error('Failed to remove chart!', 2.5);
@@ -243,7 +339,10 @@ function DisplayDashboard(props) {
 					}
 				});
 
+				console.debug('this is currentnames:', currentnames);
+
 				setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentnames});
+				// setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
 
 				setVisibleCharts(visibleCharts);
 			} else {
@@ -252,18 +351,24 @@ function DisplayDashboard(props) {
 		});
 	}
 
+	function onLayoutChange(layout) {
+		console.debug('layout changed', layout)
+		console.debug('what is layoutgird', layoutGrid)
+		currentLayout = layout;
+	}
+
 	return (
 		<div className='content--padding'>
 			<div style={{marginBottom: '20px'}}>
 
 				<Grid container spacing={3}>
-					<Grid item xs={8}>
+					<Grid item xs={12} md={8}>
 						<Typography.Title level={3} editable={editMode && {onChange: onEditNameChange}}>
 							{presentDashboard.name}
 						</Typography.Title>
 						<Typography.Paragraph editable={editMode && {onChange: onEditDescriptionChange}}>{presentDashboard.description}</Typography.Paragraph>
 					</Grid>
-					<Grid item xs={4} style={{textAlign: 'right'}}>
+					<Grid item xs={12} md={4} style={{textAlign: 'right', marginBottom: '25px'}}>
 
 						<Space size={9}>
 						{hasCharts &&
@@ -308,15 +413,16 @@ function DisplayDashboard(props) {
 					<React.Fragment>
 
 						<Grid container spacing={3}>
-							<Grid item xs={8}>
+							<Grid item xs={6} md={8}>
 								{searchString !== '' && <span>Showing all charts named <span style={{fontWeight: 'bold'}}>"{searchString}"</span></span>}
 							</Grid>
-							<Grid item xs={4} style={{textAlign: 'right'}}>
+							<Grid item xs={6} md={4} style={{textAlign: 'right'}}>
 								<div style={{marginBottom: '20px', textAlign: 'right'}}>
 									<Input.Search
 										placeholder="Search Charts"
 										style={{ width: 200 }}
 										onPressEnter={onSearchPressEnter}
+										onSearch={value => onSearchClick(value)}
 									/>
 								</div>
 							</Grid>
@@ -331,6 +437,7 @@ function DisplayDashboard(props) {
 							margin={[20, 20]}
 							isDraggable={editMode}
 							isResizable={editMode}
+							onLayoutChange={onLayoutChange}
 						>
 
 							{(() => {
@@ -342,13 +449,13 @@ function DisplayDashboard(props) {
 										<div>
 											<Grid container spacing={3}>
 												<Grid item xs={11}>
-													<Typography.Title level={4} editable={editMode && {onChange: ev => {onChartTitleEdit(ev, request.cache.graph.list.data[v].id, v);}}} >{presentDashboard.chartNames[v]}</Typography.Title>
+													<Typography.Title level={4} editable={editMode && {onChange: ev => {onChartTitleEdit(ev, request.cache.graph.list[v].id, v);}}} >{presentDashboard.chartNames[v]}</Typography.Title>
 												</Grid>
 												<Grid item xs={1} style={{textAlign: 'right', fontSize: '1.2em'}}>
 													{editMode &&
 															<Popconfirm
 																title="Are you sure you would like to delete this chart?"
-																onConfirm={() => onChartDelete(request.cache.graph.list.data[v].id)}
+																onConfirm={() => onChartDelete(request.cache.graph.list[v].id)}
 																okText="Yes"
 																cancelText="No"
 															>
@@ -358,7 +465,7 @@ function DisplayDashboard(props) {
 												</Grid>
 											</Grid>
 										</div>
-										<ReactEcharts option={request.cache.graph.list.data[v].options} style={{height: '300px', width: '100%'}} />
+										<ReactEcharts option={request.cache.graph.list[v].options} style={{height: '300px', width: '100%'}} />
 									</div>;
 								});
 							})()}

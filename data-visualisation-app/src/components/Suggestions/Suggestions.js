@@ -1,10 +1,28 @@
+/**
+ *   @file Suggestions.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   1/7/2020    Byron Tominson      Original
+ *
+ *   Functional Requirements:
+ *   Displays a list of generated chart suggestions.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React, {useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
 import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined} from '@ant-design/icons';
 import {Typography, Menu, Dropdown, Button, message, Form, Checkbox} from 'antd';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import FilterDialog from '../FilterDialog';
 
 import './Suggestions.scss';
@@ -37,14 +55,36 @@ function IGALoading() {
  */
 function Suggestions(props) {
 
-    const [isReady, setIsReady] = useState(false);
+    const [loadedFirst, setLoadedFirst] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
     const [dashboardSelection, setDashboardSelection] = useState([[true, false, true]]);
     const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
 
     useEffect(() => {
+//Math.floor(Math.random() * 10)
 
-        request.suggestions.graphs('https://services.odata.org/V2/Northwind/Northwind.svc', Math.floor(Math.random() * 10), function(result) {
+        let shouldcontinue = true;
+        (async function () {
+            for (let r = 0; shouldcontinue && r < 3; r++) {
+                await new Promise(function (resolve) {
+                    request.suggestions.graph('https://services.odata.org/V2/Northwind/Northwind.svc', function (result) {
+                        if (result === constants.RESPONSE_CODES.SUCCESS) {
+                            resolve(request.cache.suggestions.graph.current);
+                        } else {
+                            shouldcontinue = false;
+                        }
+                    });
+                }).then(function (fetchedGraph) {
+                    request.cache.suggestions.graph.list.push(fetchedGraph);
+                });
+            }
+        })().then(function () {
+
+        });
+
+
+        request.suggestions.graphs('https://services.odata.org/V2/Northwind/Northwind.svc', 2, function(result) {
             if (result === constants.RESPONSE_CODES.SUCCESS) {
 
                 let populate = () => {
@@ -62,7 +102,7 @@ function Suggestions(props) {
 
                     setCurrentCharts(newcurrentcharts);
 
-                    setIsReady(true);
+                    setLoadedFirst(true);
                 };
 
 
@@ -216,7 +256,7 @@ function Suggestions(props) {
         );
     }
 
-    return (isReady ?
+    return (loadedFirst ?
                 <div className={classes.root}>
                     <div id = 'filterDiv'>
                         <Button id = 'filterButton' icon={<FilterOutlined />} onClick={() => setFilterState(true)}>Filter</Button>
@@ -228,6 +268,8 @@ function Suggestions(props) {
                                 <Suggestion id={index} chartData={achart}/>
                             </Grid>;
                         })}
+
+                        {loading && <Grid item xs={12} md={6} lg={3}>loading item</Grid>}
 
                     </Grid>
                     <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form" >More like this</Button>

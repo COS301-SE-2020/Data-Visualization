@@ -403,7 +403,7 @@ function LoginPopup(props) {
   */
   const onFinish = values => {
     setConfirmLoading(true);
-    request.user.login(values.email, values.password, function(result) {
+    request.user.login(values.email, values.password, values.remember, function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
           /**

@@ -93,7 +93,8 @@ const drawerWidth = 240;
 const globalMaterialUITheme = createMuiTheme({
 	typography: {
 		'fontFamily': 'Segoe UI'
-	}, palette: {
+	},
+	palette: {
 
 		primary: {
 			main: '#ff4400',
@@ -181,8 +182,6 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-
-
 /**
   * @param props
   * Core component 
@@ -226,12 +225,18 @@ function App(props) {
 	const [dashboardIndex, setDashboardIndex] = useState('');
 
 	const handlePageType = (t) => {
+		if (pageType !== 'dashboards' && t === 'dashboards') {
+			setDashboardIndex('');
+		}
+
+		console.debug('t', t, 'pageType',pageType, 'showDashboard', showDashboard)
 		setPageType(t);
 		return (
 			mobileOpen === true ? handleDrawerToggle() : null
 		);
 	};
 	
+	request.user.rememberLogin();
 
 	/**
   	  * back function 
@@ -324,6 +329,7 @@ function App(props) {
 		page = <About />;
 	}
 	if(pageType === 'dashboards'){
+		console.debug('dashboardIndex', dashboardIndex, 'showDashboard', showDashboard)
 		page = <Dashboard 
 			dashboardStage = {dashboardStage} 
 			setDashboardStage = {setDashboardStage} 
@@ -337,11 +343,6 @@ function App(props) {
 		/>;	
 	}
 
-
-	// request.user.apikey = 'bAjZ4SctoWGDYQsNYCNq';
-	// request.user.isLoggedIn = true;
-
-	
 	/**
   	  * drawer (Material UI)
     */
@@ -444,7 +445,7 @@ function App(props) {
 							edge="start"
 							onClick={handleDrawerToggle}
 							className={classes.menuButton}
-							style={{ color: 'red' }}
+							style={{ color: 'white' }}
 
 						>
 							<MenuIcon />

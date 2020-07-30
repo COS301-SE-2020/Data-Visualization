@@ -390,7 +390,7 @@ function LoginDialog(props) {
   */   
   const onFinish = values => {
     setConfirmLoading(true);
-    request.user.login(values.email, values.password, function(result) {
+    request.user.login(values.email, values.password, values.remember, function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
           /**
@@ -400,6 +400,7 @@ function LoginDialog(props) {
           dispatch({ isLoggedIn: true });
           setVisible(false);
           props.handlePageType('home');
+          props.setExploreStage('dataConnection');
           loginSuccessNotification('bottomRight');
       }
       else{
