@@ -58,82 +58,91 @@ function Suggestions(props) {
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
-    const [dashboardSelection, setDashboardSelection] = useState([[true, false, true]]);
+    const [dashboardSelection, setDashboardSelection] = useState([]);
     const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
 
     useEffect(() => {
-//Math.floor(Math.random() * 10)
+
+        let newDashboardSelection, newCurrentCharts;
+
+        if (request.user.isLoggedIn) {
+            request.dashboard.list(function(result) {
+                let newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
+                    return dashboarditem.name;
+                });
+                setDashboardList(newDashbhoardList);
+            });
+        }
 
         let shouldcontinue = true;
         (async function () {
-            for (let r = 0; shouldcontinue && r < 3; r++) {
+            for (let r = 0; shouldcontinue && r < 4; r++) {
                 await new Promise(function (resolve) {
                     request.suggestions.graph('https://services.odata.org/V2/Northwind/Northwind.svc', function (result) {
                         if (result === constants.RESPONSE_CODES.SUCCESS) {
                             resolve(request.cache.suggestions.graph.current);
                         } else {
-                            shouldcontinue = false;
+                            // todo: handle network error
                         }
                     });
                 }).then(function (fetchedGraph) {
                     request.cache.suggestions.graph.list.push(fetchedGraph);
+                    /**
+                     *   Add newly an empty list of dashboard owners for the new chart.
+                     */
+
+                    if (request.user.isLoggedIn) {
+                        if (dashboardSelection.length === 0) {
+                            newDashboardSelection = [];
+                            for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
+                                newDashboardSelection.push(dashboardList.map(() => {
+                                    return false;
+                                }));
+                            }
+                        } else {
+                            newDashboardSelection.push(dashboardList.map(() => {
+                                return false;
+                            }));
+                        }
+                    }
+
+                    setDashboardSelection(newDashboardSelection);
+                    /**
+                     *   Add newly fetched chart to list.
+                     */
+                    if (typeof newCurrentCharts == 'undefined') {
+                        newCurrentCharts = request.cache.suggestions.graph.list.map((options, index) => {
+                            let newchart = {
+                                options: null
+                            };
+                            newchart.options = JSON.parse(JSON.stringify(options));
+                            if (newchart.options.title && newchart.options.title.text) {
+                                newchart.title = newchart.options.title.text;
+                                newchart.options.title.text = '';
+                            }
+                            return newchart;
+                        });
+                    } else {
+                        newCurrentCharts.push({
+                            options: null
+                        });
+                        
+                        newCurrentCharts[newCurrentCharts.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
+                        if (fetchedGraph.title && fetchedGraph.title.text) {
+                            newCurrentCharts[newCurrentCharts.length-1].title = fetchedGraph.title.text;
+                            newCurrentCharts[newCurrentCharts.length-1].options.title.text = '';
+                        }
+                    }
+
+                    setCurrentCharts(newCurrentCharts);
+
+                    if (!loadedFirst)
+                        setLoadedFirst(true);
+
                 });
             }
         })().then(function () {
-
-        });
-
-
-        request.suggestions.graphs('https://services.odata.org/V2/Northwind/Northwind.svc', 2, function(result) {
-            if (result === constants.RESPONSE_CODES.SUCCESS) {
-
-                let populate = () => {
-                    let newcurrentcharts = request.cache.suggestions.graph.list.map((options, index) => {
-                        let newchart = {
-                            options: null
-                        };
-                        newchart.options = JSON.parse(JSON.stringify(options));
-                        if (newchart.options.title && newchart.options.title.text) {
-                            newchart.title = newchart.options.title.text;
-                            newchart.options.title.text = '';
-                        }
-                        return newchart;
-                    });
-
-                    setCurrentCharts(newcurrentcharts);
-
-                    setLoadedFirst(true);
-                };
-
-
-                // request.user.apikey = 'bAjZ4SctoWGDYQsNYCNq';
-                // request.user.isLoggedIn = true;
-                if (request.user.isLoggedIn) {
-
-                    request.dashboard.list(function(result) {
-
-                        let newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
-                            return dashboarditem.name;
-                        });
-
-                        setDashboardList(newDashbhoardList);
-
-                        let newdashboardselection = []
-                        for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
-                            newdashboardselection.push(dashboardList.map(() => {return false;}));
-                        }
-                        setDashboardSelection(newdashboardselection);
-
-                        populate();
-                    });
-
-
-                } else {
-                    populate();
-                }
-            } else {
-                // todo: handle IGA error
-            }
+            setLoading(false);
         });
 
     }, []);
@@ -256,7 +265,9 @@ function Suggestions(props) {
         );
     }
 
-    return (loadedFirst ?
+
+    return (
+        loadedFirst ?
                 <div className={classes.root}>
                     <div id = 'filterDiv'>
                         <Button id = 'filterButton' icon={<FilterOutlined />} onClick={() => setFilterState(true)}>Filter</Button>
@@ -269,7 +280,13 @@ function Suggestions(props) {
                             </Grid>;
                         })}
 
-                        {loading && <Grid item xs={12} md={6} lg={3}>loading item</Grid>}
+                        {loading && <Grid item xs={12} md={6} lg={3}>
+                            <div id='suggestion__loading--container'>
+                                <div id='suggestion__loading--loader'>
+                                    {constants.LOADER}
+                                </div>
+                            </div>
+                        </Grid>}
 
                     </Grid>
                     <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form" >More like this</Button>

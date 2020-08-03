@@ -228,8 +228,6 @@ function App(props) {
 		if (pageType !== 'dashboards' && t === 'dashboards') {
 			setDashboardIndex('');
 		}
-
-		console.debug('t', t, 'pageType',pageType, 'showDashboard', showDashboard)
 		setPageType(t);
 		return (
 			mobileOpen === true ? handleDrawerToggle() : null
@@ -329,7 +327,6 @@ function App(props) {
 		page = <About />;
 	}
 	if(pageType === 'dashboards'){
-		console.debug('dashboardIndex', dashboardIndex, 'showDashboard', showDashboard)
 		page = <Dashboard 
 			dashboardStage = {dashboardStage} 
 			setDashboardStage = {setDashboardStage} 

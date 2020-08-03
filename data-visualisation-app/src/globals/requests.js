@@ -548,7 +548,7 @@ const request = {
 		dashboard: {
 			list: {
 				timestamp: null,
-				data: null,
+				data: null
 			},
 		},
 		graph: {
