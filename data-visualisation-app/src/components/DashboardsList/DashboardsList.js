@@ -1,5 +1,5 @@
 /**
- *   @file Dashboard.js
+ *   @file Dashboards.js
  *   Project: Data Visualisation Generator
  *   Copyright: Open Source
  *   Organisation: Doofenshmirtz Evil Incorporated
@@ -17,7 +17,7 @@
 import React, {useEffect, useState} from 'react';
 import '../../globals/globals.scss';
 import './DashboardsList.scss';
-import {Typography, message} from 'antd';
+import {Typography} from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 

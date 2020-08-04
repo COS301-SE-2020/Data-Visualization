@@ -41,7 +41,7 @@ function AddDashboard(props) {
 		request.dashboard.add(dashBoardName, dashBoardDescription, function (result) {
 			setIsLoading(false);
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				message.success('Dashboard was successfully created.');
+				message.success('Dashboards was successfully created.');
 				props.setDetails(dashBoardName, dashBoardDescription);
 				props.home();
 			} else {

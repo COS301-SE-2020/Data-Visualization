@@ -1,23 +1,32 @@
-import React, { useState, useEffect, Fragment } from 'react';
+/**
+ *   @file DataConnection.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   8/7/2020   Byron Tominson      Original
+ *
+ *   Functional Description:
+ *   Displays data connections to the user.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
+import React, { useState, useEffect } from 'react';
 import update from 'react-addons-update';
 import './Dashboards.scss';
 import request from '../../globals/requests';
-
-import * as Constants from '../../globals/constants';
 import DashboardsList from '../../components/DashboardsList';
 import Dashboard from '../../components/Dashboard';
 import AddDashboard from '../../components/AddDashboard/AddDashboard';
 import LoginPopup from '../../components/LoginPopup/LoginPopup';
-import {Layout, Menu} from 'antd';
-
-
 
 function Dashboards(props) {
-
-
-
-
-	
 	const [dashboardName, setDashboardName] = useState('');
 	const [dashboardDescription, setDashboardDescription] = useState('');
 	const [DashboardList, setDashboardList] = useState([]);

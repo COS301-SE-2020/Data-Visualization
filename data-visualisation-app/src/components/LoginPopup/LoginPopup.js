@@ -23,9 +23,9 @@
 /**
   * Imports
 */
-import React, { Fragment, useContext } from 'react';
+import React from 'react';
 import {useState} from 'react';
-import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
+import {Button, Modal, Input, Tooltip, AutoComplete, Select} from 'antd';
 import {Form, Checkbox, Spin} from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 

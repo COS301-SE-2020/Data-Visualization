@@ -24,19 +24,11 @@
   * Imports
 */
 import React from 'react';
-import { List, Avatar, Button, Skeleton, Typography } from 'antd';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import reqwest from 'reqwest';
+import { List, Avatar, Button, Skeleton } from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-
 import './DataConnection.scss';
 import AddConnectionDialog from '../AddConnectionDialog';
-import {useGlobalState} from '../../globals/Store';
-import update from 'react-addons-update';
-import { ListAlt } from 'styled-icons/material';
-
-
 
 /**
   * takes no arguments and returns a random string of length 10.

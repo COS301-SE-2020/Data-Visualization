@@ -1,5 +1,5 @@
 /**
- *   @file Dashboard.js
+ *   @file Dashboards.js
  *   Project: Data Visualisation Generator
  *   Copyright: Open Source
  *   Organisation: Doofenshmirtz Evil Incorporated
@@ -9,6 +9,7 @@
  *   -------------------------------------------------------
  *   1/7/2020    Byron Tominson      Original
  *   19/7/2020   Gian Uys            Added edit dashboard functionality.
+ *   1/8/2020	 Gian Uys			 Added undo/redo dashboard functionality.
  *   1/8/2020	 Gian Uys			 Added save dashboard functionality.
  *
  *   Functional Description:
@@ -20,7 +21,7 @@
  *   Constraints: None
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import ReactEcharts from 'echarts-for-react';
 import {Typography, Button, Popconfirm, message, Space} from 'antd';
@@ -29,7 +30,6 @@ import { Empty, Input } from 'antd';
 import Grid from '@material-ui/core/Grid';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-
 import useUndo from 'use-undo';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -44,13 +44,13 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 function Dashboard(props) {
 
 	const [editMode, setEditMode] = useState(false);
-	const [dashboardName, setDashboardName] = useState('dashboardname');
-	const [dashboardDescription, setDashboardDescription] = useState('dashboarddescription');
 	const [hasCharts, setHasCharts] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [visibleCharts, setVisibleCharts] = useState([]);
 	const [layoutGrid, setLayoutGrid] = useState({});
 	const [searchString, setSearchString] = useState('');
+	const defaultLayout = useRef(true);
+	const currentLayout = useRef(null);
 
 	const [
 		dashboardState,
@@ -66,27 +66,22 @@ function Dashboard(props) {
 
 	const { present: presentDashboard } = dashboardState;
 	const HEIGHT_DEFAULT = 14;
-	let defaultLayout = true;
 	let currentCharts = [];
-	let currentLayout = null;
 
 	useEffect(() => {
 		request.graph.list(props.dashboardID, function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
 				if (request.cache.graph.list !== null && request.cache.graph.list.length > 0) {
 
-					console.debug('layout ', request.cache.graph.list)
-
 					let newChartIndex = -1, nonemptycount = 0;
 					let bestX = Number.MAX_VALUE, bestY = Number.MIN_VALUE;
 					for (let c = 0; c < request.cache.graph.list.length; c++) {
 						if (Object.keys(request.cache.graph.list[c].metadata).length === 0 && request.cache.graph.list[c].metadata.constructor === Object) {
-							console.debug('this one is empty', request.cache.graph.list[c])
 							if (newChartIndex === -1) {
 								newChartIndex = c;
-								defaultLayout = false;
+								defaultLayout.current = false;
 							} else {
-								defaultLayout = true;
+								defaultLayout.current = true;
 								break;
 							}
 						} else {
@@ -98,9 +93,7 @@ function Dashboard(props) {
 						}
 					}
 
-					console.debug('bestX' , bestX, 'bestY', bestY)
-
-					defaultLayout = defaultLayout && nonemptycount !== request.cache.graph.list.length;
+					defaultLayout.current = defaultLayout.current && nonemptycount !== request.cache.graph.list.length;
 
 					if (!defaultLayout && newChartIndex > -1) {
 						request.cache.graph.list[newChartIndex].metadata.x = bestX;
@@ -123,7 +116,6 @@ function Dashboard(props) {
 				}
 			}
 		});
-
 	}, []);
 
 	function constructLayout(totalItems) {
@@ -156,7 +148,6 @@ function Dashboard(props) {
 			layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
 			layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
 		} else {
-			console.debug('what ', defaultLayout)
 			if (defaultLayout) {
 				for (let n = 0; n < totalItems; n++) {
 					layoutParameters.lg.push({w: 4, h: HEIGHT_DEFAULT, x: (n % 3)*4, y: HEIGHT_DEFAULT * Math.floor(n / 3), minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
@@ -205,7 +196,7 @@ function Dashboard(props) {
 	function onDeleteDashboardClick() {
 		request.dashboard.delete(props.dashboardID, function(result) {
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				message.success('Dashboard was successfully deleted!');
+				message.success('Dashboards was successfully deleted!');
 				props.backFunc();
 			}
 		});
@@ -243,14 +234,14 @@ function Dashboard(props) {
 					let fielddata = [];
 					fielddata.push(presentDashboard.chartNames[r]);
 					fields.push('title');
-					if (currentLayout != null) {
+					if (currentLayout.current != null) {
 						fields.push('metadata');
 						fielddata.push({
 							// lg: {
-							w: currentLayout[r].w,
-							h: currentLayout[r].h,
-							x: currentLayout[r].x,
-							y: currentLayout[r].y
+							w: currentLayout.current[r].w,
+							h: currentLayout.current[r].h,
+							x: currentLayout.current[r].x,
+							y: currentLayout.current[r].y
 							// },
 							// md: [],
 							// sm: [],
@@ -344,8 +335,6 @@ function Dashboard(props) {
 					}
 				});
 
-				console.debug('this is currentnames:', currentnames);
-
 				setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentnames});
 				// setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
 
@@ -357,9 +346,7 @@ function Dashboard(props) {
 	}
 
 	function onLayoutChange(layout) {
-		console.debug('layout changed', layout)
-		console.debug('what is layoutgird', layoutGrid)
-		currentLayout = layout;
+		currentLayout.current = layout;
 	}
 
 	return (
@@ -378,7 +365,7 @@ function Dashboard(props) {
 						<Space size={9}>
 						{hasCharts &&
 						<Button ghost={!editMode} onClick={(editMode ? onSaveDashboardClick : onEditDashboardClick)}>
-							 {(editMode ? 'Save Dashboard' : 'Edit Dashboard')}
+							 {(editMode ? 'Save Dashboards' : 'Edit Dashboards')}
 						</Button>}
 						{editMode &&
 							<React.Fragment>
@@ -447,7 +434,6 @@ function Dashboard(props) {
 
 							{(() => {
 								let layoutkey = -1;
-								let booba = constants.ICONS.CLOSE;
 								return visibleCharts.map(v => {
 									layoutkey++;
 									return <div key={layoutkey} className='panel__shadow panel'>

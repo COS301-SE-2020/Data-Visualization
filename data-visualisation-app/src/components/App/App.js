@@ -23,7 +23,7 @@
 /**
  *   imports
 */
-import React, { Fragment, useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, {useRef, useState, useLayoutEffect, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -46,19 +46,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Button } from 'antd';
 import {Home as HomeIcon} from '@styled-icons/feather';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import LockIcon from '@material-ui/icons/Lock';
-import InputIcon from '@material-ui/icons/Input';
 import InfoIcon from '@material-ui/icons/Info';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import AddIcon from '@material-ui/icons/Add';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import { Database } from '@styled-icons/feather';
-import Suggestions from '../Suggestions';
-
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './App.scss';
@@ -71,11 +59,10 @@ import request from '../../globals/requests';
 /**
  *   pages import
 */
-import Dashboards from '../../pages/Dashboard/Dashboards';
+import Dashboards from '../../pages/Dashboards/Dashboards';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
 import LoginDialog from '../../pages/LoginDialog/LoginDialog';
-import LoginPopup from '../LoginPopup';
 import Home from '../../pages/Home';
 import Explore from '../../pages/Explore';
 import { MuiThemeProvider } from '@material-ui/core';
@@ -207,6 +194,10 @@ function App(props) {
 		}
 	}, []);
 
+	useEffect(() => {
+		request.user.rememberLogin();
+	}, []);
+
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
@@ -233,8 +224,6 @@ function App(props) {
 			mobileOpen === true ? handleDrawerToggle() : null
 		);
 	};
-	
-	request.user.rememberLogin();
 
 	/**
   	  * back function 
@@ -264,7 +253,7 @@ function App(props) {
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else{
-		backButton = <Button id = 'backButton'  type="primary" disabled = 'true' icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+		backButton = <Button id = 'backButton'  type="primary" disabled = {true} icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 
 
