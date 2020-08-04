@@ -181,9 +181,9 @@ class BackgroundDots extends Component {
 }
 
 window.onkeypress = function(event) {
-    if (event.key == '1') {
-        console.log('mouseX ' + UPDATEX + ' mouseY ' + UPDATEY + ' mouseZ ' + UPDATEZ);
-    }
+    // if (event.key == '1') {
+    //     console.debug('mouseX ', UPDATEX, ' mouseY ', ' mouseZ ', UPDATEZ);
+    // }
 };
 
 export default BackgroundDots;

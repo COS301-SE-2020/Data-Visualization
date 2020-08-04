@@ -126,7 +126,7 @@ function Suggestions(props) {
                         newCurrentCharts.push({
                             options: null
                         });
-                        
+
                         newCurrentCharts[newCurrentCharts.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
                         if (fetchedGraph.title && fetchedGraph.title.text) {
                             newCurrentCharts[newCurrentCharts.length-1].title = fetchedGraph.title.text;

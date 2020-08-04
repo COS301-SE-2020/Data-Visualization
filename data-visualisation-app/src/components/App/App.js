@@ -71,7 +71,7 @@ import request from '../../globals/requests';
 /**
  *   pages import
 */
-import Dashboard from '../../pages/Dashboard';
+import Dashboards from '../../pages/Dashboard/Dashboards';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
 import LoginDialog from '../../pages/LoginDialog/LoginDialog';
@@ -327,7 +327,7 @@ function App(props) {
 		page = <About />;
 	}
 	if(pageType === 'dashboards'){
-		page = <Dashboard 
+		page = <Dashboards
 			dashboardStage = {dashboardStage} 
 			setDashboardStage = {setDashboardStage} 
 			dashboardName = {dashboardName}

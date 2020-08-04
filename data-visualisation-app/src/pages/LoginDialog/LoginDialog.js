@@ -27,7 +27,6 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-import API from '../../helpers/apiRequests';
 
 import {useGlobalState} from '../../globals/Store';
 import './LoginDialog.scss';

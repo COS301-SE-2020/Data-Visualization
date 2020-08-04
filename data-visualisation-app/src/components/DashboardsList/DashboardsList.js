@@ -1,6 +1,22 @@
+/**
+ *   @file Dashboard.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   1/7/2020    Gian Uys      Original
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React, {useEffect, useState} from 'react';
 import '../../globals/globals.scss';
-import './HomePage.scss';
+import './DashboardsList.scss';
 import {Typography, message} from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
@@ -63,11 +79,11 @@ function HomePanelButton(props) {
 }
 
 /**
- *   @class HomePage
+ *   @class DashboardsList
  *   @brief Component to display the the list of dashboards.
  *   @details Displays every dashboard name and description in a block grid.
  */
-function HomePage(props) {
+function DashboardsList(props) {
 
     const [isReady, setIsReady] = useState(false);
     const [dashboardList, setDashboardList] = useState([]);
@@ -142,4 +158,4 @@ function HomePage(props) {
     );
 }
 
-export default HomePage;
+export default DashboardsList;

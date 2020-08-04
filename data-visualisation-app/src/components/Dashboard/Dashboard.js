@@ -1,5 +1,5 @@
 /**
- *   @file DisplayDashboard.js
+ *   @file Dashboard.js
  *   Project: Data Visualisation Generator
  *   Copyright: Open Source
  *   Organisation: Doofenshmirtz Evil Incorporated
@@ -9,6 +9,11 @@
  *   -------------------------------------------------------
  *   1/7/2020    Byron Tominson      Original
  *   19/7/2020   Gian Uys            Added edit dashboard functionality.
+ *   1/8/2020	 Gian Uys			 Added save dashboard functionality.
+ *
+ *   Functional Description:
+ *   Displays all charts within the dashboard along with the dashboard name and description. This component
+ *   also allows the user to edit the dashboard.
  *
  *   Error Messages: "Error"
  *   Assumptions: None
@@ -19,7 +24,7 @@ import React, {useEffect, useState} from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import ReactEcharts from 'echarts-for-react';
 import {Typography, Button, Popconfirm, message, Space} from 'antd';
-import './DisplayDashboard.scss';
+import './Dashboard.scss';
 import { Empty, Input } from 'antd';
 import Grid from '@material-ui/core/Grid';
 import request from '../../globals/requests';
@@ -31,12 +36,12 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 
 /**
- *   @class DisplayDashboard
+ *   @class Dashboard
  *   @brief Component to display the selected dashboard.
  *   @details Displays all charts within the dashboard along with the dashboard name and description. This component
  *   		  also allows the user to edit the dashboard.
  */
-function DisplayDashboard(props) {
+function Dashboard(props) {
 
 	const [editMode, setEditMode] = useState(false);
 	const [dashboardName, setDashboardName] = useState('dashboardname');
@@ -482,7 +487,7 @@ function DisplayDashboard(props) {
 	);
 }
 
-export default DisplayDashboard;
+export default Dashboard;
 
 
 
