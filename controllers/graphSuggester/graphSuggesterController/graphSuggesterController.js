@@ -1,5 +1,5 @@
 /**
- * @file graphSuggesterController.js
+ * @file GraphSuggesterController.js
  * Project: Data Visualisation Generator
  * Copyright: Open Source
  * Organisation: Doofenshmirtz Evil Incorporated
@@ -24,7 +24,7 @@
  * Constraints: Input values must be passed to the suggester in JSON format when requesting suggestions.
  */
 const DOMParser = require('xmldom').DOMParser;
-const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI');
+const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI').getInstance();
 
 /**
  * This class handles all requests for graph suggestion generation.
@@ -32,11 +32,7 @@ const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI');
  * must be generated for so it can pass it to the graph suggester.
  * @author Marco Lombaard
  */
-class graphSuggesterController {
-	static constructor() {
-		this.suggester = new graphSuggesterAI();
-	}
-
+class GraphSuggesterController {
 	/**
 	 * This function passes the data that suggestions need to be generated for, to the graph
 	 * suggester in graphSuggesterAI.js.
@@ -44,7 +40,7 @@ class graphSuggesterController {
 	 * @returns the suggestions that were generated, in JSON format.
 	 */
 	static getSuggestions(jsonData) {
-		return this.suggester.getSuggestions(jsonData);
+		return graphSuggesterAI.getSuggestions(jsonData);
 	}
 
 	/**
@@ -53,7 +49,7 @@ class graphSuggesterController {
 	 * @param target the target graph.
 	 */
 	static changeFitnessTarget(target) {
-		this.suggester.changeFitnessTarget(target);
+		graphSuggesterAI.changeFitnessTarget(target);
 	}
 
 	/**
@@ -97,10 +93,10 @@ class graphSuggesterController {
 				associations[index][j] = links[j].attributes.getNamedItem('Name').value;
 			}
 		}
-		this.suggester.setMetadata(items, associations);
+		graphSuggesterAI.setMetadata(items, associations);
 
 		return { items, associations, sets };
 	}
 }
 
-module.exports = graphSuggesterController;
+module.exports = GraphSuggesterController;
