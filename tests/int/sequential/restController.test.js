@@ -42,23 +42,23 @@ const DASHBOARD_DESC = 'Dashboard Description';
 
 const DASHBOARD_NEW_NAME = 'New Dashboard Name';
 const DASHBOARD_NEW_DESC = 'New Dashboard Description';
-const DASHBOARD_FIELDS = [ 'name', 'description' ];
-const DASHBOARD_DATA = [ DASHBOARD_NEW_NAME, DASHBOARD_NEW_DESC ];
+const DASHBOARD_FIELDS = ['name', 'description'];
+const DASHBOARD_DATA = [DASHBOARD_NEW_NAME, DASHBOARD_NEW_DESC];
 
 const GRAPH_ID = 'slajkbfhsbajf';
 const GRAPH_TITLE = 'Graph Title';
-const GRAPH_OPTIONS = { data: [ 1, 2, 3, 4 ], x: 'dependent', y: 'independent' };
+const GRAPH_OPTIONS = { data: [1, 2, 3, 4], x: 'dependent', y: 'independent' };
 const GRAPH_META = { w: 100, h: 200, x: 10, y: 20 };
 
 const GRAPH_NEW_TITLE = 'New Graph Title';
-const GRAPH_NEW_OPTIONS = { data: [ 1, 2, 3 ], x: 'x-axis', y: 'y-axis' };
+const GRAPH_NEW_OPTIONS = { data: [1, 2, 3], x: 'x-axis', y: 'y-axis' };
 const GRAPH_NEW_META = { w: 150, h: 150, x: 20, y: 50 };
-const GRAPH_FIELDS = [ 'title', 'options', 'metadata' ];
-const GRAPH_DATA = [ GRAPH_NEW_TITLE, GRAPH_NEW_OPTIONS, GRAPH_NEW_META ];
+const GRAPH_FIELDS = ['title', 'options', 'metadata'];
+const GRAPH_DATA = [GRAPH_NEW_TITLE, GRAPH_NEW_OPTIONS, GRAPH_NEW_META];
 
 describe('Testing user management', () => {
 	beforeEach((done) => {
-		return Rest.unregisterUser(
+		return Rest.deregisterUser(
 			EMAIL,
 			PASSWORD,
 			() => done(),
@@ -67,7 +67,7 @@ describe('Testing user management', () => {
 	});
 
 	afterAll((done) => {
-		return Rest.unregisterUser(
+		return Rest.deregisterUser(
 			EMAIL,
 			PASSWORD,
 			() => done(),
@@ -143,7 +143,7 @@ describe('Testing with an existing user', () => {
 	});
 
 	afterAll((done) => {
-		return Rest.unregisterUser(
+		return Rest.deregisterUser(
 			EMAIL,
 			PASSWORD,
 			() => done(),
@@ -410,7 +410,7 @@ describe('Testing with an existing user', () => {
 });
 
 afterAll((done) => {
-	return Rest.unregisterUser(
+	return Rest.deregisterUser(
 		EMAIL,
 		PASSWORD,
 		() => {

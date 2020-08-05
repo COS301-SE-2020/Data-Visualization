@@ -43,16 +43,13 @@ router.post('/list', (req, res) => {
 router.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dataSourceID === undefined) {
-		error(res, { error: 'Data Source Id Undefined' }, 400);
 	} else if (req.body.dataSourceUrl === undefined) {
 		error(res, { error: 'Data Source url Undefined' }, 400);
 	} else {
 		Rest.addDataSource(
 			req.body.email,
-			req.body.dataSourceID,
 			req.body.dataSourceUrl,
-			() => res.status(200).json({ message: 'Successfully Added Data Source' }),
+			(data) => res.status(200).json({ message: 'Successfully Added Data Source', ...data }),
 			(err) => error(res, err)
 		);
 	}
@@ -61,8 +58,6 @@ router.post('/add', (req, res) => {
 router.post('/remove', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dataSourceID === undefined) {
-		error(res, { error: 'Data Source Id Undefined' }, 400);
 	} else {
 		Rest.removeDataSource(
 			req.body.email,

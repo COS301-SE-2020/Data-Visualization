@@ -120,10 +120,14 @@ class Database {
 		// if (!PRODUCTION) console.log('==> REGISTER: ' + email + ' |' + apikey);
 
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(`INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`)
+			Database.sendQuery(
+				`		
+			INSERT INTO Users (email,firstname,lastname,password,apikey)
+			VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}') RETURNING email,firstname,lastname,apikey;`
+			)
 				.then((response) => {
 					// if (!PRODUCTION) console.log('REGISTER RESPONSE');
-					resolve({ apikey });
+					resolve(response.rows[0]);
 				})
 				.catch((err) => {
 					// console.log(err);
@@ -132,7 +136,7 @@ class Database {
 		});
 	}
 
-	static async unregister(email, password) {
+	static async deregister(email, password) {
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
 				.then((result) => {
@@ -171,11 +175,11 @@ class Database {
 	 * @param sourceURL the data source url to add
 	 * @returns a promise
 	 */
-	static async addDataSource(email, sourceID, sourceURL) {
-		let query = `INSERT INTO datasource (id, email, sourceurl) VALUES ('${sourceID}','${email}','${sourceURL}');`;
+	static async addDataSource(email, sourceURL) {
+		let query = `INSERT INTO datasource (email, sourceurl) VALUES ('${email}','${sourceURL}') RETURNING *;`;
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
-				.then((result) => resolve(result.rows))
+				.then((result) => resolve(result.rows[0]))
 				.catch((result) => reject(result));
 		});
 	}
@@ -216,11 +220,14 @@ class Database {
 	 * @param desc the description of the dashbaord
 	 * @returns a promise
 	 */
-	static async addDashboard(email, dashboardID, name, desc) {
-		let query = `INSERT INTO Dashboard (id,Name,Description,email) VALUES ('${dashboardID}','${name}','${desc}','${email}');`;
+	static async addDashboard(email, name, desc) {
+		let query = `INSERT INTO Dashboard (Name,Description,email) VALUES ('${name}','${desc}','${email}') RETURNING *;`;
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
-				.then((result) => resolve(result.rows))
+				.then((result) => {
+					// console.log(result);
+					resolve(result.rows[0]);
+				})
 				.catch((result) => reject(result));
 		});
 	}
@@ -295,15 +302,15 @@ class Database {
 	 * @param metadata the metadata is a JSON object that stores the presentation data of the graph
 	 * @returns a promise
 	 */
-	static async addGraph(email, dashboardID, graphID, title, options, metadata) {
+	static async addGraph(email, dashboardID, title, options, metadata) {
 		options = JSON.stringify(options);
 		metadata = JSON.stringify(metadata);
-		let query = `INSERT INTO GRAPH (id, dashboardid, title, metadata, options)
-    SELECT '${graphID}', '${dashboardID}', '${title}', '${metadata}','${options}'
-    WHERE EXISTS (SELECT '${email}' FROM dashboard AS d WHERE (d.email = '${email}') AND (d.ID = '${dashboardID}'))`;
+		let query = `INSERT INTO GRAPH (dashboardid, title, metadata, options)
+    SELECT '${dashboardID}', '${title}', '${metadata}','${options}'
+    WHERE EXISTS (SELECT '${email}' FROM dashboard AS d WHERE (d.email = '${email}') AND (d.ID = '${dashboardID}'))  RETURNING *`;
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query)
-				.then((result) => resolve(result.rows))
+				.then((result) => resolve(result.rows[0]))
 				.catch((result) => reject(result));
 		});
 	}

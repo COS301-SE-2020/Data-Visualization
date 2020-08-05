@@ -44,8 +44,6 @@ router.post('/list', (req, res) => {
 router.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dashboardID === undefined) {
-		error(res, { error: 'Dashboard ID Undefined' }, 400);
 	} else if (req.body.description === undefined) {
 		error(res, { error: 'Dashboard Description Undefined' }, 400);
 	} else if (req.body.name === undefined) {
@@ -53,10 +51,9 @@ router.post('/add', (req, res) => {
 	} else {
 		Rest.addDashboard(
 			req.body.email,
-			req.body.dashboardID,
 			req.body.name,
 			req.body.description,
-			() => res.status(200).json({ message: 'Successfully Added Dashboard' }),
+			(data) => res.status(200).json({ message: 'Successfully Added Dashboard', ...data }),
 			(err) => error(res, err, 400)
 		);
 	}

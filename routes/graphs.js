@@ -70,7 +70,6 @@ router.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
 	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
-	else if (req.body.graphID === undefined) error(res, { error: 'GraphID Is Undefined' }, 400);
 	else if (req.body.title === undefined) error(res, { error: 'Title Is Undefined' }, 400);
 	else if (req.body.options === undefined) error(res, { error: 'Options Is Undefined' }, 400);
 	else if (req.body.metadata === undefined) error(res, { error: 'MetData Is Undefined' }, 400);
@@ -78,11 +77,10 @@ router.post('/add', (req, res) => {
 		Rest.addGraph(
 			req.body.email,
 			req.body.dashboardID,
-			req.body.graphID,
 			req.body.title,
 			req.body.options,
 			req.body.metadata,
-			() => res.status(200).json({ message: 'Successfully Added To Dashboard' }),
+			(data) => res.status(200).json({ message: 'Successfully Added To Dashboard', ...data }),
 			(err) => error(res, err)
 		);
 	}
