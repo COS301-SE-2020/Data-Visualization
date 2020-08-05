@@ -290,10 +290,9 @@ const request = {
 		 */
 		rememberLogin: (isLoggedInMutator) => {
 			request.user.setIsLoggedIn = isLoggedInMutator;
-			if (localStorage.getItem('apikey') !== null) {
+			if (localStorage.getItem('apikey') !== 'null') {
 				request.user.apikey = localStorage.getItem('apikey');
 				request.user.isLoggedIn = true;
-				return true;
 			}
 			return request.user.isLoggedIn;
 		},
@@ -370,7 +369,6 @@ const request = {
 						if (successfulResponse(res)) {
 							localStorage.setItem('apikey', null);
 							request.user.isLoggedIn = false;
-							console.debug('before', request.user.setIsLoggedIn)
 							request.user.setIsLoggedIn(false);
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						} else {
@@ -444,7 +442,6 @@ const request = {
 
 								//add to request.user.dataSources array
 								//request.user.dataSources = res.data;
-								request.user.dataSources.push(res.data);
 
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
