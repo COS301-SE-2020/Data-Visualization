@@ -183,6 +183,7 @@ function App(props) {
 
 	const targetRef = useRef();
 	const [dimensions, setDimensions] = useState({ width:0, height: 0 });
+    const [loginButton, setLoginButton] = useState(false);
 
 	useLayoutEffect(() => {
 		if (targetRef.current) {
@@ -195,7 +196,7 @@ function App(props) {
 	}, []);
 
 	useEffect(() => {
-		request.user.rememberLogin();
+		setLoginButton(request.user.rememberLogin(setLoginButton));
 	}, []);
 
 	const handleDrawerToggle = () => {
@@ -449,7 +450,8 @@ function App(props) {
 						} >
 
 						</Typography>
-						<LoginDialog 
+						<LoginDialog
+                            isLoggedIn={loginButton}
 							handlePageType ={handlePageType}
 							setDashboardIndex = {setDashboardIndex}
 							setDashboardStage = {setDashboardStage}
