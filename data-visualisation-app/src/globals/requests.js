@@ -288,13 +288,14 @@ const request = {
 	user: {
 		/** Log user back in if they specified to remember them.
 		 */
-		rememberLogin: () => {
+		rememberLogin: (isLoggedInMutator) => {
+			request.user.setIsLoggedIn = isLoggedInMutator;
 			if (localStorage.getItem('apikey') !== null) {
 				request.user.apikey = localStorage.getItem('apikey');
 				request.user.isLoggedIn = true;
 				return true;
 			}
-			return false;
+			return request.user.isLoggedIn;
 		},
 		/**
 		 *  Requests an existing user to be logged in.
@@ -313,6 +314,7 @@ const request = {
 								localStorage.setItem('apikey', res.data.apikey);
 							request.user.apikey = res.data.apikey;
 							request.user.isLoggedIn = true;
+							request.user.setIsLoggedIn(true);
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						} else {
 							callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -368,6 +370,8 @@ const request = {
 						if (successfulResponse(res)) {
 							localStorage.setItem('apikey', null);
 							request.user.isLoggedIn = false;
+							console.debug('before', request.user.setIsLoggedIn)
+							request.user.setIsLoggedIn(false);
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						} else {
 							callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -382,6 +386,7 @@ const request = {
 		},
 		apikey: localStorage.getItem('apikey'),
 		isLoggedIn: false,
+		setIsLoggedIn: null,
 		dataSources: [
 			{
 				id: 6,
