@@ -22,6 +22,88 @@
     //margin: 30px;
 }
 
+.square{
+    width:100px;
+    height:100px;
+    background-color:#373B3D;    
+}
+
+.exploreIllustration{
+    height: 30vh;
+    width: 40vh;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    margin-left: 30px;
+    margin-right: auto;
+    position: relative;
+    display: inline-block
+}
+.dashboardIllustration{
+    height: 30vh;
+    width: 40vh;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    margin-left: 30px;
+    margin-right: auto;
+    position: relative;
+}
+
+.outterDiv{
+    
+    width: 90%;
+    height: 100%;
+    margin : 'auto'
+}
+
+#welcomeTitle{
+    font-size: 9vh;
+    padding-top: 50px;
+   
+}
+#welcomeText{
+    font-size: 2.5vh;
+    padding-top: 50px;
+    
+}
+#howTitle{
+    font-size: 4vh;
+    padding-top: 100px;
+    padding-left: 60px;
+}
+
+#explainExplore{
+    font-size: 3vh;
+}
+
+#explainDashboards{
+    font-size: 3vh;
+}
+
+#illustrationExploreDiv{
+    float: left;
+    margin-right: 30px;
+}
+#illustrationDashboardsDiv{
+    float: left;
+    margin-right: 30px;
+}
+
+#explainExploreDiv{
+    padding: 10px;
+    margin-top: 200px;
+}
+#explainDashboardsDiv{
+    padding: 10px;
+    margin-top: 200px;
+}
+.guideDiv{
+    border: dashed;
+    display: inline-block;
+    height: 40em; 
+    width: 100%;
+}
+
+
 .button__home {
     height:300px;
     width:300px;
@@ -37,7 +119,6 @@
 
 .button__home:hover {
     box-shadow: 0px 10px 20px -10px black;
-
     transition: box-shadow 0.3s ease-in-out;
 }
 
@@ -132,3 +213,4 @@
         width: 100%;
     }
 }
+

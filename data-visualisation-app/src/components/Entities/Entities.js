@@ -25,7 +25,7 @@ import { List, Avatar, Button, Skeleton, Form, Checkbox } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import reqwest from 'reqwest';
 
-const count = 3;
+const count = 20;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
 
 
@@ -97,15 +97,14 @@ class Entities extends React.Component {
     return (
       
      <div>
-       
         <Form
-            name="entitiesForm"
+            name='entitiesForm'
             onFinish={this.onFinish}
         >
           <List
-            className="dataSourceList"
+            className='dataSourceList'
             loading={initLoading}
-            itemLayout="horizontal"
+            itemLayout='horizontal'
             loadMore={loadMore}
             dataSource={list}
             renderItem={item => (
@@ -124,7 +123,7 @@ class Entities extends React.Component {
                       <Skeleton avatar title={false} loading={item.loading} active>
                         <List.Item.Meta
                           avatar={
-                            <Avatar src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png" />
+                            <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                           }
                           title={<a href="https://ant.design">{item.name.last}</a>}
                           description='Ant Design, a design language for background applications, is refined by Ant UED Team'

@@ -7,7 +7,8 @@
  *   Update History:
  *   Date        Author              Changes
  *   -------------------------------------------------------
- *   1/7/2020    Gian Uys      Original
+ *   1/7/2020    Gian Uys           Original
+ *   5/8/2020    Byron Tomkinson    Redesigned
  *
  *   Error Messages: "Error"
  *   Assumptions: None
@@ -15,33 +16,54 @@
  */
 
 import React from 'react';
-import {CompassOutlined, WindowsOutlined} from '@ant-design/icons';
-import BackgroundDots from '../../helpers/backgroundWebGL';
+
+import { Typography } from 'antd';
 import './Home.scss';
+import Anime, {anime} from 'react-anime';
+import {ReactComponent as ExploreIllustration} from '../../assets/svg/explore_ill.svg';
+import {ReactComponent as DashboardIllustration} from '../../assets/svg/dashboard_ill.svg';
+
+
+const { Title, Text } = Typography;
+
 
 function Home(props) {
 
-  function exploreClick() {
-    props.handlePageType('explore');
-  };
-
-  function dashboardsClick(){
-    props.handlePageType('dashboards');
-  };
-
+  
+  //Our app is makes visualizing data easy! We require data sources then we generate chart suggestions of your data with the help of an Interactive Genetic Algorithm.
   return (
-      <React.Fragment>
-          {props.renderBackground && <BackgroundDots width={props.width} height={props.height}/>}
-          <div id = 'masterPalette'>
-              <div className='button__home' id='button__explore' onClick = {exploreClick}>
-                  <CompassOutlined className='button__home--icon'/> <div className='button__home--label'>Explore</div>
-              </div>
-              <div className='button__home' id = 'button__dashboard' onClick = {dashboardsClick}>
-                  <WindowsOutlined className='button__home--icon' /> <div className='button__home--label'>Dashboards</div>
-              </div>
+      <div class = 'outterDiv'>
+        <Anime delay={anime.stagger(100)} scale={[.1, .9]}>
+          <Title id = 'welcomeTitle'>Visualize your data.</Title>
+          <Text id = 'welcomeText'>The Data Visualization App helps make it easy to visualize your data with the help of an Interactive Genetic Algorithm. All the we require is your data source and we show you the results!</Text>
+          <Title id = 'howTitle'>Getting started</Title>
+          
+          <div class = 'guideDiv'>
+            <div id = 'illustrationExploreDiv'>
+              <ExploreIllustration class = 'exploreIllustration'/>
+            </div>
+            <div id = 'explainExploreDiv'>
+              <Text id = 'explainExplore'>Select 'Explore' from the side menu to find graph suggestions.</Text>
+            </div>
           </div>
-      </React.Fragment>
+
+          <div class = 'guideDiv'>
+            <div id = 'illustrationDashboardsDiv'>
+              <DashboardIllustration class = 'dashboardIllustration'/>
+            </div>
+            <div id = 'explainDashboardsDiv'>
+              <Text id = 'explainDashboards'>Select 'Dashboards' from the side menu to view or create dashbaords.</Text>
+            </div>
+          </div>
+          
+        </Anime>
+      </div>
   );
 }
 
 export default Home;
+
+
+
+
+

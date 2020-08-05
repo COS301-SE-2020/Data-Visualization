@@ -93,7 +93,7 @@ const globalMaterialUITheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		display: 'flex'
+		display: 'flex',
 	},
 	selected: {
 		color: 'white'
@@ -117,7 +117,6 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	userButton: {
-
 		// marginRight: theme.spacing(2),
 		[theme.breakpoints.up('sm')]: {
 		},
@@ -140,7 +139,6 @@ const useStyles = makeStyles((theme) => ({
 	content: {
 		flexGrow: 1,
 		padding: theme.spacing(3),
-
 	},
 	nested: {
 		paddingLeft: theme.spacing(11),
@@ -263,7 +261,7 @@ function App(props) {
     */
 	var pageTitle = 'Home';
 	if(pageType === 'home'){
-		pageTitle = 'Home';
+		pageTitle = '';
 	}
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';
@@ -301,10 +299,7 @@ function App(props) {
     */
 	var page;
 	if(pageType === 'home'){
-		//setDashboardStage('dashboadHome');
-		//setDashboardIndex('');
-		//setIsAddingDashboard(false);
-		page = <Home pType={pageType} handlePageType={handlePageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />;
+		page = <Home />;
 	}
 	if(pageType === 'explore'){
 		page = <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />;
@@ -358,7 +353,7 @@ function App(props) {
 					<ListItemIcon className={classes.icon} >
 						<DashboardIcon style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
 					</ListItemIcon>
-					<ListItemText primary="My Dashboards" />
+					<ListItemText primary="Dashboards" />
 				</MenuItem>
 
 
@@ -424,7 +419,7 @@ function App(props) {
 
 			<div className={classes.root}>
 				<CssBaseline />
-				<AppBar position="fixed" className={classes.appBar} style={{ background: '#242424' }}>
+				<AppBar  position="fixed" className={classes.appBar} style={{ background: '#242424' }}>
 					<Toolbar>
 						<IconButton
 							color="inherit"
@@ -493,7 +488,7 @@ function App(props) {
 					</Hidden>
 				</nav>
 
-				<main className={classes.content} style={(pageType === 'home' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
+				<main className={classes.content} ref={targetRef}>
 
 					<div className={classes.toolbar} />
 					{
