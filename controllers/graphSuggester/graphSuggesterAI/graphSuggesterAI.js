@@ -181,7 +181,7 @@ let graphSuggesterMaker = (function () {
 					return null;
 				}
 
-				let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do this
+				let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do selection
 				let data = []; //2D array containing item names and attributes
 				let params = [ nameKey, 'value' ]; //the labels for column values
 				let graph = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type - TODO replace 5 with graphTypes.length
@@ -191,8 +191,7 @@ let graphSuggesterMaker = (function () {
 					data[i] = [ results[i][nameKey], results[i][options[choice]] ];
 				}
 
-				//generate the graph option - TODO fix the hardcoding
-				let option = this.constructOption(data, graph, params, params[0], params[1], type);
+				let option = this.constructOption(data, graph, params, params[0], params[1], type+': '+options[choice]);
 
 				return option;
 			}
@@ -296,7 +295,7 @@ let graphSuggesterMaker = (function () {
 	return {
 		/**
 		 * A function that returns a singleton object of the graphSuggesterAI type.
-		 * @return {graphSuggesterAI} the AI that genereates suggestions.
+		 * @return {graphSuggesterAI} the AI that generates suggestions.
 		 */
 		getInstance: function () {
 			if (instance === null) {

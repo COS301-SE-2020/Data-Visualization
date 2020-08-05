@@ -57,7 +57,7 @@ class GraphSuggesterController {
 	 * so it knows what it can suggest. It passes the properties(treated as terminal nodes) and the
 	 * navigation properties(so it can go to deeper layers) via the setMetadata function.
 	 * @param xmlData the metadata in XML format.
-	 * @returns an object containing the parsed items and associated tables - this is for debugging purposes
+	 * @returns an object containing the parsed items and associated tables as well as the item sets in each "table"
 	 */
 	static parseODataMetadata(xmlData) {
 		let parser = new DOMParser();
