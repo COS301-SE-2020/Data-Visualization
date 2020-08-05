@@ -37,12 +37,14 @@ class graphSuggesterAI {
 	 */
 	constructor() {
 		//graphTypes are the types of graphs that can be generated - TODO right now it's hardcoded, it should be set by setGraphTypes
-		this.graphTypes = [ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ];
+		this.graphTypes = [];
 		this.graphWeights = [];
 		this.terminals = [];
 		this.nonTerminals = [];
 		this.nodeWeights = [];
 		//initialise maybe
+
+		this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ]);
 	}
 
 	/**
