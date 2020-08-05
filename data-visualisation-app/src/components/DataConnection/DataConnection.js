@@ -22,7 +22,7 @@
 
 /**
   * Imports
-*/
+*/ 
 import React from 'react';
 import { List, Avatar, Button, Skeleton } from 'antd';
 import request from '../../globals/requests';

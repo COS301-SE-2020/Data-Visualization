@@ -439,6 +439,7 @@ const request = {
 
 								//add to request.user.dataSources array
 								//request.user.dataSources = res.data;
+								request.user.dataSources.push(res.data);
 
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
