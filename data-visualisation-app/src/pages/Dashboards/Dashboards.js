@@ -1,26 +1,32 @@
-import React, { useState, useEffect, Fragment } from 'react';
+/**
+ *   @file DataConnection.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   8/7/2020   Byron Tominson      Original
+ *
+ *   Functional Description:
+ *   Displays data connections to the user.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
+import React, { useState, useEffect } from 'react';
 import update from 'react-addons-update';
-import './Dashboard.scss';
+import './Dashboards.scss';
 import request from '../../globals/requests';
-
-import API from '../../helpers/apiRequests';
-
-import * as Constants from '../../globals/constants';
-import HomePage from '../../components/HomePage/HomePage';
-import DisplayDashboard from '../../components/DisplayDashboard/DisplayDashboard';
+import DashboardsList from '../../components/DashboardsList';
+import Dashboard from '../../components/Dashboard';
 import AddDashboard from '../../components/AddDashboard/AddDashboard';
-import EditDashboard from '../../components/EditDashboard/EditDashboard';
 import LoginPopup from '../../components/LoginPopup/LoginPopup';
-import {Layout, Menu} from 'antd';
 
-
-
-function Dashboard(props) {
-
-
-
-
-	
+function Dashboards(props) {
 	const [dashboardName, setDashboardName] = useState('');
 	const [dashboardDescription, setDashboardDescription] = useState('');
 	const [DashboardList, setDashboardList] = useState([]);
@@ -89,7 +95,7 @@ function Dashboard(props) {
 
 	//Network Reqeust procedures
 	const reqDashboardList = () => {
-		API.dashboard
+		request.API.dashboard
 			.list()
 			.then((res) => {
 				console.log(res);
@@ -205,7 +211,7 @@ function Dashboard(props) {
 
 		if(props.dashboardStage === 'dashboardHome'){
 			return (
-				<HomePage
+				<DashboardsList
 					dashboardList={DashboardList}
 					setDashboardIndex={props.setDashboardIndex}
 					onAddButtonClick={props.setIsAddingDashboard}
@@ -215,7 +221,7 @@ function Dashboard(props) {
 		}
 		if(props.dashboardStage === 'selected'){
 			return (
-				<DisplayDashboard
+				<Dashboard
 					dashboardID={props.dashboardIndex}
 					name={dashboardName}
 					description={dashboardDescription}
@@ -240,4 +246,4 @@ function Dashboard(props) {
 		
 }
 
-export default Dashboard;
+export default Dashboards;

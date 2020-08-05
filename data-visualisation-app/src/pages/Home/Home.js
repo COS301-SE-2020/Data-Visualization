@@ -1,11 +1,22 @@
+/**
+ *   @file Home.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   1/7/2020    Gian Uys      Original
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React from 'react';
-import { Button, Radio } from 'antd';
 import {CompassOutlined, WindowsOutlined} from '@ant-design/icons';
-// import DashboardIcon from '@material-ui/icons/Dashboard';
-// import {Dashboard} from '@styled-icons/material-rounded/Dashboard';
-
 import BackgroundDots from '../../helpers/backgroundWebGL';
-
 import './Home.scss';
 
 function Home(props) {
@@ -24,24 +35,12 @@ function Home(props) {
           <div id = 'masterPalette'>
               <div className='button__home' id='button__explore' onClick = {exploreClick}>
                   <CompassOutlined className='button__home--icon'/> <div className='button__home--label'>Explore</div>
-                  {/*<CompassOutlined  />*/}
-                  {/*<div className='button__home--icon'>*/}
-                  {/*    <CompassOutlined  />*/}
-                  {/*</div>*/}
-                  {/*<div className='button__home--label'>Explore</div>*/}
               </div>
               <div className='button__home' id = 'button__dashboard' onClick = {dashboardsClick}>
                   <WindowsOutlined className='button__home--icon' /> <div className='button__home--label'>Dashboards</div>
-                  {/*<Dashboard  />*/}
-                  {/*<div className='button__home--icon'>*/}
-                  {/*    <Dashboard  />*/}
-                  {/*</div>*/}
-                  {/*<div className='button__home--label'>Dashboards</div>*/}
               </div>
           </div>
       </React.Fragment>
- 
- //style={{ background: '#05192F' }}
   );
 }
 

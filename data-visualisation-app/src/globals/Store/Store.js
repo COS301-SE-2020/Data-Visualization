@@ -5,19 +5,19 @@ const defaultGlobalState = {
 	isLoggedIn : false,
 	dataSources : [
 			{
-				"id": 6,
-				"email": "elna@gmail.com",
-				"sourceurl": "https://services.odata.org/V2/Northwind/Northwind.svc"
+				'id': 6,
+				'email': 'elna@gmail.com',
+				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc'
 			}
 		],
 	num: 2,
 };
 
-const globalStateContext = React.createContext(defaultGlobalState);
-const dispatchStateContext = React.createContext(undefined);
+const globalStateContext = createContext(defaultGlobalState);
+const dispatchStateContext = createContext(undefined);
 
 const GlobalStateProvider  = ({ children }) => {
-  const [state, dispatch] = React.useReducer(
+  const [state, dispatch] = useReducer(
 	(state, newValue) => ({ ...state, ...newValue }),
 	defaultGlobalState
   );

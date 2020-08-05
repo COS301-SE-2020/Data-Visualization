@@ -53,17 +53,17 @@ console.debug('Production mode set to: ', PRODUCTION_MODE);
 export const URL_HOST = {
 	PRODUCTION: 'https://data-visualisation-prod.herokuapp.com',
 	STAGING_DEV: 'https://data-visualisation-dev.herokuapp.com',
-	LOCALHOST: 'http://localhost:8000',
+	LOCALHOST: 'http://localhost:8000'
 };
 
-export const URL_HOST_DEFAULT = PRODUCTION_MODE == 0 ? URL_HOST.LOCALHOST : PRODUCTION_MODE == 1 ? URL_HOST.PRODUCTION : URL_HOST.STAGING_DEV;
+export const URL_HOST_DEFAULT = PRODUCTION_MODE === 0 ? URL_HOST.LOCALHOST : PRODUCTION_MODE === 1 ? URL_HOST.PRODUCTION : URL_HOST.STAGING_DEV;
 
 export const URL_ROOT = {
-	USER: URL_HOST_DEFAULT + '/' + 'users',
-	DASHBOARD: URL_HOST_DEFAULT + '/' + 'dashboards',
-	DATASOURCE: URL_HOST_DEFAULT + '/' + 'datasource',
-	GRAPH: URL_HOST_DEFAULT + '/' + 'graphs',
-	SUGGESTIONS: URL_HOST_DEFAULT + '/' + 'suggestions',
+	USER: URL_HOST_DEFAULT + '/users',
+	DASHBOARD: URL_HOST_DEFAULT + '/dashboards',
+	DATASOURCE: URL_HOST_DEFAULT + '/datasource',
+	GRAPH: URL_HOST_DEFAULT + '/graphs',
+	SUGGESTIONS: URL_HOST_DEFAULT + '/suggestions',
 };
 
 /**
@@ -75,29 +75,29 @@ export const URL_ROOT = {
  */
 export const URL = {
 	USER: {
-		LOGIN: URL_ROOT.USER + '/' + 'login',
-		REGISTER: URL_ROOT.USER + '/' + 'register',
-		LOGOUT: URL_ROOT.USER + '/' + 'logout',
+		LOGIN: URL_ROOT.USER + '/login',
+		REGISTER: URL_ROOT.USER + '/register',
+		LOGOUT: URL_ROOT.USER + '/logout',
 	},
 	DATASOURCE: {
-		LIST: URL_ROOT.DATASOURCE + '/' + 'list',
-		ADD: URL_ROOT.DATASOURCE + '/' + 'add',
-		REMOVE: URL_ROOT.DATASOURCE + '/' + 'remove',
+		LIST: URL_ROOT.DATASOURCE + '/list',
+		ADD: URL_ROOT.DATASOURCE + '/add',
+		REMOVE: URL_ROOT.DATASOURCE + '/remove',
 	},
 	DASHBOARD: {
-		LIST: URL_ROOT.DASHBOARD + '/' + 'list',
-		ADD: URL_ROOT.DASHBOARD + '/' + 'add',
-		REMOVE: URL_ROOT.DASHBOARD + '/' + 'remove',
-		UPDATE: URL_ROOT.DASHBOARD + '/' + 'update',
+		LIST: URL_ROOT.DASHBOARD + '/list',
+		ADD: URL_ROOT.DASHBOARD + '/add',
+		REMOVE: URL_ROOT.DASHBOARD + '/remove',
+		UPDATE: URL_ROOT.DASHBOARD + '/update',
 	},
 	GRAPH: {
-		LIST: URL_ROOT.GRAPH + '/' + 'list',
-		ADD: URL_ROOT.GRAPH + '/' + 'add',
-		REMOVE: URL_ROOT.GRAPH + '/' + 'remove',
-		UPDATE: URL_ROOT.GRAPH + '/' + 'update',
+		LIST: URL_ROOT.GRAPH + '/list',
+		ADD: URL_ROOT.GRAPH + '/add',
+		REMOVE: URL_ROOT.GRAPH + '/remove',
+		UPDATE: URL_ROOT.GRAPH + '/update',
 	},
 	SUGGESTIONS: {
-		GRAPHS: URL_ROOT.SUGGESTIONS + '/' + 'graphs',
+		GRAPHS: URL_ROOT.SUGGESTIONS + '/graphs',
 	},
 };
 
@@ -124,7 +124,7 @@ export const RESPONSE_CODES = {
 	LOGGED_OUT_ERROR: {
 		id: 2,
 		color: 'red',
-		description: "You're not current logged in.",
+		description: 'You\'re not current logged in.',
 		icon: ICONS.ERROR,
 	},
 	SUCCESS: {

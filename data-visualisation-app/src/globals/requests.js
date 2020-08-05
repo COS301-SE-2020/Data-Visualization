@@ -22,13 +22,11 @@
 
 import axios from 'axios';
 import * as constants from './constants.js';
-
-import { useGlobalState } from './Store';
+import LoginDialog from '../pages/LoginDialog';
 
 /**
  *   Static Variables
  */
-///// deprecated functions: /////
 function successfulResponse(res) {
 	return res.status >= 200 && res.status < 300;
 }
@@ -496,21 +494,17 @@ const request = {
 		 */
 		graph: (sourceurl, callback) => {
 			console.debug('Requesting suggestion.graph with:', sourceurl);
-			if (true || canRequest()) {
-				API.suggestion
-					.graph(sourceurl)
-					.then((res) => {
-						if (callback !== undefined) {
-							console.debug('Response from suggestion.graph:', res);
-							request.cache.suggestions.graph.current = res.data;
+			API.suggestion
+				.graph(sourceurl)
+				.then((res) => {
+					if (callback !== undefined) {
+						console.debug('Response from suggestion.graph:', res);
+						request.cache.suggestions.graph.current = res.data;
 
-							callback(constants.RESPONSE_CODES.SUCCESS);
-						}
-					})
-					.catch((err) => console.error('from heere' + err));
-			} else {
-				callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
-			}
+						callback(constants.RESPONSE_CODES.SUCCESS);
+					}
+				})
+				.catch((err) => console.error(err));
 		},
 		/**
 		 *  Requests an amount of graph suggestions.
@@ -521,28 +515,24 @@ const request = {
 		 */
 		graphs: (sourceurl, amount, callback) => {
 			console.debug('Requesting suggestion.graphs with:', sourceurl, amount);
-			if (true || canRequest()) {
-				let shouldcontinue = true;
-				(async function () {
-					for (let r = 0; shouldcontinue && r < amount; r++) {
-						await new Promise(function (resolve) {
-							request.suggestions.graph(sourceurl, function (result) {
-								if (result === constants.RESPONSE_CODES.SUCCESS) {
-									resolve(request.cache.suggestions.graph.current);
-								} else {
-									shouldcontinue = false;
-								}
-							});
-						}).then(function (fetchedGraph) {
-							request.cache.suggestions.graph.list.push(fetchedGraph);
+			let shouldContinue = true;
+			(async function () {
+				for (let r = 0; shouldContinue && r < amount; r++) {
+					await new Promise(function (resolve) {
+						request.suggestions.graph(sourceurl, function (result) {
+							if (result === constants.RESPONSE_CODES.SUCCESS) {
+								resolve(request.cache.suggestions.graph.current);
+							} else {
+								shouldContinue = false;
+							}
 						});
-					}
-				})().then(function () {
-					callback(shouldcontinue ? constants.RESPONSE_CODES.SUCCESS : constants.RESPONSE_CODES.ERROR);
-				});
-			} else {
-				callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
-			}
+					}).then(function (fetchedGraph) {
+						request.cache.suggestions.graph.list.push(fetchedGraph);
+					});
+				}
+			})().then(function () {
+				callback(shouldContinue ? constants.RESPONSE_CODES.SUCCESS : constants.RESPONSE_CODES.ERROR);
+			});
 		},
 	},
 

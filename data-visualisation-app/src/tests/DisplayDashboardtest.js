@@ -20,8 +20,8 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react';
-import DisplayDashboard from "../pages/DisplayDashboard";
-import DisplayGraph from "../pages/DisplayDashboard/DisplayGraph";
+import DisplayDashboard from "../pages/Dashboards";
+import DisplayGraph from "../pages/Dashboards/DisplayGraph";
 import renderer from 'react-test-renderer';
 import graph1 from "../assets/img/Graphs/Barchart.png";
 import graph2 from "../assets/img/Graphs/PieChart.jpg";

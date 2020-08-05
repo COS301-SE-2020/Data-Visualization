@@ -1,5 +1,5 @@
 import React from 'react';
-import HomePage from '../components/HomePage/HomePage';
+import DashboardsList from '../components/DashboardsList';
 import renderer from 'react-test-renderer';
 
 
@@ -17,9 +17,9 @@ Object.defineProperty(window, 'matchMedia', {
     })),
 });
 
-describe('HomePage component', () => {
-    it('HomePage renders correctly', () => {
-        const rendered = renderer.create(<HomePage/>);
+describe('DashboardsList component', () => {
+    it('DashboardsList renders correctly', () => {
+        const rendered = renderer.create(<DashboardsList/>);
         expect(rendered.toJSON()).toMatchSnapshot();
     });
 });

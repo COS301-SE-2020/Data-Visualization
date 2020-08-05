@@ -1,3 +1,22 @@
+/**
+ *   @file App.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   1/7/2020    Gian Uys      Original
+ *
+ *   Functional Description:
+ *   Enables user to add a new dashboard.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React, { useState } from 'react';
 import './AddDashboard.css';
 import { Form, Input, Button, Layout, Row, Col, Typography, Space, message } from 'antd';
@@ -22,7 +41,7 @@ function AddDashboard(props) {
 		request.dashboard.add(dashBoardName, dashBoardDescription, function (result) {
 			setIsLoading(false);
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				message.success('Dashboard was successfully created.');
+				message.success('Dashboards was successfully created.');
 				props.setDetails(dashBoardName, dashBoardDescription);
 				props.home();
 			} else {

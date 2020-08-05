@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
-// const OrbitControls = require('three-orbitcontrols');
-
 
 var SEPARATION = 70, AMOUNTX = 50, AMOUNTY = 50;
 
-var particles, count = 0;
+var count = 0;
 
-var mouseX = 0, mouseY = 0;
-
-var windowHalfX = window.innerWidth / 2;
-var windowHalfY = window.innerHeight / 2;
-
-
-var UPDATEX, UPDATEY, UPDATEZ;
-
+// var UPDATEX, UPDATEY, UPDATEZ;
 
 /**
  *   @class BackgroundDots
@@ -28,9 +19,6 @@ class BackgroundDots extends Component {
         this.animate = this.animate.bind(this);
         this.addCube = this.addCube.bind(this);
         this.initializeCamera = this.initializeCamera.bind(this);
-
-        this.canvasWidth = this.props.width + 'px';
-        this.canvasHeight = this.props.height + 'px';
     }
 
     componentDidMount() {
@@ -120,10 +108,9 @@ class BackgroundDots extends Component {
         this.frameId = window.requestAnimationFrame(this.animate);
         this.renderer.render(this.scene, this.camera);
 
-
-        UPDATEX = this.camera.position.x;
-        UPDATEY= this.camera.position.y;
-        UPDATEZ= this.camera.position.z;
+        // UPDATEX = this.camera.position.x;
+        // UPDATEY= this.camera.position.y;
+        // UPDATEZ= this.camera.position.z;
 
         var positions = this.particles.geometry.attributes.position.array;
         var scales = this.particles.geometry.attributes.scale.array;
@@ -181,9 +168,9 @@ class BackgroundDots extends Component {
 }
 
 window.onkeypress = function(event) {
-    if (event.key == '1') {
-        console.log('mouseX ' + UPDATEX + ' mouseY ' + UPDATEY + ' mouseZ ' + UPDATEZ);
-    }
+    // if (event.key == '1') {
+    //     console.debug('mouseX ', UPDATEX, ' mouseY ', ' mouseZ ', UPDATEZ);
+    // }
 };
 
 export default BackgroundDots;

@@ -20,14 +20,10 @@
  */
 
 import './Entities.css';
-import React, { useState, Fragment } from 'react';
-import { List, Avatar, Button, Skeleton, Form, Input, Checkbox ,Typography} from 'antd';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import React, { Fragment } from 'react';
+import { List, Avatar, Button, Skeleton, Form, Checkbox } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import reqwest from 'reqwest';
-
-const { Title } = Typography;
-
 
 const count = 3;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;

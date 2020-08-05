@@ -8,6 +8,7 @@
  *   Date        Author              Changes
  *   -------------------------------------------------------
  *   1/7/2020    Byron Tominson      Original
+ *   1/8/2020    Gian Uys            Added add to dashboard functionality.
  *
  *   Functional Requirements:
  *   Displays a list of generated chart suggestions.
@@ -17,19 +18,16 @@
  *   Constraints: None
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
 import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined} from '@ant-design/icons';
 import {Typography, Menu, Dropdown, Button, message, Form, Checkbox} from 'antd';
 import FilterDialog from '../FilterDialog';
-
 import './Suggestions.scss';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-
-const { Title } = Typography;
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,20 +51,22 @@ function IGALoading() {
  *   @brief Component to display the chart suggestions.
  *   @details Displays a list of generated chart suggestions.
  */
-function Suggestions(props) {
+function Suggestions() {
 
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
     const [dashboardSelection, setDashboardSelection] = useState([]);
     const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
+    const newDashboardSelection = useRef(null);
+    const newCurrentCharts = useRef(null);
 
     useEffect(() => {
 
-        let newDashboardSelection, newCurrentCharts;
+        // let newDashboardSelection, newCurrentCharts;
 
         if (request.user.isLoggedIn) {
-            request.dashboard.list(function(result) {
+            request.dashboard.list(function() {
                 let newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
                     return dashboarditem.name;
                 });
@@ -93,25 +93,25 @@ function Suggestions(props) {
 
                     if (request.user.isLoggedIn) {
                         if (dashboardSelection.length === 0) {
-                            newDashboardSelection = [];
+                            newDashboardSelection.current = [];
                             for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
-                                newDashboardSelection.push(dashboardList.map(() => {
+                                newDashboardSelection.current.push(dashboardList.map(() => {
                                     return false;
                                 }));
                             }
                         } else {
-                            newDashboardSelection.push(dashboardList.map(() => {
+                            newDashboardSelection.current.push(dashboardList.map(() => {
                                 return false;
                             }));
                         }
                     }
 
-                    setDashboardSelection(newDashboardSelection);
+                    setDashboardSelection(newDashboardSelection.current);
                     /**
                      *   Add newly fetched chart to list.
                      */
-                    if (typeof newCurrentCharts == 'undefined') {
-                        newCurrentCharts = request.cache.suggestions.graph.list.map((options, index) => {
+                    if (newCurrentCharts.current == null) {
+                        newCurrentCharts.current = request.cache.suggestions.graph.list.map((options, index) => {
                             let newchart = {
                                 options: null
                             };
@@ -123,18 +123,18 @@ function Suggestions(props) {
                             return newchart;
                         });
                     } else {
-                        newCurrentCharts.push({
+                        newCurrentCharts.current.push({
                             options: null
                         });
-                        
-                        newCurrentCharts[newCurrentCharts.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
+
+                        newCurrentCharts.current[newCurrentCharts.current.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
                         if (fetchedGraph.title && fetchedGraph.title.text) {
-                            newCurrentCharts[newCurrentCharts.length-1].title = fetchedGraph.title.text;
-                            newCurrentCharts[newCurrentCharts.length-1].options.title.text = '';
+                            newCurrentCharts.current[newCurrentCharts.current.length-1].title = fetchedGraph.title.text;
+                            newCurrentCharts.current[newCurrentCharts.current.length-1].options.title.text = '';
                         }
                     }
 
-                    setCurrentCharts(newCurrentCharts);
+                    setCurrentCharts(newCurrentCharts.current);
 
                     if (!loadedFirst)
                         setLoadedFirst(true);
@@ -166,7 +166,7 @@ function Suggestions(props) {
 
             if (dashboardSelection[chart][dashboard]) {
                 request.graph.delete(request.cache.dashboard.list.data[dashboard].id, request.cache.suggestions.graph.list[chart].id, function(result) {
-                    if (result == constants.RESPONSE_CODES.SUCCESS) {
+                    if (result === constants.RESPONSE_CODES.SUCCESS) {
                         message.success('Successfully  removed chart to dashboard!');
                         let newdashboardselection = JSON.parse(JSON.stringify(dashboardSelection));
                         newdashboardselection[chart][dashboard] = !newdashboardselection[chart][dashboard];
@@ -186,7 +186,7 @@ function Suggestions(props) {
 
                 request.cache.suggestions.graph.list[chart].id = newid;
                 request.graph.add(request.cache.dashboard.list.data[dashboard].id, currentCharts[chart].title, currentCharts[chart].options, {}, function(result) {
-                    if (result == constants.RESPONSE_CODES.SUCCESS) {
+                    if (result === constants.RESPONSE_CODES.SUCCESS) {
                         message.success('Successfully  added chart to dashboard!');
                         let newdashboardselection = JSON.parse(JSON.stringify(dashboardSelection));
                         newdashboardselection[chart][dashboard] = !newdashboardselection[chart][dashboard];
@@ -213,7 +213,7 @@ function Suggestions(props) {
                                 <Dropdown overlay={(() => {
                                     return <Menu>
                                         {dashboardList.map((dashboardname, index) => {
-                                            return <Menu.Item key={index} onClick={() => {onAddChartToDashboard(props.id, index)}}>
+                                            return <Menu.Item key={index} onClick={() => {onAddChartToDashboard(props.id, index);}}>
 
                                                 <span>{dashboardname}</span>
                                                 <span style={{float: 'right'}}>
@@ -305,7 +305,7 @@ function Suggestions(props) {
             :
                 IGALoading()
     );
-};
+}
 
 export default Suggestions;
 
@@ -323,248 +323,3 @@ export default Suggestions;
  *
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const demotempoptions = [
-//
-//     {
-//         legend: {
-//             data: ['Something'],
-//             fontFamily: 'Tahoma'
-//         },
-//         tooltip: {
-//             trigger: 'axis',
-//             formatter: 'Temperature : <br/>{b}km : {c}°C'
-//         },
-//         grid: {
-//             left: '3%',
-//             right: '4%',
-//             bottom: '3%',
-//             containLabel: true
-//         },
-//         xAxis: {
-//             type: 'value',
-//             axisLabel: {
-//                 formatter: '{value} °C'
-//             }
-//         },
-//         yAxis: {
-//             type: 'category',
-//             axisLine: {onZero: false},
-//             axisLabel: {
-//                 formatter: '{value} km'
-//             },
-//             boundaryGap: false,
-//             data: ['0', '10', '20', '30', '40', '50', '60', '70', '80']
-//         },
-//         series: [
-//             {
-//                 name: 'Something',
-//                 type: 'line',
-//                 smooth: true,
-//                 lineStyle: {
-//                     width: 2,
-//                     shadowColor: 'rgba(0, 0, 0, 0.3)',
-//                     shadowBlur: 6,
-//                     shadowOffsetY: 4,
-//                     color: {
-//                         type: 'linear',
-//                         x: 0.5,
-//                         y: 0.5,
-//                         r: 0.5,
-//                         colorStops: [{
-//                             offset: 0, color: '#159957' // color at 0% position
-//                         }, {
-//                             offset: 1, color: '#155799' // color at 100% position
-//                         }],
-//                         global: false // false by default
-//                     }
-//                 },
-//                 data:[15, -50, -56.5, -46.5, -22.1, -2.5, -27.7, -55.7, -76.5]
-//             }
-//         ]
-//     },
-//
-//
-//     {
-//         title: {
-//             text: 'Something',
-//             subtext: 'Something',
-//             left: 'center'
-//         },
-//         tooltip: {
-//             trigger: 'item',
-//             formatter: '{a} <br/>{b} : {c} ({d}%)'
-//         },
-//         legend: {
-//             orient: 'vertical',
-//             left: 'left',
-//             data: ['Something1', 'Something2', 'Something3', 'Something4', 'Something5']
-//         },
-//         series: [
-//             {
-//                 name: 'Something22',
-//                 type: 'pie',
-//                 radius: '55%',
-//                 center: ['50%', '60%'],
-//                 data: [
-//                     {value: 335, name: 'Apples'},
-//                     {value: 310, name: 'Oranges'},
-//                     {value: 234, name: 'Bananas'},
-//                     {value: 135, name: 'Pineapples'},
-//                     {value: 1548, name: 'Lemons'}
-//                 ],
-//                 emphasis: {
-//                     itemStyle: {
-//                         shadowBlur: 10,
-//                         shadowOffsetX: 0,
-//                         shadowColor: 'rgba(0, 0, 0, 0.5)'
-//                     }
-//                 }
-//             }
-//         ]
-//     },
-//
-//     {
-//         title: {
-//             text: '浏览器占比变化',
-//             subtext: '纯属虚构',
-//             top: 10,
-//             left: 10
-//         },
-//         tooltip: {
-//             trigger: 'item',
-//             backgroundColor: 'rgba(0,0,250,0.2)'
-//         },
-//         legend: {
-//             type: 'scroll',
-//             bottom: 10,
-//             data: (function (){
-//                 var list = [];
-//                 for (var i = 1; i <=28; i++) {
-//                     list.push(i + 2000 + '');
-//                 }
-//                 return list;
-//             })()
-//         },
-//         visualMap: {
-//             top: 'middle',
-//             right: 10,
-//             color: ['red', 'yellow'],
-//             calculable: true
-//         },
-//         radar: {
-//             indicator: [
-//                 { text: 'IE8-', max: 400},
-//                 { text: 'IE9+', max: 400},
-//                 { text: 'Safari', max: 400},
-//                 { text: 'Firefox', max: 400},
-//                 { text: 'Chrome', max: 400}
-//             ]
-//         },
-//         series: (function (){
-//             var series = [];
-//             for (var i = 1; i <= 28; i++) {
-//                 series.push({
-//                     name: '浏览器（数据纯属虚构）',
-//                     type: 'radar',
-//                     symbol: 'none',
-//                     lineStyle: {
-//                         width: 1
-//                     },
-//                     emphasis: {
-//                         areaStyle: {
-//                             color: 'rgba(0,250,0,0.3)'
-//                         }
-//                     },
-//                     data: [{
-//                         value: [
-//                             (40 - i) * 10,
-//                             (38 - i) * 4 + 60,
-//                             i * 5 + 10,
-//                             i * 9,
-//                             i * i /2
-//                         ],
-//                         name: i + 2000 + ''
-//                     }]
-//                 });
-//             }
-//             return series;
-//         })()
-//     },
-//
-//     {
-//         color: [
-//             '#67001f', '#b2182b', '#d6604d', '#f4a582', '#fddbc7', '#d1e5f0', '#92c5de', '#4393c3', '#2166ac', '#053061'
-//         ],
-//         tooltip: {
-//             trigger: 'item',
-//             triggerOn: 'mousemove'
-//         },
-//         animation: false,
-//         series: [
-//             {
-//                 type: 'sankey',
-//                 bottom: '10%',
-//                 focusNodeAdjacency: 'allEdges',
-//                 data: [
-//                     {name: 'a'},
-//                     {name: 'b'},
-//                     {name: 'a1'},
-//                     {name: 'b1'},
-//                     {name: 'c'},
-//                     {name: 'e'}
-//                 ],
-//                 links: [
-//                     {source: 'a', target: 'a1', value: 5},
-//                     {source: 'e', target: 'b', value: 3},
-//                     {source: 'a', target: 'b1', value: 3},
-//                     {source: 'b1', target: 'a1', value: 1},
-//                     {source: 'b1', target: 'c', value: 2},
-//                     {source: 'b', target: 'c', value: 1}
-//                 ],
-//                 orient: 'vertical',
-//                 label: {
-//                     position: 'top'
-//                 },
-//                 lineStyle: {
-//                     color: 'source',
-//                     curveness: 0.5
-//                 }
-//             }
-//         ]
-//     }
-// ];
