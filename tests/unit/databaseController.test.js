@@ -32,19 +32,25 @@ describe('Function that converts lists of fields and data into comma seperated f
 	test('fields and data lists both have the same length', () => {
 		const fields = [ 'field1', 'field2', 'field3' ];
 		const data = [ 'value1', 2, true ];
-		expect(fieldUpdates(fields, data)).toBe(' field1 = \'value1\',  field2 = \'2\',  field3 = \'true\'');
+		const offset = 3;
+
+		console.log();
+
+		expect(fieldUpdates(fields, data, offset)).toBe(' field1 = $4,  field2 = $5,  field3 = $6');
 	});
 
 	test('fields list has more items that data list', () => {
 		const fields = [ 'field1', 'field2', 'field3' ];
 		const data = [ 'value1', 2 ];
-		expect(fieldUpdates(fields, data)).toBe(' field1 = \'value1\',  field2 = \'2\'');
+		const offset = 3;
+		expect(fieldUpdates(fields, data, offset)).toBe(' field1 = $4,  field2 = $5');
 	});
 
 	test('fields list has less items that data list', () => {
 		const fields = [ 'field1', 'field2' ];
 		const data = [ 'value1', 2, true ];
-		expect(fieldUpdates(fields, data)).toBe(' field1 = \'value1\',  field2 = \'2\'');
+		const offset = 1;
+		expect(fieldUpdates(fields, data, offset)).toBe(' field1 = $2,  field2 = $3');
 	});
 });
 

@@ -1,10 +1,28 @@
+/**
+ *   @file Suggestions.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   1/7/2020    Byron Tominson      Original
+ *
+ *   Functional Requirements:
+ *   Displays a list of generated chart suggestions.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
 import React, {useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
 import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined} from '@ant-design/icons';
 import {Typography, Menu, Dropdown, Button, message, Form, Checkbox} from 'antd';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import FilterDialog from '../FilterDialog';
 
 import './Suggestions.scss';
@@ -27,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function IGALoading() {
-    return <div id='igaloading'>{constants.LOADER}</div>;
+    return <div id='igaloading'>{constants.LOADER} <br/> <br/> <br/> Generating chart suggestions by the IGA...</div>;
 }
 
 /**
@@ -40,7 +58,7 @@ function Suggestions(props) {
     const [isReady, setIsReady] = useState(false);
     const [currentCharts, setCurrentCharts] = useState(null);
     const [dashboardSelection, setDashboardSelection] = useState([[true, false, true]]);
-    const [dashboardList, setDashboardList] = useState(['sdfjklsdf', 'alskdjfsdfs', 'asdfsdfsdf']);
+    const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
 
     useEffect(() => {
 

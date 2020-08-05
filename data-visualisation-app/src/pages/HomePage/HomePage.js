@@ -1,3 +1,28 @@
+/**
+ *   @file HomePage.js
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   11/7/2020   Byron Tominson      Original
+ *
+ *   Test Cases: data-visualisation-app/src/tests/HomePage.test.js
+ *
+ *   Functional Description:
+ *   Home page
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
+
+/**
+  * Imports
+*/
 import React from 'react';
 import '../../globals/globals.css';
 import HomePanelButton from '../../components/HomePanelButton/HomePanelButton';
@@ -6,6 +31,11 @@ import { Layout } from 'antd';
 import { FooterGlobal } from '../../globals/globals';
 import PageTitle from '../../components/PageTitle';
 
+
+/**
+  * @param props passed from the App function.
+  * @return React Component
+*/
 function HomePage(props) {
 
     const backgrounds = [{

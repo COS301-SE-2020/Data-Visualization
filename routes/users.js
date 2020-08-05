@@ -48,7 +48,15 @@ router.post('/login', (req, res) => {
 					// if (!req.session.sid) req.session.sid = {};
 					// req.session.sid[user.apikey] = user;
 					loggedUsers[user.apikey] = user;
-					res.status(200).json({ message: 'Successfully Logged In User', apikey: user.apikey });
+
+					console.log('=====================================');
+					console.log(
+						'USERS',
+						Object.keys(loggedUsers).map((key) => `${key} : ${loggedUsers[key].email}`)
+					);
+					console.log('=====================================');
+
+					res.status(200).json({ message: 'Successfully Logged In User', ...user });
 				}
 			},
 			(err) => error(res, err, 400)
@@ -77,7 +85,15 @@ router.post('/register', (req, res) => {
 				// if (!req.session.sid) req.session.sid = {};
 				// req.session.sid[user.apikey] = user;
 				loggedUsers[user.apikey] = user;
-				res.status(200).json({ message: 'Successfully Registered User', apikey: user.apikey });
+
+				console.log('=====================================');
+				console.log(
+					'USERS',
+					Object.keys(loggedUsers).map((key) => `${key} : ${loggedUsers[key].email}`)
+				);
+				console.log('=====================================');
+
+				res.status(200).json({ message: 'Successfully Registered User', ...user });
 			},
 			(err) => error(res, err, 400)
 		);
@@ -85,6 +101,14 @@ router.post('/register', (req, res) => {
 });
 router.post('/logout', (req, res) => {
 	delete loggedUsers[req.body.apikey];
+
+	console.log('=====================================');
+	console.log(
+		'USERS',
+		Object.keys(loggedUsers).map((key) => `${key} : ${loggedUsers[key].email}`)
+	);
+	console.log('=====================================');
+
 	res.status(200).json({ message: 'Successfully Logged out' });
 
 	// req.session.destroy((err) => {

@@ -70,7 +70,10 @@ app.use((req, res, next) => {
 		console.log(req.method);
 		console.log(req.body);
 		console.log(req.query);
-		console.log('USERS', loggedUsers);
+		console.log(
+			'USERS',
+			Object.keys(loggedUsers).map((key) => `${key} : ${loggedUsers[key].email}`)
+		);
 		console.log('=====================================');
 	}
 	next();

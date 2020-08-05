@@ -20,6 +20,9 @@
  *   Constraints: None
  */
 
+/**
+  * Imports
+*/
 import React from 'react';
 import { List, Avatar, Button, Skeleton, Typography } from 'antd';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';

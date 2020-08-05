@@ -21,10 +21,9 @@
  */
 
 import React from 'react';
-import {Close} from '@styled-icons/evil/Close';
-import {ErrorCircle} from '@styled-icons/boxicons-solid/ErrorCircle';
+import { Close } from '@styled-icons/evil/Close';
+import { ErrorCircle } from '@styled-icons/boxicons-solid/ErrorCircle';
 import { Spin } from 'antd';
-
 
 export const SPACING_BUTTON = 9;
 
@@ -38,34 +37,34 @@ export const APPLICATION_LOGO_H = require('../assets/img/logo_vlong_s.png');
  *   Icons
  */
 export const ICONS = {
-    CLOSE: <Close size={20}/>,
-    ERROR: <ErrorCircle/>
-}
+	CLOSE: <Close size={20} />,
+	ERROR: <ErrorCircle />,
+};
 
-export const LOADER = <Spin/>;
+export const LOADER = <Spin />;
 
 /**
- *   Server Constants
+ *   Server Constants.
  */
-// export const PRODUCTION_MODE = process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? true : false;
-export const PRODUCTION_MODE = true;
-export const URL_HOST = {
-    PRODUCTION: 'https://data-visualisation-prod.herokuapp.com',
-    DEVELOPMENT: 'https://data-visualisation-dev.herokuapp.com',
-    LOCALHOST: 'http://localhost:8000'
+export const PRODUCTION_MODE = process.env.NODE_ENV && process.env.NODE_ENV === 'development' ? 0 : process.env.NODE_ENV === 'production' ? 1 : 2;
+// export const PRODUCTION_MODE = true;
+console.debug('Production mode set to: ', PRODUCTION_MODE);
 
+export const URL_HOST = {
+	PRODUCTION: 'https://data-visualisation-prod.herokuapp.com',
+	STAGING_DEV: 'https://data-visualisation-dev.herokuapp.com',
+	LOCALHOST: 'http://localhost:8000',
 };
 
-export const URL_HOST_DEFAULT = (PRODUCTION_MODE ? URL_HOST.DEVELOPMENT : URL_HOST.LOCALHOST);
+export const URL_HOST_DEFAULT = PRODUCTION_MODE == 0 ? URL_HOST.LOCALHOST : PRODUCTION_MODE == 1 ? URL_HOST.PRODUCTION : URL_HOST.STAGING_DEV;
 
 export const URL_ROOT = {
-    USER: URL_HOST_DEFAULT + '/' + 'users',
-    DASHBOARD: URL_HOST_DEFAULT + '/' + 'dashboards',
-    DATASOURCE: URL_HOST_DEFAULT + '/' + 'datasource',
-    GRAPH: URL_HOST_DEFAULT + '/' + 'graphs',
-    SUGGESTIONS: URL_HOST_DEFAULT + '/' + 'suggestions'
+	USER: URL_HOST_DEFAULT + '/' + 'users',
+	DASHBOARD: URL_HOST_DEFAULT + '/' + 'dashboards',
+	DATASOURCE: URL_HOST_DEFAULT + '/' + 'datasource',
+	GRAPH: URL_HOST_DEFAULT + '/' + 'graphs',
+	SUGGESTIONS: URL_HOST_DEFAULT + '/' + 'suggestions',
 };
-
 
 /**
  *   URL Constants.
@@ -75,31 +74,31 @@ export const URL_ROOT = {
  *            within this object.
  */
 export const URL = {
-    USER: {
-        LOGIN: URL_ROOT.USER + '/' + 'login',
-        REGISTER: URL_ROOT.USER + '/' + 'register',
-        LOGOUT: URL_ROOT.USER + '/' + 'logout'
-    },
-    DATASOURCE: {
-        LIST: URL_ROOT.DATASOURCE + '/' + 'list',
-        ADD: URL_ROOT.DATASOURCE + '/' + 'add',
-        REMOVE: URL_ROOT.DATASOURCE + '/' + 'remove'
-    },
-    DASHBOARD: {
-        LIST: URL_ROOT.DASHBOARD + '/' + 'list',
-        ADD: URL_ROOT.DASHBOARD + '/' + 'add',
-        REMOVE: URL_ROOT.DASHBOARD + '/' + 'remove',
-        UPDATE: URL_ROOT.DASHBOARD + '/' + 'update'
-    },
-    GRAPH: {
-        LIST: URL_ROOT.GRAPH + '/' + 'list',
-        ADD: URL_ROOT.GRAPH + '/' + 'add',
-        REMOVE: URL_ROOT.GRAPH + '/' + 'remove',
-        UPDATE: URL_ROOT.GRAPH + '/' + 'update'
-    },
-    SUGGESTIONS: {
-        GRAPHS: URL_ROOT.SUGGESTIONS + '/' + 'graphs'
-    }
+	USER: {
+		LOGIN: URL_ROOT.USER + '/' + 'login',
+		REGISTER: URL_ROOT.USER + '/' + 'register',
+		LOGOUT: URL_ROOT.USER + '/' + 'logout',
+	},
+	DATASOURCE: {
+		LIST: URL_ROOT.DATASOURCE + '/' + 'list',
+		ADD: URL_ROOT.DATASOURCE + '/' + 'add',
+		REMOVE: URL_ROOT.DATASOURCE + '/' + 'remove',
+	},
+	DASHBOARD: {
+		LIST: URL_ROOT.DASHBOARD + '/' + 'list',
+		ADD: URL_ROOT.DASHBOARD + '/' + 'add',
+		REMOVE: URL_ROOT.DASHBOARD + '/' + 'remove',
+		UPDATE: URL_ROOT.DASHBOARD + '/' + 'update',
+	},
+	GRAPH: {
+		LIST: URL_ROOT.GRAPH + '/' + 'list',
+		ADD: URL_ROOT.GRAPH + '/' + 'add',
+		REMOVE: URL_ROOT.GRAPH + '/' + 'remove',
+		UPDATE: URL_ROOT.GRAPH + '/' + 'update',
+	},
+	SUGGESTIONS: {
+		GRAPHS: URL_ROOT.SUGGESTIONS + '/' + 'graphs',
+	},
 };
 
 /**
@@ -110,34 +109,34 @@ export const URL = {
  *            contain the message that should be displayed along with other necessary elements.
  */
 export const RESPONSE_CODES = {
-    NETWORK_ERROR: {
-        id: 0,
-        color: 'red',
-        description: 'A network error has occurred.',
-        icon: ICONS.ERROR
-    },
-    BAD_REQUEST_NETWORK_ERROR: {
-        id: 1,
-        color: 'red',
-        description: 'Requested page is not found.',
-        icon: ICONS.ERROR
-    },
-    LOGGED_OUT_ERROR: {
-        id: 2,
-        color: 'red',
-        description: 'You\'re not current logged in.',
-        icon: ICONS.ERROR
-    },
-    SUCCESS: {
-        id: 3,
-        color: 'red',
-        description: 'Operation successful.',
-        icon: ICONS.ERROR
-    },
-    ERROR: {
-        id: 4,
-        color: 'red',
-        description: 'An error has occured.',
-        icon: ICONS.ERROR
-    }
+	NETWORK_ERROR: {
+		id: 0,
+		color: 'red',
+		description: 'A network error has occurred.',
+		icon: ICONS.ERROR,
+	},
+	BAD_REQUEST_NETWORK_ERROR: {
+		id: 1,
+		color: 'red',
+		description: 'Requested page is not found.',
+		icon: ICONS.ERROR,
+	},
+	LOGGED_OUT_ERROR: {
+		id: 2,
+		color: 'red',
+		description: "You're not current logged in.",
+		icon: ICONS.ERROR,
+	},
+	SUCCESS: {
+		id: 3,
+		color: 'red',
+		description: 'Operation successful.',
+		icon: ICONS.ERROR,
+	},
+	ERROR: {
+		id: 4,
+		color: 'red',
+		description: 'An error has occured.',
+		icon: ICONS.ERROR,
+	},
 };

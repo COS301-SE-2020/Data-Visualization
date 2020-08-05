@@ -5,8 +5,7 @@
 	"main": "server.js",
 	"scripts": {
 		"start": "npm run lint && node server.js",
-		"lint": "eslint . --fix",
-		"heroku-postbuild": "npm install --prefix ./data-visualisation-app",
+		"lint": "if [ \"$NODE_ENV\" = \"development\" ]; then eslint . --fix; fi",
 		"build": "npm run build --prefix ./data-visualisation-app",
 		"test": "npm run test:unit && npm run test:int",
 		"test:update": "npm run test:unit:update && npm run test:int:update",
@@ -17,7 +16,9 @@
 		"test:int:seq": "jest -u --runInBand sequential --verbose",
 		"test:int:par": "jest -u parallel --verbose",
 		"test:int:seq:update": "jest -u --runInBand sequential --updateSnapshot",
-		"test:int:par:update": "jest -u parallel --updateSnapshot"
+		"test:int:par:update": "jest -u parallel --updateSnapshot",
+		"posttest": "npm test --prefix ./data-visualisation-app",
+		"postinstall": "if [ ! \"$NODE_ENV\" = \"development\" ]; then npm install --prefix ./data-visualisation-app; fi"
 	},
 	"repository": {
 		"type": "git",
@@ -40,6 +41,7 @@
 		"events": "^3.1.0",
 		"express": "^4.17.1",
 		"express-session": "^1.17.1",
+		"jest": "^26.2.2",
 		"pg": "^8.2.1",
 		"pg-pool": "^3.2.1",
 		"save": "^2.4.0",
@@ -53,7 +55,6 @@
 		"eslint-plugin-react": "^7.20.3",
 		"eslint-plugin-react-hooks": "^4.0.8",
 		"eslint-watch": "^7.0.0",
-		"jest": "^26.1.0",
 		"rewire": "^5.0.0"
 	}
 }

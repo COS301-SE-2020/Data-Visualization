@@ -52,9 +52,9 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDataSource(email, dataSourceID, dataSourceURL, done, error) {
-		Database.addDataSource(email, dataSourceID, dataSourceURL)
-			.then(() => done())
+	static addDataSource(email, dataSourceURL, done, error) {
+		Database.addDataSource(email, dataSourceURL)
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -92,9 +92,9 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDashboard(email, dashboardID, name, description, done, error) {
-		Database.addDashboard(email, dashboardID, name, description)
-			.then(() => done())
+	static addDashboard(email, name, description, done, error) {
+		Database.addDashboard(email, name, description)
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -166,9 +166,9 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addGraph(email, dashboardID, graphID, title, options, metadata, done, error) {
-		Database.addGraph(email, dashboardID, graphID, title, options, metadata)
-			.then(() => done())
+	static addGraph(email, dashboardID, title, options, metadata, done, error) {
+		Database.addGraph(email, dashboardID, title, options, metadata)
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -215,15 +215,15 @@ class RestController {
 	}
 
 	/**
-	 * This function unregisters a user.
+	 * This function deregisters a user.
 	 * @param userEmail the users email
 	 * @param userPassword the users password
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise
 	 */
-	static unregisterUser(userEmail, userPassword, done, error) {
-		Database.unregister(userEmail, userPassword)
+	static deregisterUser(userEmail, userPassword, done, error) {
+		Database.deregister(userEmail, userPassword)
 			.then((user) => done())
 			.catch((err) => error && error(err));
 	}

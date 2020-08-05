@@ -425,9 +425,9 @@ function LoginDialog(props) {
     
         {
           state.isLoggedIn === false ?
-            <Button id = 'loginButton' type="dashed" style={{ color: '#3C6A7F' }} onClick={showModal}>Login/Sign Up</Button> 
+            <Button ghost className='button__login' id = 'loginButton' type="dashed"  onClick={showModal}>Login/Sign Up</Button>
             :
-            <Button id = 'logout' type="dashed" style={{ color: '#3C6A7F' }} onClick={handleLogout}>Logout</Button> 
+            <Button ghost className='button__login' id = 'logout' type="dashed" onClick={handleLogout}>Logout</Button>
         }
       <Modal
           title="Login"
