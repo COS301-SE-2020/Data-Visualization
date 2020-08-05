@@ -268,10 +268,7 @@ function Suggestions() {
 
     return (
         loadedFirst ?
-                <div className={classes.root}>
-                    <div id = 'filterDiv'>
-                        <Button id = 'filterButton' icon={<FilterOutlined />} onClick={() => setFilterState(true)}>Filter</Button>
-                    </div>
+                <div className={classes.root}>           
                     <Grid container spacing={3}>
 
                         {currentCharts.map((achart, index) => {
@@ -289,6 +286,7 @@ function Suggestions() {
                         </Grid>}
 
                     </Grid>
+                    <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined />} onClick={() => setFilterState(true)}></Button>
                     <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form" >More like this</Button>
                     <main>
                         {
