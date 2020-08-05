@@ -293,10 +293,9 @@ const request = {
 			if (localStorage.getItem('apikey') !== null) {
 				request.user.apikey = localStorage.getItem('apikey');
 				request.user.isLoggedIn = true;
+				return true;
 			}
-			console.debug('request.user.isLoggedIn', request.user.isLoggedIn)
 			return request.user.isLoggedIn;
-			// return true;
 		},
 		/**
 		 *  Requests an existing user to be logged in.
