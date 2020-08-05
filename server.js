@@ -78,6 +78,7 @@ app.use((req, res, next) => {
 
 app.use('/users', UsersRoute);
 app.use('/suggestions', Suggestions);
+app.use('/datasource/meta', DataSourceRoute);
 
 app.use((req, res, next) => {
 	if (req.body.apikey && loggedUsers && Object.prototype.hasOwnProperty.call(loggedUsers, req.body.apikey)) {
@@ -89,7 +90,7 @@ app.use((req, res, next) => {
 
 app.use('/graphs', GraphsRoute);
 app.use('/dashboards', DashboardsRoute);
-app.use('/datasource', DataSourceRoute);
+app.use('/datasource/src', DataSourceRoute);
 
 let server = app.listen(PORT, function () {
 	console.log(`Server started at http://${HOST}:${PORT}`);

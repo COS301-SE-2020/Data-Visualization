@@ -97,6 +97,15 @@ function formatEntity(src, entity) {
 	return `${src}/${entity}/?$format=json`;
 }
 /**
+ * This function formats an entity in to json and removes the metadata.
+ * @param obj the json object to be formatted
+ * @returns string of json format
+ */
+// function removeMeta(obj) {
+// 	console.log(delete obj['__metadata']);
+// 	return obj;
+// }
+/**
  * This function formats an metadata in to json.
  * @param src the source that needs to be formatted
  * @returns string of json format

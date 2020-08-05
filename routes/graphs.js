@@ -105,6 +105,7 @@ router.post('/remove', (req, res) => {
 		);
 	}
 });
+// TODO: Add  a request that sends the chart type for a specific suggestion
 
 function error(res, err, status = 400) {
 	console.error(err);

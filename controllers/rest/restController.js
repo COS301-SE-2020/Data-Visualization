@@ -10,6 +10,7 @@
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze     Original
  * 12/07/2020   Elna Pistorius & Phillip Schulze     Add Graph Suggester Controller
+ * 05/08/2020   Elna Pistorius  					 Added two new functions that returns a list of fields and a list of entities.
  *
  * Test Cases: none
  *
@@ -241,16 +242,15 @@ class RestController {
 			.catch((err) => error && error(err));
 	}
 	/**
-	 * This function gets an entity list.
-	 * @param src the source where this entity list must be retrieved from
-	 * @param type the type of data that is requested
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @returns a promise of the entity list
+	 * This function gets a list of entities.
+	 * @param src the source url where the entities must be retrieved from.
+	 * @param done a promise that is returned if the request was successful.
+	 * @param error a promise that is returned if the request was unsuccessful.
+	 * @returns a promise of the entity list.
 	 */
-	static getEntityList(src, type, done, error) {
-		DataSource.getEntityList()
-			.then((user) => done(user))
+	static getEntityList(src, done, error) {
+		DataSource.getEntityList(src)
+			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -264,7 +264,7 @@ class RestController {
 	 */
 	static getEntityData(src, type, entity, done, error) {
 		DataSource.getEntityData()
-			.then((user) => done(user))
+			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -276,8 +276,6 @@ class RestController {
 	static getSuggestions(src, done, error) {
 		DataSource.getMetaData(src)
 			.then((XMLString) => {
-				console.log(graphsSuggesterController);
-
 				const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
 
 				let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
@@ -289,7 +287,7 @@ class RestController {
 					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
 				}
 				const randEntity = Meta.sets[randKey]; //select this entity for data source querying
-
+				console.log(randEntity);
 				DataSource.getEntityData(src, randEntity)
 					.then((Odata) => {
 						const options = graphsSuggesterController.getSuggestions(Odata);
@@ -298,6 +296,13 @@ class RestController {
 					})
 					.catch((err) => error && error(err));
 			})
+			.catch((err) => error && error(err));
+	}
+
+
+	static getListOfFields(src, entity, done, error) {
+		DataSource.getEntityData(src, entity)
+			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
 }

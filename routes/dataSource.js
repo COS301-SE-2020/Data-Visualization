@@ -9,7 +9,8 @@
  * Date          Author             				Changes
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
- * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 05/08/2020   Elna Pistorius  					Added two new endpoints that returns a list of fields and a list of entities
  *
  * Test Cases: none
  *
@@ -72,10 +73,46 @@ router.post('/remove', (req, res) => {
 		);
 	}
 });
+router.post('/entities', (req, res) => {
+	if (Object.keys(req.body).length === 0) {
+		error(res, { error: 'Body Undefined' }, 400);
+	} else if (req.body.sourceurl === undefined) {
+		error(res, { error: 'Source Url is Undefined' }, 400);
+	} else {
+		Rest.getEntityList(
+			req.body.sourceurl,
+			(list) => res.status(200).json(list),
+			(err) => error(res, err)
+		);
+	}
+});
+
+router.post('/fields', (req, res) => {
+	if (Object.keys(req.body).length === 0) {
+		error(res, { error: 'Body Undefined' }, 400);
+	} else if (req.body.sourceurl === undefined) {
+		error(res, { error: 'Data Source Id Undefined' }, 400);
+	} else if (req.body.entity === undefined) {
+		error(res, { error: 'Data Source Id Undefined' }, 400);
+	} else {
+		Rest.getListOfFields(
+			req.body.sourceurl,
+			req.body.entity,
+			(list) => res.status(200).json(structureFields(list)),
+			(err) => error(res, err)
+		);
+	}
+});
+
 
 function error(res, err, status = 400) {
 	console.error(err);
 	res.status(status).json(err);
+}
+
+function structureFields(obj) {
+	delete obj[0]['__metadata'];
+	return Object.keys(obj[0]);
 }
 
 module.exports = router;
