@@ -12,6 +12,7 @@
  * 01/07/2020    Marco Lombaard     Added parseODataMetadata function
  * 09/07/2020    Marco Lombaard     Fixed parseODataMetaData function
  * 05/08/2020	 Marco Lombaard		Changed class from singleton to normal class w/ static functions
+ * 05/08/2020	 Marco Lombaard		Added limitFields function
  *
  * Test Cases: none
  *
@@ -50,6 +51,10 @@ class GraphSuggesterController {
 	 */
 	static changeFitnessTarget(target) {
 		graphSuggesterAI.changeFitnessTarget(target);
+	}
+
+	static limitFields(fields) {
+		graphSuggesterAI.excludeFields(fields);
 	}
 
 	/**

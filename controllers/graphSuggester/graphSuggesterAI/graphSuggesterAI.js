@@ -14,6 +14,7 @@
  * 09/07/2020    Marco Lombaard     Fixed getSuggestions and setMetaData functions
  * 15/07/2020    Marco Lombaard     Added more graph types to suggestion generation
  * 05/08/2020	 Marco Lombaard		Converted suggesterAI to singleton
+ * 05/08/2020	 Marco Lombaard		Added excludeFields and notInExcluded functions
  *
  * Test Cases: none
  *
@@ -50,6 +51,7 @@ let graphSuggesterMaker = (function () {
 			this.terminals = [];
 			this.nonTerminals = [];
 			this.nodeWeights = [];
+			this.fieldExclusions = [];
 			//initialise maybe
 
 			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ]);
@@ -130,13 +132,14 @@ let graphSuggesterMaker = (function () {
 				let type = results[0]['__metadata']['type']; //get the table type(Customers, Products, etc.)
 
 				type = type.substr(type.indexOf('.') + 1); //they all start with 'Northwind.' so trim that out
+				// NOTE: only true for Odata right now, other sources may differ
 				//TODO make it adapt to different sources
 
 				//   console.log(this.terminals);
 				//   console.log(type);
 
-				let keys = this.terminals[type]; //check the available keys in the metadata
-				let options = []; //the available key options(processed later)
+				let keys = this.terminals[type]; //check the available attributes in the metadata
+				let options = []; //the available key options(processed later) for suggestion generation
 				let count = 0; //the index for options
 				let nameKey = null;
 
@@ -145,6 +148,7 @@ let graphSuggesterMaker = (function () {
 				for (let key = 0; key < keys.length; key++) {
 					//go through all the keys and get rid of IDs and such
 					//those keys are not graph data, just identifiers
+					//TODO change it so some of this data can be processed
 					let name = keys[key]; //the key
 
 					if (
@@ -154,10 +158,10 @@ let graphSuggesterMaker = (function () {
 							name.includes('Picture') ||
 							name.includes('Description') ||
 							name.includes('Date')
-						)
+						) && this.notInExclusions(name)
 					) {
 						//trim out the "useless" keys
-						options[count++] = keys[key]; //add the key if it is meaningful data
+						options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
 					} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) { //eslint-disable-line
 						//store the name key for later access
 						nameKey = name;
@@ -289,6 +293,20 @@ let graphSuggesterMaker = (function () {
                     graphWeights[target] = bestWeight(so probably 0, maybe some other value for less extreme suggestion changes)
                     graphWeights[originalTarget] = lesserWeight or worstWeight(make other options less attractive again)
              */
+		}
+
+		excludeFields(fields) {
+			this.fieldExclusions = fields;
+		}
+
+		notInExclusions(name) {
+			for (let i=0; i<this.fieldExclusions.length; i++){	//check all exclusions
+				if (name === this.fieldExclusions[i]){	//if it is in exclusions
+					return false;				//exclude it from options
+				}
+			}
+
+			return true;
 		}
 	}
 
