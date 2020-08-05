@@ -7,7 +7,7 @@
  * Related Documents: SRS Document - www.example.com
  * Update History:
  * Date          Author             Changes
- * --------------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------------------------------------
  * 30/06/2020    Marco Lombaard     Original
  * 01/07/2020    Marco Lombaard     Added setMetadata function
  * 02/07/2020    Marco Lombaard     Added constructOption function
@@ -15,6 +15,7 @@
  * 15/07/2020    Marco Lombaard     Added more graph types to suggestion generation
  * 05/08/2020	 Marco Lombaard		Converted suggesterAI to singleton
  * 05/08/2020	 Marco Lombaard		Added excludeFields and notInExcluded functions
+ * 05/08/2020	 Marco Lombaard		Updated changeFitness to accept eChart and deduce fittest characteristics
  *
  * Test Cases: none
  *
@@ -52,6 +53,8 @@ let graphSuggesterMaker = (function () {
 			this.nonTerminals = [];
 			this.nodeWeights = [];
 			this.fieldExclusions = [];
+			this.fittestGraph = null;
+			this.fittestField = null;
 			//initialise maybe
 
 			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ]);
@@ -273,26 +276,14 @@ let graphSuggesterMaker = (function () {
 		}
 
 		/**
-		 * This function sets the target graph as the fittest individual, so the genetic algorithm tries to
-		 * achieve more generations of that type.
-		 * @param target the target graph type
+		 * This function sets the target graph characteristics as the fittest characteristics, so the genetic algorithm \
+		 * tries to achieve more generations with those characteristics.
+		 * @param graphType the type of graph(ex. pie, bar, scatter)
+		 * @param fieldType the type of field(ex. string, int, bool)
 		 */
-		changeFitnessTarget(target) {
-			//change target with best fitness
-			let targetPosition = this.graphTypes.indexOf(target);
-			let worstWeight = 10; //this doesn't have to be hardcoded and can be decided by an algorithm/formula
-
-			for (let i = 0; i < this.graphWeights.length; i++) {
-				this.graphWeights[i] = worstWeight; //reset weights so that fittest individual is the target
-			}
-
-			this.graphWeights[targetPosition] = 0; //set target to fittest individual
-
-			/*
-                    the idea is something along the lines of:
-                    graphWeights[target] = bestWeight(so probably 0, maybe some other value for less extreme suggestion changes)
-                    graphWeights[originalTarget] = lesserWeight or worstWeight(make other options less attractive again)
-             */
+		changeFitnessTarget(graphType, fieldType) {
+			this.fittestGraph = graphType;
+			this.fittestField = fieldType;
 		}
 
 		excludeFields(fields) {
