@@ -205,6 +205,40 @@ let graphSuggesterMaker = (function () {
 		}
 
 		/**
+		 * This function sets the target graph characteristics as the fittest characteristics, so the genetic algorithm \
+		 * tries to achieve more generations with those characteristics.
+		 * @param graphType the type of graph(ex. pie, bar, scatter)
+		 * @param fieldType the type of field(ex. string, int, bool)
+		 */
+		changeFitnessTarget(graphType, fieldType) {
+			this.fittestGraph = graphType;
+			this.fittestField = fieldType;
+		}
+
+		/**
+		 * This function stores the fields that are excluded from suggestion generation
+		 * @param fields the fields that need to be excluded, in array format
+		 */
+		excludeFields(fields) {
+			this.fieldExclusions = fields;
+		}
+
+		/**
+		 * This function checks if the parameter is listed in excluded fields, returning false if it is, true if it isn't
+		 * @param name the name of the field that needs to be checked
+		 * @return {boolean} true if the field is not in exclusions, false if it is listed as an exclusion
+		 */
+		notInExclusions(name) {
+			for (let i=0; i<this.fieldExclusions.length; i++){	//check all exclusions
+				if (name === this.fieldExclusions[i]){	//if it is in exclusions
+					return false;				//exclude it from options
+				}
+			}
+
+			return true;
+		}
+
+		/**
 		 * This function constructs and returns the graph parameters for eChart graph generation in frontend.
 		 * @param data an array containing data arrays, which contain data for graphs.
 		 * @param graph the type of graph to be used.
@@ -273,31 +307,6 @@ let graphSuggesterMaker = (function () {
 			}
 
 			return option;
-		}
-
-		/**
-		 * This function sets the target graph characteristics as the fittest characteristics, so the genetic algorithm \
-		 * tries to achieve more generations with those characteristics.
-		 * @param graphType the type of graph(ex. pie, bar, scatter)
-		 * @param fieldType the type of field(ex. string, int, bool)
-		 */
-		changeFitnessTarget(graphType, fieldType) {
-			this.fittestGraph = graphType;
-			this.fittestField = fieldType;
-		}
-
-		excludeFields(fields) {
-			this.fieldExclusions = fields;
-		}
-
-		notInExclusions(name) {
-			for (let i=0; i<this.fieldExclusions.length; i++){	//check all exclusions
-				if (name === this.fieldExclusions[i]){	//if it is in exclusions
-					return false;				//exclude it from options
-				}
-			}
-
-			return true;
 		}
 	}
 
