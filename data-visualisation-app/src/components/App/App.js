@@ -461,6 +461,7 @@ function App(props) {
 
 						</Typography>
 						<LoginDialog 
+							
 							handlePageType ={handlePageType}
 							setDashboardIndex = {setDashboardIndex}
 							setDashboardStage = {setDashboardStage}

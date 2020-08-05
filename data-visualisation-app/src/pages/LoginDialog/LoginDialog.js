@@ -424,7 +424,7 @@ function LoginDialog(props) {
     <div id = 'loginDiv'>
     
         {
-          state.isLoggedIn === false ?
+          (!props.isLoggedIn || state.isLoggedIn === false) ?
             <Button ghost className='button__login' id = 'loginButton' type="dashed"  onClick={showModal}>Login/Sign Up</Button>
             :
             <Button ghost className='button__login' id = 'logout' type="dashed" onClick={handleLogout}>Logout</Button>

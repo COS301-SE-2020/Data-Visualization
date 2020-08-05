@@ -294,7 +294,9 @@ const request = {
 			if (localStorage.getItem('apikey') !== null) {
 				request.user.apikey = localStorage.getItem('apikey');
 				request.user.isLoggedIn = true;
+				return true;
 			}
+			return false;
 		},
 		/**
 		 *  Requests an existing user to be logged in.
