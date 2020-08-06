@@ -26,7 +26,6 @@ const express = require('express');
 const router = express.Router();
 const { Rest } = require('../controllers');
 
-//  1. GET_DASHBOARDS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.post('/list', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
@@ -39,8 +38,6 @@ router.post('/list', (req, res) => {
 	}
 });
 
-//  2. ADD_DASHBOARDS (THIS WILL JUST ADD A DASHBOARD TO THE PANEL PAGE)
-// => POST (nameOfDashboard, descriptionOfDashboard,dashColour)
 router.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
@@ -59,7 +56,6 @@ router.post('/add', (req, res) => {
 	}
 });
 
-//  3. REMOVE_DASHBOARD
 router.post('/remove', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
@@ -77,10 +73,6 @@ router.post('/remove', (req, res) => {
 	}
 });
 
-//  4. UPDATE_DASHBOARD_NAME
-//  => PUT(dashboardNewName, dashboardID)
-//     UPDATE_DASHBOARD_DESCRIPTION
-//  => PUT(dashboardDescription, dashboardID)
 router.post('/update', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
