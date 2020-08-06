@@ -27,6 +27,7 @@ const express = require('express');
 const router = express.Router();
 
 const { Rest } = require('../controllers');
+const { LogAuthUsers } = require('../helper');
 
 let loggedUsers = {};
 
@@ -38,29 +39,29 @@ router.post('/login', (req, res) => {
 	} else if (!checkUserPasswordLogin(req.body.password)) {
 		error(res, { error: 'User Password Incorrect' }, 400);
 	} else {
-		Rest.loginUser(
-			req.body.email,
-			req.body.password,
-			(user) => {
-				if (user === false) {
-					res.status(401).json({ message: 'Failed to Log In User' });
-				} else {
-					// if (!req.session.sid) req.session.sid = {};
-					// req.session.sid[user.apikey] = user;
-					loggedUsers[user.apikey] = user;
+		const users = Object.keys(loggedUsers)
+			.filter((key) => loggedUsers[key].email === req.body.email)
+			.map((key) => loggedUsers[key]);
 
-					console.log('=====================================');
-					console.log(
-						'USERS',
-						Object.keys(loggedUsers).map((key) => `${key} : ${loggedUsers[key].email}`)
-					);
-					console.log('=====================================');
-
-					res.status(200).json({ message: 'Successfully Logged In User', ...user });
-				}
-			},
-			(err) => error(res, err, 400)
-		);
+		if (users.length > 0) {
+			LogAuthUsers(loggedUsers);
+			res.status(200).json({ message: 'Successfully Logged In User', ...users[0] });
+		} else {
+			Rest.loginUser(
+				req.body.email,
+				req.body.password,
+				(user) => {
+					if (user === false) {
+						res.status(401).json({ message: 'Failed to Log In User' });
+					} else {
+						loggedUsers[user.apikey] = user;
+						LogAuthUsers(loggedUsers);
+						res.status(200).json({ message: 'Successfully Logged In User', ...user });
+					}
+				},
+				(err) => error(res, err, 400)
+			);
+		}
 	}
 });
 

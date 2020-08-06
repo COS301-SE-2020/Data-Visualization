@@ -94,6 +94,7 @@ class Database {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
 							// if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful');
 							delete result.rows[0].password;
+							result.rows[0].apikey = generateApiKey();
 							resolve(result.rows[0]);
 						} else {
 							// if (!PRODUCTION) console.log('==> AUTHENTICATION: failed');
@@ -118,21 +119,16 @@ class Database {
 	static register(fname, lname, email, password) {
 		password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
-		const apikey = generateApiKey();
 		// if (!PRODUCTION) console.log('==> REGISTER: ' + email + ' |' + apikey);
 
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES($1,$2,$3,$4,$5) RETURNING email,firstname,lastname,apikey;', [
-				email,
-				fname,
-				lname,
-				password,
-				apikey,
-			])
+			Database.sendQuery('INSERT INTO Users (email,firstname,lastname,password) VALUES($1,$2,$3,$4) RETURNING email,firstname,lastname;', [email, fname, lname, password])
 				.then((response) => {
 					// if (!PRODUCTION) console.log('REGISTER RESPONSE');
-					if (response.rows.length > 0) resolve(response.rows[0]);
-					else reject(response);
+					if (response.rows.length > 0) {
+						response.rows[0].apikey = generateApiKey();
+						resolve(response.rows[0]);
+					} else reject(response);
 				})
 				.catch((err) => {
 					// console.log(err);

@@ -31,14 +31,9 @@ const staticPath = '/data-visualisation-app/build/';
 // const pgStore = require('connect-pg-simple')(session);
 // const { Database } = require('./controllers');
 const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRoute, Suggestions, loggedUsers } = require('./routes');
+const { LogReqParams } = require('./helper');
 
-const {
-	PORT = 8000,
-	HOST = '127.0.0.1',
-	// SESS_NAME = 'sid',
-	// SESS_LIFETIME = 30 * 24 * 60 * 60 * 1000, //ms
-	// SESS_SECRET = 'my secret string',
-} = process.env;
+const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
 const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 const app = express();
 app.use(cors());
@@ -46,36 +41,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(__dirname + staticPath));
 
-// app.use(
-// 	session({
-// 		store: new pgStore({
-// 			pool: Database.pgPool,
-// 			tableName: 'session',
-// 		}),
-// 		name: SESS_NAME,
-// 		resave: false,
-// 		saveUninitialized: false,
-// 		secret: SESS_SECRET,
-// 		cookie: {
-// 			maxAge: parseInt(SESS_LIFETIME),
-// 			sameSite: PRODUCTION,
-// 			secure: PRODUCTION,
-// 		},
-// 	})
-// );
-
 app.use((req, res, next) => {
-	if (!PRODUCTION) {
-		console.log('=====================================');
-		console.log(req.method);
-		console.log(req.body);
-		console.log(req.query);
-		console.log(
-			'USERS',
-			Object.keys(loggedUsers).map((key) => `${key} : ${loggedUsers[key].email}`)
-		);
-		console.log('=====================================');
-	}
+	if (!PRODUCTION) LogReqParams(req);
 	next();
 });
 
