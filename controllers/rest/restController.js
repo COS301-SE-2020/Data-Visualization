@@ -10,6 +10,9 @@
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze     Original
  * 12/07/2020   Elna Pistorius & Phillip Schulze     Add Graph Suggester Controller
+ * 05/08/2020   Phillip Schulze  					 Updated the id's and added new deregister function.
+ * 05/08/2020   Elna Pistorius  					 Added two new functions that returns a list of fields and a list of entities.
+ * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
  *
  * Test Cases: none
  *
@@ -45,15 +48,14 @@ class RestController {
 	/**
 	 * This function adds a data source.
 	 * @param email the users email
-	 * @param dataSourceID the data sources id
 	 * @param dataSourceURL the data sources url
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDataSource(email, dataSourceID, dataSourceURL, done, error) {
-		Database.addDataSource(email, dataSourceID, dataSourceURL)
-			.then(() => done())
+	static addDataSource(email, dataSourceURL, done, error) {
+		Database.addDataSource(email, dataSourceURL)
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -84,16 +86,15 @@ class RestController {
 	/**
 	 * This function adds a new dashboard.
 	 * @param email the users email
-	 * @param dashboardID the dashboards id
 	 * @param name the name of the dashboard
 	 * @param description the description of the dashboard
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDashboard(email, dashboardID, name, description, done, error) {
-		Database.addDashboard(email, dashboardID, name, description)
-			.then(() => done())
+	static addDashboard(email, name, description, done, error) {
+		Database.addDashboard(email, name, description)
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -157,7 +158,6 @@ class RestController {
 	 * This function is used to add a graph to a dashboard.
 	 * @param email the users email
 	 * @param dashboardID the dashboards id
-	 * @param graphID the graphs id
 	 * @param title the title of the graph
 	 * @param options the options is a JSON object that stores the options and data of the graph
 	 * @param metadata the metadata is a JSON object that stores the presentation data of the graph
@@ -165,9 +165,9 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addGraph(email, dashboardID, graphID, title, options, metadata, done, error) {
-		Database.addGraph(email, dashboardID, graphID, title, options, metadata)
-			.then(() => done())
+	static addGraph(email, dashboardID, title, options, metadata, done, error) {
+		Database.addGraph(email, dashboardID, title, options, metadata)
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -214,16 +214,16 @@ class RestController {
 	}
 
 	/**
-	 * This function unregisters a user.
+	 * This function deregisters a user.
 	 * @param userEmail the users email
 	 * @param userPassword the users password
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise
 	 */
-	static unregisterUser(userEmail, userPassword, done, error) {
-		Database.unregister(userEmail, userPassword)
-			.then((user) => done())
+	static deregisterUser(userEmail, userPassword, done, error) {
+		Database.deregister(userEmail, userPassword)
+			.then(() => done())
 			.catch((err) => error && error(err));
 	}
 
@@ -241,16 +241,15 @@ class RestController {
 			.catch((err) => error && error(err));
 	}
 	/**
-	 * This function gets an entity list.
-	 * @param src the source where this entity list must be retrieved from
-	 * @param type the type of data that is requested
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @returns a promise of the entity list
+	 * This function gets a list of entities.
+	 * @param src the source url where the entities must be retrieved from.
+	 * @param done a promise that is returned if the request was successful.
+	 * @param error a promise that is returned if the request was unsuccessful.
+	 * @returns a promise of the entity list.
 	 */
-	static getEntityList(src, type, done, error) {
-		DataSource.getEntityList()
-			.then((user) => done(user))
+	static getEntityList(src, done, error) {
+		DataSource.getEntityList(src)
+			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -264,7 +263,7 @@ class RestController {
 	 */
 	static getEntityData(src, type, entity, done, error) {
 		DataSource.getEntityData()
-			.then((user) => done(user))
+			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -289,7 +288,7 @@ class RestController {
 					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
 				}
 				const randEntity = Meta.sets[randKey]; //select this entity for data source querying
-
+				console.log(randEntity);
 				DataSource.getEntityData(src, randEntity)
 					.then((Odata) => {
 						const options = GraphSuggesterController.getSuggestions(Odata);
@@ -299,6 +298,28 @@ class RestController {
 					.catch((err) => error && error(err));
 			})
 			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function gets a list of fields for a specific entity
+	 * @param src the source that is requested to be used to get entity.
+	 * @param entity the entity that fields are required from
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static getListOfFields(src, entity, done, error) {
+		DataSource.getEntityData(src, entity)
+			.then((list) => done(list))
+			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function updates the graph types of the suggestions.
+	 * @param graphTypes the types of graphs that needs to be updated
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static updateGraphTypes(graphTypes, done, error){
+		console.log(graphTypes);
+		//TODO: Finish this
 	}
 }
 

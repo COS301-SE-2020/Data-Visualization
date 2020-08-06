@@ -10,7 +10,8 @@
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
  * 30/06/2020   Elna Pistorius & Phillip Schulze    Added more functionality
- * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 06/08/2020	Elna Pistorius 						Added the deregister endpoint
  *
  * Test Cases: none
  *
@@ -27,6 +28,7 @@ const express = require('express');
 const router = express.Router();
 
 const { Rest } = require('../controllers');
+const { LogAuthUsers } = require('../helper');
 
 let loggedUsers = {};
 
@@ -38,21 +40,29 @@ router.post('/login', (req, res) => {
 	} else if (!checkUserPasswordLogin(req.body.password)) {
 		error(res, { error: 'User Password Incorrect' }, 400);
 	} else {
-		Rest.loginUser(
-			req.body.email,
-			req.body.password,
-			(user) => {
-				if (user === false) {
-					res.status(401).json({ message: 'Failed to Log In User' });
-				} else {
-					// if (!req.session.sid) req.session.sid = {};
-					// req.session.sid[user.apikey] = user;
-					loggedUsers[user.apikey] = user;
-					res.status(200).json({ message: 'Successfully Logged In User', apikey: user.apikey });
-				}
-			},
-			(err) => error(res, err, 400)
-		);
+		const users = Object.keys(loggedUsers)
+			.filter((key) => loggedUsers[key].email === req.body.email)
+			.map((key) => loggedUsers[key]);
+
+		if (users.length > 0) {
+			LogAuthUsers(loggedUsers);
+			res.status(200).json({ message: 'Successfully Logged In User', ...users[0] });
+		} else {
+			Rest.loginUser(
+				req.body.email,
+				req.body.password,
+				(user) => {
+					if (user === false) {
+						res.status(401).json({ message: 'Failed to Log In User' });
+					} else {
+						loggedUsers[user.apikey] = user;
+						LogAuthUsers(loggedUsers);
+						res.status(200).json({ message: 'Successfully Logged In User', ...user });
+					}
+				},
+				(err) => error(res, err, 400)
+			);
+		}
 	}
 });
 
@@ -77,7 +87,15 @@ router.post('/register', (req, res) => {
 				// if (!req.session.sid) req.session.sid = {};
 				// req.session.sid[user.apikey] = user;
 				loggedUsers[user.apikey] = user;
-				res.status(200).json({ message: 'Successfully Registered User', apikey: user.apikey });
+
+				console.log('=====================================');
+				console.log(
+					'USERS',
+					Object.keys(loggedUsers).map((key) => `${key} : ${loggedUsers[key].email}`)
+				);
+				console.log('=====================================');
+
+				res.status(200).json({ message: 'Successfully Registered User', ...user });
 			},
 			(err) => error(res, err, 400)
 		);
@@ -85,6 +103,14 @@ router.post('/register', (req, res) => {
 });
 router.post('/logout', (req, res) => {
 	delete loggedUsers[req.body.apikey];
+
+	console.log('=====================================');
+	console.log(
+		'USERS',
+		Object.keys(loggedUsers).map((key) => `${key} : ${loggedUsers[key].email}`)
+	);
+	console.log('=====================================');
+
 	res.status(200).json({ message: 'Successfully Logged out' });
 
 	// req.session.destroy((err) => {
@@ -97,6 +123,23 @@ router.post('/logout', (req, res) => {
 	//     res.status(200).json({ message: 'Successfully Logged out' });
 	//   }
 	// });
+});
+
+router.post('/deregister', (req, res) => {
+	if (Object.keys(req.body).length === 0) {
+		error(res, { error: 'Body Undefined' }, 400);
+	} else if (!checkUserEmail(req.body.email)) {
+		error(res, { error: 'User Email Incorrect' }, 400);
+	} else if (!checkUserPasswordLogin(req.body.password)) {
+		error(res, { error: 'User Password Incorrect' }, 400);
+	} else {
+		Rest.deregisterUser(
+			req.body.email,
+			req.body.password,
+			() => res.status(200).json({ message: 'Successfully Deregistered User' }),
+			(err) => error(res, err, 400)
+		);
+	}
 });
 /**
  * This function displays the error's message if one occurred in the console.

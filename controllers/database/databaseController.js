@@ -28,6 +28,7 @@ const params = require('url').parse(process.env.DATABASE_URL);
 const auth = params.auth.split(':');
 
 const bcrypt = require('bcryptjs');
+// const { off } = require('process');
 const saltRounds = 12;
 const config = {
 	user: auth[0],
@@ -53,14 +54,15 @@ class Database {
 	 * @param querySql the query that needs to be executed in the database
 	 * @returns a promise
 	 */
-	static sendQuery(querySql) {
+	static sendQuery(querySql, values) {
 		// if (!PRODUCTION) console.log(querySql);
+		// console.log(querySql, values);
 		return new Promise((conResolve, conReject) => {
 			Database.pgPool
 				.connect()
 				.then((client) => {
 					client
-						.query(querySql)
+						.query(querySql, values)
 						.then((res) => {
 							client.release();
 							if (typeof res === 'undefined') conReject(DBerror(UndefinedResponseFromDBerror(querySql)));
@@ -86,12 +88,13 @@ class Database {
 	static authenticate(email, password) {
 		return new Promise((resolve, reject) => {
 			// if (!PRODUCTION) console.log('==> AUTHENTICATING: ' + email);
-			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
+			Database.sendQuery('SELECT * FROM Users WHERE( email = $1);', [email])
 				.then((result) => {
 					if (typeof result !== 'undefined' && result.command === 'SELECT') {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
 							// if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful');
 							delete result.rows[0].password;
+							result.rows[0].apikey = generateApiKey();
 							resolve(result.rows[0]);
 						} else {
 							// if (!PRODUCTION) console.log('==> AUTHENTICATION: failed');
@@ -116,14 +119,16 @@ class Database {
 	static register(fname, lname, email, password) {
 		password = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
-		const apikey = generateApiKey();
 		// if (!PRODUCTION) console.log('==> REGISTER: ' + email + ' |' + apikey);
 
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(`INSERT INTO Users (email,firstname,lastname,password,apikey) VALUES('${email}', '${fname}', '${lname}', '${password}', '${apikey}')`)
+			Database.sendQuery('INSERT INTO Users (email,firstname,lastname,password) VALUES($1,$2,$3,$4) RETURNING email,firstname,lastname;', [email, fname, lname, password])
 				.then((response) => {
 					// if (!PRODUCTION) console.log('REGISTER RESPONSE');
-					resolve({ apikey });
+					if (response.rows.length > 0) {
+						response.rows[0].apikey = generateApiKey();
+						resolve(response.rows[0]);
+					} else reject(response);
 				})
 				.catch((err) => {
 					// console.log(err);
@@ -132,18 +137,16 @@ class Database {
 		});
 	}
 
-	static async unregister(email, password) {
+	static async deregister(email, password) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(`SELECT * FROM Users WHERE( email = '${email}');`)
+			Database.sendQuery('SELECT * FROM Users WHERE( email = $1);', [email])
 				.then((result) => {
 					if (typeof result !== 'undefined' && result.command === 'SELECT') {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
-							Database.sendQuery(`DELETE FROM Users WHERE( email = '${email}');`)
-								.then((result) => {
-									resolve(true);
-								})
+							Database.sendQuery('DELETE FROM Users WHERE( email = $1);', [email])
+								.then(() => resolve())
 								.catch((err) => reject(err));
-						} else resolve(false);
+						} else resolve();
 					} else reject(result);
 				})
 				.catch((err) => reject(err));
@@ -157,9 +160,8 @@ class Database {
 	 * @returns a promise
 	 */
 	static async getDataSourceList(email) {
-		let query = `SELECT * FROM datasource WHERE ( email = '${email}');`;
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
+			Database.sendQuery('SELECT * FROM datasource WHERE ( email = $1);', [email])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -171,11 +173,13 @@ class Database {
 	 * @param sourceURL the data source url to add
 	 * @returns a promise
 	 */
-	static async addDataSource(email, sourceID, sourceURL) {
-		let query = `INSERT INTO datasource (id, email, sourceurl) VALUES ('${sourceID}','${email}','${sourceURL}');`;
+	static async addDataSource(email, sourceURL) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
-				.then((result) => resolve(result.rows))
+			Database.sendQuery('INSERT INTO datasource (email, sourceurl) VALUES ($1,$2) RETURNING *;', [email, sourceURL])
+				.then((result) => {
+					if (result.rows.length > 0) resolve(result.rows[0]);
+					else reject(result);
+				})
 				.catch((result) => reject(result));
 		});
 	}
@@ -186,9 +190,8 @@ class Database {
 	 * @returns a promise
 	 */
 	static async removeDataSource(email, dataSourceID) {
-		let query = `DELETE FROM datasource WHERE ( email = '${email}') AND ( ID = '${dataSourceID}');`;
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
+			Database.sendQuery('DELETE FROM datasource WHERE ( email = $1) AND ( ID = $2);', [email, dataSourceID])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -201,9 +204,8 @@ class Database {
 	 * @returns a promise
 	 */
 	static async getDashboardList(email) {
-		let query = `SELECT * FROM Dashboard WHERE (email = '${email}');`;
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
+			Database.sendQuery('SELECT * FROM Dashboard WHERE (email = $1);', [email])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -216,11 +218,14 @@ class Database {
 	 * @param desc the description of the dashbaord
 	 * @returns a promise
 	 */
-	static async addDashboard(email, dashboardID, name, desc) {
-		let query = `INSERT INTO Dashboard (id,Name,Description,email) VALUES ('${dashboardID}','${name}','${desc}','${email}');`;
+	static async addDashboard(email, name, desc) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
-				.then((result) => resolve(result.rows))
+			Database.sendQuery('INSERT INTO Dashboard (Name,Description,email) VALUES ($1,$2,$3) RETURNING *;', [name, desc, email])
+				.then((result) => {
+					// console.log(result);
+					if (result.rows.length > 0) resolve(result.rows[0]);
+					else reject(result);
+				})
 				.catch((result) => reject(result));
 		});
 	}
@@ -231,9 +236,8 @@ class Database {
 	 * @returns a promise
 	 */
 	static async removeDashboard(email, dashboardID) {
-		let query = `DELETE FROM Dashboard WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
+			Database.sendQuery('DELETE FROM Dashboard WHERE ( email = $1 ) AND ( ID = $2);', [email, dashboardID])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -247,22 +251,8 @@ class Database {
 	 * @returns a promise
 	 */
 	static async updateDashboard(email, dashboardID, fields, data) {
-		// console.log(fields, data);
-
-		let index = -1;
-		fields = fields.filter((field, i) => {
-			if (field === 'email') {
-				index = i;
-				return false;
-			} else return true;
-		});
-		if (index >= 0) data.splice(index, 1);
-
-		// console.log(fields, data);
-
-		let query = `UPDATE Dashboard SET ${fieldUpdates(fields, data)} WHERE ( email = '${email}' ) AND ( ID = '${dashboardID}');`;
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
+			Database.sendQuery(`UPDATE Dashboard SET ${fieldUpdates(fields, data, 2)} WHERE ( email = $1 ) AND ( ID = $2);`, [email, dashboardID, ...data])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -276,11 +266,8 @@ class Database {
 	 * @returns a promise
 	 */
 	static async getGraphList(email, dashboardID) {
-		let query = ` SELECT g.* from graph as g join (
-      SELECT * from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}')
-    ) as de on (g.dashboardid=de.id);`;
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
+			Database.sendQuery('SELECT g.* from graph as g join (SELECT * from dashboard as d WHERE (d.email = $1) AND (d.id = $2)) as de on (g.dashboardid=de.id);', [email, dashboardID])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -295,15 +282,16 @@ class Database {
 	 * @param metadata the metadata is a JSON object that stores the presentation data of the graph
 	 * @returns a promise
 	 */
-	static async addGraph(email, dashboardID, graphID, title, options, metadata) {
-		options = JSON.stringify(options);
-		metadata = JSON.stringify(metadata);
-		let query = `INSERT INTO GRAPH (id, dashboardid, title, metadata, options)
-    SELECT '${graphID}', '${dashboardID}', '${title}', '${metadata}','${options}'
-    WHERE EXISTS (SELECT '${email}' FROM dashboard AS d WHERE (d.email = '${email}') AND (d.ID = '${dashboardID}'))`;
+	static async addGraph(email, dashboardID, title, options, metadata) {
+		let query =
+			'INSERT INTO GRAPH as g (dashboardid, title, metadata, options) (SELECT $1,$2,$3,$4 WHERE EXISTS (SELECT $5 FROM dashboard AS d WHERE (d.email = $5) AND (d.ID = $1)) ) RETURNING g.*';
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
-				.then((result) => resolve(result.rows))
+			Database.sendQuery(query, [dashboardID, title, JSON.stringify(metadata), JSON.stringify(options), email])
+				.then((result) => {
+					console.log(result.rows);
+					if (result.rows.length > 0) resolve(result.rows[0]);
+					else reject(result);
+				})
 				.catch((result) => reject(result));
 		});
 	}
@@ -315,11 +303,9 @@ class Database {
 	 * @returns a promise
 	 */
 	static async removeGraph(email, dashboardID, graphID) {
-		let query = `DELETE FROM Graph as g WHERE (
-      g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
-    ) AND (g.ID = '${graphID}');`;
+		let query = 'DELETE FROM Graph as g WHERE (g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = $1) AND (d.id = $2))) AND (g.ID = $3);';
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
+			Database.sendQuery(query, [email, dashboardID, graphID])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -333,11 +319,13 @@ class Database {
 	 */
 	static async updateGraph(email, dashboardID, graphID, fields, data) {
 		data = data.map((item, i) => (i < fields.length && (fields[i] === 'metadata' || fields[i] === 'options') ? JSON.stringify(item) : item));
-		let query = `UPDATE Graph as g SET ${fieldUpdates(fields, data)} WHERE (
-      g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = '${email}') AND (d.id = '${dashboardID}'))
-    ) AND (g.ID = '${graphID}');`;
+
+		let query = `UPDATE Graph as g SET ${fieldUpdates(fields, data, 3)} WHERE (
+      g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = $1) AND (d.id = $2))
+	) AND (g.ID = $3);`;
+
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(query)
+			Database.sendQuery(query, [email, dashboardID, graphID, ...data])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -350,10 +338,21 @@ Database.pgPool = new Pool(config);
  * @param data
  * @returns a string
  */
-function fieldUpdates(fields, data) {
+function fieldUpdates(fields, data, offset) {
+	offset = offset || 0;
+	let index = -1;
+	fields = fields.filter((field, i) => {
+		if (field === 'email') {
+			index = i;
+			return false;
+		} else return true;
+	});
+	if (index >= 0) data.splice(index, 1);
+
 	let output = '';
 	for (let i = 0; i < fields.length && i < data.length; i++) {
-		output = output + ` ${fields[i]} = '${data[i]}'${i < fields.length - 1 && i < data.length - 1 ? ', ' : ''}`;
+		const d = i + offset + 1;
+		output = output + ' ' + fields[i] + ' = $' + d + (i < fields.length - 1 && i < data.length - 1 ? ', ' : '');
 	}
 	return output;
 }

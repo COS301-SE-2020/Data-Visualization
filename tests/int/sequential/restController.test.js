@@ -58,7 +58,7 @@ const GRAPH_DATA = [ GRAPH_NEW_TITLE, GRAPH_NEW_OPTIONS, GRAPH_NEW_META ];
 
 describe('Testing user management', () => {
 	beforeEach((done) => {
-		return Rest.unregisterUser(
+		return Rest.deregisterUser(
 			EMAIL,
 			PASSWORD,
 			() => done(),
@@ -67,7 +67,7 @@ describe('Testing user management', () => {
 	});
 
 	afterAll((done) => {
-		return Rest.unregisterUser(
+		return Rest.deregisterUser(
 			EMAIL,
 			PASSWORD,
 			() => done(),
@@ -143,7 +143,7 @@ describe('Testing with an existing user', () => {
 	});
 
 	afterAll((done) => {
-		return Rest.unregisterUser(
+		return Rest.deregisterUser(
 			EMAIL,
 			PASSWORD,
 			() => done(),
@@ -410,7 +410,7 @@ describe('Testing with an existing user', () => {
 });
 
 afterAll((done) => {
-	return Rest.unregisterUser(
+	return Rest.deregisterUser(
 		EMAIL,
 		PASSWORD,
 		() => {

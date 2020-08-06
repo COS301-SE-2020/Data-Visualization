@@ -7,7 +7,9 @@
 		"start": "npm run lint && node server.js",
 		"lint": "if [ \"$NODE_ENV\" = \"development\" ]; then eslint . --fix; fi",
 		"build": "npm run build --prefix ./data-visualisation-app",
-		"test": "npm run test:unit && npm run test:int",
+		"test": "npm run test:back",
+		"test:back": "npm run test:unit && npm run test:int",
+		"test:front": "npm test --prefix ./data-visualisation-app",
 		"test:update": "npm run test:unit:update && npm run test:int:update",
 		"test:unit": "jest -u unit --verbose",
 		"test:unit:update": "jest -u unit --updateSnapshot",
@@ -17,7 +19,7 @@
 		"test:int:par": "jest -u parallel --verbose",
 		"test:int:seq:update": "jest -u --runInBand sequential --updateSnapshot",
 		"test:int:par:update": "jest -u parallel --updateSnapshot",
-		"posttest": "npm test --prefix ./data-visualisation-app",
+		"posttest": "",
 		"postinstall": "if [ ! \"$NODE_ENV\" = \"development\" ]; then npm install --prefix ./data-visualisation-app; fi"
 	},
 	"repository": {

@@ -9,7 +9,8 @@
  * Date          Author             				Changes
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
- * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 06/08/2020   Elna Pistorius						Added graph type filter endpoint
  *
  * Test Cases: none
  *
@@ -42,8 +43,6 @@ router.post('/list', (req, res) => {
 	}
 });
 
-//  2. UPDATE_GRAPH
-//  => PUT(graphType, graphID)
 router.post('/update', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
@@ -64,13 +63,10 @@ router.post('/update', (req, res) => {
 	}
 });
 
-//  3. ADD_GRAPH_TO_DASHBOARD
-// => POST (dashboardID, graphID)
 router.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
 	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
-	else if (req.body.graphID === undefined) error(res, { error: 'GraphID Is Undefined' }, 400);
 	else if (req.body.title === undefined) error(res, { error: 'Title Is Undefined' }, 400);
 	else if (req.body.options === undefined) error(res, { error: 'Options Is Undefined' }, 400);
 	else if (req.body.metadata === undefined) error(res, { error: 'MetData Is Undefined' }, 400);
@@ -78,18 +74,15 @@ router.post('/add', (req, res) => {
 		Rest.addGraph(
 			req.body.email,
 			req.body.dashboardID,
-			req.body.graphID,
 			req.body.title,
 			req.body.options,
 			req.body.metadata,
-			() => res.status(200).json({ message: 'Successfully Added To Dashboard' }),
+			(data) => res.status(200).json({ message: 'Successfully Added To Dashboard', ...data }),
 			(err) => error(res, err)
 		);
 	}
 });
 
-//  4. DELETE_GRAPH_FROM_DASHBOARD
-//  => DELETE (graphID)
 router.post('/remove', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
@@ -101,6 +94,18 @@ router.post('/remove', (req, res) => {
 			req.body.dashboardID,
 			req.body.graphID,
 			() => res.status(200).json({ message: 'Successfully Removed Graph' }),
+			(err) => error(res, err)
+		);
+	}
+});
+
+router.post('/types', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.graphs === undefined) error(res, { error: 'Graphs Is Undefined' }, 400);
+	else {
+		Rest.updateGraphTypes(
+			req.body.graphs,
+			() => res.status(200).json({ message: 'Successfully Updated Graph Type' }),
 			(err) => error(res, err)
 		);
 	}

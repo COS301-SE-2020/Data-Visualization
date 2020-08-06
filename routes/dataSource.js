@@ -9,7 +9,8 @@
  * Date          Author             				Changes
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
- * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 05/08/2020   Elna Pistorius  					Added two new endpoints that returns a list of fields and a list of entities
  *
  * Test Cases: none
  *
@@ -24,11 +25,12 @@
 
 require('dotenv').config();
 const express = require('express');
-const router = express.Router();
+const DataSourceRouteSrc = express.Router();
+const DataSourceRouteMeta = express.Router();
 
 const { Rest } = require('../controllers');
 
-router.post('/list', (req, res) => {
+DataSourceRouteSrc.post('/list', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
 	} else {
@@ -40,34 +42,59 @@ router.post('/list', (req, res) => {
 	}
 });
 
-router.post('/add', (req, res) => {
+DataSourceRouteSrc.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dataSourceID === undefined) {
-		error(res, { error: 'Data Source Id Undefined' }, 400);
 	} else if (req.body.dataSourceUrl === undefined) {
 		error(res, { error: 'Data Source url Undefined' }, 400);
 	} else {
 		Rest.addDataSource(
 			req.body.email,
-			req.body.dataSourceID,
 			req.body.dataSourceUrl,
-			() => res.status(200).json({ message: 'Successfully Added Data Source' }),
+			(data) => res.status(200).json({ message: 'Successfully Added Data Source', ...data }),
 			(err) => error(res, err)
 		);
 	}
 });
 
-router.post('/remove', (req, res) => {
+DataSourceRouteSrc.post('/remove', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dataSourceID === undefined) {
-		error(res, { error: 'Data Source Id Undefined' }, 400);
 	} else {
 		Rest.removeDataSource(
 			req.body.email,
 			req.body.dataSourceID,
 			() => res.status(200).json({ message: 'Successfully Removed Data Source' }),
+			(err) => error(res, err)
+		);
+	}
+});
+DataSourceRouteMeta.post('/entities', (req, res) => {
+	if (Object.keys(req.body).length === 0) {
+		error(res, { error: 'Body Undefined' }, 400);
+	} else if (req.body.sourceurl === undefined) {
+		error(res, { error: 'Source Url is Undefined' }, 400);
+	} else {
+		Rest.getEntityList(
+			req.body.sourceurl,
+			(list) => res.status(200).json(list),
+			(err) => error(res, err)
+		);
+	}
+});
+
+DataSourceRouteMeta.post('/fields', (req, res) => {
+	if (Object.keys(req.body).length === 0) {
+		error(res, { error: 'Body Undefined' }, 400);
+	} else if (req.body.sourceurl === undefined) {
+		error(res, { error: 'Data Source Id Undefined' }, 400);
+	} else if (req.body.entity === undefined) {
+		error(res, { error: 'Data Source Id Undefined' }, 400);
+	} else {
+		Rest.getListOfFields(
+			req.body.sourceurl,
+			req.body.entity,
+			(list) => res.status(200).json(structureFields(list)),
 			(err) => error(res, err)
 		);
 	}
@@ -78,4 +105,9 @@ function error(res, err, status = 400) {
 	res.status(status).json(err);
 }
 
-module.exports = router;
+function structureFields(obj) {
+	delete obj[0]['__metadata'];
+	return Object.keys(obj[0]);
+}
+
+module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };

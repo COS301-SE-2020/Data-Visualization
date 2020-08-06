@@ -26,7 +26,6 @@ const express = require('express');
 const router = express.Router();
 const { Rest } = require('../controllers');
 
-//  1. GET_DASHBOARDS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.post('/list', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
@@ -39,13 +38,9 @@ router.post('/list', (req, res) => {
 	}
 });
 
-//  2. ADD_DASHBOARDS (THIS WILL JUST ADD A DASHBOARD TO THE PANEL PAGE)
-// => POST (nameOfDashboard, descriptionOfDashboard,dashColour)
 router.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dashboardID === undefined) {
-		error(res, { error: 'Dashboard ID Undefined' }, 400);
 	} else if (req.body.description === undefined) {
 		error(res, { error: 'Dashboard Description Undefined' }, 400);
 	} else if (req.body.name === undefined) {
@@ -53,16 +48,14 @@ router.post('/add', (req, res) => {
 	} else {
 		Rest.addDashboard(
 			req.body.email,
-			req.body.dashboardID,
 			req.body.name,
 			req.body.description,
-			() => res.status(200).json({ message: 'Successfully Added Dashboard' }),
+			(data) => res.status(200).json({ message: 'Successfully Added Dashboard', ...data }),
 			(err) => error(res, err, 400)
 		);
 	}
 });
 
-//  3. REMOVE_DASHBOARD
 router.post('/remove', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
@@ -80,10 +73,6 @@ router.post('/remove', (req, res) => {
 	}
 });
 
-//  4. UPDATE_DASHBOARD_NAME
-//  => PUT(dashboardNewName, dashboardID)
-//     UPDATE_DASHBOARD_DESCRIPTION
-//  => PUT(dashboardDescription, dashboardID)
 router.post('/update', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
