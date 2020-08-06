@@ -25,36 +25,28 @@ import { List, Avatar, Button, Skeleton, Form, Checkbox } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
+import { createForm, formShape } from 'rc-form';
 
 const count = 20;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
 
 
-
 class Entities extends React.Component {
 
+ 
   onFinish = values => {
-    console.log('Received values of form: ', values);
-
-
-    for (var key in values) {
-      if (values.hasOwnProperty(key)) {
-
-        if(values[key] === true){
-          console.log(key + ' -> ' + values[key]);
-        }
-
-          
+    //console.log('Received values of form: ', values);
+   
+    request.user.entitiesToUse = [];
+    request.user.entities.map((entity) => {
+      if(this.props.form.getFieldValue(entity) === true){
+        request.user.entitiesToUse.push(entity);
       }
-  }
+    });
 
-    // var tempArr = [];
-		// 	valu.map((pFields) => {
-		// 	tempArr.add({value : pFields});
-		// });
-
-
-
+    //send entitiesToUse to backend?
+    console.log(request.user.entitiesToUse);
+    
     this.next();
   };
 
@@ -68,7 +60,9 @@ class Entities extends React.Component {
 
 
   onChange = (item) => {
-    console.log(item);
+   
+    console.log(this.props.form.getFieldValue('Categories'));
+    
   };
 
 
@@ -110,8 +104,7 @@ class Entities extends React.Component {
   };
 
   render() {
-
-
+    const { getFieldDecorator } = this.props.form;
     const { initLoading, loading, list } = this.state;
     const loadMore =
       !initLoading && !loading ? (
@@ -143,14 +136,19 @@ class Entities extends React.Component {
             renderItem={item => (
             
               <Fragment>
-                  {/*<div id = 'selectorDiv' onClick = {() => {this.onChange(item)}}>*/}
+                  {/* <div id = 'selectorDiv' onClick = {() => {this.onChange(item);}}> */}
                     <List.Item
                       key={1}
                       actions={
                         [ 
-
-                          <Form.Item name = {item} valuePropName = 'checked'>
-                              <Checkbox onClick={this.onChange(item)} defaultChecked = {true} checked={true}></Checkbox>
+                          
+                          <Form.Item valuePropName = 'checked'>
+                           {getFieldDecorator(item, {
+                              valuePropName: 'checked',
+                              initialValue: true
+                            })(
+                              <Checkbox />
+                            )}
                           </Form.Item>
 
                         ]
@@ -165,7 +163,7 @@ class Entities extends React.Component {
                         <div></div>
                       </Skeleton>
                     </List.Item>
-                  {/*</div>*/}
+                  {/* </div> */}
               </Fragment>
             )}
           />
@@ -181,4 +179,5 @@ class Entities extends React.Component {
   }
 }
 
+Entities = createForm()(Entities);
 export default Entities;

@@ -400,6 +400,7 @@ const request = {
 		],
 		addedSourceID: '',
 		entities : [],
+		entitiesToUse : [],
 		fields: [],
 	},
 
