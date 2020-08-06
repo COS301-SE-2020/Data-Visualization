@@ -148,11 +148,9 @@ class Database {
 					if (typeof result !== 'undefined' && result.command === 'SELECT') {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
 							Database.sendQuery('DELETE FROM Users WHERE( email = $1);', [email])
-								.then((result) => {
-									resolve(true);
-								})
+								.then(() => resolve())
 								.catch((err) => reject(err));
-						} else resolve(false);
+						} else reject(result);
 					} else reject(result);
 				})
 				.catch((err) => reject(err));

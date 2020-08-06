@@ -10,7 +10,8 @@
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
  * 30/06/2020   Elna Pistorius & Phillip Schulze    Added more functionality
- * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 06/08/2020	Elna Pistorius 						Added the deregister endpoint
  *
  * Test Cases: none
  *
@@ -121,6 +122,23 @@ router.post('/logout', (req, res) => {
 	//     res.status(200).json({ message: 'Successfully Logged out' });
 	//   }
 	// });
+});
+
+router.post('/deregister', (req, res) => {
+	if (Object.keys(req.body).length === 0) {
+		error(res, { error: 'Body Undefined' }, 400);
+	} else if (!checkUserEmail(req.body.email)) {
+		error(res, { error: 'User Email Incorrect' }, 400);
+	} else if (!checkUserPasswordLogin(req.body.password)) {
+		error(res, { error: 'User Password Incorrect' }, 400);
+	} else {
+		Rest.deregisterUser(
+			req.body.email,
+			req.body.password,
+			() => res.status(200).json({ message: 'Successfully Deregistered User' }),
+			(err) => error(res, err, 400)
+		);
+	}
 });
 /**
  * This function displays the error's message if one occurred in the console.
