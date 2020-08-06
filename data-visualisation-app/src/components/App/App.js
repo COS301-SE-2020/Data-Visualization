@@ -158,6 +158,11 @@ const useStyles = makeStyles((theme) => ({
 		color: 'white',
 		fontSize: '1.5em',
 	},
+	typographyLocationHeading: {
+		color: 'white',
+		fontSize: '1.1em',
+		paddingRight: '7px'
+	},
 	drawerList: {
 		color: '#969698',
 	},
@@ -231,12 +236,18 @@ function App(props) {
   	  * back function 
     */
 	const handleBack = () => {
+		if(pageType === 'explore' && exploreStage === 'dataConnection'){
+			setPageType('home');
+		}
 		if(pageType === 'explore' && exploreStage === 'entities'){
 			setExploreStage('dataConnection');
 		}
 		if(pageType === 'explore' && exploreStage === 'suggestions'){
 			setExploreStage('entities');
 		}
+		if(pageType === 'dashboards' && dashboardStage === 'dashboardHome'){
+			setPageType('home');
+		}	
 		if(pageType === 'dashboards' && dashboardStage === 'selected'){
 			setDashboardStage('dashboardHome');
 			setDashboardIndex('');
@@ -248,10 +259,10 @@ function App(props) {
   	  * back button variable
     */
 	var backButton;
-	if(pageType === 'dashboards' && dashboardStage === 'selected'){
+	if(pageType === 'dashboards'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
-	else if(pageType === 'explore' && (exploreStage === 'entities' || exploreStage === 'suggestions')){
+	else if(pageType === 'explore'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else{
@@ -263,6 +274,8 @@ function App(props) {
   	  * hanlde page title
     */
 	var pageTitle = 'Home';
+	var locationTitle = '';
+
 	if(pageType === 'home'){
 		pageTitle = 'Home';
 	}
@@ -270,12 +283,15 @@ function App(props) {
 		pageTitle = 'Expore';
 		if(exploreStage === 'dataConnection'){
 			pageTitle = 'Data Sources';
+			locationTitle = 'Explore /';
 		}
 		if(exploreStage === 'entities'){
 			pageTitle = 'Entities';
+			locationTitle = 'Explore / Data Source /';
 		}
 		if(exploreStage === 'suggestions'){
 			pageTitle = 'Suggestions';
+			locationTitle = 'Explore / Data Source / Entities /';
 		}
 	}
 	if(pageType === 'dashboards'){
@@ -444,11 +460,13 @@ function App(props) {
 							backButton
 						}
 						
+						<Typography variant="h2" className={classes.typographyLocationHeading} noWrap children={
+							locationTitle
+						} >
+						</Typography>
 
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
-
 							pageTitle
-							
 						} >
 
 						</Typography>
