@@ -56,7 +56,7 @@ class Database {
 	 */
 	static sendQuery(querySql, values) {
 		// if (!PRODUCTION) console.log(querySql);
-		// console.log(querySql, values);
+		console.log(querySql, values);
 		return new Promise((conResolve, conReject) => {
 			Database.pgPool
 				.connect()
@@ -146,7 +146,7 @@ class Database {
 							Database.sendQuery('DELETE FROM Users WHERE( email = $1);', [email])
 								.then(() => resolve())
 								.catch((err) => reject(err));
-						} else reject(result);
+						} else resolve();
 					} else reject(result);
 				})
 				.catch((err) => reject(err));
