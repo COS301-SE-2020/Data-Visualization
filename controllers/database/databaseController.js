@@ -56,7 +56,7 @@ class Database {
 	 */
 	static sendQuery(querySql, values) {
 		// if (!PRODUCTION) console.log(querySql);
-		console.log(querySql, values);
+		// console.log(querySql, values);
 		return new Promise((conResolve, conReject) => {
 			Database.pgPool
 				.connect()
