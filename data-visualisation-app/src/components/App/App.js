@@ -500,8 +500,7 @@ function App(props) {
 					</Hidden>
 				</nav>
 
-				{/*<main className={classes.content} style={(pageType === 'home' || pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>*/}
-				<main className={classes.content} ref={targetRef}>
+				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
 
 					<div className={classes.toolbar} />
 					{
