@@ -25,11 +25,12 @@
 
 require('dotenv').config();
 const express = require('express');
-const router = express.Router();
+const DataSourceRouteSrc = express.Router();
+const DataSourceRouteMeta = express.Router();
 
 const { Rest } = require('../controllers');
 
-router.post('/list', (req, res) => {
+DataSourceRouteSrc.post('/list', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
 	} else {
@@ -41,7 +42,7 @@ router.post('/list', (req, res) => {
 	}
 });
 
-router.post('/add', (req, res) => {
+DataSourceRouteSrc.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
 	} else if (req.body.dataSourceUrl === undefined) {
@@ -56,7 +57,7 @@ router.post('/add', (req, res) => {
 	}
 });
 
-router.post('/remove', (req, res) => {
+DataSourceRouteSrc.post('/remove', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
 	} else {
@@ -68,7 +69,7 @@ router.post('/remove', (req, res) => {
 		);
 	}
 });
-router.post('/entities', (req, res) => {
+DataSourceRouteMeta.post('/entities', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
 	} else if (req.body.sourceurl === undefined) {
@@ -82,7 +83,7 @@ router.post('/entities', (req, res) => {
 	}
 });
 
-router.post('/fields', (req, res) => {
+DataSourceRouteMeta.post('/fields', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
 	} else if (req.body.sourceurl === undefined) {
@@ -99,7 +100,6 @@ router.post('/fields', (req, res) => {
 	}
 });
 
-
 function error(res, err, status = 400) {
 	console.error(err);
 	res.status(status).json(err);
@@ -110,4 +110,4 @@ function structureFields(obj) {
 	return Object.keys(obj[0]);
 }
 
-module.exports = router;
+module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };

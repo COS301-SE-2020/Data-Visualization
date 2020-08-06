@@ -10,7 +10,9 @@
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze     Original
  * 12/07/2020   Elna Pistorius & Phillip Schulze     Add Graph Suggester Controller
+ * 05/08/2020   Phillip Schulze  					 Updated the id's and added new deregister function.
  * 05/08/2020   Elna Pistorius  					 Added two new functions that returns a list of fields and a list of entities.
+ * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
  *
  * Test Cases: none
  *
@@ -46,7 +48,6 @@ class RestController {
 	/**
 	 * This function adds a data source.
 	 * @param email the users email
-	 * @param dataSourceID the data sources id
 	 * @param dataSourceURL the data sources url
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
@@ -85,7 +86,6 @@ class RestController {
 	/**
 	 * This function adds a new dashboard.
 	 * @param email the users email
-	 * @param dashboardID the dashboards id
 	 * @param name the name of the dashboard
 	 * @param description the description of the dashboard
 	 * @param done a promise that is returned if the request was successful
@@ -158,7 +158,6 @@ class RestController {
 	 * This function is used to add a graph to a dashboard.
 	 * @param email the users email
 	 * @param dashboardID the dashboards id
-	 * @param graphID the graphs id
 	 * @param title the title of the graph
 	 * @param options the options is a JSON object that stores the options and data of the graph
 	 * @param metadata the metadata is a JSON object that stores the presentation data of the graph
@@ -224,7 +223,7 @@ class RestController {
 	 */
 	static deregisterUser(userEmail, userPassword, done, error) {
 		Database.deregister(userEmail, userPassword)
-			.then((user) => done())
+			.then(() => done())
 			.catch((err) => error && error(err));
 	}
 

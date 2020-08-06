@@ -68,12 +68,18 @@ describe('Testing user management', () => {
 	});
 
 	test('Test registration of a new user', () => {
-		return Database.register(F_NAME, L_NAME, EMAIL, PASSWORD).then((response) => {
-			expect(response.email).toBe(EMAIL);
-			expect(response.firstname).toBe(F_NAME);
-			expect(response.lastname).toBe(L_NAME);
-			expect(response).toHaveProperty('apikey');
-		});
+		return Database.deregister(EMAIL, PASSWORD)
+			.finally(() => {
+				Database.register(F_NAME, L_NAME, EMAIL, PASSWORD)
+					.then((response) => {
+						expect(response.email).toBe(EMAIL);
+						expect(response.firstname).toBe(F_NAME);
+						expect(response.lastname).toBe(L_NAME);
+						expect(response).toHaveProperty('apikey');
+					})
+					.catch((err) => console.log(err));
+			})
+			.catch((err) => console.log(err));
 	});
 
 	test('Test registration when the user already exists', () => {
@@ -83,12 +89,14 @@ describe('Testing user management', () => {
 	});
 
 	test('Test user authentication', () => {
-		return Database.authenticate(EMAIL, PASSWORD).then((response) => {
-			expect(response.email).toBe(EMAIL);
-			expect(response.firstname).toBe(F_NAME);
-			expect(response.lastname).toBe(L_NAME);
-			expect(response).toHaveProperty('apikey');
-		});
+		return Database.authenticate(EMAIL, PASSWORD)
+			.then((response) => {
+				expect(response.email).toBe(EMAIL);
+				expect(response.firstname).toBe(F_NAME);
+				expect(response.lastname).toBe(L_NAME);
+				expect(response).toHaveProperty('apikey');
+			})
+			.catch((err) => console.log(err));
 	});
 });
 
