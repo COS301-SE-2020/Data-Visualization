@@ -159,6 +159,9 @@ class GraphSuggesterController {
 	 * @returns an object containing the parsed items and associated tables as well as the item sets in each "table"
 	 */
 	static parseODataMetadata(xmlData) {
+		if (xmlData == null) {	//eslint-disable-line
+			return null;
+		}
 		let parser = new DOMParser();
 		let xmlDoc = parser.parseFromString(xmlData, 'text/xml');
 		let entitySets = xmlDoc.getElementsByTagName('EntitySet'); //all "tables" that are available
