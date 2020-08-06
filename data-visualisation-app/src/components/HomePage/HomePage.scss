@@ -1,0 +1,47 @@
+.panelLayout {
+    margin: 20px;
+    padding: 20px;
+    float: left;
+    overflow: hidden;
+}
+
+.home-panel-add {
+    border: 3px dashed;
+    border-color: #ececec;
+    font-size: 100px;
+    color: #ececec;
+    text-align: center;
+    padding-top: -20px;
+    transition: border-color 0.4s linear;
+    transition: color 0.4s linear;
+}
+
+.home-panel-add:hover {
+    border-color: #c3c3c3;
+    color: #c3c3c3;
+}
+
+.panelStyling {
+    /*border: 1px solid #e8e8e8;*/
+    border-radius: 2%;
+    background: #D83864;
+    color: white;
+    box-shadow: 0 0px 20px #b4b4b4;
+
+    transition: box-shadow 0.3s ease-in-out;
+    animation-play-state: paused;
+}
+
+.panelStyling:hover{
+    box-shadow: 0 0px 30px #848484;
+}
+
+.closeSize {
+    width: 12px;
+    height: 12px;
+    margin: 10px;
+}
+.closeButton {
+    float: right;
+}
+

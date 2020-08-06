@@ -1,0 +1,205 @@
+/**
+ *   @file globals.scss
+ *   Project: Data Visualisation Generator
+ *   Copyright: Open Source
+ *   Organisation: Doofenshmirtz Evil Incorporated
+ *
+ *   Update History:
+ *   Date        Author              Changes
+ *   -------------------------------------------------------
+ *   3/7/2929   Gian Uys            Original
+ *
+ *   Test Cases: data-visualisation-app/tests/App/App.js
+ *
+ *   Functional Description:
+ *   This file includes all global CSS stylesheets and SASS variables.
+ *
+ *   Error Messages: "Error"
+ *   Assumptions: None
+ *   Constraints: None
+ */
+
+$primary-white: white;
+$primary-black: black;
+
+$font-light: 'Segoe UI Light';
+$font-default: 'Segoe UI';
+$font-semibold: 'Segoe UI Semibold';
+
+$color-border-hover: #616161;
+$color-border-active: #616161;
+$color-border-focus: #616161;
+$color-border: #d9d9d9;
+$color-active: black;
+$color-focus: black;
+$color-hover: black;
+$color-primary: #292929;
+
+
+.content--padding {
+  padding: 25px;
+}
+
+.content-colors {
+  box-shadow: inset 1px 4px 9px -6px #cccccc;
+  background-color: #fcfcfc;
+}
+
+.panel__shadow {
+  -webkit-box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
+  -moz-box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
+  box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 18px;
+}
+::-webkit-scrollbar-thumb {
+  height: 6px;
+  border: 4px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  -webkit-border-radius: 7px;
+  background-color: rgba(0, 0, 0, 0.80);
+  -webkit-box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+}
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.loading {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -30px 0 0 -30px;
+  transform: rotate(45deg);
+}
+
+.loading div {
+  width: 6px;
+  height: 6px;
+  background: black;
+  border-radius: 100%;
+  float: left;
+  margin-bottom: 12px;
+  animation: scaleDot 2s ease infinite;
+}
+
+.loading div:not(:nth-child(4n+4)) {
+  margin-right: 12px;
+}
+
+.loading div:nth-child(1) {
+  animation-delay: 0;
+}
+
+.loading div:nth-child(2),
+.loading div:nth-child(5) {
+  animation-delay: 0.1s;
+}
+
+.loading div:nth-child(3),
+.loading div:nth-child(6),
+.loading div:nth-child(9) {
+  animation-delay: 0.2s;
+}
+
+.loading div:nth-child(4),
+.loading div:nth-child(7),
+.loading div:nth-child(10),
+.loading div:nth-child(13) {
+  animation-delay: 0.3s;
+}
+
+.loading div:nth-child(8),
+.loading div:nth-child(11),
+.loading div:nth-child(14) {
+  animation-delay: 0.4s;
+}
+
+.loading div:nth-child(12),
+.loading div:nth-child(15) {
+  animation-delay: 0.5s;
+}
+
+.loading div:nth-child(16) {
+  animation-delay: 0.6s;
+}
+
+@-moz-keyframes scaleDot {
+  40% {
+    transform: scale(1.3) translate(-2px, -2px);
+  }
+
+  80% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(0.3);
+  }
+}
+
+@-webkit-keyframes scaleDot {
+  40% {
+    transform: scale(1.3) translate(-2px, -2px);
+  }
+
+  80% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(0.3);
+  }
+}
+
+@-o-keyframes scaleDot {
+  40% {
+    transform: scale(1.3) translate(-2px, -2px);
+  }
+
+  80% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(0.3);
+  }
+}
+
+@keyframes scaleDot {
+  40% {
+    transform: scale(1.3) translate(-2px, -2px);
+  }
+
+  80% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(0.3);
+  }
+}

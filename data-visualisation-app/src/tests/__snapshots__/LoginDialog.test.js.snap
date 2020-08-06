@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoginDialog component renders correctly renders correctly 1`] = `
+<div
+  id="loginDiv"
+>
+  <button
+    className="ant-btn button__login ant-btn-dashed ant-btn-background-ghost"
+    id="loginButton"
+    onClick={[Function]}
+    type="button"
+  >
+    <span>
+      Login/Sign Up
+    </span>
+  </button>
+  <main />
+</div>
+`;

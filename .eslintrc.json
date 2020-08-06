@@ -1,0 +1,35 @@
+{
+	"env": {
+		"node": true,
+		"jest": true,
+		"es2020": true
+	},
+	"extends": "eslint:recommended",
+	"parserOptions": {
+		"ecmaVersion": 11,
+		"sourceType": "module"
+	},
+	"rules": {
+		"indent": ["error", "tab"],
+		"linebreak-style": ["error", "unix"],
+		"quotes": ["error", "single"],
+		"semi": ["error", "always"],
+		"no-unreachable": ["error"],
+		"valid-typeof": ["error"],
+		"eqeqeq": ["error"],
+		"vars-on-top": ["error"],
+		"no-use-before-define": ["error", { "functions": false, "classes": false, "variables": true }],
+		"array-bracket-spacing": ["error", "always", { "objectsInArrays": false, "arraysInArrays": false, "singleValue": true }],
+		"object-curly-spacing": ["error", "always"],
+		"block-spacing": ["error", "never"],
+		"brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+		"camelcase": ["error", { "properties": "always", "ignoreDestructuring": true, "ignoreImports": true }],
+		"comma-spacing": ["error", { "before": false, "after": true }],
+		"implicit-arrow-linebreak": ["error", "beside"],
+		"no-mixed-spaces-and-tabs": ["error"],
+		"one-var": ["error", "never"],
+		"space-before-blocks": ["error", { "functions": "always", "keywords": "off", "classes": "always" }],
+		"no-var": ["error"],
+		"no-unused-vars": ["error", { "vars": "local", "ignoreRestSiblings": true, "args": "none" }]
+	}
+}
