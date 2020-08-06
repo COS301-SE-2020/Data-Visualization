@@ -297,12 +297,27 @@ class RestController {
 			})
 			.catch((err) => error && error(err));
 	}
-
-
+	/**
+	 * This function gets a list of fields for a specific entity
+	 * @param src the source that is requested to be used to get entity.
+	 * @param entity the entity that fields are required from
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
 	static getListOfFields(src, entity, done, error) {
 		DataSource.getEntityData(src, entity)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function updates the graph types of the suggestions.
+	 * @param graphTypes the types of graphs that needs to be updated
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static updateGraphTypes(graphTypes, done, error){
+		console.log(graphTypes);
+		//TODO: Finish this
 	}
 }
 
