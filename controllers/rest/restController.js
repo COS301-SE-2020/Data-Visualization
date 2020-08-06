@@ -23,7 +23,7 @@
  */
 const Database = require('../database');
 const DataSource = require('../dataSource');
-const { graphsSuggesterController } = require('../graphSuggester');
+const { GraphSuggesterController } = require('../graphSuggester');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
  * handles these requests appropriately by getting or setting the requested data from or to the models.
@@ -276,7 +276,9 @@ class RestController {
 	static getSuggestions(src, done, error) {
 		DataSource.getMetaData(src)
 			.then((XMLString) => {
-				const Meta = graphsSuggesterController.parseODataMetadata(XMLString);
+				console.log(GraphSuggesterController);
+
+				const Meta = GraphSuggesterController.parseODataMetadata(XMLString);
 
 				let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
 				const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
@@ -290,7 +292,7 @@ class RestController {
 				console.log(randEntity);
 				DataSource.getEntityData(src, randEntity)
 					.then((Odata) => {
-						const options = graphsSuggesterController.getSuggestions(Odata);
+						const options = GraphSuggesterController.getSuggestions(Odata);
 						if (options === null) RestController.getSuggestions(src, done, error);
 						else done(options);
 					})
