@@ -1,3 +1,3 @@
 const graphsSuggesterAI = require('./graphSuggesterAI');
-const graphsSuggesterController = require('./graphSuggesterController').getInstance();
-module.exports = { graphsSuggesterAI, graphsSuggesterController};
+const GraphSuggesterController = require('./graphSuggesterController');
+module.exports = { graphsSuggesterAI, GraphSuggesterController };

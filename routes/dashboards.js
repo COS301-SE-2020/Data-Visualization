@@ -1,8 +1,29 @@
+/**
+ * @file dashboard.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             				Changes
+ * -------------------------------------------------------------------------------
+ * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
+ * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a dashboard router that handles any client requests and these requests are
+ * forwarded to the application’s REST controller.
+ *
+ * Error Messages: "Error"
+ * Assumptions: Requests should be POST methods and have a JSON body (if so is needed). The correct endpoint name must also be used.
+ * Check the API manual for more detail.
+ * Constraints: The API manual must be followed when making requests otherwise no requests will work properly.
+ */
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-
-const SESS_NAME = 'sid'; //ms
 const { Rest } = require('../controllers');
 
 //  1. GET_DASHBOARDS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
@@ -23,8 +44,6 @@ router.post('/list', (req, res) => {
 router.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dashboardID === undefined) {
-		error(res, { error: 'Dashboard ID Undefined' }, 400);
 	} else if (req.body.description === undefined) {
 		error(res, { error: 'Dashboard Description Undefined' }, 400);
 	} else if (req.body.name === undefined) {
@@ -32,10 +51,9 @@ router.post('/add', (req, res) => {
 	} else {
 		Rest.addDashboard(
 			req.body.email,
-			req.body.dashboardID,
 			req.body.name,
 			req.body.description,
-			() => res.status(200).json({ message: 'Successfully Added Dashboard' }),
+			(data) => res.status(200).json({ message: 'Successfully Added Dashboard', ...data }),
 			(err) => error(res, err, 400)
 		);
 	}

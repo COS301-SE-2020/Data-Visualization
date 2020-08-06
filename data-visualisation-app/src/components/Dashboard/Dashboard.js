@@ -335,6 +335,8 @@ function Dashboard(props) {
 					}
 				});
 
+				console.debug('this is currentnames:', currentnames);
+
 				setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentnames});
 				// setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
 
