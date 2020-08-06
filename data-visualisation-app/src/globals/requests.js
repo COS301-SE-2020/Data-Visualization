@@ -65,11 +65,14 @@ const API = {
 	},
 	dataSources: {
 		list: (apikey) => axios.post(constants.URL.DATASOURCE.LIST, { apikey }),
-		add: (apikey, dataSourceID, dataSourceUrl) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceID, dataSourceUrl }),
+		add: (apikey, dataSourceUrl) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceUrl }),
 		delete: (dataSourceID, apikey) => axios.post(constants.URL.DATASOURCE.REMOVE, { dataSourceID, apikey }),
 	},
 	entities: {
 		list: (sourceurl) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl }),
+	},
+	filter: {
+		listFields: (sourceurl, entity) => axios.post(constants.URL.DATASOURCE.FIELDS, { sourceurl, entity}),
 	},
 	suggestion: {
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl }),
@@ -395,7 +398,12 @@ const request = {
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 			},
 		],
+		addedSourceID: '',
+		tempEntities: [],
 		entities : [],
+		tempFields: [],
+		fields: [],
+		sourcesAndEntities: [],
 	},
 
 	dataSources: {
@@ -434,16 +442,17 @@ const request = {
 		 *  @param dataSourceUrl Fully qualified url of the new data source.
 		 *  @param callback Function called at end of execution.
 		 */
-		add: (apikey, dataSourceID, dataSourceUrl, callback) => {
+		add: (apikey, dataSourceUrl, callback) => {
 			if (request.user.isLoggedIn) {
 				API.dataSources
-					.add(apikey, dataSourceID, dataSourceUrl)
+					.add(apikey, dataSourceUrl)
 					.then((res) => {
 						console.debug(res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 								console.debug(res);
-
+								
+								request.user.addedSourceID = res.data.id;
 								//add to request.user.dataSources array
 								//request.user.dataSources = res.data;
 
@@ -503,8 +512,36 @@ const request = {
 						console.debug(res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
-								
-								request.user.entities = res.data;
+
+								request.user.tempEntities = res.data;
+								request.user.entities = request.user.entities.concat(request.user.tempEntities);
+
+								callback(constants.RESPONSE_CODES.SUCCESS);
+							} else {
+								callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+							}
+						}
+					})
+					.catch((err) => console.error(err));
+		},
+	},
+	filter :{
+	/**
+		 *  Request a list of fields.
+		 *
+		 *  @param callback Function called at end of execution.
+		 */
+		list: (sourceurl, entity , callback) => {
+			API.filter
+				.listFields(sourceurl, entity)
+					.then((res) => {
+						console.debug(res);
+						if (callback !== undefined) {
+							if (successfulResponse(res)) {
+
+								//console.log(res);
+								request.user.tempFields = res.data;
+								request.user.fields = request.user.fields.concat(res.data);
 
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {

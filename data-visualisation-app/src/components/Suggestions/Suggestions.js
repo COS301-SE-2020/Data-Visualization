@@ -147,7 +147,67 @@ function Suggestions() {
 
     }, []);
 
+
+    const [fieldTypes, setFieldTypes] = useState([]);
+    var tempFields = [];
+
+    useEffect(() => {
+    
+        request.user.sourcesAndEntities.map((s_e_list) => {
+        
+            var source = s_e_list.item[0];
+            var entitiyArr = s_e_list.item[1];
+
+            entitiyArr.map((my_entity) => {
+                
+                request.filter.list(source, my_entity, function(result) {
+                        if (result === constants.RESPONSE_CODES.SUCCESS) {
+                            
+                            
+                            
+                            console.log(request.user.fields.length);
+                            
+                        }
+                });
+
+            });
+
+        });
+
+        
+
+    
+        // request.user.fields.map((fieldVal) => {
+        //     tempFields = tempFields.concat({value : fieldVal});
+        // });
+        // setFieldTypes(
+        //     tempFields
+        // );
+        
+
+
+        // request.filter.list('https://services.odata.org/V2/Northwind/Northwind.svc', 'Orders', function(result) {
+        //     if (result === constants.RESPONSE_CODES.SUCCESS) {
+                
+        //         request.user.fields.map((entityVal) => {
+        //             tempFields = tempFields.concat({value : entityVal});
+        //         });
+                
+        //         console.log(tempFields);
+        //         setFieldTypes(
+        //             tempFields
+        //         );
+                
+        //     }
+        // });
+       
+
+
+	}, []);
+
     const [filterState, setFilterState] = React.useState(false);
+    
+    
 
     const classes = useStyles();
 
@@ -292,8 +352,7 @@ function Suggestions() {
                         {
                             filterState ?
 
-                                <FilterDialog setFState = {setFilterState}/>
-
+                                <FilterDialog setFState = {setFilterState} fieldTypes = {fieldTypes}/>
                                 :
                                 null
                         }

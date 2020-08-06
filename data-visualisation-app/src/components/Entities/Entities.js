@@ -23,7 +23,6 @@ import './Entities.css';
 import React, { Fragment } from 'react';
 import { List, Avatar, Button, Skeleton, Form, Checkbox } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
-import reqwest from 'reqwest';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 
@@ -66,31 +65,27 @@ class Entities extends React.Component {
       this.getData(res => {
         this.setState({
           initLoading: false,
-          data: request.user.dataSources,
-          list: request.user.dataSources,
+          data: request.user.entities,
+          list: request.user.entities,
         });
       });
   }
 
   /**
-    * Calls the function to send the request to get the list of data sources.
-    * The function called updates the 'requests.user.dataSources' object with the correct array of data sources for the user. 
+    * Funnction uses the dataSources to update the entites list and tempEntities list for setting sourcesAndEntities list
+    * which is used for making requests.
   */
   getData = callback => {
-    
-
     //call on all data soureces
-  
-
-        request.entities.list('https://services.odata.org/V2/Northwind/Northwind.svc', function(result) {
-          console.log(result);
+    request.user.dataSources.map((source) => {
+      request.entities.list(source.sourceurl, function(result) {
           if (result === constants.RESPONSE_CODES.SUCCESS) {
-            callback(request.user.dataSources);
+            request.user.sourcesAndEntities = request.user.sourcesAndEntities.concat({item : [source.sourceurl ,request.user.tempEntities] } );
+            console.log(request.user.sourcesAndEntities);
+            callback(request.user.entities);
           }
         });
-
-      
-    
+    });
   };
 
   render() {
@@ -117,7 +112,7 @@ class Entities extends React.Component {
             onFinish={this.onFinish}
         >
           <List
-            className='dataSourceList'
+            className='entitesList'
             loading={initLoading}
             itemLayout='horizontal'
             loadMore={loadMore}
@@ -127,10 +122,10 @@ class Entities extends React.Component {
               <Fragment>
                   {/*<div id = 'selectorDiv' onClick = {() => {this.onChange(item)}}>*/}
                     <List.Item
-                      key={item.name.first}
+                      key={1}
                       actions={
                         [ 
-                        <Form.Item name = {item.name.first} valuePropName = 'checked'>
+                        <Form.Item name = {item} valuePropName = 'checked'>
                             <Checkbox defaultChecked = {false}></Checkbox>
                         </Form.Item>
                         ]
@@ -140,7 +135,7 @@ class Entities extends React.Component {
                           avatar={
                             <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                           }
-                          title={<a href="https://ant.design">{item.name.last}</a>}
+                          title={<a href="https://ant.design">{item}</a>}
                           description='Ant Design, a design language for background applications, is refined by Ant UED Team'
                         />
                         <div></div>

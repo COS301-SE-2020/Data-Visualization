@@ -143,36 +143,38 @@ class DataConnection extends React.Component {
     * If user is not logged in, add item only front end.
   */
   addItem = (values) => {
-    var newID = generateID();
+    var id = generateID();
+    let attempt = this;
     console.log(request.user.apikey);
     /**
       * If user is logged in, add item on backend and front end.
     */
     if(request.user.isLoggedIn){
-      request.dataSources.add(request.user.apikey, newID , values.uri, function(result) {
-        console.log(result);
-        console.log(request.user.dataSources);
+      request.dataSources.add(request.user.apikey, values.uri, function(result) {
+       
         if (result === constants.RESPONSE_CODES.SUCCESS) {
-          
+
+          request.user.dataSources.push({
+            'id': request.user.addedSourceID,
+            'email': request.user.email,
+            'sourceurl': values.uri
+          });
+
+          attempt.setState(previousState => ({
+            data: request.user.dataSources,
+            list: request.user.dataSources
+          }));
+
         }
       });
-      request.user.dataSources.push({
-        'id': newID,
-        'email': request.user.email,
-        'sourceurl': values.uri
-      });
-
-      this.setState(previousState => ({
-        data: request.user.dataSources,
-        list: request.user.dataSources
-      }));
+      
     }
     else{
       /**
         * User is not logged in, add item only front end.
       */
       request.user.dataSources.push({
-        'id': newID,
+        'id': id,
         'email': request.user.email,
         'sourceurl': values.uri
       });
