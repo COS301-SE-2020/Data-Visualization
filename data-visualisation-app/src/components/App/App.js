@@ -261,12 +261,12 @@ function App(props) {
     */
 	var pageTitle = 'Home';
 	if(pageType === 'home'){
-		pageTitle = '';
+		pageTitle = 'Home';
 	}
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';
 		if(exploreStage === 'dataConnection'){
-			pageTitle = 'Connections';
+			pageTitle = 'Data Sources';
 		}
 		if(exploreStage === 'entities'){
 			pageTitle = 'Entities';
@@ -419,7 +419,8 @@ function App(props) {
 
 			<div className={classes.root}>
 				<CssBaseline />
-				<AppBar  position="fixed" className={classes.appBar} style={{ background: '#242424' }}>
+				
+				<AppBar  position="fixed" className={classes.appBar} style={{ background: '' }}>
 					<Toolbar>
 						<IconButton
 							color="inherit"
@@ -454,7 +455,9 @@ function App(props) {
 							setExploreStage = {setExploreStage}
 						/>
 					</Toolbar>
-				</AppBar>
+				</AppBar> : 
+				
+				
 
 				<nav className={classes.drawer} aria-label="mailbox folders">
 					{/* The implementation can be swapped with js to avoid SEO duplication of links. */}

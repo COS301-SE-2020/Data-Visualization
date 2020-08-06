@@ -36,6 +36,10 @@ function Home(props) {
         <Anime delay={anime.stagger(100)} scale={[.1, .9]}>
           <Title id = 'welcomeTitle'>Visualize your data.</Title>
           <Text id = 'welcomeText'>The Data Visualization App helps make it easy to visualize your data with the help of an Interactive Genetic Algorithm. All the we require is your data source and we show you the results!</Text>
+          
+          <div id = 'getStarted'>
+
+          
           <Title id = 'howTitle'>Getting started</Title>
           
           <div class = 'guideDiv'>
@@ -43,7 +47,7 @@ function Home(props) {
               <ExploreIllustration class = 'exploreIllustration'/>
             </div>
             <div id = 'explainExploreDiv'>
-              <Text id = 'explainExplore'>Select 'Explore' from the side menu to find graph suggestions.</Text>
+              <Text id = 'explainExplore'>Select 'Explore' from the side menu to find graph suggestions which can be added to dashboards.</Text>
             </div>
           </div>
 
@@ -55,7 +59,7 @@ function Home(props) {
               <Text id = 'explainDashboards'>Select 'Dashboards' from the side menu to view or create dashbaords.</Text>
             </div>
           </div>
-          
+          </div>
         </Anime>
       </div>
   );
