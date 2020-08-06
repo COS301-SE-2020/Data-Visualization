@@ -83,15 +83,18 @@ let graphSuggesterMaker = (function () {
 			this.terminals = []; //reset values so that old ones don't interfere
 			this.nonTerminals = [];
 
-			let itemsKeys = Object.keys(items);
-			let associationKeys = Object.keys(associations);
-
-			for (let i = 0; i < itemsKeys.length; i++) {
-				this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
+			if (items != null) {	//eslint-disable-line
+				let itemsKeys = Object.keys(items);
+				for (let i = 0; i < itemsKeys.length; i++) {
+					this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
+				}
 			}
 
-			for (let i = 0; i < associationKeys.length; i++) {
-				this.nonTerminals[associationKeys[i]] = associations[associationKeys[i]];
+			if (associations != null) { //eslint-disable-line
+				let associationKeys = Object.keys(associations);
+				for (let i = 0; i < associationKeys.length; i++) {
+					this.nonTerminals[associationKeys[i]] = associations[associationKeys[i]];
+				}
 			}
 
 			// console.log(this.terminals);
@@ -103,6 +106,9 @@ let graphSuggesterMaker = (function () {
 		 * @param results the data that was passed in - used to determine field types
 		 */
 		geneticAlgorithm(options, results) {
+			if (options == null || options.length === 0 || results == null || results.length === 0) {//eslint-disable-line
+				return null;
+			}
 			//TODO might be able to optimise with pre-processing of types, so that 'results' isn't passed
 			let chromosomes = [];		//Our population
 			let populationSize = 10;	//amount of chromosomes to generate
@@ -284,6 +290,9 @@ let graphSuggesterMaker = (function () {
 		getSuggestions(jsonData) {
 			// let object = JSON.parse(jsonData);
 			let object = jsonData;
+			if (object == null || (this.terminals == null && this.nonTerminals == null)) {//eslint-disable-line
+				return null;
+			}
 			// object = object [ 'd' ];            //OData always starts with 'd' as the main key
 			let results = object['results']; //OData follows up with 'results' key
 
@@ -312,6 +321,9 @@ let graphSuggesterMaker = (function () {
 				//   console.log(type);
 
 				let keys = this.terminals[type]; //check the available attributes in the metadata
+				if (keys == null) { //eslint-disable-line
+					return null;
+				}
 				let options = []; //the available key options(processed later) for suggestion generation
 				let count = 0; //the index for options
 				let nameKey = null;
