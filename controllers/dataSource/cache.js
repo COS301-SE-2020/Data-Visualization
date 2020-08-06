@@ -10,7 +10,7 @@ const CacheMaker = (function () {
 			this.metadata = {};
 			this.entityList = {};
 			this.fieldList = {};
-			this.maxTime = 5000;
+			this.maxTime = 1000 * 60 * 60 * 0.5; //30mins
 		}
 
 		validateMetadata(src) {
