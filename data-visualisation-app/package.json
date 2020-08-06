@@ -16,6 +16,7 @@
     "echarts-for-react": "^2.0.16",
     "node-sass": "^4.14.1",
     "prop-types": "latest",
+    "rc-form": "^2.4.11",
     "react": "^16.13.1",
     "react-addons-update": "^15.6.2",
     "react-anime": "^3.0.3",

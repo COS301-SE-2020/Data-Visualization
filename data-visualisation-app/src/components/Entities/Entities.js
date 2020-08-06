@@ -35,19 +35,40 @@ class Entities extends React.Component {
 
   onFinish = values => {
     console.log('Received values of form: ', values);
+
+
+    for (var key in values) {
+      if (values.hasOwnProperty(key)) {
+
+        if(values[key] === true){
+          console.log(key + ' -> ' + values[key]);
+        }
+
+          
+      }
+  }
+
+    // var tempArr = [];
+		// 	valu.map((pFields) => {
+		// 	tempArr.add({value : pFields});
+		// });
+
+
+
     this.next();
   };
 
   state = {
     initLoading: true,
     loading: false,
+    checked : true,
     data: [],
     list: [],
   };
 
 
   onChange = (item) => {
-    console.log(item.name.last);
+    console.log(item);
   };
 
 
@@ -61,6 +82,7 @@ class Entities extends React.Component {
     * invoked immediately after a component is mounted (inserted into the tree).
   */
   componentDidMount() {
+
     console.log(request.user.isLoggedIn);
       this.getData(res => {
         this.setState({
@@ -72,16 +94,15 @@ class Entities extends React.Component {
   }
 
   /**
-    * Funnction uses the dataSources to update the entites list and tempEntities list for setting sourcesAndEntities list
-    * which is used for making requests.
+    * Funnction uses the dataSources to update the entites list.
   */
   getData = callback => {
     //call on all data soureces
+    request.user.entities = [];
     request.user.dataSources.map((source) => {
       request.entities.list(source.sourceurl, function(result) {
           if (result === constants.RESPONSE_CODES.SUCCESS) {
-            request.user.sourcesAndEntities = request.user.sourcesAndEntities.concat({item : [source.sourceurl ,request.user.tempEntities] } );
-            console.log(request.user.sourcesAndEntities);
+
             callback(request.user.entities);
           }
         });
@@ -89,6 +110,8 @@ class Entities extends React.Component {
   };
 
   render() {
+
+
     const { initLoading, loading, list } = this.state;
     const loadMore =
       !initLoading && !loading ? (
@@ -125,9 +148,11 @@ class Entities extends React.Component {
                       key={1}
                       actions={
                         [ 
-                        <Form.Item name = {item} valuePropName = 'checked'>
-                            <Checkbox defaultChecked = {false}></Checkbox>
-                        </Form.Item>
+
+                          <Form.Item name = {item} valuePropName = 'checked'>
+                              <Checkbox onClick={this.onChange(item)} defaultChecked = {true} checked={true}></Checkbox>
+                          </Form.Item>
+
                         ]
                       }>
                       <Skeleton avatar title={false} loading={item.loading} active>
@@ -135,21 +160,21 @@ class Entities extends React.Component {
                           avatar={
                             <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                           }
-                          title={<a href="https://ant.design">{item}</a>}
-                          description='Ant Design, a design language for background applications, is refined by Ant UED Team'
+                          title={item}
                         />
                         <div></div>
                       </Skeleton>
                     </List.Item>
-                    {/*</div>*/}
+                  {/*</div>*/}
               </Fragment>
             )}
           />
           <Form.Item>
-            <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' icon={<CompassOutlined />}>
+            <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
               Generate Suggestions
             </Button>
           </Form.Item>
+          
         </Form>
       </div>
     );

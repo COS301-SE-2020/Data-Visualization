@@ -399,11 +399,8 @@ const request = {
 			},
 		],
 		addedSourceID: '',
-		tempEntities: [],
 		entities : [],
-		tempFields: [],
 		fields: [],
-		sourcesAndEntities: [],
 	},
 
 	dataSources: {
@@ -513,8 +510,7 @@ const request = {
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 
-								request.user.tempEntities = res.data;
-								request.user.entities = request.user.entities.concat(request.user.tempEntities);
+								request.user.entities = request.user.entities.concat(res.data);
 
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
@@ -539,10 +535,9 @@ const request = {
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 
-								//console.log(res);
-								request.user.tempFields = res.data;
+								
 								request.user.fields = request.user.fields.concat(res.data);
-
+								
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
 								callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);

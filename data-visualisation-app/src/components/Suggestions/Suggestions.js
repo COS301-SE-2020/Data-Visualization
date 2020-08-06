@@ -149,59 +149,29 @@ function Suggestions() {
 
 
     const [fieldTypes, setFieldTypes] = useState([]);
-    var tempFields = [];
 
     useEffect(() => {
-    
-        request.user.sourcesAndEntities.map((s_e_list) => {
         
-            var source = s_e_list.item[0];
-            var entitiyArr = s_e_list.item[1];
+        /**
+          * Sets the fields for FilterDialog
+        */
+        var tempFields = [];
+        setFieldTypes([]);
+        request.user.fields = [];
 
-            entitiyArr.map((my_entity) => {
+        request.filter.list('https://services.odata.org/V2/Northwind/Northwind.svc', 'Orders', function(result) {
+            if (result === constants.RESPONSE_CODES.SUCCESS) {
                 
-                request.filter.list(source, my_entity, function(result) {
-                        if (result === constants.RESPONSE_CODES.SUCCESS) {
-                            
-                            
-                            
-                            console.log(request.user.fields.length);
-                            
-                        }
+                request.user.fields.map((entityVal) => {
+                    tempFields = tempFields.concat({value : entityVal});
                 });
-
-            });
-
+                
+                console.log(tempFields);
+                setFieldTypes(tempFields);
+                
+            }
         });
-
-        
-
-    
-        // request.user.fields.map((fieldVal) => {
-        //     tempFields = tempFields.concat({value : fieldVal});
-        // });
-        // setFieldTypes(
-        //     tempFields
-        // );
-        
-
-
-        // request.filter.list('https://services.odata.org/V2/Northwind/Northwind.svc', 'Orders', function(result) {
-        //     if (result === constants.RESPONSE_CODES.SUCCESS) {
-                
-        //         request.user.fields.map((entityVal) => {
-        //             tempFields = tempFields.concat({value : entityVal});
-        //         });
-                
-        //         console.log(tempFields);
-        //         setFieldTypes(
-        //             tempFields
-        //         );
-                
-        //     }
-        // });
        
-
 
 	}, []);
 
@@ -346,12 +316,11 @@ function Suggestions() {
                         </Grid>}
 
                     </Grid>
-                    <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined />} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form" >More like this</Button>
+                    <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
+                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large'>More like this</Button>
                     <main>
                         {
                             filterState ?
-
                                 <FilterDialog setFState = {setFilterState} fieldTypes = {fieldTypes}/>
                                 :
                                 null
