@@ -24,6 +24,8 @@ import React, { Fragment } from 'react';
 import { List, Avatar, Button, Skeleton, Form, Checkbox } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import reqwest from 'reqwest';
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
 
 const count = 20;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
@@ -55,27 +57,40 @@ class Entities extends React.Component {
   };
 
 
+  
+  /**
+    * invoked immediately after a component is mounted (inserted into the tree).
+  */
   componentDidMount() {
-    this.getData(res => {
-      this.setState({
-        initLoading: false,
-        data: res.results,
-        list: res.results,
+    console.log(request.user.isLoggedIn);
+      this.getData(res => {
+        this.setState({
+          initLoading: false,
+          data: request.user.dataSources,
+          list: request.user.dataSources,
+        });
       });
-    });
   }
 
+  /**
+    * Calls the function to send the request to get the list of data sources.
+    * The function called updates the 'requests.user.dataSources' object with the correct array of data sources for the user. 
+  */
   getData = callback => {
-    //get data from database
-    reqwest({
-      url: fakeDataUrl,
-      type: 'json',
-      method: 'get',
-      contentType: 'application/json',
-      success: res => {
-        callback(res);
-      },
-    });
+    
+
+    //call on all data soureces
+  
+
+        request.entities.list('https://services.odata.org/V2/Northwind/Northwind.svc', function(result) {
+          console.log(result);
+          if (result === constants.RESPONSE_CODES.SUCCESS) {
+            callback(request.user.dataSources);
+          }
+        });
+
+      
+    
   };
 
   render() {

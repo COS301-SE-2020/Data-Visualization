@@ -83,9 +83,10 @@ export const URL = {
 		LOGOUT: URL_ROOT.USER + '/logout',
 	},
 	DATASOURCE: {
-		LIST: URL_ROOT.DATASOURCE + '/list',
-		ADD: URL_ROOT.DATASOURCE + '/add',
-		REMOVE: URL_ROOT.DATASOURCE + '/remove',
+		LIST: URL_ROOT.DATASOURCE + '/src/list',
+		ADD: URL_ROOT.DATASOURCE + '/src/add',
+		REMOVE: URL_ROOT.DATASOURCE + '/src/remove',
+		ENTITIES:  URL_ROOT.DATASOURCE + '/meta/entities',
 	},
 	DASHBOARD: {
 		LIST: URL_ROOT.DASHBOARD + '/list',

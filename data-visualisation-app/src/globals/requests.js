@@ -68,6 +68,9 @@ const API = {
 		add: (apikey, dataSourceID, dataSourceUrl) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceID, dataSourceUrl }),
 		delete: (dataSourceID, apikey) => axios.post(constants.URL.DATASOURCE.REMOVE, { dataSourceID, apikey }),
 	},
+	entities: {
+		list: (sourceurl) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl }),
+	},
 	suggestion: {
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl }),
 	},
@@ -392,6 +395,7 @@ const request = {
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 			},
 		],
+		entities : [],
 	},
 
 	dataSources: {
@@ -483,6 +487,32 @@ const request = {
 			} else {
 				callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
 			}
+		},
+	},
+
+	entities:{
+		/**
+		 *  Request a list of entites.
+		 *
+		 *  @param callback Function called at end of execution.
+		 */
+		list: (sourceurl, callback) => {
+			API.entities
+				.list(sourceurl)
+					.then((res) => {
+						console.debug(res);
+						if (callback !== undefined) {
+							if (successfulResponse(res)) {
+								
+								request.user.entities = res.data;
+
+								callback(constants.RESPONSE_CODES.SUCCESS);
+							} else {
+								callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+							}
+						}
+					})
+					.catch((err) => console.error(err));
 		},
 	},
 
