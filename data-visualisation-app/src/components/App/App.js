@@ -55,6 +55,7 @@ import './App.scss';
  *   globals import
 */
 import request from '../../globals/requests';
+import * as constant from '../../globals/constants';
 
 /**
  *   pages import
@@ -93,7 +94,7 @@ const globalMaterialUITheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		display: 'flex',
+		display: 'flex'
 	},
 	selected: {
 		color: 'white'
@@ -117,6 +118,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	userButton: {
+
 		// marginRight: theme.spacing(2),
 		[theme.breakpoints.up('sm')]: {
 		},
@@ -139,6 +141,7 @@ const useStyles = makeStyles((theme) => ({
 	content: {
 		flexGrow: 1,
 		padding: theme.spacing(3),
+
 	},
 	nested: {
 		paddingLeft: theme.spacing(11),
@@ -299,7 +302,10 @@ function App(props) {
     */
 	var page;
 	if(pageType === 'home'){
-		page = <Home />;
+		//setDashboardStage('dashboadHome');
+		//setDashboardIndex('');
+		//setIsAddingDashboard(false);
+		page = <Home pType={pageType} handlePageType={handlePageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />;
 	}
 	if(pageType === 'explore'){
 		page = <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />;
@@ -309,7 +315,7 @@ function App(props) {
 		page = <Trash />;
 	}
 	if(pageType === 'about'){
-		page = <About />;
+		page = <About renderBackground={renderHomeBackground} width={dimensions.width} height={dimensions.height-10}/>;
 	}
 	if(pageType === 'dashboards'){
 		page = <Dashboards
@@ -487,11 +493,17 @@ function App(props) {
 							open
 						>
 							{drawer}
+                            <div style={{height: '100vh', position: 'relative'}}>
+								<img src={constant.APPLICATION_LOGO_GREY} style={{height: '120px', position: 'absolute', bottom: '80px', left: '24%'}} alt="logo" className={classes.logo} />
+								<div style={{position: 'absolute', bottom: '20px', textAlign: 'center', color: '#535355'}}>
+									Copyright © Doofenshmirts Evil Incorporated
+								</div>
+                            </div>
 						</Drawer>
 					</Hidden>
 				</nav>
 
-				<main className={classes.content} ref={targetRef}>
+				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
 
 					<div className={classes.toolbar} />
 					{

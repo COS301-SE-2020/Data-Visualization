@@ -8,6 +8,7 @@
  *   Date        Author              Changes
  *   -------------------------------------------------------
  *   15/7/2020   Byron Tominson      Original
+ *   5/8/2020    Gian Uys            Improved overall layout
  *
  *   Test Cases: data-visualisation-app/src/tests/About.test.js
  *
@@ -24,22 +25,38 @@
   * Imports
 */
 import React from 'react';
-
+import BackgroundDots from '../../helpers/backgroundWebGL';
+import './About.scss';
+import * as constants from '../../globals/constants';
+import {Typography} from 'antd';
 
 /**
   * @return React Component
 */
-function About() {
-  return (
+function About(props) {
+    return (
+        <React.Fragment>
+            {props.renderBackground && <BackgroundDots width={props.width} height={props.height}/>}
+            <div id='about__container'>
+                <img src={constants.APPLICATION_LOGO_GLOW} style={{height: '350px', margin: 'auto', display: 'block'}} alt='logo'/>
+                <div id={'about__p'}>
+                    <Typography.Paragraph style={{fontSize: '20px', marginTop: '30px'}}>
+                        Data Visualization Generator is a progressive web application used to capture data and suggest visualizations for dashboards and drill-down. Instead of building these visualization from scratch, an Interactive Genetic Algorithm is used to generate suggestions.
+                    </Typography.Paragraph>
 
-    <div style={{ color: '#3C6A7F', width : '50%', margin : 'auto', paddingTop : '10%' }}>
-      <p>
-        Big Data is an ever-growing source of information, with governments and corporations generating more Big Data than ever. It proves to be extremely valuable for companies and governments to be able to extract trends and patterns from this data and use this information to better prepare and/or optimize any services they offer.
-        This repository represents the visualisation of Big Data. However, the catch comes in where, instead of manually creating these visualisations of Big Data, an Interactive Genetic Algorithm (IGA) will be implemented and let the user be able to select/choose the best visualisation of the given data, be it a graph/chart/scatter plot etc.
-      </p>
-    </div>
-    
-  );
+                    <Typography.Title level={3} style={{marginTop: '80px', marginBottom: '26px'}}>Background</Typography.Title>
+
+                    <Typography.Paragraph>
+                        Huge amounts of structured and unstructured data is being stored and processed at a very high rate. This is where the term <b>Big Data</b> comes from. Data is captured to help detect problems and to make better decisions. It is much easier for us as humans to gain insight from data patterns if it is visually represented using charts.
+                        <br/><br/>
+                        These representations take a lot of time to create manually for each data set, especially when we want to create powerful tools like dashboards and drill-downs for end-users.
+                        <br/><br/>
+                        An <b>Interactive Genetic Algorithm (IGA)</b> will be used to suggest visualizations for dashboards and to provide drill-down of these suggestions. These visualizations will help the end-user to make adequate decisions and to make more accurate predictions.
+                    </Typography.Paragraph>
+                </div>
+            </div>
+        </React.Fragment>
+    );
 }
 
 export default About;

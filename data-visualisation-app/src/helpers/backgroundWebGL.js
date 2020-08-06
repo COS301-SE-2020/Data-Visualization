@@ -157,7 +157,7 @@ class BackgroundDots extends Component {
                 {/*/>*/}
                 <div
                     id="boardCanvas"
-                    style={{ width: '1920px', height: '1080px',  }}
+                    style={{ width: '1920px', height: '1080px', position: 'fixed'}}
                     ref={mount => {
                         this.mount = mount;
                     }}
