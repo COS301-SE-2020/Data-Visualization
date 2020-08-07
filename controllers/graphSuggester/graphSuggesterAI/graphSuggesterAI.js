@@ -82,7 +82,7 @@ let graphSuggesterMaker = (function () {
 		 * @param associations the 'non-terminal' nodes, these lead to other tables for data.
 		 * @param types the types of each field for each item
 		 */
-		setMetadata(items, associations, types) {
+		setMetadata(items, associations, types = null) {
 			this.terminals = []; //reset values so that old ones don't interfere
 			this.nonTerminals = [];
 
@@ -115,7 +115,7 @@ let graphSuggesterMaker = (function () {
 		 * @param options the options to choose from when creating a population
 		 * @param results the data that was passed in - used to determine field types
 		 */
-		geneticAlgorithm(options, results) {
+		geneticAlgorithm(options, results) {	//TODO deprecate results, data processing will be moved to dataSourceController
 			if (options == null || options.length === 0 || results == null || results.length === 0) {//eslint-disable-line
 				return null;
 			}
@@ -131,6 +131,7 @@ let graphSuggesterMaker = (function () {
 				title =  Math.trunc(Math.random() * options.length);	//select a random title
 				graphType = this.graphTypes[Math.trunc(Math.random() * 5)];	//select a random graph type
 				fieldType = typeof results[0][title];	//TODO will need extra processing to determine date/time etc.
+				//fieldType = this.fieldTypes[title];	//TODO replace the above line with this
 				chromosomes[i] = [ title, graphType, fieldType ];	//set up the chromosome properties
 			}
 
@@ -196,6 +197,7 @@ let graphSuggesterMaker = (function () {
 							mutate = Math.random();
 							if (mutate <= this.mutationRate) {	//check if it may mutate
 								this.mutation(chromosomes[i], options, results);	//mutate the chromosome
+								//this.mutation(chromosomes[i], options);	//TODO replace the above line with this
 							}
 						}
 					}
@@ -343,7 +345,7 @@ let graphSuggesterMaker = (function () {
 				for (let key = 0; key < keys.length; key++) {
 					//go through all the keys and get rid of IDs and such
 					//those keys are not graph data, just identifiers
-					//TODO change it so some of this data can be processed
+					//TODO change it so some of this data can be processed(like string data)
 					let name = keys[key]; //the key
 
 					if (
@@ -353,7 +355,7 @@ let graphSuggesterMaker = (function () {
 							name.includes('Picture') ||
 							name.includes('Description') ||
 							name.includes('Date')
-						) && this.notInExclusions(name)
+						) && this.notInExclusions(name)	//check that field is not excluded from suggestions
 					) {
 						//trim out the "useless" keys
 						options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
@@ -386,10 +388,11 @@ let graphSuggesterMaker = (function () {
 				let graph = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type - TODO replace '5' with graphTypes.length
 
 				for (let i = 0; i < results.length; i++) {
-					//Store name of field and its chosen attribute in data
+					//Store name of field and values of its chosen attribute in data
 					data[i] = [ results[i][nameKey], results[i][options[choice]] ];
 				}
 
+				//TODO replace most of the above code with this - data processing is being moved to dataSourceController
 				/*let geneticSuggestion = this.geneticAlgorithm(options, results);
 
 				for (let i = 0; i < results.length; i++) {
