@@ -14,6 +14,7 @@
  * 05/08/2020	 Marco Lombaard		Changed class from singleton to normal class w/ static functions
  * 05/08/2020	 Marco Lombaard		Added limitFields and setFittestEChart functions
  * 07/08/2020	 Marco Lombaard		Added data-types array to return in parseODataMetaData function
+ * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function
  *
  * Test Cases: none
  *
@@ -50,7 +51,7 @@ class GraphSuggesterController {
 	 * suggester in graphSuggesterAI.js.
 	 * @param target the target graph.
 	 */
-	static changeFitnessTarget(target) {
+	static changeFitnessTarget(target) {	//TODO this is deprecated
 		graphSuggesterAI.changeFitnessTarget(target);
 	}
 
@@ -77,23 +78,25 @@ class GraphSuggesterController {
 		//check if the required values are in the object
 		if (
 			graph['series'] == null || //eslint-disable-line
+			graph['series'].isEmpty ||
 			graph['dataset'] == null //eslint-disable-line
 		) {
 			console.log('Check that graph, graph series and graph dataset are not empty or null');
 			return false;	//required values missing, signal failure
 		}
 
-		let graphType = graph['series']['type'];	//the type of chart
+		let series = graph['series'][0];
+		let graphType = series['type'];	//the type of chart
 		let dataset = graph['dataset'];
 		
 		//check if there is a source
-		if (dataset['source'] == null || dataset['series'] == null) {//eslint-disable-line
-			console.log('Check that dataset has a source and series information');
+		if (dataset['source'] == null) {//eslint-disable-line
+			console.log('Check that dataset has a source');
 			return false;	//required value missing, return failure
 		}
 		
 		let fieldSample = dataset['source'];	//select the first entry as a sample
-		let encoding = dataset['series']['encode'];			//get encode information
+		let encoding = series['encode'];			//get encode information
 
 		//if the dataset is empty
 		if (fieldSample.length <= 1) { //eslint-disable-line
@@ -181,9 +184,6 @@ class GraphSuggesterController {
 			index = entityTypes[i].attributes.getNamedItem('Name').value;
 			items[index] = [];
 
-			//not to be confused with 'items', which uses entityTypes. This uses entitySets
-			sets.push(entitySets[i].attributes.getNamedItem('Name').value);
-
 			associations[index] = [];	//initialise array
 			types[index] = [];	//initialise array
 
@@ -203,6 +203,12 @@ class GraphSuggesterController {
 				associations[index][j] = links[j].attributes.getNamedItem('Name').value;
 			}
 		}
+
+		for (let i = 0; i < entitySets.length; i++) {
+			//not to be confused with 'items', which uses entityTypes. This uses entitySets
+			sets.push(entitySets[i].attributes.getNamedItem('Name').value);
+		}
+
 		graphSuggesterAI.setMetadata(items, associations, types);
 
 		return { items, associations, sets, types };
