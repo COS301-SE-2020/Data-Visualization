@@ -1,5 +1,5 @@
 /**
- * @file graphSuggesterAI.test.js
+ * @file graphSuggesterController.test.js
  * Project: Data Visualisation Generator
  * Copyright: Open Source
  * Organisation: Doofenshmirtz Evil Incorporated
@@ -12,7 +12,7 @@
  *
  * Test Cases: none
  *
- * Functional Description: This file implements a unit test to see if the graph suggester component is working properly.
+ * Functional Description: This file implements a unit test to see if the suggester controller component is working properly.
  * This file calls a few functions in the suggester component to test their functionality
  *
  * Error Messages: "Error"
