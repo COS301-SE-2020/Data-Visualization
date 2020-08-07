@@ -28,7 +28,6 @@ const router = express.Router();
 
 const { Rest } = require('../controllers');
 
-//  1. GET_GRAPHS (THIS WILL RETURN JUST DASHBOARDS WITH THEIR NAME, DESCRIPTION AND COLOUR)
 router.post('/list', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);

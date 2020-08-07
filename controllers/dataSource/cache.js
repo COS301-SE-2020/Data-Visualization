@@ -7,99 +7,87 @@ const CacheMaker = (function () {
 	 */
 	class Cache {
 		constructor() {
-			this.metadata = {};
-			this.entityList = {};
-			this.fieldList = {};
+			this.metaData = {}; //Meta => { 'src': {timestamp, data:{items, associations, sets, types }}}
+			this.entityData = {}; //Data => { 'src': {'entity': {timestamp, data:{items, associations, sets, types }}}}
 			this.maxTime = 1000 * 60 * 60 * 0.5; //30mins
 		}
 
+		getMetaData(src) {
+			if (this.metaData && this.metaData[src]) return this.metaData[src].data;
+			return null;
+		}
+		getEntityList(src) {
+			if (this.metaData && this.metaData[src]) return this.metaData[src].data.items;
+			console.log('++++++++++++NULL+++++++++++++');
+			return null;
+		}
+
+		getEntityData(src, entity) {
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) return this.entityData[src][entity].data;
+			return null;
+		}
+
 		validateMetadata(src) {
-			if (this.metadata && this.metadata[src]) {
-				if (Date.now() - this.metadata[src].timestamp >= this.maxTime) {
-					this.onMetadataTimedout(src, this.metadata[src]);
+			if (this.metaData && this.metaData[src]) {
+				if (Date.now() - this.metaData[src].timestamp >= this.maxTime) {
+					this.onMetadataTimedout(src, this.metaData[src]);
 					this.removeMetaData(src);
 					return false;
 				}
 				return true;
 			} else return false;
 		}
-		validateEntityList(src) {
-			if (this.entityList && this.entityList[src]) {
-				if (Date.now() - this.entityList[src].timestamp >= this.maxTime) {
-					this.onEntityListTimedout(src, this.entityList[src]);
-					this.removeEntityList(src);
-					return false;
-				}
-				return true;
-			} else return false;
-		}
-		validateFieldList(src, entity) {
-			if (this.fieldList && this.fieldList[src] && this.fieldList[src][entity]) {
-				if (Date.now() - this.fieldList[src][entity].timestamp >= this.maxTime) {
-					this.onFieldListTimedout(src, entity, this.fieldList[src][entity]);
-					this.removeFieldList(src, entity);
-					return false;
-				}
-				return true;
-			} else return false;
-		}
 
-		getMetaData(src) {
-			if (this.metadata && this.metadata[src]) return this.metadata[src].data;
-			return null;
-		}
-		getEntityList(src) {
-			if (this.entityList && this.entityList[src]) return this.entityList[src].data;
-			return null;
-		}
-		getFieldList(src, entity) {
-			if (this.fieldList && this.fieldList[src] && this.fieldList[src][entity]) return this.fieldList[src][entity].data;
-			return null;
+		validateEntityData(src, entity) {
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) {
+				if (Date.now() - this.entityData[src][entity].timestamp >= this.maxTime) {
+					this.onEntityDataTimedout(src, entity, this.entityData[src][entity]);
+					this.removeEntityData(src, entity);
+					return false;
+				}
+
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		setMetaData(src, data) {
-			if (!this.metadata) this.metadata = {};
-			this.metadata[src] = {
+			if (!this.metaData) this.metaData = {};
+			this.metaData[src] = {
 				timestamp: Date.now(),
 				data,
 			};
 		}
-		setEntityList(src, data) {
-			if (!this.entityList) this.entityList = {};
 
-			this.entityList[src] = {
-				timestamp: Date.now(),
-				data,
-			};
-		}
-		setFieldList(src, entity, data) {
-			if (!this.fieldList) this.fieldList = {};
-			if (!this.fieldList[src]) this.fieldList[src] = {};
+		setEntityData(src, entity, data) {
+			if (!this.entityData) this.entityData = {};
+			if (!this.entityData[src]) this.entityData[src] = {};
 
-			this.fieldList[src][entity] = {
+			this.entityData[src][entity] = {
 				timestamp: Date.now(),
 				data,
 			};
 		}
 
 		removeMetaData(src) {
-			delete this.metadata[src];
+			this.metaData[src] = {};
 		}
-		removeEntityList(src) {
-			delete this.entityList[src];
-		}
-		removeFieldList(src, entity) {
-			if (this.fieldList && this.fieldList[src]) {
-				delete this.fieldList[src][entity];
-				if (Object.keys(this.fieldList[src]).length <= 0) {
-					delete this.fieldList[src];
+		removeEntityData(src, entity) {
+			if (this.entityData && this.entityData[src]) {
+				this.entityData[src][entity] = {};
+				if (Object.keys(this.entityData[src]).length <= 0) {
+					this.entityData[src] = {};
 				}
 			}
 		}
 
-		onMetadataTimedout(src, data) {}
-		onEntityListTimedout(src, data) {}
-		onFieldListTimedout(src, entity, data) {}
+		onMetadataTimedout(src, cdata) {
+			console.log('Removed Meta data:', src);
+		}
+		onEntityDataTimedout(src, entity, cdata) {
+			console.log('Removed Entity data:', src, entity);
+		}
 	}
 
 	return {

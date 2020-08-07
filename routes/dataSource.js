@@ -77,7 +77,7 @@ DataSourceRouteMeta.post('/entities', (req, res) => {
 	} else {
 		Rest.getEntityList(
 			req.body.sourceurl,
-			(list) => res.status(200).json(list),
+			(data) => res.status(200).json(data),
 			(err) => error(res, err)
 		);
 	}
@@ -94,7 +94,7 @@ DataSourceRouteMeta.post('/fields', (req, res) => {
 		Rest.getListOfFields(
 			req.body.sourceurl,
 			req.body.entity,
-			(list) => res.status(200).json(structureFields(list)),
+			(data) => res.status(200).json(data),
 			(err) => error(res, err)
 		);
 	}
@@ -103,11 +103,6 @@ DataSourceRouteMeta.post('/fields', (req, res) => {
 function error(res, err, status = 400) {
 	console.error(err);
 	res.status(status).json(err);
-}
-
-function structureFields(obj) {
-	delete obj[0]['__metadata'];
-	return Object.keys(obj[0]);
 }
 
 module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };
