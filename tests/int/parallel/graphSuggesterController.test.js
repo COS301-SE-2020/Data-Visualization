@@ -1,5 +1,5 @@
 /**
- * @file graphSuggesterAI.test.js
+ * @file graphSuggesterController.test.js
  * Project: Data Visualisation Generator
  * Copyright: Open Source
  * Organisation: Doofenshmirtz Evil Incorporated
@@ -8,7 +8,7 @@
  * Update History:
  * Date          Author             Changes
  * -------------------------------------------------------------------------------
- * 06/08/2020   Marco Lombaard     Original
+ * 07/08/2020   Marco Lombaard     Original
  *
  * Test Cases: none
  *
