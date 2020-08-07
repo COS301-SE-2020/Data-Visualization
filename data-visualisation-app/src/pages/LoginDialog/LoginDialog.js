@@ -418,7 +418,7 @@ function LoginDialog(props) {
   };
 
   return (
-    <div id = 'loginDiv'>
+    <div id = 'login-div'>
     
         {
             (props.isLoggedIn || state.isLoggedIn) ?

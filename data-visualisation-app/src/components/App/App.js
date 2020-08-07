@@ -75,7 +75,8 @@ import GlobalStateProvider  from '../../globals/Store';
 import {useGlobalState} from '../../globals/Store';
 
 
-
+let w = window.innerWidth;
+let h = window.innerHeight;
 const drawerWidth = 240;
 
 const globalMaterialUITheme = createMuiTheme({
@@ -139,6 +140,7 @@ const useStyles = makeStyles((theme) => ({
 		background: '#242424',
 	},
 	content: {
+		
 		flexGrow: 1,
 		padding: theme.spacing(3),
 
@@ -318,9 +320,6 @@ function App(props) {
     */
 	var page;
 	if(pageType === 'home'){
-		//setDashboardStage('dashboadHome');
-		//setDashboardIndex('');
-		//setIsAddingDashboard(false);
 		page = <Home pType={pageType} handlePageType={handlePageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />;
 	}
 	if(pageType === 'explore'){
@@ -436,6 +435,9 @@ function App(props) {
 	const container = window !== undefined ? () => window().document.body : undefined;
 
 	return (
+	
+
+		
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 

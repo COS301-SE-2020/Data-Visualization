@@ -167,10 +167,13 @@ class Entities extends React.Component {
               </Fragment>
             )}
           />
+           
           <Form.Item>
+         
             <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
               Generate Suggestions
             </Button>
+           
           </Form.Item>
           
         </Form>

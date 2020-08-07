@@ -29,6 +29,7 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import './DataConnection.scss';
 import AddConnectionDialog from '../AddConnectionDialog';
+import Anime, {anime} from 'react-anime';
 
 /**
   * takes no arguments and returns a random string of length 10.
@@ -219,8 +220,12 @@ class DataConnection extends React.Component {
             lineHeight: '32px',
           }}
         >
+     
           <Button shape = 'round' onClick={this.changeAddState} style ={{marginRight: '10px'}}>Add Connection</Button>
           <Button type = 'primary' shape = 'round' onClick={this.next}>Next</Button>
+          
+    
+          
         </div>
       ) : null;
    

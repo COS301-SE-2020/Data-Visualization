@@ -22,6 +22,8 @@ import './Home.scss';
 import Anime, {anime} from 'react-anime';
 import {ReactComponent as ExploreIllustration} from '../../assets/svg/explore_ill.svg';
 import {ReactComponent as DashboardIllustration} from '../../assets/svg/dashboard_ill.svg';
+import { Button } from 'antd';
+import {CompassOutlined} from '@ant-design/icons';
 
 
 const { Title, Text } = Typography;
@@ -33,7 +35,7 @@ function Home(props) {
   //Our app is makes visualizing data easy! We require data sources then we generate chart suggestions of your data with the help of an Interactive Genetic Algorithm.
   return (
       <div class = 'outterDiv'>
-        <Anime delay={anime.stagger(100)} scale={[.1, .9]}>
+        <Anime delay={anime.stagger(100)} scale={[.7, .9]}>
           <Title id = 'welcomeTitle'>Visualize your data.</Title>
           <Text id = 'welcomeText'>The Data Visualization App helps make it easy to visualize your data with the help of an Interactive Genetic Algorithm. All the we require is your data source and we show you the results!</Text>
           
@@ -47,7 +49,11 @@ function Home(props) {
               <ExploreIllustration class = 'exploreIllustration'/>
             </div>
             <div id = 'explainExploreDiv'>
-              <Text id = 'explainExplore'>Select 'Explore' from the side menu to find graph suggestions which can be added to dashboards.</Text>
+              <Button id = 'explore-button' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />} onClick={() => props.handlePageType('explore')}>
+                  Explore
+              </Button>
+              <div class = 'spacerDiv'></div>
+              <Text id = 'explainExplore'>Find suggestions. Add them to dashboards.</Text>
             </div>
           </div>
 
@@ -56,7 +62,11 @@ function Home(props) {
               <DashboardIllustration class = 'dashboardIllustration'/>
             </div>
             <div id = 'explainDashboardsDiv'>
-              <Text id = 'explainDashboards'>Select 'Dashboards' from the side menu to view or create dashbaords.</Text>
+              <Button id = 'dashboard-button' type="primary" htmlType="submit" shape = 'round' size = 'large' onClick={() => props.handlePageType('dashboards')}>
+                  Dashboards
+              </Button>
+              <div class = 'spacerDiv'></div>
+              <Text id = 'explainDashboards'>View your dashboards</Text>
             </div>
           </div>
           </div>

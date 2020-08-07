@@ -399,6 +399,7 @@ const request = {
 			},
 		],
 		addedSourceID: '',
+		dataSourceInfo: [],
 		entities : [],
 		entitiesToUse : [],
 		fields: [],
