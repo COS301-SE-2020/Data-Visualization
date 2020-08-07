@@ -59,7 +59,7 @@ let graphSuggesterMaker = (function () {
 			this.mutationRate = 0.3; //the rate at which the population should mutate
 			//should we initialise these?
 
-			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom']);
+			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ]);
 		}
 
 		/**
@@ -86,24 +86,21 @@ let graphSuggesterMaker = (function () {
 			this.terminals = []; //reset values so that old ones don't interfere
 			this.nonTerminals = [];
 
-			if (items != null) {
-				//eslint-disable-line
+			if (items != null) {//eslint-disable-line
 				let itemsKeys = Object.keys(items); //get the named keys for the set
 				for (let i = 0; i < itemsKeys.length; i++) {
 					this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
 				}
 			}
 
-			if (associations != null) {
-				//eslint-disable-line
+			if (associations != null) {//eslint-disable-line
 				let associationKeys = Object.keys(associations); //get the named keys for the set
 				for (let i = 0; i < associationKeys.length; i++) {
 					this.nonTerminals[associationKeys[i]] = associations[associationKeys[i]];
 				}
 			}
 
-			if (types != null) {
-				//eslint-disable-line
+			if (types != null) {//eslint-disable-line
 				let typeKeys = Object.keys(types); //get the named keys for the set
 				for (let i = 0; i < typeKeys.length; i++) {
 					this.fieldTypes[typeKeys[i]] = types[typeKeys[i]];
@@ -264,35 +261,35 @@ let graphSuggesterMaker = (function () {
 			let temp; //variable used in swapping
 
 			switch (degree) {
-				case 0:
-					temp = parent1[1]; //swap graph types
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					break;
+			case 0:
+				temp = parent1[1]; //swap graph types
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				break;
 
-				case 1:
-					temp = parent1[2]; //swap fields(and therefore their types)
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 1:
+				temp = parent1[2]; //swap fields(and therefore their types)
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				case 2:
-					temp = parent1[1]; //swap all attributes(basically a reproduction)
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					temp = parent1[2];
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 2:
+				temp = parent1[1]; //swap all attributes(basically a reproduction)
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				temp = parent1[2];
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				default:
-					break; //should never reach this, default to reproduction
+			default:
+				break; //should never reach this, default to reproduction
 			}
 		}
 
@@ -320,25 +317,21 @@ let graphSuggesterMaker = (function () {
 		getSuggestions(jsonData) {
 			// let object = JSON.parse(jsonData);
 			let object = jsonData;
-			if (object == null || (this.terminals == null && this.nonTerminals == null)) {
-				//eslint-disable-line
+			if (object == null || (this.terminals == null && this.nonTerminals == null)) {//eslint-disable-line
 				return null;
 			}
 			// object = object [ 'd' ];            //OData always starts with 'd' as the main key
 			let results = object['results']; //OData follows up with 'results' key
 
-			if (results == null) {
-				//eslint-disable-line
+			if (results == null) {//eslint-disable-line
 				results = object;
 			}
-			if (results == null || results.length === 0) {
-				//eslint-disable-line
+			if (results == null || results.length === 0) {//eslint-disable-line
 				console.log('RESULTS array has length of 0.');
 				return null;
 			}
 
-			if (results == null) {
-				//eslint-disable-line
+			if (results == null) {//eslint-disable-line
 				//Didn't follow with 'results' key, will have to go to a deeper layer
 				console.log('Need to go a layer deeper');
 				return null;
@@ -355,8 +348,7 @@ let graphSuggesterMaker = (function () {
 				//   console.log(type);
 
 				let keys = this.terminals[type]; //check the available attributes in the metadata
-				if (keys == null) {
-					//eslint-disable-line
+				if (keys == null) {//eslint-disable-line
 					return null;
 				}
 				let options = []; //the available key options(processed later) for suggestion generation
@@ -382,8 +374,7 @@ let graphSuggesterMaker = (function () {
 					) {
 						//trim out the "useless" keys
 						options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
-					} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {
-						//eslint-disable-line
+					} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {//eslint-disable-line
 						//store the name key for later access
 						nameKey = name;
 					}
@@ -392,8 +383,7 @@ let graphSuggesterMaker = (function () {
 				let hasData = false; //check variable used to see if data exists or if a deeper thread is followed
 
 				for (let i = 0; i < options.length; i++) {
-					if (results[0][options[i]]['__deferred'] == null) {
-						//eslint-disable-line
+					if (results[0][options[i]]['__deferred'] == null) {//eslint-disable-line
 						//if this isn't a link then we have data
 						hasData = true;
 						break;
@@ -409,7 +399,7 @@ let graphSuggesterMaker = (function () {
 
 				let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do selection
 				let data = []; //2D array containing item names and attributes
-				let params = [nameKey, 'value']; //the labels for column values
+				let params = [ nameKey, 'value' ]; //the labels for column values
 				let graph = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type - TODO replace '5' with graphTypes.length
 
 				for (let i = 0; i < results.length; i++) {
