@@ -93,6 +93,20 @@ const result = [
 	}
 ];
 
+const items = {
+	'Product': [ 'ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit',
+		'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued' ]
+};
+
+const associations = {
+	'Product': [ 'Category', 'Order_Details', 'Supplier' ],
+};
+
+const types = {
+	'Product': [ 'int', 'string', 'int', 'int', 'int',
+		'int', 'int', 'int', 'int', 'bool' ],
+};
+
 describe('Testing functions within the graphSuggesterAI class', function () {
 	test('Returns true to a field that is not excluded', () => {
 		expect(graphSuggesterAI.notInExclusions('yes')).toBe(true);
@@ -112,12 +126,12 @@ describe('Testing functions within the graphSuggesterAI class', function () {
 	});
 
 	test('Successfully sets metadata', () => {
-		graphSuggesterAI.setMetadata(metadata, null);
+		graphSuggesterAI.setMetadata(items, associations, types);
 		expect(graphSuggesterAI.terminals).toMatchObject(metadata);
 	});
 
 	test('Generates a suggestion when receiving valid data and metadata exists', () => {
-		graphSuggesterAI.setMetadata(metadata, null);
+		graphSuggesterAI.setMetadata(items, associations, types);
 		expect(graphSuggesterAI.getSuggestions(jsonData)).not.toBeNull();
 	});
 

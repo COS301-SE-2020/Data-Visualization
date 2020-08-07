@@ -83,8 +83,8 @@ let graphSuggesterMaker = (function () {
 		 * @param types the types of each field for each item
 		 */
 		setMetadata(items, associations, types = null) {
-			this.terminals = []; //reset values so that old ones don't interfere
-			this.nonTerminals = [];
+			this.terminals = {}; //reset values so that old ones don't interfere
+			this.nonTerminals = {};
 
 			if (items != null) {//eslint-disable-line
 				let itemsKeys = Object.keys(items); //get the named keys for the set
@@ -316,9 +316,16 @@ let graphSuggesterMaker = (function () {
 		 */
 		getSuggestions(jsonData) {
 			// let object = JSON.parse(jsonData);
+			if (typeof jsonData === 'string') {
+				jsonData = JSON.parse(jsonData);
+			}
 			let object = jsonData;
-			if (object == null || (this.terminals == null && this.nonTerminals == null)) {//eslint-disable-line
+			if (object == null) {//eslint-disable-line
+				console.log('No data received to generate suggestions, returning...');
 				return null;
+			}
+			if (this.terminals == null && this.nonTerminals == null) {//eslint-disable-line
+				console.log('No metadata available, returning...');
 			}
 			// object = object [ 'd' ];            //OData always starts with 'd' as the main key
 			let results = object['results']; //OData follows up with 'results' key
@@ -349,6 +356,8 @@ let graphSuggesterMaker = (function () {
 
 				let keys = this.terminals[type]; //check the available attributes in the metadata
 				if (keys == null) {//eslint-disable-line
+					console.log('No keys found in metadata');
+					console.log(this.terminals);
 					return null;
 				}
 				let options = []; //the available key options(processed later) for suggestion generation

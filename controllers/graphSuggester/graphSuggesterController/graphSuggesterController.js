@@ -53,6 +53,12 @@ class GraphSuggesterController {
 	 * @returns the suggestions that were generated, in JSON format.
 	 */
 	static getSuggestions(jsonData) {
+		if (jsonData == null) {//eslint-disable-line
+			return null;
+		}
+		if (typeof jsonData !== 'string') {
+			jsonData = JSON.stringify(jsonData);
+		}
 		return graphSuggesterAI.getSuggestions(jsonData);
 	}
 
