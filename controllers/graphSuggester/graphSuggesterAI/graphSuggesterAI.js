@@ -48,18 +48,18 @@ let graphSuggesterMaker = (function () {
 		 * The default constructor for the object - initialises class variables
 		 */
 		constructor() {
-			this.graphTypes = [];	//types of graphs to select when generating suggestions
-			this.terminals = [];	//immediate data fields
-			this.nonTerminals = [];	//associations with other tables - will require more requests
-			this.fieldTypes = [];	//types of each field - used in chromosome representation
+			this.graphTypes = []; //types of graphs to select when generating suggestions
+			this.terminals = []; //immediate data fields
+			this.nonTerminals = []; //associations with other tables - will require more requests
+			this.fieldTypes = []; //types of each field - used in chromosome representation
 
-			this.fieldExclusions = [];		//fields to exclude during suggestion generation
-			this.fittestGraphType = null;	//the target graph type(will have the lowest fitness value, i.e. best fitness)
-			this.fittestFieldType = null;	//the target field type(will have the lowest fitness value, i.e. best fitness)
-			this.mutationRate = 0.3;		//the rate at which the population should mutate
+			this.fieldExclusions = []; //fields to exclude during suggestion generation
+			this.fittestGraphType = null; //the target graph type(will have the lowest fitness value, i.e. best fitness)
+			this.fittestFieldType = null; //the target field type(will have the lowest fitness value, i.e. best fitness)
+			this.mutationRate = 0.3; //the rate at which the population should mutate
 			//should we initialise these?
 
-			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ]);
+			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom']);
 		}
 
 		/**
@@ -86,22 +86,25 @@ let graphSuggesterMaker = (function () {
 			this.terminals = []; //reset values so that old ones don't interfere
 			this.nonTerminals = [];
 
-			if (items != null) {	//eslint-disable-line
-				let itemsKeys = Object.keys(items);	//get the named keys for the set
+			if (items != null) {
+				//eslint-disable-line
+				let itemsKeys = Object.keys(items); //get the named keys for the set
 				for (let i = 0; i < itemsKeys.length; i++) {
 					this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
 				}
 			}
 
-			if (associations != null) { //eslint-disable-line
-				let associationKeys = Object.keys(associations);	//get the named keys for the set
+			if (associations != null) {
+				//eslint-disable-line
+				let associationKeys = Object.keys(associations); //get the named keys for the set
 				for (let i = 0; i < associationKeys.length; i++) {
 					this.nonTerminals[associationKeys[i]] = associations[associationKeys[i]];
 				}
 			}
 
-			if (types != null) {//eslint-disable-line
-				let typeKeys = Object.keys(types);	//get the named keys for the set
+			if (types != null) {
+				//eslint-disable-line
+				let typeKeys = Object.keys(types); //get the named keys for the set
 				for (let i = 0; i < typeKeys.length; i++) {
 					this.fieldTypes[typeKeys[i]] = types[typeKeys[i]];
 				}
@@ -116,103 +119,114 @@ let graphSuggesterMaker = (function () {
 		 * @param results the data that was passed in - used to determine field types
 		 */
 		geneticAlgorithm(options, results) {
-			if (options == null || options.length === 0 || results == null || results.length === 0) {//eslint-disable-line
+			if (options == null || options.length === 0 || results == null || results.length === 0) {
+				//eslint-disable-line
 				return null;
 			}
 			//TODO might be able to optimise with pre-processing of types, so that 'results' isn't passed
-			let chromosomes = [];		//Our population
-			let populationSize = 10;	//amount of chromosomes to generate
-			let title;		//the title of the graph - used for data retrieval
-			let graphType;	//the type of graph
-			let fieldType;	//the category/type of field(date, currency, boolean, string, etc.)
+			let chromosomes = []; //Our population
+			let populationSize = 10; //amount of chromosomes to generate
+			let title; //the title of the graph - used for data retrieval
+			let graphType; //the type of graph
+			let fieldType; //the category/type of field(date, currency, boolean, string, etc.)
 
 			//initialise population
-			for (let i=0; i<populationSize; i++) {
-				title =  Math.trunc(Math.random() * options.length);	//select a random title
-				graphType = this.graphTypes[Math.trunc(Math.random() * 5)];	//select a random graph type
-				fieldType = typeof results[0][title];	//TODO will need extra processing to determine date/time etc.
-				chromosomes[i] = [ title, graphType, fieldType ];	//set up the chromosome properties
+			for (let i = 0; i < populationSize; i++) {
+				title = Math.trunc(Math.random() * options.length); //select a random title
+				graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
+				fieldType = typeof results[0][title]; //TODO will need extra processing to determine date/time etc.
+				chromosomes[i] = [title, graphType, fieldType]; //set up the chromosome properties
 			}
 
-			let mutate = 0;					//value must be below mutation rate for mutation to take place
-			let fitness = [];				//all the fitness values - use to select parents
-			let bestFitness = 1000;			//this is set to a large value at first
-			let secondBestFitness = 1000;	//this is set to a large value at first
-			let globalBestFitness = 1000;	//this is the best fitness out of the entire population
-			let bestCandidate = 0;			//the best candidate so far
-			let secondBestCandidate = 0;	//the second best candidate so far
-			let globalBestCandidate = 0;	//the best candidate globally
-			let tournament = [];			//the tournament pool
-			let tournamentSize = 5;			//the size of the tournament pool
-			let offspring1 = [];			//used to reproduce the best candidate
-			let offspring2 = [];			//used to reproduce the second best candidate
-			let count = 0;					//tracks the amount of epochs
-			let maxEpochs = 10;				//the maximum amount of epochs that may be generated
+			let mutate = 0; //value must be below mutation rate for mutation to take place
+			let fitness = []; //all the fitness values - use to select parents
+			let bestFitness = 1000; //this is set to a large value at first
+			let secondBestFitness = 1000; //this is set to a large value at first
+			let globalBestFitness = 1000; //this is the best fitness out of the entire population
+			let bestCandidate = 0; //the best candidate so far
+			let secondBestCandidate = 0; //the second best candidate so far
+			let globalBestCandidate = 0; //the best candidate globally
+			let tournament = []; //the tournament pool
+			let tournamentSize = 5; //the size of the tournament pool
+			let offspring1 = []; //used to reproduce the best candidate
+			let offspring2 = []; //used to reproduce the second best candidate
+			let count = 0; //tracks the amount of epochs
+			let maxEpochs = 10; //the maximum amount of epochs that may be generated
 
-			for (let i = 0; i < populationSize; i++) {	//calculate the fitness for each chromosome
+			for (let i = 0; i < populationSize; i++) {
+				//calculate the fitness for each chromosome
 				fitness[i] = this.calculateFitness(chromosomes[i]);
-				if (fitness[i] < globalBestFitness) {	//if it has better fitness than the global fitness
+				if (fitness[i] < globalBestFitness) {
+					//if it has better fitness than the global fitness
 					globalBestFitness = fitness[i];
 					globalBestCandidate = i;
 				}
 			}
 
-			while (globalBestFitness !== 0 && count < maxEpochs) {	//while we have not yet reached the best suggestion nor timed out
+			while (globalBestFitness !== 0 && count < maxEpochs) {
+				//while we have not yet reached the best suggestion nor timed out
 				count++;
 
 				for (let i = 0; i < tournamentSize; i++) {
-					tournament[i] = Math.floor(Math.random()*populationSize);
-					if (fitness[tournament[i]] < bestFitness) {	//if it has better fitness than the best candidate
+					tournament[i] = Math.floor(Math.random() * populationSize);
+					if (fitness[tournament[i]] < bestFitness) {
+						//if it has better fitness than the best candidate
 						secondBestCandidate = bestCandidate;
 						secondBestFitness = bestFitness;
 						bestCandidate = tournament[i];
 						bestFitness = fitness[tournament[i]];
-					} else if (fitness[tournament[i]] < secondBestFitness) { //else if it has better fitness than the second best candidate
+					} else if (fitness[tournament[i]] < secondBestFitness) {
+						//else if it has better fitness than the second best candidate
 						secondBestFitness = fitness[tournament[i]];
 						secondBestCandidate = tournament[i];
 					}
 				}
 
-				for (let i = 0; i < chromosomes[bestCandidate].length; i++) {	//reproduce the best parents
+				for (let i = 0; i < chromosomes[bestCandidate].length; i++) {
+					//reproduce the best parents
 					offspring1[i] = chromosomes[bestCandidate][i];
 					offspring2[i] = chromosomes[secondBestCandidate][i];
 				}
 
-				this.crossover(chromosomes[bestCandidate], chromosomes[secondBestCandidate]);	//crossover the best parents
+				this.crossover(chromosomes[bestCandidate], chromosomes[secondBestCandidate]); //crossover the best parents
 
-				for (let i = 0 ; i < populationSize; i++) {	//mutate all but the best parents
+				for (let i = 0; i < populationSize; i++) {
+					//mutate all but the best parents
 					if (i !== bestCandidate && i !== secondBestCandidate) {
 						if (offspring1.length !== 0) {
 							for (let j = 0; j < offspring1.length; j++) {
 								chromosomes[i][j] = offspring1[j];
 							}
-							offspring1 = [];	//reset for next iteration
+							offspring1 = []; //reset for next iteration
 						} else if (offspring2.length !== 0) {
 							for (let j = 0; j < offspring2.length; j++) {
 								chromosomes[i][j] = offspring2[j];
 							}
-							offspring2 = [];	//reset for next iteration
+							offspring2 = []; //reset for next iteration
 						} else {
 							mutate = Math.random();
-							if (mutate <= this.mutationRate) {	//check if it may mutate
-								this.mutation(chromosomes[i], options, results);	//mutate the chromosome
+							if (mutate <= this.mutationRate) {
+								//check if it may mutate
+								this.mutation(chromosomes[i], options, results); //mutate the chromosome
 							}
 						}
 					}
 				}
 
-				globalBestFitness = bestFitness;		//assume this is the best, then check
-				globalBestCandidate = bestCandidate;	//assume this is the best, then check
-				for (let i = 0; i < populationSize; i++) {	//calculate the fitness for each chromosome
+				globalBestFitness = bestFitness; //assume this is the best, then check
+				globalBestCandidate = bestCandidate; //assume this is the best, then check
+				for (let i = 0; i < populationSize; i++) {
+					//calculate the fitness for each chromosome
 					fitness[i] = this.calculateFitness(chromosomes[i]);
-					if (fitness[i] < globalBestFitness) {	//if better than the global best
+					if (fitness[i] < globalBestFitness) {
+						//if better than the global best
 						globalBestFitness = fitness[i];
 						globalBestCandidate = i;
 					}
 				}
 			}
 
-			return chromosomes[globalBestCandidate];	//return our best suggestion
+			return chromosomes[globalBestCandidate]; //return our best suggestion
 		}
 
 		/**
@@ -224,14 +238,16 @@ let graphSuggesterMaker = (function () {
 			//TODO consider adding something extra like scatterEffect being better than bar chart if scatter is best
 			let fitness = 0;
 			let penalty = 5;
-			
-			if (chromosome[1] !== this.fittestGraphType) {	//check if graph type is the best
+
+			if (chromosome[1] !== this.fittestGraphType) {
+				//check if graph type is the best
 				fitness += penalty;
 			}
-			if (chromosome[2] !== this.fittestFieldType) {	//check if field type is the best
+			if (chromosome[2] !== this.fittestFieldType) {
+				//check if field type is the best
 				fitness += penalty;
 			}
-			
+
 			return fitness;
 
 			//TODO consider decoupling chromosome representation from evaluation(like characteristic arrays being evaluated instead of each individual attribute)
@@ -243,37 +259,40 @@ let graphSuggesterMaker = (function () {
 		 * @param parent2 the other chromosome to crossover
 		 */
 		crossover(parent1, parent2) {
-			let degree = Math.floor(Math.random()*3);
-			let temp;	//variable used in swapping
+			let degree = Math.floor(Math.random() * 3);
+			let temp; //variable used in swapping
 
-			switch (degree){
-			case 0	:	temp = parent1[1];	//swap graph types
-				parent1[1] = parent2[1];
-				parent2[1] = temp;
-				break;
+			switch (degree) {
+				case 0:
+					temp = parent1[1]; //swap graph types
+					parent1[1] = parent2[1];
+					parent2[1] = temp;
+					break;
 
-			case 1	:	temp = parent1[2];	//swap fields(and therefore their types)
-				parent1[2] = parent2[2];
-				parent2[2] = temp;
-				temp = parent1[0];
-				parent1[0] = parent2[0];
-				parent2[0] = temp;
-				break;
+				case 1:
+					temp = parent1[2]; //swap fields(and therefore their types)
+					parent1[2] = parent2[2];
+					parent2[2] = temp;
+					temp = parent1[0];
+					parent1[0] = parent2[0];
+					parent2[0] = temp;
+					break;
 
-			case 2	:	temp = parent1[1];	//swap all attributes(basically a reproduction)
-				parent1[1] = parent2[1];
-				parent2[1] = temp;
-				temp = parent1[2];
-				parent1[2] = parent2[2];
-				parent2[2] = temp;
-				temp = parent1[0];
-				parent1[0] = parent2[0];
-				parent2[0] = temp;
-				break;
+				case 2:
+					temp = parent1[1]; //swap all attributes(basically a reproduction)
+					parent1[1] = parent2[1];
+					parent2[1] = temp;
+					temp = parent1[2];
+					parent1[2] = parent2[2];
+					parent2[2] = temp;
+					temp = parent1[0];
+					parent1[0] = parent2[0];
+					parent2[0] = temp;
+					break;
 
-			default	:	break;	//should never reach this, default to reproduction
+				default:
+					break; //should never reach this, default to reproduction
 			}
-
 		}
 
 		/**
@@ -283,9 +302,9 @@ let graphSuggesterMaker = (function () {
 		 * @param results the results - used to determine field types
 		 */
 		mutation(chromosome, options, results) {
-			let title =  Math.trunc(Math.random() * options.length);	//select a random title
-			let graphType = this.graphTypes[Math.trunc(Math.random() * 5)];	//select a random graph type
-			let fieldType = typeof results[0][title];	//TODO will need extra processing to determine date/time etc.
+			let title = Math.trunc(Math.random() * options.length); //select a random title
+			let graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
+			let fieldType = typeof results[0][title]; //TODO will need extra processing to determine date/time etc.
 
 			chromosome[0] = title;
 			chromosome[1] = graphType;
@@ -300,21 +319,25 @@ let graphSuggesterMaker = (function () {
 		getSuggestions(jsonData) {
 			// let object = JSON.parse(jsonData);
 			let object = jsonData;
-			if (object == null || (this.terminals == null && this.nonTerminals == null)) {//eslint-disable-line
+			if (object == null || (this.terminals == null && this.nonTerminals == null)) {
+				//eslint-disable-line
 				return null;
 			}
 			// object = object [ 'd' ];            //OData always starts with 'd' as the main key
 			let results = object['results']; //OData follows up with 'results' key
 
-			if (results == null) { //eslint-disable-line
+			if (results == null) {
+				//eslint-disable-line
 				results = object;
 			}
-			if (results == null || results.length === 0) { //eslint-disable-line
+			if (results == null || results.length === 0) {
+				//eslint-disable-line
 				console.log('RESULTS array has length of 0.');
 				return null;
 			}
 
-			if (results == null) { //eslint-disable-line
+			if (results == null) {
+				//eslint-disable-line
 				//Didn't follow with 'results' key, will have to go to a deeper layer
 				console.log('Need to go a layer deeper');
 				return null;
@@ -331,7 +354,8 @@ let graphSuggesterMaker = (function () {
 				//   console.log(type);
 
 				let keys = this.terminals[type]; //check the available attributes in the metadata
-				if (keys == null) { //eslint-disable-line
+				if (keys == null) {
+					//eslint-disable-line
 					return null;
 				}
 				let options = []; //the available key options(processed later) for suggestion generation
@@ -346,18 +370,11 @@ let graphSuggesterMaker = (function () {
 					//TODO change it so some of this data can be processed
 					let name = keys[key]; //the key
 
-					if (
-						!(
-							name.includes('ID') ||
-							name.includes('Name') ||
-							name.includes('Picture') ||
-							name.includes('Description') ||
-							name.includes('Date')
-						) && this.notInExclusions(name)
-					) {
+					if (!(name.includes('ID') || name.includes('Name') || name.includes('Picture') || name.includes('Description') || name.includes('Date')) && this.notInExclusions(name)) {
 						//trim out the "useless" keys
 						options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
-					} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) { //eslint-disable-line
+					} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {
+						//eslint-disable-line
 						//store the name key for later access
 						nameKey = name;
 					}
@@ -366,7 +383,8 @@ let graphSuggesterMaker = (function () {
 				let hasData = false; //check variable used to see if data exists or if a deeper thread is followed
 
 				for (let i = 0; i < options.length; i++) {
-					if (results[0][options[i]]['__deferred'] == null) { //eslint-disable-line
+					if (results[0][options[i]]['__deferred'] == null) {
+						//eslint-disable-line
 						//if this isn't a link then we have data
 						hasData = true;
 						break;
@@ -382,12 +400,12 @@ let graphSuggesterMaker = (function () {
 
 				let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do selection
 				let data = []; //2D array containing item names and attributes
-				let params = [ nameKey, 'value' ]; //the labels for column values
+				let params = [nameKey, 'value']; //the labels for column values
 				let graph = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type - TODO replace '5' with graphTypes.length
 
 				for (let i = 0; i < results.length; i++) {
 					//Store name of field and its chosen attribute in data
-					data[i] = [ results[i][nameKey], results[i][options[choice]] ];
+					data[i] = [results[i][nameKey], results[i][options[choice]]];
 				}
 
 				/*let geneticSuggestion = this.geneticAlgorithm(options, results);
@@ -399,7 +417,7 @@ let graphSuggesterMaker = (function () {
 				let option = this.constructOption(data, geneticSuggestion[1], params[0], params[1], type+': '+geneticSuggestion[0]);
 				 */
 
-				let option = this.constructOption(data, graph, params, params[0], params[1], type+': '+options[choice]);
+				let option = this.constructOption(data, graph, params, params[0], params[1], type + ': ' + options[choice]);
 
 				return option;
 			}
@@ -430,9 +448,11 @@ let graphSuggesterMaker = (function () {
 		 * @return {boolean} true if the field is not in exclusions, false if it is listed as an exclusion
 		 */
 		notInExclusions(name) {
-			for (let i=0; i<this.fieldExclusions.length; i++){	//check all exclusions
-				if (name === this.fieldExclusions[i]){	//if it is in exclusions
-					return false;				//exclude it from options
+			for (let i = 0; i < this.fieldExclusions.length; i++) {
+				//check all exclusions
+				if (name === this.fieldExclusions[i]) {
+					//if it is in exclusions
+					return false; //exclude it from options
 				}
 			}
 
