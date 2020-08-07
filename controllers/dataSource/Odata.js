@@ -19,6 +19,7 @@
  * Constraints: None
  */
 const axios = require('axios');
+const DOMParser = require('xmldom').DOMParser;
 // const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 /**
  * Purpose: This class is responsible for getting Odata.
@@ -77,6 +78,61 @@ class Odata {
 				})
 				.catch((err) => reject(err));
 		});
+	}
+
+	/**
+	 * This function parses the metadata which is received in XML format and passes it to the suggester
+	 * so it knows what it can suggest. It passes the properties(treated as terminal nodes) and the
+	 * navigation properties(so it can go to deeper layers) via the setMetadata function.
+	 * @param xmlData the metadata in XML format.
+	 * @returns an object containing the parsed items and associated tables as well as the item sets and data-types in each "table"
+	 */
+	static parseODataMetadata(xmlData) {
+		if (xmlData == null) return null; //eslint-disable-line
+
+		let parser = new DOMParser();
+		let xmlDoc = parser.parseFromString(xmlData, 'text/xml');
+		let entitySets = xmlDoc.getElementsByTagName('EntitySet'); //all "tables" that are available
+		let entityTypes = xmlDoc.getElementsByTagName('EntityType'); //all "tables" that are available
+		let items = {}; //each "table" has its own items
+		let sets = []; //each "table" has its own items
+		let index; //used to index items for JSON parsing
+		let children; //children of each entity(basically elements/attributes)
+		let links; //links to other "tables" associated with this one
+		let associations = {}; //associated tables - used in suggestion generation
+		let types = {}; //the data types of the fields
+
+		for (let i = 0; i < entityTypes.length; i++) {
+			//step through each table and find their items
+			//The idea is to use strings as indices for JSON parsing, here the name of the entity is used
+			index = entityTypes[i].attributes.getNamedItem('Name').value;
+			items[index] = [];
+
+			associations[index] = []; //initialise array
+			types[index] = []; //initialise array
+
+			children = entityTypes[i].getElementsByTagName('Property');
+
+			for (let j = 0; j < children.length; j++) {
+				//store the 'fields' of each 'table'
+				items[index][j] = children[j].attributes.getNamedItem('Name').value;
+				//store the types of each 'field'
+				types[index][j] = children[j].attributes.getNamedItem('Type').value;
+			}
+
+			links = entityTypes[i].getElementsByTagName('NavigationProperty');
+
+			for (let j = 0; j < links.length; j++) {
+				//store the 'tables' associated with the current 'table'
+				associations[index][j] = links[j].attributes.getNamedItem('Name').value;
+			}
+		}
+
+		for (let i = 0; i < entitySets.length; i++) {
+			//not to be confused with 'items', which uses entityTypes. This uses entitySets
+			sets.push(entitySets[i].attributes.getNamedItem('Name').value);
+		}
+		return { items, associations, sets, types };
 	}
 }
 /**
