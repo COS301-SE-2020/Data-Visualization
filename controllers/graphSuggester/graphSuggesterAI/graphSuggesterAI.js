@@ -47,15 +47,16 @@ let graphSuggesterMaker = (function () {
 		 * The default constructor for the object - initialises class variables
 		 */
 		constructor() {
-			this.graphTypes = [];
-			this.terminals = [];
-			this.nonTerminals = [];
+			this.graphTypes = [];	//types of graphs to select when generating suggestions
+			this.terminals = [];	//immediate data fields
+			this.nonTerminals = [];	//associations with other tables - will require more requests
+			this.fieldTypes = [];	//types of each field - used in chromosome representation
 
-			this.fieldExclusions = [];
-			this.fittestGraphType = null;
-			this.fittestFieldType = null;
-			this.mutationRate = 0.3;
-			//initialise maybe
+			this.fieldExclusions = [];		//fields to exclude during suggestion generation
+			this.fittestGraphType = null;	//the target graph type(will have the lowest fitness value, i.e. best fitness)
+			this.fittestFieldType = null;	//the target field type(will have the lowest fitness value, i.e. best fitness)
+			this.mutationRate = 0.3;		//the rate at which the population should mutate
+			//should we initialise these?
 
 			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ]);
 		}
@@ -78,22 +79,30 @@ let graphSuggesterMaker = (function () {
 		 * This function sets the nodes that can be selected for graph suggestions.
 		 * @param items the 'terminal' nodes, these don't lead to other tables for data.
 		 * @param associations the 'non-terminal' nodes, these lead to other tables for data.
+		 * @param types the types of each field for each item
 		 */
-		setMetadata(items, associations) {
+		setMetadata(items, associations, types) {
 			this.terminals = []; //reset values so that old ones don't interfere
 			this.nonTerminals = [];
 
 			if (items != null) {	//eslint-disable-line
-				let itemsKeys = Object.keys(items);
+				let itemsKeys = Object.keys(items);	//get the named keys for the set
 				for (let i = 0; i < itemsKeys.length; i++) {
 					this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
 				}
 			}
 
 			if (associations != null) { //eslint-disable-line
-				let associationKeys = Object.keys(associations);
+				let associationKeys = Object.keys(associations);	//get the named keys for the set
 				for (let i = 0; i < associationKeys.length; i++) {
 					this.nonTerminals[associationKeys[i]] = associations[associationKeys[i]];
+				}
+			}
+
+			if (types != null) {//eslint-disable-line
+				let typeKeys = Object.keys(types);	//get the named keys for the set
+				for (let i = 0; i < typeKeys.length; i++) {
+					this.fieldTypes[typeKeys[i]] = types[typeKeys[i]];
 				}
 			}
 
