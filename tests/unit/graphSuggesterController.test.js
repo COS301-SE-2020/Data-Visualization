@@ -27,7 +27,7 @@ describe('Testing functions in the graphSuggesterController class', function () 
 		expect(graphSuggesterController.getSuggestions(null)).toBeNull();
 	});
 
-	test('Returns true when setting fitness chart', () => {
+	test('Returns true when setting fitness chart to null', () => {
 		expect(graphSuggesterController.setFittestEChart(null)).toBe(true);
 	});
 
