@@ -14,7 +14,7 @@
  * 05/08/2020	 Marco Lombaard		Changed class from singleton to normal class w/ static functions
  * 05/08/2020	 Marco Lombaard		Added limitFields and setFittestEChart functions
  * 07/08/2020	 Marco Lombaard		Added data-types array to return in parseODataMetaData function
- * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function
+ * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function, added setGraphTypes
  *
  * Test Cases: none
  *
@@ -69,6 +69,15 @@ class GraphSuggesterController {
 	 */
 	static limitFields(fields) {
 		graphSuggesterAI.excludeFields(fields);
+	}
+
+
+	/**
+	 * This function passes the graph types that should be used in suggestion generation
+	 * @param types an array of the graph types(bar, pie, scatter, etc.) that should be used in suggestion generation
+	 */
+	static setGraphTypes(types) {
+		graphSuggesterAI.setGraphTypes(types);
 	}
 
 	/**
