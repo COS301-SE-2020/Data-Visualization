@@ -37,8 +37,10 @@ const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI').getInst
  */
 class GraphSuggesterController {
 	/**
-	 *
-	 * @param {*} jsonData
+	 * This function sets the metadata used in graph suggestion generation
+	 * @param items	the entities('tables') and their related attributes/fields
+	 * @param associations the other entities associated with this entity(containing related data)
+	 * @param types the data types of each field, organised by entity
 	 */
 	static setMetadata({ items, associations, types }) {
 		graphSuggesterAI.setMetadata(items, associations, types);

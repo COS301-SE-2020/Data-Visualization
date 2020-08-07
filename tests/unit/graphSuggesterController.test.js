@@ -30,8 +30,4 @@ describe('Testing functions in the graphSuggesterController class', function () 
 	test('Returns true when setting fitness chart to null', () => {
 		expect(graphSuggesterController.setFittestEChart(null)).toBe(true);
 	});
-
-	test('returns null when null data is passed for parsing', () => {
-		expect(graphSuggesterController.parseODataMetadata(null)).toBeNull();
-	});
 });
