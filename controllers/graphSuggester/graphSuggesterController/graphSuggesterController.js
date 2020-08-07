@@ -203,7 +203,7 @@ class GraphSuggesterController {
 				associations[index][j] = links[j].attributes.getNamedItem('Name').value;
 			}
 		}
-		graphSuggesterAI.setMetadata(items, associations);
+		graphSuggesterAI.setMetadata(items, associations, types);
 
 		return { items, associations, sets, types };
 	}

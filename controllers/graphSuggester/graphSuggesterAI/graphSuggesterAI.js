@@ -17,6 +17,7 @@
  * 05/08/2020	 Marco Lombaard		Added excludeFields and notInExcluded functions
  * 05/08/2020	 Marco Lombaard		Updated changeFitness to accept eChart and deduce fittest characteristics
  * 06/08/2020	 Marco Lombaard		Added geneticAlgorithm, calculateFitness, crossover, mutation functions
+ * 07/08/2020	 Marco Lombaard		Updated setMetadata function to accept graph types as a parameter
  *
  * Test Cases: none
  *
