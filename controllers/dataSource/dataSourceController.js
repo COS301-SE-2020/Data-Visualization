@@ -27,6 +27,30 @@ const Odata = require('./Odata');
  * @author Phillip Schulze
  */
 class DataSource {
+	static updateMetaData(src) {
+		return new Promise((resolve, reject) => {
+			Odata.getMetaData(src)
+				.then((data) => {
+					data = DataSource.parseMetadata(data);
+					// data.items = [1, 2, 3, 4, 5];
+					Cache.setMetaData(src, data);
+					resolve();
+				})
+				.catch((err) => reject(err));
+		});
+	}
+
+	static updateEntityData(src, entity) {
+		return new Promise((resolve, reject) => {
+			Odata.getEntityData(src, entity)
+				.then((data) => {
+					Cache.setEntityData(src, entity, data);
+					resolve();
+				})
+				.catch((err) => reject(err));
+		});
+	}
+
 	/**
 	 * This function gets Odata.
 	 * @param src the source where this Odata must be retrieved from
@@ -36,11 +60,8 @@ class DataSource {
 		return new Promise((resolve, reject) => {
 			if (Cache.validateMetadata(src)) resolve(Cache.getMetaData(src));
 			else {
-				Odata.getMetaData(src)
-					.then((data) => {
-						Cache.setMetaData(src, data);
-						resolve(Cache.getMetaData(src));
-					})
+				DataSource.updateMetaData(src)
+					.then(() => resolve(Cache.getMetaData(src)))
 					.catch((err) => reject(err));
 			}
 		}); //Returns a promise
@@ -52,17 +73,20 @@ class DataSource {
 	 */
 	static getEntityList(src) {
 		return new Promise((resolve, reject) => {
-			if (Cache.validateEntityList(src)) resolve(Cache.getEntityList(src));
-			else {
-				Odata.getEntityList(src)
-					.then((data) => {
-						Cache.setEntityList(src, data);
-						resolve(Cache.getEntityList(src));
+			if (Cache.validateMetadata(src)) {
+				const data = DataSource.entityList(src);
+				resolve(data);
+			} else {
+				DataSource.updateMetaData(src)
+					.then(() => {
+						const data = DataSource.entityList(src);
+						resolve(data);
 					})
 					.catch((err) => reject(err));
 			}
 		}); //Returns a promise
 	}
+
 	/**
 	 * This function gets entity data.
 	 * @param src the source where the entity data must be retrieved from
@@ -71,17 +95,39 @@ class DataSource {
 	 */
 	static getEntityData(src, entity) {
 		return new Promise((resolve, reject) => {
-			if (Cache.validateFieldList(src, entity)) resolve(Cache.getFieldList(src, entity));
-			else {
-				Odata.getEntityData(src, entity)
-					.then((data) => {
-						Cache.setFieldList(src, entity, data);
-						resolve(Cache.getFieldList(src, entity));
-					})
+			if (Cache.validateEntityData(src, entity)) {
+				resolve(DataSource.entityData(src, entity));
+			} else {
+				DataSource.updateEntityData(src, entity)
+					.then(() => resolve(DataSource.entityData(src, entity)))
 					.catch((err) => reject(err));
 			}
 		}); //Returns a promise
 	}
+
+	static entityList(src) {
+		const data = Cache.getEntityList(src);
+
+		return {
+			source: src,
+			entityList: data,
+		};
+	}
+	static entityData(src, entity) {
+		return {
+			source: src,
+			entity: entity,
+			data: Cache.getEntityData(src, entity),
+		};
+	}
+
+	static parseMetadata(xmlData) {
+		return Odata.parseODataMetadata(xmlData);
+	}
+}
+
+function copy(obj) {
+	return JSON.parse(JSON.stringify(obj));
 }
 
 module.exports = DataSource;
