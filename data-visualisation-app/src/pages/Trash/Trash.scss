@@ -1,4 +1,52 @@
-.panel__chart {
+@import '../../globals/globals';
+
+.trash {
+  position: relative;
+  margin: 15px 0px 15px 15px;
   background-color: white;
-  padding: 15px 20px 15px 20px;
+  padding: 10px 20px 20px 20px;
+  border: 1px solid $color-border;
+  border-radius: 5px;
+}
+
+.trash__chart--loadingContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.trash__chart--loadingBackground {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+}
+
+.trash__chart--loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -52px;
+}
+
+.trash__dashboard--title {
+  background-image: linear-gradient(16deg, rgba(36,11,54,1) 0%, rgba(195,20,48,1) 79%);
+  height: 70px;
+  line-height: 70px;
+  border-radius: 10px 10px 0px 0px;
+  padding-left: 20px;
+  font-weight: bold;
+  font-size: 18px;
+  color: white;
+}
+
+.trash__dashboard {
+  margin-top: 20px;
+}
+
+.trash__container {
+  border: 1px solid $color-border;
+  border-radius: 0px 0px 5px 5px;
 }

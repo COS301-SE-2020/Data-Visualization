@@ -24,7 +24,8 @@ class BackgroundDots extends Component {
     componentDidMount() {
 
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, this.props.width / this.props.height, 0.1, 1000);
+        // this.camera = new THREE.PerspectiveCamera(75, this.props.width / this.props.height, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(75, 1920 / 1080, 0.1, 1000);
 
         this.camera.position.z = 1001;
         this.camera.position.x = 205;
@@ -85,7 +86,8 @@ class BackgroundDots extends Component {
 
 
         // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.renderer.setSize(this.props.width, this.props.height);
+        // this.renderer.setSize(this.props.width, this.props.height);
+        this.renderer.setSize(1920, 1080);
         this.mount.appendChild(this.renderer.domElement);
 
         this.animate();
@@ -157,7 +159,7 @@ class BackgroundDots extends Component {
                 {/*/>*/}
                 <div
                     id="boardCanvas"
-                    style={{ width: '1920px', height: '1080px', position: 'fixed'}}
+                    style={{ width: '1920px', height: '1080px', position: 'fixed', top: '0'}}
                     ref={mount => {
                         this.mount = mount;
                     }}

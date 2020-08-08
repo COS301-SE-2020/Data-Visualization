@@ -8,6 +8,7 @@
  *   Date        Author              Changes
  *   -------------------------------------------------------
  *   15/7/2020   Byron Tominson      Original
+ *   8/8/2020    Gian Uys            Added functionality
  *
  *   Test Cases: data-visualisation-app/src/tests/Trash.test.js
  *
@@ -25,102 +26,250 @@
 */
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import {Button, Typography} from 'antd';
+import {Button, message, Typography, Spin, Empty} from 'antd';
 import ReactEcharts from 'echarts-for-react';
 import './Trash.scss';
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
 
 /**
   * @return React Component
 */
 class Trash extends React.Component {
 
+    static charts = null;
+    static DELIMITER_OUTER = '^';
+    static DELIMITER_INNER = '|';
+
     constructor(props) {
         super(props);
-        this.state = {};
-        this.charts = null;
-        this.delimiter = '^';
-
         if (localStorage.getItem('trashedCharts') !== '') {
-            this.charts = this.parseStored(localStorage.getItem('trashedCharts'));
+            Trash.charts = Trash.parseStoredTrash(localStorage.getItem('trashedCharts'));
         }
 
-        this.state = {charts: this.charts};
+        this.state = {charts: Trash.charts, restoring: this.prepareRestoringArray()};
     }
 
-    parseStored(storedString) {
-        if (storedString.includes(this.delimiter)) {
-            storedString = storedString.split(this.delimiter);
-
-            for (let s = 0; s < storedString.length; s++) {
-                storedString[s] = JSON.parse(storedString[s]);
-                storedString[s].charts = JSON.parse(storedString[s].charts);
-            }
-
+    prepareRestoringArray() {
+        if (Trash.charts == null) {
+             return [];
         } else {
-            storedString = [JSON.parse(storedString)];
+            let restoringArray = [];
+            for (let o = 0; o < Trash.charts.length; o++) {
+                for (let c = 0; c < Trash.charts[o].charts.length; c++) {
+                    restoringArray.push(false);
+                }
+            }
+            return restoringArray;
         }
-
-        return storedString;
     }
 
+    getChartIndex(dashboardIndex, chartIndex) {
+        let index = 0;
+        for (let o = 0; o < this.state.charts.length; o++) {
+            if (o === dashboardIndex) {
+                for (let c = 0; c < Trash.charts[o].charts.length; c++) {
+                    if (c === chartIndex) {
+                        index += chartIndex;
+                        break;
+                    }
+                }
+                break;
+            }
+            index += this.state.charts[o].charts.length;
+        }
+
+        return index;
+    }
+
+    /**
+     * Decodes string stored within local storage.
+     *
+     * @param storedString String stored in local storage's "trashedCharts" item.
+     * @return Array of dashboards with associated charts from the parsed string value.
+     */
     static parseStoredTrash(storedString) {
-        if (storedString.includes(this.delimiter)) {
-            storedString = storedString.split(this.delimiter);
+        if (storedString.includes(Trash.DELIMITER_OUTER)) {
+            storedString = storedString.split(Trash.DELIMITER_OUTER);
 
             for (let s = 0; s < storedString.length; s++) {
                 storedString[s] = JSON.parse(storedString[s]);
-                storedString[s].charts = JSON.parse(storedString[s].charts);
+                storedString[s].charts = storedString[s].charts.split(Trash.DELIMITER_INNER);
+                for (let c = 0; c < storedString[s].charts.length; c++) {
+                    storedString[s].charts[c] = JSON.parse(storedString[s].charts[c]);
+                }
             }
 
         } else {
             storedString = [JSON.parse(storedString)];
+            storedString[0].charts = storedString[0].charts.split(Trash.DELIMITER_INNER);
+
+            for (let s = 0; s < storedString.length; s++) {
+                for (let c = 0; c <  storedString[s].charts.length; c++) {
+                    storedString[s].charts[c] = JSON.parse(storedString[s].charts[c]);
+                }
+            }
         }
 
         return storedString;
     }
 
-    static addChart(owner, chartData) {
-        if (localStorage.getItem('trashedCharts') === '') {
-            this.charts = [{
+    /**
+     * Encodes and stores array of dashboards with associated charts into a single string value.
+     */
+    static encodeStoredTrash() {
+        let storedString = '';
+        let chartsArray = '';
+        let chartObjectPointer = null;
+        for (let s = 0; s < Trash.charts.length; s++) {
+            chartObjectPointer = JSON.parse(JSON.stringify(Trash.charts[s]));
+            chartsArray = '';
+            for (let c = 0; c <  Trash.charts[s].charts.length; c++) {
+                chartsArray += JSON.stringify(Trash.charts[s].charts[c]);
+                if (c !== Trash.charts[s].charts.length-1) {
+                    chartsArray += Trash.DELIMITER_INNER;
+                }
+            }
+            chartObjectPointer.charts = chartsArray;
+            storedString += JSON.stringify(chartObjectPointer);
+            if (s !== Trash.charts.length-1) {
+                storedString += Trash.DELIMITER_OUTER;
+            }
+        }
+
+        localStorage.setItem('trashedCharts', storedString);
+    }
+
+    static removeDashboard(dashboard) {
+    }
+
+    /**
+     * Add a newly deleted chart to the Trash.
+     *
+     * @param owner String value of the dashboard name that owns the chart to be added.
+     * @param chartData JSON object of the chart data.
+     * @param dashboardID String value of the dashboard ID.
+     */
+    static addChart(owner, chartData, dashboardID) {
+        let storedString = localStorage.getItem('trashedCharts');
+        let chartsArray = '';
+        let chartObjectPointer = null;
+        if (storedString === '') {
+            Trash.charts = [{
                 dashboard: owner,
+                dashboardID: dashboardID,
                 charts: [{chartData: chartData}]
             }];
+        } else {
+            Trash.charts = Trash.parseStoredTrash(localStorage.getItem('trashedCharts'));
+            if (storedString.includes('"dashboardID":' + dashboardID)) {
+                for (let o = 0; o < Trash.charts.length; o++) {
+                    if (Trash.charts[o].dashboard === owner) {
+                        chartObjectPointer = Trash.charts[o];
+                        break;
+                    }
+                }
+            } else {
+                Trash.charts.push({
+                    dashboard: owner,
+                    dashboardID: dashboardID,
+                    charts: []
+                });
+                chartObjectPointer = Trash.charts[Trash.charts.length-1];
+            }
+
+            chartObjectPointer.charts.push({
+                chartData: chartData
+            });
         }
-        let storedString = '';
-        for (let s = 0; s < this.charts.length; s++) {
-            storedString += JSON.stringify(this.charts[s]);
-            if (s < this.charts.length-1) {
-                storedString += this.delimiter;
+        Trash.encodeStoredTrash();
+    }
+
+    /**
+     * Removes a chart from the Trash.
+     *
+     * @param dashboardID String value of the dashboard ID.
+     * @param chartID String value of the chart ID.
+     *
+     */
+    static removeChart(dashboardID, chartID) {
+        for (let o = 0; o < Trash.charts.length; o++) {
+            if (Trash.charts[o].dashboardID === dashboardID) {
+                for (let c = 0; c < Trash.charts[o].charts.length; c++) {
+                    if (Trash.charts[o].charts[c].chartData.id === chartID) {
+                        if (Trash.charts[o].charts.length === 1) {
+                            Trash.charts.splice(o, 1);
+                        } else {
+                            Trash.charts[o].charts.splice(c, 1);
+                        }
+                        break;
+                    }
+                }
+                break;
             }
         }
-        localStorage.setItem('trashedCharts', storedString);
+    }
+
+    onRestoreClick(dashboardID, chart, chartIndex) {
+
+        this.setState({restoring: this.state.restoring.map((rest, index) => {
+            return index === chartIndex;
+        })});
+        let outerthis = this;
+        request.graph.add(dashboardID, chart.title, chart.options, chart.metadata, function(result) {
+            if (result === constants.RESPONSE_CODES.SUCCESS) {
+                Trash.removeChart(dashboardID, chart.id);
+                outerthis.setState({charts: Trash.charts, restoring: outerthis.prepareRestoringArray()});
+                Trash.encodeStoredTrash();
+            } else {
+                message.error('Something went wrong. Could not restore chart!');
+            }
+        });
     }
 
     render() {
         return (
             <div>
                 {this.state.charts == null ?
-                    <div>is empty</div>
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='Empty Trash'/>
                     :
                     <div>
-                        {this.state.charts.map((dashboard, index) => {
-                            return <div key={index}>
-                                dashbaord: {dashboard.dashboard}
-                                <Grid container spacing={3} className='panel__chart panel__shadow'>
-                                    {dashboard.charts.map((chart, index) => {
-                                        return (
-                                            <Grid item xs={12} md={6} lg={3} key={index} className='suggestion panel__shadow'>
-                                                <div style={{marginBottom: '10px'}}>
-                                                    <Typography.Title level={4}>{chart.chartData.title}</Typography.Title>
+                        {this.state.charts.map((dashboard, dashboardIndex) => {
+                            return (
+                            <div key={dashboardIndex} className='trash__dashboard'>
+                                <div className='trash__dashboard--title'>
+                                    {dashboard.dashboard}
+                                </div>
+                                <div className='trash__container'>
+                                    <Grid container spacing={3}>
+                                        {dashboard.charts.map((chart, chartIndex) => {
+                                            let restoringChartIndex = this.getChartIndex(dashboardIndex, chartIndex);
+                                            return (
+                                                <Grid item xs={12} md={6} lg={3} key={chartIndex}>
+                                                    <div className='trash'>
+                                                        <div style={{marginBottom: '10px'}}>
+                                                            <Typography.Title level={4}>{chart.chartData.title}</Typography.Title>
 
-                                                </div>
-                                                <ReactEcharts option={chart.chartData.options} />
-                                                <Button>Restore</Button>
-                                            </Grid>
-                                        );
-                                    })}
-                                </Grid>
-                            </div>;
+                                                        </div>
+                                                        <ReactEcharts option={chart.chartData.options} />
+                                                        <Button onClick={() => {this.onRestoreClick(dashboard.dashboardID, chart.chartData, restoringChartIndex);}} style={{marginTop: '5px'}}>Restore</Button>
+                                                        {
+                                                            this.state.restoring[restoringChartIndex] &&
+                                                            <div className='trash__chart--loadingContainer'>
+                                                                <div className='trash__chart--loadingBackground'></div>
+                                                                <div className='trash__chart--loading'>
+                                                                    <Spin tip="Restoring chart..."></Spin>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+
+                                                </Grid>
+                                            );
+                                        })}
+                                    </Grid>
+                                </div>
+                            </div>);
 
                         })}
                     </div>

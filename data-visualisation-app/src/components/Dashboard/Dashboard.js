@@ -21,6 +21,9 @@
  *   Constraints: None
  */
 
+/**
+ *   Imports
+ */
 import React, {useEffect, useState, useRef} from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import ReactEcharts from 'echarts-for-react';
@@ -31,6 +34,7 @@ import Grid from '@material-ui/core/Grid';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import useUndo from 'use-undo';
+import Trash from '../../pages/Trash';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -62,7 +66,7 @@ function Dashboard(props) {
 			canUndo,
 			canRedo
 		}
-	] = useUndo({name: props.name, description: props.description, chartNames: []}); //{name: 'dashboardname', description: 'dashboarddesciption'}
+	] = useUndo({name: props.name, description: props.description, chartNames: []});
 
 	const { present: presentDashboard } = dashboardState;
 	const HEIGHT_DEFAULT = 14;
@@ -264,23 +268,6 @@ function Dashboard(props) {
 
 	function onSearchPressEnter(e) {
 		onSearchClick(e.target.value);
-		// if (e.target.value === '' && searchString !== '') {
-		// 	showAllCharts(false);
-		// 	constructLayout(request.cache.graph.list.length);
-		// } else {
-		// 	let newvisiblecharts = [];
-		// 	request.cache.graph.list.forEach((chart, index) => {
-		// 		if (chart.title.match(new RegExp(e.target.value, 'i'))) {
-		//
-		// 			newvisiblecharts.push(index);
-		// 		}
-		// 	});
-		//
-		// 	setVisibleCharts(newvisiblecharts);
-		//
-		// 	constructLayout(newvisiblecharts.length);
-		// }
-		// setSearchString(e.target.value);
 	}
 
 	function onSearchClick(value) {
@@ -303,11 +290,16 @@ function Dashboard(props) {
 		setSearchString(value);
 	}
 
-	function onChartDelete(chartid) {
+	function onChartDelete(chartIndex) {
 		message.loading('Deleting Chart...', 0);
-		request.graph.delete(props.dashboardID, chartid, function(result) {
+		// todo: if request is unsuccessful the chart should not be shown on the trash page
+		Trash.addChart(presentDashboard.name, request.cache.graph.list[chartIndex], props.dashboardID);
+		let chartID = request.cache.graph.list[chartIndex].id;
+
+		request.graph.delete(props.dashboardID, request.cache.graph.list[chartIndex].id, function(result) {
 			message.destroy();
 			if (result === constants.RESPONSE_CODES.SUCCESS) {
+
 				message.success('Chart was successfully deleted.', 2.5);
 
 				showAllCharts(false);
@@ -317,6 +309,7 @@ function Dashboard(props) {
 				constructLayout(request.cache.graph.list.length);
 
 			} else {
+				Trash.removeChart(presentDashboard.name, chartID);
 				message.error('Failed to remove chart!', 2.5);
 			}
 		});
@@ -334,8 +327,6 @@ function Dashboard(props) {
 						currentnames.push(name);
 					}
 				});
-
-				console.debug('this is currentnames:', currentnames);
 
 				setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: currentnames});
 				// setDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
@@ -448,7 +439,7 @@ function Dashboard(props) {
 													{editMode &&
 															<Popconfirm
 																title="Are you sure you would like to delete this chart?"
-																onConfirm={() => onChartDelete(request.cache.graph.list[v].id)}
+																onConfirm={() => onChartDelete(v)}
 																okText="Yes"
 																cancelText="No"
 															>
@@ -476,284 +467,3 @@ function Dashboard(props) {
 }
 
 export default Dashboard;
-
-
-
-
-
-
-
-
-
-
-
-// const demotempoptions = [
-//
-// 	{
-// 		title: {
-// 			text: "CategorySales"
-// 		},
-// 		dataset: {
-// 			source: [
-// 				[
-// 					"Category_Sales_for_1997: CategoryName",
-// 					"value"
-// 				],
-// 				[
-// 					"Beverages",
-// 					"102074.3100"
-// 				],
-// 				[
-// 					"Condiments",
-// 					"55277.6000"
-// 				],
-// 				[
-// 					"Confections",
-// 					"80894.1400"
-// 				],
-// 				[
-// 					"Dairy Products",
-// 					"114749.7800"
-// 				],
-// 				[
-// 					"Grains/Cereals",
-// 					"55948.8200"
-// 				],
-// 				[
-// 					"Meat/Poultry",
-// 					"81338.0600"
-// 				],
-// 				[
-// 					"Produce",
-// 					"53019.9800"
-// 				],
-// 				[
-// 					"Seafood",
-// 					"65544.1800"
-// 				]
-// 			]
-// 		},
-// 		xAxis: {
-// 			"type": "category"
-// 		},
-// 		yAxis: {"type": "category"},
-// 		series: [
-// 			{
-// 				type: "bar",
-// 				encode: {
-// 					x: "Category_Sales_for_1997: CategoryName",
-// 					y: "value"
-// 				}
-// 			}
-// 		]
-// 	},
-//
-//
-// 	{
-// 	legend: {
-// 		data: ['Something'],
-// 		fontFamily: "Tahoma"
-// 	},
-// 	tooltip: {
-// 		trigger: 'axis',
-// 		formatter: 'Temperature : <br/>{b}km : {c}°C'
-// 	},
-// 	grid: {
-// 		left: '3%',
-// 		right: '4%',
-// 		bottom: '3%',
-// 		containLabel: true
-// 	},
-// 	xAxis: {
-// 		type: 'value',
-// 		axisLabel: {
-// 			formatter: '{value} °C'
-// 		}
-// 	},
-// 	yAxis: {
-// 		type: 'category',
-// 		axisLine: {onZero: false},
-// 		axisLabel: {
-// 			formatter: '{value} km'
-// 		},
-// 		boundaryGap: false,
-// 		data: ['0', '10', '20', '30', '40', '50', '60', '70', '80']
-// 	},
-// 	series: [
-// 		{
-// 			name: 'Something',
-// 			type: 'line',
-// 			smooth: true,
-// 			lineStyle: {
-// 				width: 2,
-// 				shadowColor: 'rgba(0, 0, 0, 0.3)',
-// 				shadowBlur: 6,
-// 				shadowOffsetY: 4,
-// 				color: {
-// 					type: 'linear',
-// 					x: 0.5,
-// 					y: 0.5,
-// 					r: 0.5,
-// 					colorStops: [{
-// 						offset: 0, color: '#159957' // color at 0% position
-// 					}, {
-// 						offset: 1, color: '#155799' // color at 100% position
-// 					}],
-// 					global: false // false by default
-// 				}
-// 			},
-// 			data:[15, -50, -56.5, -46.5, -22.1, -2.5, -27.7, -55.7, -76.5]
-// 		}
-// 	]
-// },
-//
-//
-// 	{
-// 		title: {
-// 			text: 'Something',
-// 			subtext: 'Something',
-// 			left: 'center'
-// 		},
-// 		tooltip: {
-// 			trigger: 'item',
-// 			formatter: '{a} <br/>{b} : {c} ({d}%)'
-// 		},
-// 		legend: {
-// 			orient: 'vertical',
-// 			left: 'left',
-// 			data: ['Something1', 'Something2', 'Something3', 'Something4', 'Something5']
-// 		},
-// 		series: [
-// 			{
-// 				name: 'Something22',
-// 				type: 'pie',
-// 				radius: '55%',
-// 				center: ['50%', '60%'],
-// 				data: [
-// 					{value: 335, name: 'Apples'},
-// 					{value: 310, name: 'Oranges'},
-// 					{value: 234, name: 'Bananas'},
-// 					{value: 135, name: 'Pineapples'},
-// 					{value: 1548, name: 'Lemons'}
-// 				],
-// 				emphasis: {
-// 					itemStyle: {
-// 						shadowBlur: 10,
-// 						shadowOffsetX: 0,
-// 						shadowColor: 'rgba(0, 0, 0, 0.5)'
-// 					}
-// 				}
-// 			}
-// 		]
-// 	},
-//
-// 	{
-// 		title: {
-// 			text: '浏览器占比变化',
-// 			subtext: '纯属虚构',
-// 			top: 10,
-// 			left: 10
-// 		},
-// 		tooltip: {
-// 			trigger: 'item',
-// 			backgroundColor: 'rgba(0,0,250,0.2)'
-// 		},
-// 		legend: {
-// 			type: 'scroll',
-// 			bottom: 10,
-// 			data: (function (){
-// 				var list = [];
-// 				for (var i = 1; i <=28; i++) {
-// 					list.push(i + 2000 + '');
-// 				}
-// 				return list;
-// 			})()
-// 		},
-// 		visualMap: {
-// 			top: 'middle',
-// 			right: 10,
-// 			color: ['red', 'yellow'],
-// 			calculable: true
-// 		},
-// 		radar: {
-// 			indicator: [
-// 				{ text: 'IE8-', max: 400},
-// 				{ text: 'IE9+', max: 400},
-// 				{ text: 'Safari', max: 400},
-// 				{ text: 'Firefox', max: 400},
-// 				{ text: 'Chrome', max: 400}
-// 			]
-// 		},
-// 		series: (function (){
-// 			var series = [];
-// 			for (var i = 1; i <= 28; i++) {
-// 				series.push({
-// 					name: '浏览器（数据纯属虚构）',
-// 					type: 'radar',
-// 					symbol: 'none',
-// 					lineStyle: {
-// 						width: 1
-// 					},
-// 					emphasis: {
-// 						areaStyle: {
-// 							color: 'rgba(0,250,0,0.3)'
-// 						}
-// 					},
-// 					data: [{
-// 						value: [
-// 							(40 - i) * 10,
-// 							(38 - i) * 4 + 60,
-// 							i * 5 + 10,
-// 							i * 9,
-// 							i * i /2
-// 						],
-// 						name: i + 2000 + ''
-// 					}]
-// 				});
-// 			}
-// 			return series;
-// 		})()
-// 	},
-//
-// 	{
-// 		color: [
-// 			'#67001f', '#b2182b', '#d6604d', '#f4a582', '#fddbc7', '#d1e5f0', '#92c5de', '#4393c3', '#2166ac', '#053061'
-// 		],
-// 		tooltip: {
-// 			trigger: 'item',
-// 			triggerOn: 'mousemove'
-// 		},
-// 		animation: false,
-// 		series: [
-// 			{
-// 				type: 'sankey',
-// 				bottom: '10%',
-// 				focusNodeAdjacency: 'allEdges',
-// 				data: [
-// 					{name: 'a'},
-// 					{name: 'b'},
-// 					{name: 'a1'},
-// 					{name: 'b1'},
-// 					{name: 'c'},
-// 					{name: 'e'}
-// 				],
-// 				links: [
-// 					{source: 'a', target: 'a1', value: 5},
-// 					{source: 'e', target: 'b', value: 3},
-// 					{source: 'a', target: 'b1', value: 3},
-// 					{source: 'b1', target: 'a1', value: 1},
-// 					{source: 'b1', target: 'c', value: 2},
-// 					{source: 'b', target: 'c', value: 1}
-// 				],
-// 				orient: 'vertical',
-// 				label: {
-// 					position: 'top'
-// 				},
-// 				lineStyle: {
-// 					color: 'source',
-// 					curveness: 0.5
-// 				}
-// 			}
-// 		]
-// 	}
-// ];
