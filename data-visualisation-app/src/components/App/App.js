@@ -50,6 +50,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './App.scss';
+import { WindowsOutlined } from '@ant-design/icons';
 
 /**
  *   globals import
@@ -86,7 +87,7 @@ const globalMaterialUITheme = createMuiTheme({
 	palette: {
 
 		primary: {
-			main: '#ff4400',
+			main: '#242424',
 			mainGradient: 'linear-gradient(to right, tomato, cyan)',
 		}
 	}
@@ -371,7 +372,7 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<DashboardIcon style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
+						<WindowsOutlined style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Dashboards" />
 				</MenuItem>

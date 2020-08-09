@@ -17,9 +17,29 @@
 }
 
 @mixin button--layout {
-    height:300px;
-    width:300px;
-    //margin: 30px;
+    height: 2vw;
+    border: none;
+}
+
+#header__title {
+    margin-top: 100px;
+    margin-left: 90px;
+    text-align: left;
+
+    width: 700px;
+}
+
+#header__graphic {
+    width: 600px;
+    float: right;
+    margin-top: -300px;
+    mergin-left: 30px;
+}
+
+#home__background {
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .square{
@@ -31,7 +51,7 @@
 .exploreIllustration{
     height: 30vh;
     width: 40vh;
-    margin-top: 100px;
+    margin-top: 50px;
     margin-bottom: 100px;
     margin-left: 30px;
     margin-right: auto;
@@ -52,7 +72,8 @@
    
     width: 90%;
     height: 95%;
-    margin : 'auto'
+    //margin : 'auto'
+    text-align: center;
 }
 
 #welcomeTitle{
@@ -67,8 +88,9 @@
 }
 #howTitle{
     font-size: 4vh;
-    padding-top: 100px;
-    padding-left: 60px;
+    //padding-top: 100px;
+    //padding-left: 60px;
+    margin-top: 350px;
 }
 
 #explainExplore{
@@ -81,32 +103,39 @@
 
 #illustrationExploreDiv{
     float: left;
-    margin-right: 30px;
-    margin-top: 30px;
+    margin-top: -70px;
 }
-#illustrationDashboardsDiv{
-    float: left;
-    margin-right: 30px;
+
+#illustrationDashboardsDiv {
+    float: right;
+    margin-top: -150px;
 }
 
 #explainExploreDiv{
     text-align: center;
     padding: 10px;
-    margin-top: 100px;
-    padding-bottom: 100px;
+    margin-left: 50px;
+    width: 800px;
 
 }
-#explainDashboardsDiv{
-    margin-top: 300px;
+#explainDashboardsDiv {
     text-align: center;
-    padding: 10px;
-    margin-top: 200px;
+    width: 400px;
+    float: left;
 }
 .guideDiv{
-    display: inline-block;
-    height: 40em; 
+    display: flex;
+    justify-content: center;
+    //height: 40em;
     width: 100%;
+    text-align: center;
+    margin-top: 170px;
 }
+
+.guideDiv__innerContainer {
+    //width: 100%;
+}
+
 #getStarted{
    
   
@@ -116,17 +145,20 @@
 #explore-button{
     display: inline-block;
     text-align: center;
-    font-size: 5.5vw;
-    width: 35vw;
-    height: 10vw
+    //padding: 10px;
+    //font-size: 5.5vw;
+    width: 6vw;
+    height: 2vw
 }
 
 #dashboard-button{
     display: inline-block;
-    text-align: center;
-    font-size: 5.5vw;
-    width: 35vw;
-    height: 10vw
+    //text-align: center;
+    //font-size: 5.5vw;
+    //width: 35vw;
+    //height: 10vw
+    width: 6vw;
+    height: 2vw
 }
 
 .spacerDiv{
@@ -172,45 +204,60 @@
 }
 
 #button__explore {
-    background-image: url('../../assets/img/logo.png');
-    display: inline;
-    float: left;
-
+    width: 6vw;
     @include button--layout;
 
     @include button__explore--backgroundColor;
+    -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+    -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+    box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
 }
 
 #button__dashboard {
-    display: inline;
-    float: right;
-
+    width: 8vw;
     @include button--layout;
 
     @include button__dashboards--backgroundColor;
+    -webkit-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
+    -moz-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
+    box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
 }
-
 
 #button__explore:hover {
     color: white;
     @include button__explore--backgroundColor;
+    -webkit-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
+    -moz-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
+    box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
+    color: #f0f0f0;
+}
+
+#button__explore:active {
+    @include button__explore--backgroundColor;
+    -webkit-box-shadow: 0px 9px 18px -12px rgba(101,112,192,1);
+    -moz-box-shadow: 0px 9px 18px -12px rgba(101,112,192,1);
+    box-shadow: 0px 9px 18px -12px rgba(101,112,192,1);
+    color: #dedede;
 }
 
 #button__dashboard:hover {
     color: white;
 
     @include button__dashboards--backgroundColor;
-}
-
-
-#button__explore:active {
-    @include button__explore--backgroundColor;
+    -webkit-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
+    -moz-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
+    box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
+    color: #f0f0f0;
 }
 
 #button__dashboard:active {
     color: white;
 
     @include button__dashboards--backgroundColor;
+    -webkit-box-shadow: 0px 9px 18px -12px rgba(126,141,128,1);
+    -moz-box-shadow: 0px 9px 18px -12px rgba(126,141,128,1);
+    box-shadow: 0px 9px 18px -12px rgba(126,141,128,1);
+    color: #dedede;
 }
 
 #masterPalette{
