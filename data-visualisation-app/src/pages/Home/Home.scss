@@ -33,7 +33,7 @@
     width: 600px;
     float: right;
     margin-top: -300px;
-    mergin-left: 30px;
+    margin-left: 30px;
 }
 
 #home__background {
@@ -99,16 +99,17 @@
 }
 
 #explainExplore{
-    font-size: 3vh;
+    font-size: 2vh;
 }
 
 #explainDashboards{
-    font-size: 3vh;
+    font-size: 2vh;
 }
 
 #illustrationExploreDiv{
     float: left;
     margin-top: -70px;
+    margin-right: 100px;
 }
 
 #illustrationDashboardsDiv {
@@ -118,15 +119,11 @@
 
 #explainExploreDiv{
     text-align: center;
-    padding: 10px;
-    margin-left: 50px;
-    width: 800px;
-
 }
 #explainDashboardsDiv {
     text-align: center;
     width: 400px;
-    float: left;
+
 }
 .guideDiv{
     display: flex;
@@ -138,7 +135,7 @@
 }
 
 .guideDiv__innerContainer {
-    //width: 100%;
+    width: 60%;
 }
 
 
@@ -162,8 +159,8 @@
 }
 
 .spacerDiv{
-    width: 35vw;
-    height: 2vw
+    width: 2vw;
+    height: 2vw;
 }
 
 .button__home {
@@ -204,23 +201,29 @@
 }
 
 #button__explore {
-    width: 6vw;
+    
     @include button--layout;
-
     @include button__explore--backgroundColor;
     -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
     -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
     box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+
+    font-size: 2.3vw;
+    width: 20vw;
+    height: 10vw;
 }
 
 #button__dashboard {
-    width: 8vw;
+ 
     @include button--layout;
-
     @include button__dashboards--backgroundColor;
     -webkit-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     -moz-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
+
+    font-size: 2.3vw;
+    width: 20vw;
+    height: 10vw;
 }
 
 #button__explore:hover {
