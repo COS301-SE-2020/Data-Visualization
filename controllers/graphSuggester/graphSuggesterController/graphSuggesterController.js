@@ -14,7 +14,8 @@
  * 05/08/2020	 Marco Lombaard		Changed class from singleton to normal class w/ static functions
  * 05/08/2020	 Marco Lombaard		Added limitFields and setFittestEChart functions
  * 07/08/2020	 Marco Lombaard		Added data-types array to return in parseODataMetaData function
- * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function
+ * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function, added setGraphTypes
+ * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
  *
  * Test Cases: none
  *
@@ -36,8 +37,10 @@ const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI').getInst
  */
 class GraphSuggesterController {
 	/**
-	 *
-	 * @param {*} jsonData
+	 * This function sets the metadata used in graph suggestion generation
+	 * @param items	the entities('tables') and their related attributes/fields
+	 * @param associations the other entities associated with this entity(containing related data)
+	 * @param types the data types of each field, organised by entity
 	 */
 	static setMetadata({ items, associations, types }) {
 		graphSuggesterAI.setMetadata(items, associations, types);
@@ -50,6 +53,12 @@ class GraphSuggesterController {
 	 * @returns the suggestions that were generated, in JSON format.
 	 */
 	static getSuggestions(jsonData) {
+		if (jsonData == null) {//eslint-disable-line
+			return null;
+		}
+		if (typeof jsonData !== 'string') {
+			jsonData = JSON.stringify(jsonData);
+		}
 		return graphSuggesterAI.getSuggestions(jsonData);
 	}
 
@@ -71,6 +80,15 @@ class GraphSuggesterController {
 		graphSuggesterAI.excludeFields(fields);
 	}
 
+
+	/**
+	 * This function passes the graph types that should be used in suggestion generation
+	 * @param types an array of the graph types(bar, pie, scatter, etc.) that should be used in suggestion generation
+	 */
+	static setGraphTypes(types) {
+		graphSuggesterAI.setGraphTypes(types);
+	}
+
 	/**
 	 * This function deduces the fitness characteristics from an eChart style graph and updates them as the target.
 	 * @param graph the target graph as an object in eCharts format
@@ -78,8 +96,7 @@ class GraphSuggesterController {
 	 */
 	static setFittestEChart(graph) {
 		//if the graph is null, then we are resetting preferences for the fitness target
-		if (graph == null) {
-			//eslint-disable-line
+		if (graph == null) {//eslint-disable-line
 			console.log('setFittestEChart received null, resetting fitness target...');
 			graphSuggesterAI.changeFitnessTarget(null, null);
 			return true;
@@ -99,8 +116,7 @@ class GraphSuggesterController {
 		let dataset = graph['dataset'];
 
 		//check if there is a source
-		if (dataset['source'] == null) {
-			//eslint-disable-line
+		if (dataset['source'] == null) {//eslint-disable-line
 			console.log('Check that dataset has a source');
 			return false; //required value missing, return failure
 		}
@@ -109,8 +125,7 @@ class GraphSuggesterController {
 		let encoding = series['encode']; //get encode information
 
 		//if the dataset is empty
-		if (fieldSample.length <= 1) {
-			//eslint-disable-line
+		if (fieldSample.length <= 1) {//eslint-disable-line
 			console.log('Check that dataset source has entries');
 			return false;
 		}
@@ -118,16 +133,14 @@ class GraphSuggesterController {
 		fieldSample = fieldSample[1]; //select the first data entry
 
 		//check if entry is empty or if there is no data value
-		if (fieldSample == null || fieldSample.length === 0) {
-			//eslint-disable-line
+		if (fieldSample == null || fieldSample.length === 0) {//eslint-disable-line
 			console.log('Check that entries have values');
 			return false;
 		}
 
 		//check that encoding is present and not empty
-		if (encoding == null || encoding.isEmpty) {
-			//eslint-disable-line
-			console.log("Check that 'encode' is not empty");
+		if (encoding == null || encoding.isEmpty) {//eslint-disable-line
+			console.log('Check that \'encode\' is not empty');
 			return false;
 		}
 
@@ -135,7 +148,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log("check that 'encode' has keys");
+			console.log('check that \'encode\' has keys');
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries
