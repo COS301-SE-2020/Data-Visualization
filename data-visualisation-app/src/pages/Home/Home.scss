@@ -99,11 +99,11 @@
 }
 
 #explainExplore{
-    font-size: 2vh;
+    font-size: 3.5vh;
 }
 
 #explainDashboards{
-    font-size: 2vh;
+    font-size: 3.5vh;
 }
 
 #illustrationExploreDiv{
@@ -210,7 +210,7 @@
 
     font-size: 2.3vw;
     width: 20vw;
-    height: 10vw;
+    height: 7vw;
 }
 
 #button__dashboard {
@@ -223,7 +223,7 @@
 
     font-size: 2.3vw;
     width: 20vw;
-    height: 10vw;
+    height: 7vw;
 }
 
 #button__explore:hover {
@@ -299,7 +299,7 @@
 
 
 $circle-w: 100px;
-$circle-bg: #55544F;
+$circle-bg: #242424;
 $arrow-bg:#fff;
 $bezier: cubic-bezier(0.770, 0.000, 0.175, 1.000);
 $bezier-bounce: cubic-bezier(.87,-.41,.19,1.44);
