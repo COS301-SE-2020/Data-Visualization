@@ -80,8 +80,8 @@ router.post('/update', (req, res) => {
 			req.body.dashboardID,
 			req.body.fields,
 			req.body.data,
-			() => {
-				res.status(200).json({ message: 'Successfully Updated Dashboard' });
+			(data) => {
+				res.status(200).json({ message: 'Successfully Updated Dashboard', ...data });
 			},
 			(err) => error(res, err, 400)
 		);

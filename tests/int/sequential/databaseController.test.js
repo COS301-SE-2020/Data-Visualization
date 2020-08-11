@@ -10,6 +10,7 @@
  * -------------------------------------------------------------------------------
  * 16/07/2020   Phillip Schulze     Original
  * 22/07/2020   Phillip Schulze     Final
+ * 11/08/2020	Phillip Schulze		Updates+Insertes return new data
  *
  * Test Cases: none
  *
@@ -20,7 +21,6 @@
  * Assumptions: None
  * Constraints: None
  */
-
 /**
  * @jest-environment node
  */
@@ -164,14 +164,11 @@ describe('Testing with an existing user', () => {
 
 		test('Updating a dashboard', () => {
 			return Database.updateDashboard(EMAIL, DASHBOARD_ID, DASHBOARD_FIELDS, DASHBOARD_DATA).then((response) => {
-				Database.getDashboardList(EMAIL).then((list) => {
-					expect(list.length).toBe(1);
-					expect(list[0].id).toBe(DASHBOARD_ID);
-					expect(list[0].email).toBe(EMAIL);
-					expect(list[0].name).toBe(DASHBOARD_NEW_NAME);
-					expect(list[0].description).toBe(DASHBOARD_NEW_DESC);
-					expect(list[0].metadata).toMatchObject(DASHBOARD_NEW_META);
-				});
+				expect(response.id).toBe(DASHBOARD_ID);
+				expect(response.email).toBe(EMAIL);
+				expect(response.name).toBe(DASHBOARD_NEW_NAME);
+				expect(response.description).toBe(DASHBOARD_NEW_DESC);
+				expect(response.metadata).toMatchObject(DASHBOARD_NEW_META);
 			});
 		});
 
@@ -190,7 +187,7 @@ describe('Testing with an existing user', () => {
 		let GRAPH_ID = -1;
 
 		beforeAll((done) => {
-			return Database.addDashboard(EMAIL, DASHBOARD_NAME, DASHBOARD_DESC)
+			return Database.addDashboard(EMAIL, DASHBOARD_NAME, DASHBOARD_DESC, DASHBOARD_META)
 				.then((response) => {
 					DASHBOARD_ID = response.id;
 				})
@@ -226,14 +223,11 @@ describe('Testing with an existing user', () => {
 
 		test('Updating a graph', () => {
 			return Database.updateGraph(EMAIL, DASHBOARD_ID, GRAPH_ID, GRAPH_FIELDS, GRAPH_DATA).then((response) => {
-				Database.getGraphList(EMAIL, DASHBOARD_ID).then((list) => {
-					expect(list.length).toBe(1);
-					expect(list[0].id).toBe(GRAPH_ID);
-					expect(list[0].dashboardid).toBe(DASHBOARD_ID);
-					expect(list[0].title).toBe(GRAPH_NEW_TITLE);
-					expect(list[0].metadata).toMatchObject(GRAPH_NEW_META);
-					expect(list[0].options).toMatchObject(GRAPH_NEW_OPTIONS);
-				});
+				expect(response.id).toBe(GRAPH_ID);
+				expect(response.dashboardid).toBe(DASHBOARD_ID);
+				expect(response.title).toBe(GRAPH_NEW_TITLE);
+				expect(response.metadata).toMatchObject(GRAPH_NEW_META);
+				expect(response.options).toMatchObject(GRAPH_NEW_OPTIONS);
 			});
 		});
 
