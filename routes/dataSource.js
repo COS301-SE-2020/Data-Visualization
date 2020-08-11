@@ -66,26 +66,13 @@ DataSourceRouteSrc.post('/remove', (req, res) => {
 		);
 	}
 });
+
 DataSourceRouteMeta.post('/entities', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.sourceurl === undefined) error(res, { error: 'Source Url is Undefined' }, 400);
 	else {
 		Rest.getEntityList(
 			req.body.sourceurl,
-			(data) => res.status(200).json(data),
-			(err) => error(res, err)
-		);
-	}
-});
-
-DataSourceRouteMeta.post('/fields', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.sourceurl === undefined) error(res, { error: 'Data Source Id Undefined' }, 400);
-	else if (req.body.entity === undefined) error(res, { error: 'Data Source Id Undefined' }, 400);
-	else {
-		Rest.getListOfFields(
-			req.body.sourceurl,
-			req.body.entity,
 			(data) => res.status(200).json(data),
 			(err) => error(res, err)
 		);
