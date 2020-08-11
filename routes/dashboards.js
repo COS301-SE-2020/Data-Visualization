@@ -54,21 +54,6 @@ router.post('/add', (req, res) => {
 	}
 });
 
-router.post('/remove', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
-	else {
-		Rest.removeDashboard(
-			req.body.email,
-			req.body.dashboardID,
-			() => {
-				res.status(200).json({ message: 'Successfully Removed Dashboard' });
-			},
-			(err) => error(res, err, 400)
-		);
-	}
-});
-
 router.post('/update', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
@@ -82,6 +67,21 @@ router.post('/update', (req, res) => {
 			req.body.data,
 			(data) => {
 				res.status(200).json({ message: 'Successfully Updated Dashboard', ...data });
+			},
+			(err) => error(res, err, 400)
+		);
+	}
+});
+
+router.post('/remove', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
+	else {
+		Rest.removeDashboard(
+			req.body.email,
+			req.body.dashboardID,
+			() => {
+				res.status(200).json({ message: 'Successfully Removed Dashboard' });
 			},
 			(err) => error(res, err, 400)
 		);
