@@ -71,9 +71,6 @@ const API = {
 	entities: {
 		list: (sourceurl) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl }),
 	},
-	filter: {
-		listFields: (sourceurl, entity) => axios.post(constants.URL.DATASOURCE.FIELDS, { sourceurl, entity}),
-	},
 	suggestion: {
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl }),
 	},
@@ -401,6 +398,8 @@ const request = {
 		addedSourceID: '',
 		dataSourceInfo: [],
 		entities : [],
+		entitiesToDisplay: [],
+
 		entitiesToUse : [],
 		fields: [],
 	},
@@ -512,34 +511,9 @@ const request = {
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 
-								request.user.entities = request.user.entities.concat(res.data);
+								console.log(res.data);
+								request.user.dataSourceInfo = res.data;
 
-								callback(constants.RESPONSE_CODES.SUCCESS);
-							} else {
-								callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
-							}
-						}
-					})
-					.catch((err) => console.error(err));
-		},
-	},
-	filter :{
-	/**
-		 *  Request a list of fields.
-		 *
-		 *  @param callback Function called at end of execution.
-		 */
-		list: (sourceurl, entity , callback) => {
-			API.filter
-				.listFields(sourceurl, entity)
-					.then((res) => {
-						console.debug(res);
-						if (callback !== undefined) {
-							if (successfulResponse(res)) {
-
-								
-								request.user.fields = request.user.fields.concat(res.data);
-								
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
 								callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);

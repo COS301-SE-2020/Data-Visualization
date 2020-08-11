@@ -27,8 +27,6 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm, formShape } from 'rc-form';
 
-const count = 20;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
 
 
 class Entities extends React.Component {
@@ -38,13 +36,12 @@ class Entities extends React.Component {
     //console.log('Received values of form: ', values);
    
     request.user.entitiesToUse = [];
-    request.user.entities.map((entity) => {
-      if(this.props.form.getFieldValue(entity) === true){
-        request.user.entitiesToUse.push(entity);
+    request.user.entitiesToDisplay.map((item) => {
+      if(this.props.form.getFieldValue(item.entityName) === true){
+        request.user.entitiesToUse.push(item);
       }
     });
 
-    //send entitiesToUse to backend?
     console.log(request.user.entitiesToUse);
     
     this.next();
@@ -81,31 +78,55 @@ class Entities extends React.Component {
       this.getData(res => {
         this.setState({
           initLoading: false,
-          data: request.user.entities,
-          list: request.user.entities,
+          data: request.user.entitiesToDisplay,
+          list: request.user.entitiesToDisplay,
         });
       });
+
   }
 
   /**
     * Funnction uses the dataSources to update the entites list.
   */
   getData = callback => {
-    //call on all data soureces
+   
+    var Obj = {};
+    request.user.entitiesToDisplay = [];
+    request.user.dataSourceInfo = [];
     request.user.entities = [];
-    request.user.dataSources.map((source) => {
-      request.entities.list(source.sourceurl, function(result) {
-          if (result === constants.RESPONSE_CODES.SUCCESS) {
 
-            callback(request.user.entities);
+    request.user.dataSources.map((source) => {
+
+      request.entities.list(source.sourceurl, function(result) {
+
+          if (result === constants.RESPONSE_CODES.SUCCESS) {
+  
+            request.user.entities = Object.keys(request.user.dataSourceInfo.entityList);
+            
+            request.user.entities.map((entityName) => {
+    
+              Obj = JSON.parse(JSON.stringify(Obj));
+              Obj['entityName'] = entityName;
+              Obj['datasource'] = source.sourceurl;
+              Obj['fields'] = request.user.dataSourceInfo.entityList[entityName];
+              
+              request.user.entitiesToDisplay.push(Obj);
+            });
+          
+            callback(request.user.entitiesToDisplay);
           }
         });
     });
+    
+   
   };
 
   render() {
+
+   
     const { getFieldDecorator } = this.props.form;
     const { initLoading, loading, list } = this.state;
+
     const loadMore =
       !initLoading && !loading ? (
         <div
@@ -132,7 +153,8 @@ class Entities extends React.Component {
             loading={initLoading}
             itemLayout='horizontal'
             loadMore={loadMore}
-            dataSource={list}
+            dataSource = {list}
+            
             renderItem={item => (
             
               <Fragment>
@@ -143,7 +165,7 @@ class Entities extends React.Component {
                         [ 
                           
                           <Form.Item valuePropName = 'checked'>
-                           {getFieldDecorator(item, {
+                           {getFieldDecorator(item.entityName, {
                               valuePropName: 'checked',
                               initialValue: true
                             })(
@@ -158,7 +180,8 @@ class Entities extends React.Component {
                           avatar={
                             <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                           }
-                          title={item}
+                          title={item.entityName}
+                          description={item.datasource}
                         />
                         <div></div>
                       </Skeleton>
