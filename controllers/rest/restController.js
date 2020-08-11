@@ -14,6 +14,7 @@
  * 05/08/2020   Elna Pistorius  					 Added two new functions that returns a list of fields and a list of entities.
  * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
  * 11/08/2020   Elna Pistorius                       Updated the updateGraphTypes function
+ * 11/08/2020	Marco Lombaard						 Added the stringsToGraphData function
  *
  * Test Cases: none
  *
@@ -321,6 +322,27 @@ class RestController {
 	static updateGraphTypes(graphTypes, done, error){
 		GraphSuggesterController.setGraphTypes(graphTypes);
 		done();
+	}
+
+	/**
+	 * This function transforms string data into data we can represent as graphs. Right now it's just a "count" of
+	 * how many times each category occurs.
+	 * @param stringDataArray the string data in array format. This should just be the data, nothing else
+	 * @return {{}} an object containing categories as keys, and the amount of times each category occurs as values
+	 */
+	static stringsToGraphData(stringDataArray) {	//TODO could move this to IGA for generation on best way to represent strings
+		let list = {};	//The basic structure will be key-value pairs, where keys are unique string values
+		//values will be how many times each key has occurred
+
+		for (let i = 0; i < stringDataArray.length; i++) {
+			if (list[stringDataArray[i]] != null) {	//eslint-disable-line
+				list[stringDataArray[i]]++;	//if this category was already created, increment how often it has occurred
+			} else {
+				list[stringDataArray[i]] = 1;	//else create the category
+			}
+		}
+
+		return list;
 	}
 }
 

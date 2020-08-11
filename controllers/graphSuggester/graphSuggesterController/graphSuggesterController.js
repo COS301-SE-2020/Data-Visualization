@@ -16,6 +16,7 @@
  * 07/08/2020	 Marco Lombaard		Added data-types array to return in parseODataMetaData function
  * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function, added setGraphTypes
  * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
+ * 11/08/2020	 Marco Lombaard		Removed deprecated changeFittestGraph function
  *
  * Test Cases: none
  *
@@ -60,16 +61,6 @@ class GraphSuggesterController {
 			jsonData = JSON.stringify(jsonData);
 		}
 		return graphSuggesterAI.getSuggestions(jsonData);
-	}
-
-	/**
-	 * This function passes the target graph that must become the fittest graph to the graph
-	 * suggester in graphSuggesterAI.js.
-	 * @param target the target graph.
-	 */
-	static changeFitnessTarget(target) {
-		//TODO this is deprecated
-		graphSuggesterAI.changeFitnessTarget(target);
 	}
 
 	/**
