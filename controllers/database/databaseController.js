@@ -77,7 +77,7 @@ class Database {
 		});
 	}
 
-	/*==================USERS===============*/
+	/**************** USERS *****************/
 	/**
 	 * This function authenticates a user.
 	 * @param email the users email
@@ -153,7 +153,7 @@ class Database {
 		});
 	}
 
-	/*==================DATA SOURCE===============*/
+	/**************** DATA SOURCE ****************/
 	/**
 	 * This function is to get a list of data sources
 	 * @param email the users email
@@ -169,7 +169,6 @@ class Database {
 	/**
 	 * This function is to add a data source
 	 * @param email the users email
-	 * @param sourceID the sources ID that needs to be added
 	 * @param sourceURL the data source url to add
 	 * @returns a promise
 	 */
@@ -213,7 +212,6 @@ class Database {
 	/**
 	 * This function adds a dashboard.
 	 * @param email the users email
-	 * @param dashboardID the dashboards id
 	 * @param name the dashboards name
 	 * @param desc the description of the dashbaord
 	 * @returns a promise
@@ -263,7 +261,7 @@ class Database {
 		});
 	}
 
-	/*==================GRAPHS===============*/
+	/**************** GRAPHS ****************/
 	/**
 	 * This function is used to get a list of graphs.
 	 * @param email the users email
@@ -281,7 +279,6 @@ class Database {
 	 * This function is used to add a graph to a dashboard.
 	 * @param email the users email
 	 * @param dashboardID the dashboards id
-	 * @param graphID the graphs id
 	 * @param title the title of the graph
 	 * @param options the options is a JSON object that stores the options and data of the graph
 	 * @param metadata the metadata is a JSON object that stores the presentation data of the graph

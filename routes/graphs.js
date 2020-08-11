@@ -43,26 +43,6 @@ router.post('/list', (req, res) => {
 	}
 });
 
-router.post('/update', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
-	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Is Undefined' }, 400);
-	else if (req.body.graphID === undefined) error(res, { error: 'Graph Id Undefined' }, 400);
-	else if (req.body.fields === undefined) error(res, { error: 'Fields Undefined' }, 400);
-	else if (req.body.data === undefined) error(res, { error: 'Data Undefined' }, 400);
-	else {
-		Rest.updateGraph(
-			req.body.email,
-			req.body.dashboardID,
-			req.body.graphID,
-			req.body.fields,
-			req.body.data,
-			(data) => res.status(200).json({ message: 'Successfully Updated Graph', ...data }),
-			(err) => error(res, err)
-		);
-	}
-});
-
 router.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
@@ -78,6 +58,26 @@ router.post('/add', (req, res) => {
 			req.body.options,
 			req.body.metadata,
 			(data) => res.status(200).json({ message: 'Successfully Added To Dashboard', ...data }),
+			(err) => error(res, err)
+		);
+	}
+});
+
+router.post('/update', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Is Undefined' }, 400);
+	else if (req.body.graphID === undefined) error(res, { error: 'Graph Id Undefined' }, 400);
+	else if (req.body.fields === undefined) error(res, { error: 'Fields Undefined' }, 400);
+	else if (req.body.data === undefined) error(res, { error: 'Data Undefined' }, 400);
+	else {
+		Rest.updateGraph(
+			req.body.email,
+			req.body.dashboardID,
+			req.body.graphID,
+			req.body.fields,
+			req.body.data,
+			(data) => res.status(200).json({ message: 'Successfully Updated Graph', ...data }),
 			(err) => error(res, err)
 		);
 	}
@@ -105,7 +105,7 @@ router.post('/types', (req, res) => {
 	else {
 		Rest.updateGraphTypes(
 			req.body.graphTypes,
-			() => res.status(200).json({ message: 'Successfully Updated Graph Type' }),
+			() => res.status(200).json({ message: 'Successfully Updated Graph Types' }),
 			(err) => error(res, err)
 		);
 	}
