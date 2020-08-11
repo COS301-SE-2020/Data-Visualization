@@ -218,9 +218,9 @@ class Database {
 	 * @param desc the description of the dashbaord
 	 * @returns a promise
 	 */
-	static async addDashboard(email, name, desc) {
+	static async addDashboard(email, name, desc, metadata) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('INSERT INTO Dashboard (Name,Description,email) VALUES ($1,$2,$3) RETURNING *;', [name, desc, email])
+			Database.sendQuery('INSERT INTO Dashboard (Name,Description,email,metadata) VALUES ($1,$2,$3,$4) RETURNING *;', [name, desc, email, JSON.stringify(metadata)])
 				.then((result) => {
 					// console.log(result);
 					if (result.rows.length > 0) resolve(result.rows[0]);
@@ -251,9 +251,14 @@ class Database {
 	 * @returns a promise
 	 */
 	static async updateDashboard(email, dashboardID, fields, data) {
+		data = data.map((item, i) => (i < fields.length && fields[i] === 'metadata' ? JSON.stringify(item) : item));
 		return new Promise((resolve, reject) => {
-			Database.sendQuery(`UPDATE Dashboard SET ${fieldUpdates(fields, data, 2)} WHERE ( email = $1 ) AND ( ID = $2);`, [email, dashboardID, ...data])
-				.then((result) => resolve(result.rows))
+			Database.sendQuery(`UPDATE Dashboard SET ${fieldUpdates(fields, data, 2)} WHERE ( email = $1 ) AND ( ID = $2) RETURNING *;`, [email, dashboardID, ...data])
+				.then((result) => {
+					// console.log(result);
+					if (result.rows.length > 0) resolve(result.rows[0]);
+					else reject(result);
+				})
 				.catch((result) => reject(result));
 		});
 	}
@@ -288,7 +293,7 @@ class Database {
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query, [dashboardID, title, JSON.stringify(metadata), JSON.stringify(options), email])
 				.then((result) => {
-					console.log(result.rows);
+					// console.log(result);
 					if (result.rows.length > 0) resolve(result.rows[0]);
 					else reject(result);
 				})
@@ -322,11 +327,15 @@ class Database {
 
 		let query = `UPDATE Graph as g SET ${fieldUpdates(fields, data, 3)} WHERE (
       g.dashboardid in ( SELECT d.id from dashboard as d WHERE (d.email = $1) AND (d.id = $2))
-	) AND (g.ID = $3);`;
+	) AND (g.ID = $3) RETURNING *;`;
 
 		return new Promise((resolve, reject) => {
 			Database.sendQuery(query, [email, dashboardID, graphID, ...data])
-				.then((result) => resolve(result.rows))
+				.then((result) => {
+					// console.log(result);
+					if (result.rows.length > 0) resolve(result.rows[0]);
+					else reject(result);
+				})
 				.catch((result) => reject(result));
 		});
 	}

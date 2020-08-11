@@ -27,9 +27,8 @@ const router = express.Router();
 const { Rest } = require('../controllers');
 
 router.post('/list', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else {
 		Rest.getDashboardList(
 			req.body.email,
 			(list) => res.status(200).json(list),
@@ -39,17 +38,16 @@ router.post('/list', (req, res) => {
 });
 
 router.post('/add', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.description === undefined) {
-		error(res, { error: 'Dashboard Description Undefined' }, 400);
-	} else if (req.body.name === undefined) {
-		error(res, { error: 'Dashboard Name Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.description === undefined) error(res, { error: 'Dashboard Description Undefined' }, 400);
+	else if (req.body.name === undefined) error(res, { error: 'Dashboard Name Undefined' }, 400);
+	else if (req.body.metadata === undefined) error(res, { error: 'Dashboard MetData Is Undefined' }, 400);
+	else {
 		Rest.addDashboard(
 			req.body.email,
 			req.body.name,
 			req.body.description,
+			req.body.metadata,
 			(data) => res.status(200).json({ message: 'Successfully Added Dashboard', ...data }),
 			(err) => error(res, err, 400)
 		);
@@ -57,11 +55,9 @@ router.post('/add', (req, res) => {
 });
 
 router.post('/remove', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dashboardID === undefined) {
-		error(res, { error: 'Dashboard Id Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
+	else {
 		Rest.removeDashboard(
 			req.body.email,
 			req.body.dashboardID,
@@ -74,22 +70,18 @@ router.post('/remove', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dashboardID === undefined) {
-		error(res, { error: 'Dashboard Id Undefined' }, 400);
-	} else if (req.body.fields === undefined) {
-		error(res, { error: 'Fields Undefined' }, 400);
-	} else if (req.body.data === undefined) {
-		error(res, { error: 'Data Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
+	else if (req.body.fields === undefined) error(res, { error: 'Fields Undefined' }, 400);
+	else if (req.body.data === undefined) error(res, { error: 'Data Undefined' }, 400);
+	else {
 		Rest.updateDashboard(
 			req.body.email,
 			req.body.dashboardID,
 			req.body.fields,
 			req.body.data,
-			() => {
-				res.status(200).json({ message: 'Successfully Updated Dashboard' });
+			(data) => {
+				res.status(200).json({ message: 'Successfully Updated Dashboard', ...data });
 			},
 			(err) => error(res, err, 400)
 		);

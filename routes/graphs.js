@@ -11,6 +11,7 @@
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
  * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
  * 06/08/2020   Elna Pistorius						Added graph type filter endpoint
+ * 11/08/2020   Elna Pistorius                      Updated the graph type endpoint
  *
  * Test Cases: none
  *
@@ -56,7 +57,7 @@ router.post('/update', (req, res) => {
 			req.body.graphID,
 			req.body.fields,
 			req.body.data,
-			() => res.status(200).json({ message: 'Successfully Updated Graph' }),
+			(data) => res.status(200).json({ message: 'Successfully Updated Graph', ...data }),
 			(err) => error(res, err)
 		);
 	}
@@ -100,10 +101,10 @@ router.post('/remove', (req, res) => {
 
 router.post('/types', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.graphs === undefined) error(res, { error: 'Graphs Is Undefined' }, 400);
+	else if (req.body.graphTypes === undefined) error(res, { error: 'Graphs Is Undefined' }, 400);
 	else {
 		Rest.updateGraphTypes(
-			req.body.graphs,
+			req.body.graphTypes,
 			() => res.status(200).json({ message: 'Successfully Updated Graph Type' }),
 			(err) => error(res, err)
 		);
