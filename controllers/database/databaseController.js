@@ -218,9 +218,9 @@ class Database {
 	 * @param desc the description of the dashbaord
 	 * @returns a promise
 	 */
-	static async addDashboard(email, name, desc) {
+	static async addDashboard(email, name, desc, metadata) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('INSERT INTO Dashboard (Name,Description,email) VALUES ($1,$2,$3) RETURNING *;', [name, desc, email])
+			Database.sendQuery('INSERT INTO Dashboard (Name,Description,metadata,email) VALUES ($1,$2,$3,$4) RETURNING *;', [name, desc, metadata, email])
 				.then((result) => {
 					// console.log(result);
 					if (result.rows.length > 0) resolve(result.rows[0]);

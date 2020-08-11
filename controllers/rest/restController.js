@@ -92,7 +92,7 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDashboard(email, name, description, done, error) {
+	static addDashboard(email, name, description, metadata, done, error) {
 		Database.addDashboard(email, name, description)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
