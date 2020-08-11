@@ -109,7 +109,7 @@ class RestController {
 	 */
 	static updateDashboard(email, id, fields, data, done, error) {
 		Database.updateDashboard(email, id, fields, data)
-			.then(() => done())
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -151,7 +151,7 @@ class RestController {
 	 */
 	static updateGraph(email, dashboardID, graphID, fields, data, done, error) {
 		Database.updateGraph(email, dashboardID, graphID, fields, data)
-			.then(() => done())
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**

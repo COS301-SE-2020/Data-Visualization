@@ -56,7 +56,7 @@ router.post('/update', (req, res) => {
 			req.body.graphID,
 			req.body.fields,
 			req.body.data,
-			() => res.status(200).json({ message: 'Successfully Updated Graph' }),
+			(data) => res.status(200).json({ message: 'Successfully Updated Graph', ...data }),
 			(err) => error(res, err)
 		);
 	}
