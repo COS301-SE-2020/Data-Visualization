@@ -13,6 +13,7 @@
  * 05/08/2020   Phillip Schulze  					 Updated the id's and added new deregister function.
  * 05/08/2020   Elna Pistorius  					 Added two new functions that returns a list of fields and a list of entities.
  * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
+ * 11/08/2020   Elna Pistorius                       Updated the updateGraphTypes function
  *
  * Test Cases: none
  *
@@ -318,7 +319,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static updateGraphTypes(graphTypes, done, error){
-		//TODO: (Elna) Finish this when graph suggester function is done that set the types of charts.
+        GraphSuggesterController.setGraphTypes(graphTypes);
+        done();
 	}
 	/**
 	 * This function gets data that is used by the user to generate manual graphs.
