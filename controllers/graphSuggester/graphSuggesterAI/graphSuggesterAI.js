@@ -85,6 +85,7 @@ let graphSuggesterMaker = (function () {
 		setMetadata(items, associations, types = null) {
 			this.terminals = {}; //reset values so that old ones don't interfere
 			this.nonTerminals = {};
+			this.fieldTypes = {};
 
 			if (items != null) {//eslint-disable-line
 				let itemsKeys = Object.keys(items); //get the named keys for the set
@@ -102,9 +103,15 @@ let graphSuggesterMaker = (function () {
 
 			if (types != null) {//eslint-disable-line
 				let typeKeys = Object.keys(types); //get the named keys for the set
+				//it is important to note that types is an object with key-value pairs, where keys are entities
+				//and values are arrays, therefore type[typeKeys[i]] gives an array of values
 				for (let i = 0; i < typeKeys.length; i++) {
-					this.fieldTypes[typeKeys[i]] = types[typeKeys[i]];
+					this.fieldTypes[typeKeys[i]] = [];
+					for (let j = 0; j < types[typeKeys[i]].length; j++) {
+						this.fieldTypes[typeKeys[i]][j] = types[typeKeys[i]][j];	//make a deep copy
+					}
 				}
+
 			}
 
 			// console.log(this.terminals);
@@ -113,26 +120,29 @@ let graphSuggesterMaker = (function () {
 		/**
 		 * This function is the Genetic Algorithm itself, generating new populations at each iteration
 		 * @param options the options to choose from when creating a population
-		 * @param results the data that was passed in - used to determine field types
+		 * @param entity the entity that was selected for generation
 		 */
-		geneticAlgorithm(options, results) {	//TODO deprecate results, data processing will be moved to dataSourceController
-			if (options == null || options.length === 0 || results == null || results.length === 0) {//eslint-disable-line
+		geneticAlgorithm(options, entity) {
+			//TODO maybe we can make it so the GA selects entities? will require restructuring other functionality - leave for later
+			if (options == null || options.length === 0 || entity == null) {//eslint-disable-line
 				return null;
 			}
-			//TODO might be able to optimise with pre-processing of types, so that 'results' isn't passed
 			let chromosomes = []; //Our population
 			let populationSize = 10; //amount of chromosomes to generate
-			let title; //the title of the graph - used for data retrieval
+			let titleIndex; //the index in 'options' for the title of the graph - used for data retrieval
 			let graphType; //the type of graph
 			let fieldType; //the category/type of field(date, currency, boolean, string, etc.)
 
 			//initialise population
 			for (let i=0; i<populationSize; i++) {
-				title =  Math.trunc(Math.random() * options.length);	//select a random title
+				titleIndex =  Math.trunc(Math.random() * options.length);	//select a random field title index
 				graphType = this.graphTypes[Math.trunc(Math.random() * 5)];	//select a random graph type
-				fieldType = typeof results[0][title];	//TODO will need extra processing to determine date/time etc.
-				//fieldType = this.fieldTypes[title];	//TODO replace the above line with this
-				chromosomes[i] = [ title, graphType, fieldType ];	//set up the chromosome properties
+				if (this.fieldTypes[entity] == null || this.fieldTypes[entity].length === 0) {//eslint-disable-line
+					console.log('No field types for entity '+entity);
+					return null;
+				}
+				fieldType = this.fieldTypes[entity][titleIndex];		//obtain the type of the selected field
+				chromosomes[i] = [ titleIndex, graphType, fieldType ];	//set up the chromosome properties
 			}
 
 			let mutate = 0; //value must be below mutation rate for mutation to take place
@@ -204,7 +214,7 @@ let graphSuggesterMaker = (function () {
 							mutate = Math.random();
 
 							if (mutate <= this.mutationRate) {	//check if it may mutate
-								this.mutation(chromosomes[i], options, results);	//mutate the chromosome
+								this.mutation(chromosomes[i], options, entity);	//mutate the chromosome
 								//this.mutation(chromosomes[i], options);	//TODO replace the above line with this
 							}
 						}
@@ -249,6 +259,7 @@ let graphSuggesterMaker = (function () {
 			return fitness;
 
 			//TODO consider decoupling chromosome representation from evaluation(like characteristic arrays being evaluated instead of each individual attribute)
+			//TODO This way we don't have to care how many characteristics there are, we just run through the array and check if they match
 		}
 
 		/**
@@ -291,20 +302,26 @@ let graphSuggesterMaker = (function () {
 			default:
 				break; //should never reach this, default to reproduction
 			}
+
+			//TODO consider decoupling representation from crossover, as suggested in calculateFitness
 		}
 
 		/**
 		 * The mutation operator in the GA
 		 * @param chromosome the chromosome being mutated
 		 * @param options the options for fields
-		 * @param results the results - used to determine field types
+		 * @param entity the entity that was selected for suggestion generation
 		 */
-		mutation(chromosome, options, results) {
-			let title = Math.trunc(Math.random() * options.length); //select a random title
+		mutation(chromosome, options, entity) {
+			let titleIndex = Math.trunc(Math.random() * options.length); //select a random title index
 			let graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
-			let fieldType = typeof results[0][title]; //TODO will need extra processing to determine date/time etc.
+			if (this.fieldTypes[entity] == null || this.fieldTypes[entity].length === 0) {//eslint-disable-line
+				console.log('No field types for entity '+entity);
+				return null;
+			}
+			let fieldType = this.fieldTypes[entity][titleIndex];	//obtain the field type
 
-			chromosome[0] = title;
+			chromosome[0] = titleIndex;
 			chromosome[1] = graphType;
 			chromosome[2] = fieldType;
 		}
@@ -417,13 +434,8 @@ let graphSuggesterMaker = (function () {
 				}
 
 				//TODO replace most of the above code with this - data processing is being moved to dataSourceController
-				/*let geneticSuggestion = this.geneticAlgorithm(options, results);
-
-				for (let i = 0; i < results.length; i++) {
-					//Store name of field and its chosen attribute in data
-					data[i] = [ results[i][nameKey], results[i][geneticSuggestion[0]];	//geneticSuggestion[0] is the chosen field
-				}
-				let option = this.constructOption(data, geneticSuggestion[1], params[0], params[1], type+': '+geneticSuggestion[0]);
+				/*let geneticSuggestion = this.geneticAlgorithm(options);
+				return geneticSuggestion
 				 */
 
 				let option = this.constructOption(data, graph, params, params[0], params[1], type + ': ' + options[choice]);

@@ -9,6 +9,7 @@
  * Date          Author             Changes
  * -------------------------------------------------------------------------------
  * 06/08/2020   Marco Lombaard     Original
+ * 06/08/2020   Marco Lombaard     Fixed erroneous test input 'option'
  *
  * Test Cases: none
  *
@@ -86,12 +87,8 @@ const metadata = {
 	],
 };
 
-const option = [ 'Product' ];
-const result = [
-	{
-		'Product': [ 0 ],
-	}
-];
+const option = [ 'QuantityPerUnit',
+	'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued' ];
 
 const items = {
 	'Product': [ 'ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit',
@@ -136,10 +133,13 @@ describe('Testing functions within the graphSuggesterAI class', function () {
 	});
 
 	test('Genetic algorithm returns null on null data', () => {
+		graphSuggesterAI.setMetadata(items, associations, types);
 		expect(graphSuggesterAI.geneticAlgorithm(null, null)).toBeNull();
 	});
 
 	test('Genetic algorithm returns suggestion', () => {
-		expect(graphSuggesterAI.geneticAlgorithm(option, result)).toHaveLength(3);
+		graphSuggesterAI.setMetadata(items, associations, types);
+		console.log(graphSuggesterAI.geneticAlgorithm(option, 'Product'));
+		expect(graphSuggesterAI.geneticAlgorithm(option, 'Product')).toHaveLength(3);
 	});
 });
