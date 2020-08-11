@@ -13,6 +13,8 @@
  * 05/08/2020   Phillip Schulze  					 Updated the id's and added new deregister function.
  * 05/08/2020   Elna Pistorius  					 Added two new functions that returns a list of fields and a list of entities.
  * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
+ * 11/08/2020   Elna Pistorius                       Updated the updateGraphTypes function
+ * 11/08/2020	Marco Lombaard						 Added the stringsToGraphData function
  *
  * Test Cases: none
  *
@@ -33,157 +35,9 @@ const { GraphSuggesterController } = require('../graphSuggester');
  * @author Elna Pistorius & Phillip Schulze
  */
 class RestController {
-	/**
-	 * This function gets a data source list.
-	 * @param email the users email
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a data source list.
-	 */
-	static getDataSourceList(email, done, error) {
-		Database.getDataSourceList(email)
-			.then((list) => done(list))
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function adds a data source.
-	 * @param email the users email
-	 * @param dataSourceURL the data sources url
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static addDataSource(email, dataSourceURL, done, error) {
-		Database.addDataSource(email, dataSourceURL)
-			.then((data) => done(data))
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function removes a data source.
-	 * @param email the users email
-	 * @param dataSourceID the data sources id
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static removeDataSource(email, dataSourceID, done, error) {
-		Database.removeDataSource(email, dataSourceID)
-			.then(() => done())
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function gets a dashboard list.
-	 * @param email the users email
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static getDashboardList(email, done, error) {
-		Database.getDashboardList(email)
-			.then((list) => done(list))
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function adds a new dashboard.
-	 * @param email the users email
-	 * @param name the name of the dashboard
-	 * @param description the description of the dashboard
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static addDashboard(email, name, description, done, error) {
-		Database.addDashboard(email, name, description)
-			.then((data) => done(data))
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function updates a dashboard.
-	 * @param email the users email
-	 * @param id the dashboards id
-	 * @param fields the fields that need to be updated
-	 * @param data the data that is used to update the fields of the dashboard
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static updateDashboard(email, id, fields, data, done, error) {
-		Database.updateDashboard(email, id, fields, data)
-			.then(() => done())
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function adds a new dashboard.
-	 * @param email the users email
-	 * @param id the dashboards id
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static removeDashboard(email, id, done, error) {
-		Database.removeDashboard(email, id)
-			.then(() => done())
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function adds a new dashboard.
-	 * @param email the users email
-	 * @param dashboardID the dashboards id
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static getGraphList(email, dashboardID, done, error) {
-		Database.getGraphList(email, dashboardID)
-			.then((list) => done(list))
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function adds a new dashboard.
-	 * @param email the users email
-	 * @param dashboardID the dashboards id
-	 * @param graphID the id of the graph
-	 * @param fields the fields that need to be updated
-	 * @param data the data that is used to update the fields of the dashboard
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static updateGraph(email, dashboardID, graphID, fields, data, done, error) {
-		Database.updateGraph(email, dashboardID, graphID, fields, data)
-			.then(() => done())
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function is used to add a graph to a dashboard.
-	 * @param email the users email
-	 * @param dashboardID the dashboards id
-	 * @param title the title of the graph
-	 * @param options the options is a JSON object that stores the options and data of the graph
-	 * @param metadata the metadata is a JSON object that stores the presentation data of the graph
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static addGraph(email, dashboardID, title, options, metadata, done, error) {
-		Database.addGraph(email, dashboardID, title, options, metadata)
-			.then((data) => done(data))
-			.catch((err) => error && error(err));
-	}
-	/**
-	 * This function is used to remove a graph from a dashboard
-	 * @param email the users email
-	 * @param dashboardID the dashboards id
-	 * @param graphID the graphs id
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @return a promise
-	 */
-	static removeGraph(email, dashboardID, graphID, done, error) {
-		Database.removeGraph(email, dashboardID, graphID)
-			.then(() => done())
-			.catch((err) => error && error(err));
-	}
+
+	/**************** USER ****************/
+
 	/**
 	 * This function authenticates a user.
 	 * @param userName the users email
@@ -227,6 +81,47 @@ class RestController {
 			.catch((err) => error && error(err));
 	}
 
+	/**************** DATA SOURCE ****************/
+
+	/**
+	 * This function gets a data source list.
+	 * @param email the users email
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a data source list.
+	 */
+	static getDataSourceList(email, done, error) {
+		Database.getDataSourceList(email)
+			.then((list) => done(list))
+			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function adds a data source.
+	 * @param email the users email
+	 * @param dataSourceURL the data sources url
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static addDataSource(email, dataSourceURL, done, error) {
+		Database.addDataSource(email, dataSourceURL)
+			.then((data) => done(data))
+			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function removes a data source.
+	 * @param email the users email
+	 * @param dataSourceID the data sources id
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static removeDataSource(email, dataSourceID, done, error) {
+		Database.removeDataSource(email, dataSourceID)
+			.then(() => done())
+			.catch((err) => error && error(err));
+	}
+
 	/**
 	 * This function gets Odata.
 	 * @param src the source where this Odata must be retrieved from
@@ -249,20 +144,19 @@ class RestController {
 	 */
 	static getEntityList(src, done, error) {
 		DataSource.getEntityList(src)
-			.then((list) => done(list))
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
 	 * This function gets entity data.
 	 * @param src the source where the entity data must be retrieved from
 	 * @param entity the entity that we want data from
-	 * @param type the type of data that is requested
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of the entities data
 	 */
-	static getEntityData(src, type, entity, done, error) {
-		DataSource.getEntityData()
+	static getEntityData(src, entity, done, error) {
+		DataSource.getEntityData(src, entity)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
@@ -274,10 +168,8 @@ class RestController {
 	 */
 	static getSuggestions(src, done, error) {
 		DataSource.getMetaData(src)
-			.then((XMLString) => {
-				console.log(GraphSuggesterController);
-
-				const Meta = GraphSuggesterController.parseODataMetadata(XMLString);
+			.then((Meta) => {
+				GraphSuggesterController.setMetadata(Meta);
 
 				let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
 				const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
@@ -288,7 +180,9 @@ class RestController {
 					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
 				}
 				const randEntity = Meta.sets[randKey]; //select this entity for data source querying
-				console.log(randEntity);
+
+				console.log('Entity: ', randEntity);
+
 				DataSource.getEntityData(src, randEntity)
 					.then((Odata) => {
 						const options = GraphSuggesterController.getSuggestions(Odata);
@@ -299,18 +193,126 @@ class RestController {
 			})
 			.catch((err) => error && error(err));
 	}
+
+	/**************** DASHBOARD ****************/
+
 	/**
-	 * This function gets a list of fields for a specific entity
-	 * @param src the source that is requested to be used to get entity.
-	 * @param entity the entity that fields are required from
+	 * This function gets a dashboard list.
+	 * @param email the users email
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
 	 */
-	static getListOfFields(src, entity, done, error) {
-		DataSource.getEntityData(src, entity)
+	static getDashboardList(email, done, error) {
+		Database.getDashboardList(email)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
+	/**
+	 * This function adds a new dashboard.
+	 * @param email the users email
+	 * @param name the name of the dashboard
+	 * @param description the description of the dashboard
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static addDashboard(email, name, description, metadata, done, error) {
+		Database.addDashboard(email, name, description, metadata)
+			.then((data) => done(data))
+			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function updates a dashboard.
+	 * @param email the users email
+	 * @param id the dashboards id
+	 * @param fields the fields that need to be updated
+	 * @param data the data that is used to update the fields of the dashboard
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static updateDashboard(email, id, fields, data, done, error) {
+		Database.updateDashboard(email, id, fields, data)
+			.then((data) => done(data))
+			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function adds a new dashboard.
+	 * @param email the users email
+	 * @param id the dashboards id
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static removeDashboard(email, id, done, error) {
+		Database.removeDashboard(email, id)
+			.then(() => done())
+			.catch((err) => error && error(err));
+	}
+
+	/**************** GRAPHS ****************/
+
+	/**
+	 * This function adds a new dashboard.
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static getGraphList(email, dashboardID, done, error) {
+		Database.getGraphList(email, dashboardID)
+			.then((list) => done(list))
+			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function adds a new dashboard.
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param graphID the id of the graph
+	 * @param fields the fields that need to be updated
+	 * @param data the data that is used to update the fields of the dashboard
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static updateGraph(email, dashboardID, graphID, fields, data, done, error) {
+		Database.updateGraph(email, dashboardID, graphID, fields, data)
+			.then((data) => done(data))
+			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function is used to add a graph to a dashboard.
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param title the title of the graph
+	 * @param options the options is a JSON object that stores the options and data of the graph
+	 * @param metadata the metadata is a JSON object that stores the presentation data of the graph
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static addGraph(email, dashboardID, title, options, metadata, done, error) {
+		Database.addGraph(email, dashboardID, title, options, metadata)
+			.then((data) => done(data))
+			.catch((err) => error && error(err));
+	}
+	/**
+	 * This function is used to remove a graph from a dashboard
+	 * @param email the users email
+	 * @param dashboardID the dashboards id
+	 * @param graphID the graphs id
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static removeGraph(email, dashboardID, graphID, done, error) {
+		Database.removeGraph(email, dashboardID, graphID)
+			.then(() => done())
+			.catch((err) => error && error(err));
+	}
+
 	/**
 	 * This function updates the graph types of the suggestions.
 	 * @param graphTypes the types of graphs that needs to be updated
@@ -318,8 +320,29 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static updateGraphTypes(graphTypes, done, error){
-		console.log(graphTypes);
-		//TODO: Finish this
+		GraphSuggesterController.setGraphTypes(graphTypes);
+		done();
+	}
+
+	/**
+	 * This function transforms string data into data we can represent as graphs. Right now it's just a "count" of
+	 * how many times each category occurs.
+	 * @param stringDataArray the string data in array format. This should just be the data, nothing else
+	 * @return {{}} an object containing categories as keys, and the amount of times each category occurs as values
+	 */
+	static stringsToGraphData(stringDataArray) {	//TODO could move this to IGA for generation on best way to represent strings
+		let list = {};	//The basic structure will be key-value pairs, where keys are unique string values
+		//values will be how many times each key has occurred
+
+		for (let i = 0; i < stringDataArray.length; i++) {
+			if (list[stringDataArray[i]] != null) {	//eslint-disable-line
+				list[stringDataArray[i]]++;	//if this category was already created, increment how often it has occurred
+			} else {
+				list[stringDataArray[i]] = 1;	//else create the category
+			}
+		}
+
+		return list;
 	}
 }
 

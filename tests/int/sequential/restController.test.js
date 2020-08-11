@@ -9,7 +9,8 @@
  * Date          Author             Changes
  * -------------------------------------------------------------------------------
  * 16/07/2020   Phillip Schulze     Original
- * 22/07/2020   Phillip Schulze     Final
+ * 22/07/2020   Phillip Schulze     Final - Demo2
+ * 11/08/2020	Phillip Schulze		Updates+Insertes return new data
  *
  * Test Cases: none
  *
@@ -33,28 +34,32 @@ const L_NAME = 'LASTNAME';
 const USER_ALREADY_EXISTS_ERROR = 'userAlreadyExists';
 const ITEM_ALREADY_EXISTS_ERROR = 'userAlreadyExists';
 
-const DATA_SOURCE_ID = 'ASKDNFKSNDAFKNSAF';
 const DATA_SOURCE_URL = 'http://data.source.url/mock/mock.cvs';
 
-const DASHBOARD_ID = 'ksbfnlsadnflnsa';
 const DASHBOARD_NAME = 'Dashboard Name';
 const DASHBOARD_DESC = 'Dashboard Description';
+const DASHBOARD_META = {
+	color: '#fff',
+	backgroundColor: '#000',
+};
 
 const DASHBOARD_NEW_NAME = 'New Dashboard Name';
 const DASHBOARD_NEW_DESC = 'New Dashboard Description';
-const DASHBOARD_FIELDS = [ 'name', 'description' ];
-const DASHBOARD_DATA = [ DASHBOARD_NEW_NAME, DASHBOARD_NEW_DESC ];
+const DASHBOARD_NEW_META = {
+	font: 'roboto',
+};
+const DASHBOARD_FIELDS = ['name', 'description', 'metadata'];
+const DASHBOARD_DATA = [DASHBOARD_NEW_NAME, DASHBOARD_NEW_DESC, DASHBOARD_NEW_META];
 
-const GRAPH_ID = 'slajkbfhsbajf';
 const GRAPH_TITLE = 'Graph Title';
-const GRAPH_OPTIONS = { data: [ 1, 2, 3, 4 ], x: 'dependent', y: 'independent' };
+const GRAPH_OPTIONS = { data: [1, 2, 3, 4], x: 'dependent', y: 'independent' };
 const GRAPH_META = { w: 100, h: 200, x: 10, y: 20 };
 
 const GRAPH_NEW_TITLE = 'New Graph Title';
-const GRAPH_NEW_OPTIONS = { data: [ 1, 2, 3 ], x: 'x-axis', y: 'y-axis' };
+const GRAPH_NEW_OPTIONS = { data: [1, 2, 3], x: 'x-axis', y: 'y-axis' };
 const GRAPH_NEW_META = { w: 150, h: 150, x: 20, y: 50 };
-const GRAPH_FIELDS = [ 'title', 'options', 'metadata' ];
-const GRAPH_DATA = [ GRAPH_NEW_TITLE, GRAPH_NEW_OPTIONS, GRAPH_NEW_META ];
+const GRAPH_FIELDS = ['title', 'options', 'metadata'];
+const GRAPH_DATA = [GRAPH_NEW_TITLE, GRAPH_NEW_OPTIONS, GRAPH_NEW_META];
 
 describe('Testing user management', () => {
 	beforeEach((done) => {
@@ -152,6 +157,8 @@ describe('Testing with an existing user', () => {
 	});
 
 	describe('Test data source management', () => {
+		let DATA_SOURCE_ID = -1;
+
 		test('data source list defaults to empty', () => {
 			return Rest.getDataSourceList(
 				EMAIL,
@@ -163,33 +170,13 @@ describe('Testing with an existing user', () => {
 		test('Adding a data source', () => {
 			return Rest.addDataSource(
 				EMAIL,
-				DATA_SOURCE_ID,
 				DATA_SOURCE_URL,
-				() => {
-					return Rest.getDataSourceList(
-						EMAIL,
-						(list) => {
-							expect(list.length).toBe(1);
-							expect(list[0].id).toBe(DATA_SOURCE_ID);
-							expect(list[0].email).toBe(EMAIL);
-							expect(list[0].sourceurl).toBe(DATA_SOURCE_URL);
-						},
-						() => {}
-					);
+				(response) => {
+					DATA_SOURCE_ID = response.id;
+					expect(response.email).toBe(EMAIL);
+					expect(response.sourceurl).toBe(DATA_SOURCE_URL);
 				},
 				() => {}
-			);
-		});
-
-		test('Adding a data source that a user already has', () => {
-			return Rest.addDataSource(
-				EMAIL,
-				DATA_SOURCE_ID,
-				DATA_SOURCE_URL,
-				() => {},
-				({ error }) => {
-					expect(error).toBe(ITEM_ALREADY_EXISTS_ERROR);
-				}
 			);
 		});
 
@@ -210,6 +197,8 @@ describe('Testing with an existing user', () => {
 	});
 
 	describe('Test dashboard management', () => {
+		let DASHBOARD_ID = -1;
+
 		test('dashboard list defaults to empty', () => {
 			return Rest.getDashboardList(
 				EMAIL,
@@ -221,34 +210,17 @@ describe('Testing with an existing user', () => {
 		test('Adding a dashboard', () => {
 			return Rest.addDashboard(
 				EMAIL,
-				DASHBOARD_ID,
 				DASHBOARD_NAME,
 				DASHBOARD_DESC,
-				() => {
-					return Rest.getDashboardList(
-						EMAIL,
-						(list) => {
-							expect(list.length).toBe(1);
-							expect(list[0].id).toBe(DASHBOARD_ID);
-							expect(list[0].email).toBe(EMAIL);
-							expect(list[0].name).toBe(DASHBOARD_NAME);
-							expect(list[0].description).toBe(DASHBOARD_DESC);
-						},
-						() => {}
-					);
+				DASHBOARD_META,
+				(response) => {
+					DASHBOARD_ID = response.id;
+					expect(response.email).toBe(EMAIL);
+					expect(response.name).toBe(DASHBOARD_NAME);
+					expect(response.description).toBe(DASHBOARD_DESC);
+					expect(response.metadata).toMatchObject(DASHBOARD_META);
 				},
 				() => {}
-			);
-		});
-
-		test('Adding a dashboard that a user already has', () => {
-			return Rest.addDashboard(
-				EMAIL,
-				DASHBOARD_ID,
-				DASHBOARD_NAME,
-				DASHBOARD_DESC,
-				() => {},
-				({ error }) => expect(error).toBe(ITEM_ALREADY_EXISTS_ERROR)
 			);
 		});
 
@@ -258,18 +230,12 @@ describe('Testing with an existing user', () => {
 				DASHBOARD_ID,
 				DASHBOARD_FIELDS,
 				DASHBOARD_DATA,
-				() => {
-					Rest.getDashboardList(
-						EMAIL,
-						(list) => {
-							expect(list.length).toBe(1);
-							expect(list[0].id).toBe(DASHBOARD_ID);
-							expect(list[0].email).toBe(EMAIL);
-							expect(list[0].name).toBe(DASHBOARD_NEW_NAME);
-							expect(list[0].description).toBe(DASHBOARD_NEW_DESC);
-						},
-						() => {}
-					);
+				(response) => {
+					expect(response.id).toBe(DASHBOARD_ID);
+					expect(response.email).toBe(EMAIL);
+					expect(response.name).toBe(DASHBOARD_NEW_NAME);
+					expect(response.description).toBe(DASHBOARD_NEW_DESC);
+					expect(response.metadata).toMatchObject(DASHBOARD_NEW_META);
 				},
 				() => {}
 			);
@@ -292,12 +258,15 @@ describe('Testing with an existing user', () => {
 	});
 
 	describe('Test graph management', () => {
+		let DASHBOARD_ID = -1;
+		let GRAPH_ID = -1;
+
 		beforeAll((done) => {
 			return Rest.addDashboard(
 				EMAIL,
-				DASHBOARD_ID,
 				DASHBOARD_NAME,
 				DASHBOARD_DESC,
+				DASHBOARD_META,
 				() => done(),
 				() => done()
 			);
@@ -325,42 +294,18 @@ describe('Testing with an existing user', () => {
 			return Rest.addGraph(
 				EMAIL,
 				DASHBOARD_ID,
-				GRAPH_ID,
 				GRAPH_TITLE,
 				GRAPH_OPTIONS,
 				GRAPH_META,
-				() => {
-					return Rest.getGraphList(
-						EMAIL,
-						DASHBOARD_ID,
-						(list) => {
-							expect(list.length).toBe(1);
-							expect(list[0].id).toBe(GRAPH_ID);
-							expect(list[0].dashboardid).toBe(DASHBOARD_ID);
-							expect(list[0].title).toBe(GRAPH_TITLE);
-							expect(list[0].metadata).toMatchObject(GRAPH_META);
-							expect(list[0].options).toMatchObject(GRAPH_OPTIONS);
-						},
-						() => {}
-					);
+				(response) => {
+					// console.log(response);
+					GRAPH_ID = response.id;
+					expect(response.dashboardid).toBe(DASHBOARD_ID);
+					expect(response.title).toBe(GRAPH_TITLE);
+					expect(response.metadata).toMatchObject(GRAPH_META);
+					expect(response.options).toMatchObject(GRAPH_OPTIONS);
 				},
 				() => {}
-			);
-		});
-
-		test('Adding a graph that a user dashbaord already has', () => {
-			return Rest.addGraph(
-				EMAIL,
-				DASHBOARD_ID,
-				GRAPH_ID,
-				GRAPH_TITLE,
-				GRAPH_OPTIONS,
-				GRAPH_META,
-				() => {},
-				(err) => {
-					console.log(err);
-					expect(err.error).toBe(ITEM_ALREADY_EXISTS_ERROR);
-				}
 			);
 		});
 
@@ -371,20 +316,12 @@ describe('Testing with an existing user', () => {
 				GRAPH_ID,
 				GRAPH_FIELDS,
 				GRAPH_DATA,
-				() => {
-					Rest.getGraphList(
-						EMAIL,
-						DASHBOARD_ID,
-						(list) => {
-							expect(list.length).toBe(1);
-							expect(list[0].id).toBe(GRAPH_ID);
-							expect(list[0].dashboardid).toBe(DASHBOARD_ID);
-							expect(list[0].title).toBe(GRAPH_NEW_TITLE);
-							expect(list[0].metadata).toMatchObject(GRAPH_NEW_META);
-							expect(list[0].options).toMatchObject(GRAPH_NEW_OPTIONS);
-						},
-						() => {}
-					);
+				(response) => {
+					expect(response.id).toBe(GRAPH_ID);
+					expect(response.dashboardid).toBe(DASHBOARD_ID);
+					expect(response.title).toBe(GRAPH_NEW_TITLE);
+					expect(response.metadata).toMatchObject(GRAPH_NEW_META);
+					expect(response.options).toMatchObject(GRAPH_NEW_OPTIONS);
 				},
 				() => {}
 			);
@@ -413,17 +350,7 @@ afterAll((done) => {
 	return Rest.deregisterUser(
 		EMAIL,
 		PASSWORD,
-		() => {
-			Database.pgPool
-				.end()
-				.then(() => done())
-				.catch(() => done());
-		},
-		() => {
-			return Database.pgPool
-				.end()
-				.then(() => done())
-				.catch(() => done());
-		}
+		() => Database.pgPool.end().finally(() => done()),
+		() => Database.pgPool.end().finally(() => done())
 	);
 });
