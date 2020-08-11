@@ -93,7 +93,7 @@ class RestController {
 	 * @return a promise
 	 */
 	static addDashboard(email, name, description, metadata, done, error) {
-		Database.addDashboard(email, name, description)
+		Database.addDashboard(email, name, description, metadata)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
