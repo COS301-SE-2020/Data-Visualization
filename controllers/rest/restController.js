@@ -317,23 +317,11 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-
 	static updateGraphTypes(graphTypes, done, error){
         GraphSuggesterController.setGraphTypes(graphTypes);
         done();
 	}
-	/**
-	 * This function gets data that is used by the user to generate manual graphs.
-	 * @param src the source that is required to retrieve the necessary data.
-	 * @param entity the entity that is used to retrieve data from.
-	 * @param start what index the data is retrieved from.
-	 * @param done a promise that is returned if the request was successful.
-	 * @param error a promise that is returned if the request was unsuccessful.
-	 */
-	static getData(src, entity, start, done, error){
-		//TODO: (Elna) Finish this when correct request is done to datasource controller.
 
-	}
 }
 
 module.exports = RestController;

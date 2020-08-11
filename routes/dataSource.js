@@ -32,9 +32,8 @@ const DataSourceRouteMeta = express.Router();
 const { Rest } = require('../controllers');
 
 DataSourceRouteSrc.post('/list', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else {
 		Rest.getDataSourceList(
 			req.body.email,
 			(list) => res.status(200).json(list),
@@ -44,11 +43,9 @@ DataSourceRouteSrc.post('/list', (req, res) => {
 });
 
 DataSourceRouteSrc.post('/add', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.dataSourceUrl === undefined) {
-		error(res, { error: 'Data Source url Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.dataSourceUrl === undefined) error(res, { error: 'Data Source url Undefined' }, 400);
+	else {
 		Rest.addDataSource(
 			req.body.email,
 			req.body.dataSourceUrl,
@@ -59,9 +56,8 @@ DataSourceRouteSrc.post('/add', (req, res) => {
 });
 
 DataSourceRouteSrc.post('/remove', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else {
 		Rest.removeDataSource(
 			req.body.email,
 			req.body.dataSourceID,
@@ -71,11 +67,9 @@ DataSourceRouteSrc.post('/remove', (req, res) => {
 	}
 });
 DataSourceRouteMeta.post('/entities', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.sourceurl === undefined) {
-		error(res, { error: 'Source Url is Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.sourceurl === undefined) error(res, { error: 'Source Url is Undefined' }, 400);
+	else {
 		Rest.getEntityList(
 			req.body.sourceurl,
 			(data) => res.status(200).json(data),
@@ -85,13 +79,10 @@ DataSourceRouteMeta.post('/entities', (req, res) => {
 });
 
 DataSourceRouteMeta.post('/fields', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.sourceurl === undefined) {
-		error(res, { error: 'Data Source Id Undefined' }, 400);
-	} else if (req.body.entity === undefined) {
-		error(res, { error: 'Data Source Id Undefined' }, 400);
-	} else {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.sourceurl === undefined) error(res, { error: 'Data Source Id Undefined' }, 400);
+	else if (req.body.entity === undefined) error(res, { error: 'Data Source Id Undefined' }, 400);
+	else {
 		Rest.getListOfFields(
 			req.body.sourceurl,
 			req.body.entity,
@@ -101,26 +92,27 @@ DataSourceRouteMeta.post('/fields', (req, res) => {
 	}
 });
 
-DataSourceRouteSrc.post('/data', (req, res) => {
-	if (Object.keys(req.body).length === 0) {
-		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.sourceurl === undefined) {
-		error(res, { error: 'Data Source Url Undefined' }, 400);
-	} else if (req.body.entity === undefined) {
-		error(res, { error: 'Data Entity Undefined' }, 400);
-	}else if (req.body.start === undefined) {
-		error(res, { error: 'Start Index Is Undefined' }, 400);
-	}
-	else {
-		Rest.getData(
-			req.body.sourceurl,
-			req.body.entity,
-			req.body.start,
-			(list) => res.status(200).json(list),
-			(err) => error(res, err)
-		);
-	}
-});
+//TODO: Get data (part of the 20%)
+// DataSourceRouteSrc.post('/data', (req, res) => {
+// 	if (Object.keys(req.body).length === 0) {
+// 		error(res, { error: 'Body Undefined' }, 400);
+// 	} else if (req.body.sourceurl === undefined) {
+// 		error(res, { error: 'Data Source Url Undefined' }, 400);
+// 	} else if (req.body.entity === undefined) {
+// 		error(res, { error: 'Data Entity Undefined' }, 400);
+// 	}else if (req.body.start === undefined) {
+// 		error(res, { error: 'Start Index Is Undefined' }, 400);
+// 	}
+// 	else {
+// 		Rest.getData(
+// 			req.body.sourceurl,
+// 			req.body.entity,
+// 			req.body.start,
+// 			(list) => res.status(200).json(list),
+// 			(err) => error(res, err)
+// 		);
+// 	}
+// });
 
 function error(res, err, status = 400) {
 	console.error(err);
