@@ -13,6 +13,7 @@
  * 05/08/2020   Phillip Schulze  					 Updated the id's and added new deregister function.
  * 05/08/2020   Elna Pistorius  					 Added two new functions that returns a list of fields and a list of entities.
  * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
+ * 11/08/2020   Elna Pistorius                       Updated the updateGraphTypes function
  *
  * Test Cases: none
  *
@@ -316,9 +317,22 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static updateGraphTypes(graphTypes, done, error) {
-		console.log(graphTypes);
-		//TODO: Finish this
+
+	static updateGraphTypes(graphTypes, done, error){
+        GraphSuggesterController.setGraphTypes(graphTypes);
+        done();
+	}
+	/**
+	 * This function gets data that is used by the user to generate manual graphs.
+	 * @param src the source that is required to retrieve the necessary data.
+	 * @param entity the entity that is used to retrieve data from.
+	 * @param start what index the data is retrieved from.
+	 * @param done a promise that is returned if the request was successful.
+	 * @param error a promise that is returned if the request was unsuccessful.
+	 */
+	static getData(src, entity, start, done, error){
+		//TODO: (Elna) Finish this when correct request is done to datasource controller.
+
 	}
 }
 

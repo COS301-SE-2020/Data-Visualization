@@ -11,6 +11,7 @@
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
  * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
  * 05/08/2020   Elna Pistorius  					Added two new endpoints that returns a list of fields and a list of entities
+ * 07/08/2020   Elna Pistorius   					Added new endpoint to retrieve data
  *
  * Test Cases: none
  *
@@ -95,6 +96,27 @@ DataSourceRouteMeta.post('/fields', (req, res) => {
 			req.body.sourceurl,
 			req.body.entity,
 			(data) => res.status(200).json(data),
+			(err) => error(res, err)
+		);
+	}
+});
+
+DataSourceRouteSrc.post('/data', (req, res) => {
+	if (Object.keys(req.body).length === 0) {
+		error(res, { error: 'Body Undefined' }, 400);
+	} else if (req.body.sourceurl === undefined) {
+		error(res, { error: 'Data Source Url Undefined' }, 400);
+	} else if (req.body.entity === undefined) {
+		error(res, { error: 'Data Entity Undefined' }, 400);
+	}else if (req.body.start === undefined) {
+		error(res, { error: 'Start Index Is Undefined' }, 400);
+	}
+	else {
+		Rest.getData(
+			req.body.sourceurl,
+			req.body.entity,
+			req.body.start,
+			(list) => res.status(200).json(list),
 			(err) => error(res, err)
 		);
 	}
