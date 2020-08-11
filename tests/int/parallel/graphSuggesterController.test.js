@@ -22,7 +22,7 @@
 require('../../../controllers/graphSuggester/graphSuggesterAI/graphSuggesterAI');
 const graphSuggesterController = require('../../../controllers/graphSuggester/graphSuggesterController/graphSuggesterController');
 const jsonData =  {
-	results: [
+	data: [
 		{
 
 			__metadata: {

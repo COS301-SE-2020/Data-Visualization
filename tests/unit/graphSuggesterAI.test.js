@@ -24,7 +24,7 @@
 const graphSuggesterAI = require('../../controllers/graphSuggester/graphSuggesterAI/graphSuggesterAI').getInstance();
 const jsonData = {
 
-	'results': [
+	'data': [
 
 		{
 

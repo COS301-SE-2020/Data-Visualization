@@ -345,8 +345,7 @@ let graphSuggesterMaker = (function () {
 			if (this.terminals == null && this.nonTerminals == null) {//eslint-disable-line
 				console.log('No metadata available, returning...');
 			}
-			// object = object [ 'd' ];            //OData always starts with 'd' as the main key
-			let results = object['data']; //OData follows up with 'results' key
+			let results = object['data']; 	//Data is contained in 'data' object
 
 			if (results == null || results.length === 0) {//eslint-disable-line
 				console.log('RESULTS array is empty.');
