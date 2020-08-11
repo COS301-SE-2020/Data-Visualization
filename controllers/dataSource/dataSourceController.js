@@ -18,6 +18,7 @@
  * Assumptions: None
  * Constraints: None
  */
+const Cache = require('./cache');
 const Odata = require('./Odata');
 /**
  * Purpose: This class is responsible for getting DataSources.
@@ -26,13 +27,44 @@ const Odata = require('./Odata');
  * @author Phillip Schulze
  */
 class DataSource {
+	static updateMetaData(src) {
+		return new Promise((resolve, reject) => {
+			Odata.getMetaData(src)
+				.then((data) => {
+					data = DataSource.parseMetadata(data);
+					// data.items = [1, 2, 3, 4, 5];
+					Cache.setMetaData(src, data);
+					resolve();
+				})
+				.catch((err) => reject(err));
+		});
+	}
+
+	static updateEntityData(src, entity) {
+		return new Promise((resolve, reject) => {
+			Odata.getEntityData(src, entity)
+				.then((data) => {
+					Cache.setEntityData(src, entity, data);
+					resolve();
+				})
+				.catch((err) => reject(err));
+		});
+	}
+
 	/**
 	 * This function gets Odata.
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
 	static getMetaData(src) {
-		return Odata.getMetaData(src); //Returns a promise
+		return new Promise((resolve, reject) => {
+			if (Cache.validateMetadata(src)) resolve(Cache.getMetaData(src));
+			else {
+				DataSource.updateMetaData(src)
+					.then(() => resolve(Cache.getMetaData(src)))
+					.catch((err) => reject(err));
+			}
+		}); //Returns a promise
 	}
 	/**
 	 * This function gets an entity list.
@@ -40,8 +72,21 @@ class DataSource {
 	 * @returns a promise of the entity list
 	 */
 	static getEntityList(src) {
-		return Odata.getEntityList(src); //Returns a promise
+		return new Promise((resolve, reject) => {
+			if (Cache.validateMetadata(src)) {
+				const data = DataSource.entityList(src);
+				resolve(data);
+			} else {
+				DataSource.updateMetaData(src)
+					.then(() => {
+						const data = DataSource.entityList(src);
+						resolve(data);
+					})
+					.catch((err) => reject(err));
+			}
+		}); //Returns a promise
 	}
+
 	/**
 	 * This function gets entity data.
 	 * @param src the source where the entity data must be retrieved from
@@ -49,7 +94,40 @@ class DataSource {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity) {
-		return Odata.getEntityData(src, entity);
+		return new Promise((resolve, reject) => {
+			if (Cache.validateEntityData(src, entity)) {
+				resolve(DataSource.entityData(src, entity));
+			} else {
+				DataSource.updateEntityData(src, entity)
+					.then(() => resolve(DataSource.entityData(src, entity)))
+					.catch((err) => reject(err));
+			}
+		}); //Returns a promise
+	}
+
+	static entityList(src) {
+		const data = Cache.getEntityList(src);
+
+		return {
+			source: src,
+			entityList: data,
+		};
+	}
+	static entityData(src, entity) {
+		return {
+			source: src,
+			entity: entity,
+			data: Cache.getEntityData(src, entity),
+		};
+	}
+
+	static parseMetadata(xmlData) {
+		return Odata.parseODataMetadata(xmlData);
 	}
 }
+
+function copy(obj) {
+	return JSON.parse(JSON.stringify(obj));
+}
+
 module.exports = DataSource;

@@ -13,6 +13,7 @@
  * 05/08/2020   Phillip Schulze  					 Updated the id's and added new deregister function.
  * 05/08/2020   Elna Pistorius  					 Added two new functions that returns a list of fields and a list of entities.
  * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
+ * 11/08/2020   Elna Pistorius                       Updated the updateGraphTypes function
  *
  * Test Cases: none
  *
@@ -92,8 +93,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDashboard(email, name, description, done, error) {
-		Database.addDashboard(email, name, description)
+	static addDashboard(email, name, description, metadata, done, error) {
+		Database.addDashboard(email, name, description, metadata)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
@@ -109,7 +110,7 @@ class RestController {
 	 */
 	static updateDashboard(email, id, fields, data, done, error) {
 		Database.updateDashboard(email, id, fields, data)
-			.then(() => done())
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -151,7 +152,7 @@ class RestController {
 	 */
 	static updateGraph(email, dashboardID, graphID, fields, data, done, error) {
 		Database.updateGraph(email, dashboardID, graphID, fields, data)
-			.then(() => done())
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
@@ -249,20 +250,19 @@ class RestController {
 	 */
 	static getEntityList(src, done, error) {
 		DataSource.getEntityList(src)
-			.then((list) => done(list))
+			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
 	/**
 	 * This function gets entity data.
 	 * @param src the source where the entity data must be retrieved from
 	 * @param entity the entity that we want data from
-	 * @param type the type of data that is requested
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of the entities data
 	 */
-	static getEntityData(src, type, entity, done, error) {
-		DataSource.getEntityData()
+	static getEntityData(src, entity, done, error) {
+		DataSource.getEntityData(src, entity)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
@@ -274,10 +274,8 @@ class RestController {
 	 */
 	static getSuggestions(src, done, error) {
 		DataSource.getMetaData(src)
-			.then((XMLString) => {
-				console.log(GraphSuggesterController);
-
-				const Meta = GraphSuggesterController.parseODataMetadata(XMLString);
+			.then((Meta) => {
+				GraphSuggesterController.setMetadata(Meta);
 
 				let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
 				const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
@@ -288,7 +286,9 @@ class RestController {
 					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
 				}
 				const randEntity = Meta.sets[randKey]; //select this entity for data source querying
-				console.log(randEntity);
+
+				console.log('Entity: ', randEntity);
+
 				DataSource.getEntityData(src, randEntity)
 					.then((Odata) => {
 						const options = GraphSuggesterController.getSuggestions(Odata);
@@ -299,13 +299,29 @@ class RestController {
 			})
 			.catch((err) => error && error(err));
 	}
-
-
+	/**
+	 * This function gets a list of fields for a specific entity
+	 * @param src the source that is requested to be used to get entity.
+	 * @param entity the entity that fields are required from
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
 	static getListOfFields(src, entity, done, error) {
 		DataSource.getEntityData(src, entity)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
+	/**
+	 * This function updates the graph types of the suggestions.
+	 * @param graphTypes the types of graphs that needs to be updated
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static updateGraphTypes(graphTypes, done, error){
+        GraphSuggesterController.setGraphTypes(graphTypes);
+        done();
+	}
+
 }
 
 module.exports = RestController;
