@@ -313,10 +313,15 @@ const request = {
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
 							if (remember)
+								request.user.firstName = res.data.firstname;
+								request.user.lastName = res.data.lastname;
+								console.log(request.user.firstName);
+								
 								localStorage.setItem('apikey', res.data.apikey);
-							request.user.apikey = res.data.apikey;
-							request.user.isLoggedIn = true;
-							request.user.setIsLoggedIn(true);
+								request.user.apikey = res.data.apikey;
+								request.user.isLoggedIn = true;
+								request.user.setIsLoggedIn(true);
+							
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						} else {
 							callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -385,6 +390,8 @@ const request = {
 					}
 				});
 		},
+		firstName: '',
+		lastName: '',
 		apikey: localStorage.getItem('apikey'),
 		isLoggedIn: false,
 		setIsLoggedIn: null,
