@@ -297,7 +297,7 @@ function LoginDialog(props) {
   };
   const loginSuccessNotification = placement => {
     notification.info({
-      message: 'Welcome',
+      message: 'Welcome, ' + request.user.firstName,
       description:
         'Hope you have a great day',
       placement,
@@ -305,7 +305,7 @@ function LoginDialog(props) {
   };
   const logoutSuccessNotification = placement => {
     notification.info({
-      message: 'Bye',
+      message: 'Bye, ' + request.user.firstName,
       description:
         'Have a good day',
       placement,
