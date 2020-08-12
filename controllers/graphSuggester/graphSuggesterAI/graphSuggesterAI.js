@@ -344,6 +344,7 @@ let graphSuggesterMaker = (function () {
 			}
 			if (this.terminals == null && this.nonTerminals == null) {//eslint-disable-line
 				console.log('No metadata available, returning...');
+				return null;
 			}
 			let results = object['data']; 	//Data is contained in 'data' object
 
