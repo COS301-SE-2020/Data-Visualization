@@ -19,21 +19,29 @@
  *   Constraints: None
  */
 
-import './Entities.css';
+import './Entities.scss';
 import React, { Fragment } from 'react';
-import { List, Avatar, Button, Skeleton, Form, Checkbox } from 'antd';
+import { List, Avatar, Button, Skeleton, Form, Checkbox, Card } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-import { createForm, formShape } from 'rc-form';
+import { createForm } from 'rc-form';
 
 
 
 class Entities extends React.Component {
 
- 
+
+  state = {
+    initLoading: true,
+    loading: false,
+    checked : true,
+    data: [],
+    list: [],
+    allChecked: true,
+  };
+
   onFinish = values => {
-    //console.log('Received values of form: ', values);
    
     request.user.entitiesToUse = [];
     request.user.entitiesToDisplay.map((item) => {
@@ -47,13 +55,13 @@ class Entities extends React.Component {
     this.next();
   };
 
-  state = {
-    initLoading: true,
-    loading: false,
-    checked : true,
-    data: [],
-    list: [],
-  };
+
+  handleChange = (e) => {
+    this.setState({
+      allChecked: !this.allChecked
+    });
+    this.allChecked = !this.allChecked;
+  }
 
 
   onChange = (item) => {
@@ -73,6 +81,7 @@ class Entities extends React.Component {
     * invoked immediately after a component is mounted (inserted into the tree).
   */
   componentDidMount() {
+    
 
     console.log(request.user.isLoggedIn);
       this.getData(res => {
@@ -81,9 +90,13 @@ class Entities extends React.Component {
           data: request.user.entitiesToDisplay,
           list: request.user.entitiesToDisplay,
         });
+
       });
 
+      
+    
   }
+
 
   /**
     * Funnction uses the dataSources to update the entites list.
@@ -117,13 +130,11 @@ class Entities extends React.Component {
           }
         });
     });
-    
    
   };
 
   render() {
-
-   
+  
     const { getFieldDecorator } = this.props.form;
     const { initLoading, loading, list } = this.state;
 
@@ -148,6 +159,8 @@ class Entities extends React.Component {
             name='entitiesForm'
             onFinish={this.onFinish}
         >
+          <Card><Checkbox onChange={this.handleChange}  >Check all</Checkbox></Card>
+        
           <List
             className='entitesList'
             loading={initLoading}
@@ -159,15 +172,16 @@ class Entities extends React.Component {
             
               <Fragment>
                   {/* <div id = 'selectorDiv' onClick = {() => {this.onChange(item);}}> */}
-                    <List.Item
+                  <Card hoverable>
+                  <List.Item
                       key={1}
                       actions={
                         [ 
                           
-                          <Form.Item valuePropName = 'checked'>
+                          <Form.Item>
                            {getFieldDecorator(item.entityName, {
                               valuePropName: 'checked',
-                              initialValue: true
+                              initialValue: this.allChecked,
                             })(
                               <Checkbox />
                             )}
@@ -186,10 +200,14 @@ class Entities extends React.Component {
                         <div></div>
                       </Skeleton>
                     </List.Item>
+                
+                    
                   {/* </div> */}
+                  </Card> 
               </Fragment>
             )}
           />
+
            
           <Form.Item>
          
