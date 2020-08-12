@@ -39,7 +39,7 @@ function Home(props) {
 		<div className='outterDiv' bg={grid} >
 
 			<img src={grid} id='home__background'/>
-			<Anime delay={anime.stagger(100)} scale={[.7, 1]}>
+			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
 				<div id='header__title'>
 					<Title id='welcomeTitle'>Visualize your data.</Title>
 					<Text id='welcomeText'>Data Visualization Generator makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link to generate chart suggestions!</Text>
