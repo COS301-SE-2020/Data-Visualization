@@ -30,3 +30,13 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: local('Segoe UI'), url(./assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Segoe UI Semibold';
+  src: local('Segoe UI'), url(./assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+}

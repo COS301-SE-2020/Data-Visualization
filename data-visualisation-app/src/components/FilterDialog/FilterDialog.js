@@ -22,8 +22,10 @@
 /**
   * Imports
 */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button, Modal, Select, Tag, Form} from 'antd';
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
 
 
 
@@ -31,8 +33,7 @@ import {Button, Modal, Select, Tag, Form} from 'antd';
 
 const graphTypes = [{ value: 'Bar graph' }, { value: 'Pie chart' }, { value: 'Histogram' }, { value: 'Line graph' }, { value: 'Scatter plot' }];
 
-const fieldTypes = [{ value: 'Region' }, { value: 'Colour' }, { value: 'Email' }, { value: 'Hieght' }, { value: 'Abacao' }, { value: 'Long Island' }];
-
+var tempFields = [];
 
 
 function tagRender(props) {
@@ -74,7 +75,33 @@ function tagRender(props) {
   }
 
 const FilterDialog = (props) => {
+
     const [visible, setVisible] = useState(true);
+    // const [fieldTypes, setFieldTypes] = useState([]);
+
+    // useEffect(() => {
+	
+    //     request.filter.list('https://services.odata.org/V2/Northwind/Northwind.svc', 'Orders', function(result) {
+    //         if (result === constants.RESPONSE_CODES.SUCCESS) {
+              
+    //             console.log(request.user.fields);
+                
+    //             request.user.fields.map(function(entityVal) {
+    //                 tempFields = tempFields.concat({value : entityVal});
+    //             });
+                
+    //             console.log(tempFields);
+            
+    //             setFieldTypes(
+    //                 tempFields
+    //             );
+
+    //         }
+    //     });
+
+	// }, []);
+
+
  
 
     const layout = {
@@ -129,7 +156,6 @@ const FilterDialog = (props) => {
                         <Select
                             mode="multiple"
                             tagRender={tagRender}
-                            defaultValue={[]}
                             style={{ width: '100%' }}
                             options={graphTypes}
                         />
@@ -142,9 +168,8 @@ const FilterDialog = (props) => {
                         <Select
                             mode="multiple"
                             tagRender={tagRender}
-                            defaultValue={[]}
                             style={{ width: '100%' }}
-                            options={fieldTypes}
+                            options={props.fieldTypes}
                         />
                     </Form.Item>
 

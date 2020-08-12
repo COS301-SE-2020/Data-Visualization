@@ -22,21 +22,14 @@
 
 /**
   * Imports
-*/
+*/ 
 import React from 'react';
-import { List, Avatar, Button, Skeleton, Typography } from 'antd';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import reqwest from 'reqwest';
+import { List, Avatar, Button, Skeleton } from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-
 import './DataConnection.scss';
 import AddConnectionDialog from '../AddConnectionDialog';
-import {useGlobalState} from '../../globals/Store';
-import update from 'react-addons-update';
-import { ListAlt } from 'styled-icons/material';
-
-
+import Anime, {anime} from 'react-anime';
 
 /**
   * takes no arguments and returns a random string of length 10.
@@ -151,36 +144,38 @@ class DataConnection extends React.Component {
     * If user is not logged in, add item only front end.
   */
   addItem = (values) => {
-    var newID = generateID();
+    var id = generateID();
+    let attempt = this;
     console.log(request.user.apikey);
     /**
       * If user is logged in, add item on backend and front end.
     */
     if(request.user.isLoggedIn){
-      request.dataSources.add(request.user.apikey, newID , values.uri, function(result) {
-        console.log(result);
-        console.log(request.user.dataSources);
+      request.dataSources.add(request.user.apikey, values.uri, function(result) {
+       
         if (result === constants.RESPONSE_CODES.SUCCESS) {
-          
+
+          request.user.dataSources.push({
+            'id': request.user.addedSourceID,
+            'email': request.user.email,
+            'sourceurl': values.uri
+          });
+
+          attempt.setState(previousState => ({
+            data: request.user.dataSources,
+            list: request.user.dataSources
+          }));
+
         }
       });
-      request.user.dataSources.push({
-        'id': newID,
-        'email': request.user.email,
-        'sourceurl': values.uri
-      });
-
-      this.setState(previousState => ({
-        data: request.user.dataSources,
-        list: request.user.dataSources
-      }));
+      
     }
     else{
       /**
         * User is not logged in, add item only front end.
       */
       request.user.dataSources.push({
-        'id': newID,
+        'id': id,
         'email': request.user.email,
         'sourceurl': values.uri
       });
@@ -225,8 +220,12 @@ class DataConnection extends React.Component {
             lineHeight: '32px',
           }}
         >
+     
           <Button shape = 'round' onClick={this.changeAddState} style ={{marginRight: '10px'}}>Add Connection</Button>
           <Button type = 'primary' shape = 'round' onClick={this.next}>Next</Button>
+          
+    
+          
         </div>
       ) : null;
    
@@ -252,7 +251,7 @@ class DataConnection extends React.Component {
                   avatar={
                     <Avatar src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png" />
                   }
-                  title={<a href="https://ant.design">{item.sourceurl}</a>}
+                  title={item.sourceurl}
                   description={item.id}
                 />
                 <div></div>

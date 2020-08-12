@@ -19,16 +19,13 @@
  *   Constraints: None
  */
 
-import React, { Fragment, useContext } from 'react';
+import React from 'react';
 import {useState} from 'react';
-import {Button, Modal, Input, Tooltip, AutoComplete, Select, Space} from 'antd';
+import {Button, Modal, Input, Tooltip, AutoComplete, Select} from 'antd';
 import {Form, Checkbox, Spin} from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-import API from '../../helpers/apiRequests';
-
 import {useGlobalState} from '../../globals/Store';
 import './LoginDialog.scss';
 import { notification } from 'antd';
@@ -390,7 +387,7 @@ function LoginDialog(props) {
   */   
   const onFinish = values => {
     setConfirmLoading(true);
-    request.user.login(values.email, values.password, function(result) {
+    request.user.login(values.email, values.password, values.remember, function(result) {
       console.log(result);
       if (result === constants.RESPONSE_CODES.SUCCESS) {
           /**
@@ -421,13 +418,13 @@ function LoginDialog(props) {
   };
 
   return (
-    <div id = 'loginDiv'>
+    <div id = 'login-div'>
     
         {
-          state.isLoggedIn === false ?
-            <Button ghost className='button__login' id = 'loginButton' type="dashed"  onClick={showModal}>Login/Sign Up</Button>
+            (props.isLoggedIn || state.isLoggedIn) ?
+                <Button ghost className='button__login' id = 'logout' type="dashed" onClick={handleLogout}>Logout</Button>
             :
-            <Button ghost className='button__login' id = 'logout' type="dashed" onClick={handleLogout}>Logout</Button>
+                <Button ghost className='button__login' id = 'loginButton' type="dashed" onClick={showModal}>Login/Sign Up</Button>
         }
       <Modal
           title="Login"
