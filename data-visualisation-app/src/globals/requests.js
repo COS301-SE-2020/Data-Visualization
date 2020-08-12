@@ -48,7 +48,7 @@ function generateID() {
 const API = {
 	dashboard: {
 		list: (apikey) => axios.post(constants.URL.DASHBOARD.LIST, { apikey }),
-		add: (apikey, dashboardID, name, description) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, dashboardID, name, description }),
+		add: (apikey, dashboardID, name, description, metadata) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, dashboardID, name, description, metadata }),
 		delete: (apikey, dashboardID) => axios.post(constants.URL.DASHBOARD.REMOVE, { apikey, dashboardID }),
 		update: (apikey, dashboardID, fields, data) => axios.post(constants.URL.DASHBOARD.UPDATE, { apikey, dashboardID, fields, data }),
 	},
@@ -115,10 +115,10 @@ const request = {
 		 *  @param description Description of the new dashboard.
 		 *  @param callback Function called at end of execution.
 		 */
-		add: (name, description, callback) => {
+		add: (name, description, metadata, callback) => {
 			if (canRequest) {
 				API.dashboard
-					.add(request.user.apikey, generateID(), name, description)
+					.add(request.user.apikey, generateID(), name, description, metadata)
 					.then((res) => {
 						if (callback !== undefined) {
 							request.cache.dashboard.list.data = res.data;
@@ -293,7 +293,7 @@ const request = {
 		 */
 		rememberLogin: (isLoggedInMutator) => {
 			request.user.setIsLoggedIn = isLoggedInMutator;
-			if (localStorage.getItem('apikey') !== 'null') {
+			if (localStorage.getItem('apikey') === null || localStorage.getItem('apikey') !== '') {
 				request.user.apikey = localStorage.getItem('apikey');
 				request.user.isLoggedIn = true;
 			}
@@ -375,7 +375,7 @@ const request = {
 				.then((res) => {
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
-							localStorage.setItem('apikey', null);
+							localStorage.setItem('apikey', '');
 							request.user.isLoggedIn = false;
 							request.user.setIsLoggedIn(false);
 							callback(constants.RESPONSE_CODES.SUCCESS);

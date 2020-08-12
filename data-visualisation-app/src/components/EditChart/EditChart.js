@@ -15,13 +15,13 @@
  */
 
 import React, {useEffect, useState, useRef} from 'react';
-import {Collapse, Input, Checkbox, Button, InputNumber, Space, message, Dropdown, Menu} from 'antd';
+import {Collapse, Input, Checkbox, Button, InputNumber, Space, message, Dropdown, Menu, Cascader} from 'antd';
 import './EditChart.scss';
 import ReactEcharts from 'echarts-for-react';
 import ReactDataSheet from 'react-datasheet';
 import 'react-datasheet/lib/react-datasheet.css';
 import * as constants from '../../globals/constants';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import Box from '@material-ui/core/Box';
 
 /**
@@ -188,6 +188,21 @@ function EditChart(props) {
         setDropdownCaptions(currentDropdownNames);
     }, []);
 
+    function getLegendData() {
+        let data = [];
+        let resolved = false;
+        if (type === constants.CHART_TYPES.LINE) {
+            if (optionsBuffer.current[+currentBuffer.current].hasOwnProperty('series')) {
+
+            }
+        }
+        if (!resolved) {
+            data.push('Legend Value 1');
+        }
+
+        return data;
+    }
+
     function addProperty(object, property) {
         if (!object.hasOwnProperty(property)) {
             // eslint-disable-next-line default-case
@@ -212,6 +227,21 @@ function EditChart(props) {
                             fontSize: 12,
                             lineHeight: 56
                         }
+                    };
+                    break;
+                case 'legend':
+                    object[property] = {
+                        show: false,
+                        left: 'auto',
+                        top: 'auto',
+                        orient: 'horizontal',
+                        textStyle: {
+                            padding: 4
+                        },
+                        selectorItemGap: 7,
+                        width: 'auto',
+                        height: 'auto',
+                        data: getLegendData()
                     };
                     break;
             }
@@ -251,6 +281,7 @@ function EditChart(props) {
         while (optionsChanges.current.length > 0) {
             update(optionsChanges.current.pop());
         }
+        console.debug('optionsBuffer.current[+currentBuffer.current]', optionsBuffer.current[+currentBuffer.current])
     }
 
     function onCellChanged(changes) {
@@ -317,6 +348,22 @@ function EditChart(props) {
                     </Menu.Item>
                 </Menu>
             )
+        },
+        LEGEND: {
+            HORIZONTAL_ALIGNMENT: [{
+                value: 'auto',
+                label: 'Auto'
+            }, {
+                value: 'left',
+                label: 'Left'
+            }, {
+                value: 'center',
+                label: 'Center'
+            }, {
+                value: 'right',
+                label: 'Right'
+            },
+            ]
         }
     };
 
@@ -358,6 +405,7 @@ function EditChart(props) {
                                         <tr>
                                             <td>Horizontal Alignment</td>
                                             <td>
+                                                {/*<Cascader options={someoptions} onChange={v => {modify(['title', 'left'], parseInt(v));}} placeholder="Please select" />*/}
                                                 <Dropdown overlay={DEFAULT_PROPERTIES.TITLE.HORIZONTAL_ALIGNMENT}>
                                                     <Button>
                                                         {dropdownCaptions[BUTTONS.H_ALIGNMENT]} <DownOutlined />
@@ -401,6 +449,41 @@ function EditChart(props) {
                                     </table>
                                 </Collapse.Panel>
                                 <Collapse.Panel header="Legend" key="3">
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td>Show Legend</td>
+                                            <td><Checkbox onClick={e => {modify(['legend', 'show'], e.target.checked);}} /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Orientation</td>
+                                            <td><InputNumber min={1} max={72} defaultValue={24} onChange={v => {modify(['title', 'subtextStyle', 'fontSize'], parseInt(v));}} /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Horizontal Alignment</td>
+                                            <td>
+                                                <Cascader options={DEFAULT_PROPERTIES.LEGEND.HORIZONTAL_ALIGNMENT} onChange={v => {modify(['title', 'left'], v);}} placeholder='Auto'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vertical  Alignment</td>
+                                            <td><InputNumber min={1} max={300} defaultValue={56} onChange={v => {modify(['title', 'subtextStyle', 'lineHeight'], parseInt(v));}} /></td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={2}>
+                                                Data Labels
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><Button icon={<PlusOutlined />}>Add Data Label</Button></td>
+
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </Collapse.Panel>
                             </Collapse>
                         </div>
