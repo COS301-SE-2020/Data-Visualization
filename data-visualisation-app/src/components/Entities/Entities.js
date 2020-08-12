@@ -21,13 +21,17 @@
 
 import './Entities.scss';
 import React, { Fragment } from 'react';
-import { List, Avatar, Button, Skeleton, Form, Checkbox, Card } from 'antd';
+import { List, Avatar, Button, Skeleton, Form, Checkbox, Card, message } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
+import Anime, { anime } from 'react-anime';
 
-
+const gridStyle = {
+  width: '25%',
+  textAlign: 'center',
+};
 
 class Entities extends React.Component {
 
@@ -38,36 +42,45 @@ class Entities extends React.Component {
     checked : true,
     data: [],
     list: [],
-    allChecked: true,
+    allChecked: false,
   };
 
   onFinish = values => {
-   
+
+    var atLeastOne = false;
     request.user.entitiesToUse = [];
+    
     request.user.entitiesToDisplay.map((item) => {
       if(this.props.form.getFieldValue(item.entityName) === true){
         request.user.entitiesToUse.push(item);
+        atLeastOne = true;
       }
     });
-
-    console.log(request.user.entitiesToUse);
+  
+    if(atLeastOne){
+      this.next();
+    }
+    else{
+      message.error('Please select at least one entity');
+    }
     
-    this.next();
   };
 
 
   handleChange = (e) => {
+
+    this.allChecked = !this.allChecked;
     this.setState({
       allChecked: !this.allChecked
     });
-    this.allChecked = !this.allChecked;
+    
   }
 
 
-  onChange = (item) => {
-   
-    console.log(this.props.form.getFieldValue('Categories'));
-    
+  onChange = (name) => {
+    // this.props.form.setFieldsValue({
+    //   name: false,
+    // });
   };
 
 
@@ -81,20 +94,26 @@ class Entities extends React.Component {
     * invoked immediately after a component is mounted (inserted into the tree).
   */
   componentDidMount() {
-    
-
-    console.log(request.user.isLoggedIn);
+    console.log(request.user.dataSources);
+    if(request.user.dataSources.length === 0){
+      console.log('here');
+      this.setState({
+        initLoading: false,
+        data: [],
+        list: [],
+      });
+    }else{
       this.getData(res => {
         this.setState({
           initLoading: false,
           data: request.user.entitiesToDisplay,
           list: request.user.entitiesToDisplay,
         });
-
       });
-
-      
+    }
     
+      
+
   }
 
 
@@ -103,6 +122,7 @@ class Entities extends React.Component {
   */
   getData = callback => {
    
+  
     var Obj = {};
     request.user.entitiesToDisplay = [];
     request.user.dataSourceInfo = [];
@@ -152,74 +172,149 @@ class Entities extends React.Component {
       ) : null;
    
 
-    return (
+      const mql = window.matchMedia('(max-width: 1024px)');
+      let mobileView = mql.matches;
+
+      if (mobileView) {
+        return (
+    
+          <div>
+             <Form
+                 name='entitiesForm'
+                 onFinish={this.onFinish}
+             >
       
-     <div>
-        <Form
-            name='entitiesForm'
-            onFinish={this.onFinish}
-        >
-          <Card><Checkbox onChange={this.handleChange}  >Check all</Checkbox></Card>
-        
-          <List
-            className='entitesList'
-            loading={initLoading}
-            itemLayout='horizontal'
-            loadMore={loadMore}
-            dataSource = {list}
-            
-            renderItem={item => (
-            
-              <Fragment>
-                  {/* <div id = 'selectorDiv' onClick = {() => {this.onChange(item);}}> */}
-                  <Card hoverable>
-                  <List.Item
-                      key={1}
-                      actions={
-                        [ 
-                          
-                          <Form.Item>
-                           {getFieldDecorator(item.entityName, {
-                              valuePropName: 'checked',
-                              initialValue: this.allChecked,
-                            })(
-                              <Checkbox />
-                            )}
-                          </Form.Item>
-
-                        ]
-                      }>
-                      <Skeleton avatar title={false} loading={item.loading} active>
-                        <List.Item.Meta
-                          avatar={
-                            <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
-                          }
-                          title={item.entityName}
-                          description={item.datasource}
-                        />
-                        <div></div>
-                      </Skeleton>
-                    </List.Item>
+               <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+                 <Checkbox onChange={this.handleChange}>Check all</Checkbox>
+                </Card>
+               
+               <List
+                 className='entitesList'
+                 loading={initLoading}
+                 itemLayout='horizontal'
+                 loadMore={loadMore}
+                 dataSource = {list}
+                 
+                 renderItem={item => (
+                   
+                   <Fragment>
+                       <Card onChange = {this.onChange(item.entityName)} style= {{cursor: 'pointer'}}>
+                       <List.Item
+                           key={1}
+                           actions={
+                             [ 
+                               
+                               <Form.Item>
+                                {getFieldDecorator(item.entityName, {
+                                   valuePropName: 'checked',
+                                   initialValue: this.allChecked,
+                                 })(
+                                  <Checkbox />
+                                 )}
+                                 
+                               </Form.Item>
+     
+                             ]
+                           }>
+                           <Skeleton avatar title={false} loading={item.loading} active>
+                             <List.Item.Meta
+                               avatar={
+                                 <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
+                               }
+                               title={item.entityName}
+                               description={item.datasource}
+                             />
+                             <div></div>
+                           </Skeleton>
+                         </List.Item>
+                       </Card> 
+                   </Fragment>
+                   
+                 )}
+               />
+             
                 
-                    
-                  {/* </div> */}
-                  </Card> 
-              </Fragment>
-            )}
-          />
+               <Form.Item>
+              
+                 <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                   Generate Suggestions
+                 </Button>
+                
+               </Form.Item>
+               
+             </Form>
+           </div>
+         );
+      } else {
+        return (
+      
+          <div>  
+             <Form
+                 name='entitiesForm'
+                 onFinish={this.onFinish}
+             >
+              
+               <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+               <Checkbox onChange={this.handleChange}  >Check all</Checkbox>
+               <List
+                 className='entitesList'
+                 loading={initLoading}
+                 itemLayout='horizontal'
+                 loadMore={loadMore}
+                 dataSource = {list}
+                 
+                 renderItem={item => (
+                   
+                   <Fragment>
+                       <Card.Grid hoverable = {false} onChange = {this.onChange(item.entityName)} style= {{cursor: 'pointer'}}>
+                       <List.Item
+                           key={1}
+                           actions={
+                             [ 
+                               
+                               <Form.Item>
+                                {getFieldDecorator(item.entityName, {
+    
+                                   valuePropName: 'checked',
+                                   initialValue: this.allChecked,
+                                 })(
+                                   <Checkbox/>
+                                 )}
+                                 
+                               </Form.Item>
+     
+                             ]
+                           }>
+                           <Skeleton avatar title={false} loading={item.loading} active>
+                             <List.Item.Meta
+                               avatar={
+                                 <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
+                               }
+                               title={item.entityName}
+                               description={item.datasource}
+                             />
+                             <div></div>
+                           </Skeleton>
+                         </List.Item>
+                       </Card.Grid> 
+                   </Fragment>
+                   
+                 )}
+               />
+               </Card>
+                
 
-           
-          <Form.Item>
-         
-            <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
-              Generate Suggestions
-            </Button>
-           
-          </Form.Item>
-          
-        </Form>
-      </div>
-    );
+               <Form.Item>
+                  <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                  Generate Suggestions
+                  </Button>
+               </Form.Item>
+               
+             </Form>
+           </div>
+         );
+      }
+    
   }
 }
 

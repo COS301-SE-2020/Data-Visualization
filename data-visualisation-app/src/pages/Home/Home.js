@@ -39,6 +39,7 @@ function Home(props) {
 		<div className='outterDiv' bg={grid} >
 
 			<img src={grid} id='home__background'/>
+			
 			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
 				<div id='header__title'>
 					<Title id='welcomeTitle'>Visualize your data.</Title>
