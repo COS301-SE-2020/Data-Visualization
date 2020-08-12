@@ -294,6 +294,8 @@ const request = {
 		rememberLogin: (isLoggedInMutator) => {
 			request.user.setIsLoggedIn = isLoggedInMutator;
 			if (localStorage.getItem('apikey') === null || localStorage.getItem('apikey') !== '') {
+				request.user.firstName = localStorage.getItem('firstName');
+				request.user.lastName = localStorage.getItem('lastName');
 				request.user.apikey = localStorage.getItem('apikey');
 				request.user.isLoggedIn = true;
 			}
@@ -313,10 +315,11 @@ const request = {
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
 							if (remember)
+
+								localStorage.setItem('firstName', res.data.firstname);
 								request.user.firstName = res.data.firstname;
+								localStorage.setItem('lastName', res.data.lastname);
 								request.user.lastName = res.data.lastname;
-								console.log(request.user.firstName);
-								
 								localStorage.setItem('apikey', res.data.apikey);
 								request.user.apikey = res.data.apikey;
 								request.user.isLoggedIn = true;
@@ -375,6 +378,8 @@ const request = {
 				.then((res) => {
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
+							localStorage.setItem('firstName', '');
+							localStorage.setItem('lastName', '');
 							localStorage.setItem('apikey', '');
 							request.user.isLoggedIn = false;
 							request.user.setIsLoggedIn(false);
@@ -390,8 +395,8 @@ const request = {
 					}
 				});
 		},
-		firstName: '',
-		lastName: '',
+		firstName: localStorage.getItem('firstName'),
+		lastName: localStorage.getItem('lastName'),
 		apikey: localStorage.getItem('apikey'),
 		isLoggedIn: false,
 		setIsLoggedIn: null,
