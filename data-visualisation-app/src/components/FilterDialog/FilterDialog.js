@@ -29,13 +29,6 @@ import * as constants from '../../globals/constants';
 
 
 
-//API call (to get options)
-
-const graphTypes = [{ value: 'Bar graph' }, { value: 'Pie chart' }, { value: 'Histogram' }, { value: 'Line graph' }, { value: 'Scatter plot' }];
-
-var tempFields = [];
-
-
 function tagRender(props) {
 
     var tagColour = 'purple';
@@ -77,32 +70,28 @@ function tagRender(props) {
 const FilterDialog = (props) => {
 
     const [visible, setVisible] = useState(true);
-    // const [fieldTypes, setFieldTypes] = useState([]);
+    
+    const graphTypes = [{ value: 'Bar graph' }, { value: 'Pie chart' }, { value: 'Histogram' }, { value: 'Line graph' }, { value: 'Scatter plot' }];
 
-    // useEffect(() => {
-	
-    //     request.filter.list('https://services.odata.org/V2/Northwind/Northwind.svc', 'Orders', function(result) {
-    //         if (result === constants.RESPONSE_CODES.SUCCESS) {
-              
-    //             console.log(request.user.fields);
-                
-    //             request.user.fields.map(function(entityVal) {
-    //                 tempFields = tempFields.concat({value : entityVal});
-    //             });
-                
-    //             console.log(tempFields);
-            
-    //             setFieldTypes(
-    //                 tempFields
-    //             );
+    
+    request.user.fields = [];
+    request.user.entitiesToUse.map((item) => {
+        request.user.fields = request.user.fields.concat(item.fields);
+    });
+    
+    var fieldTypes = [];
+    var checkForDuplicate = [];
+    request.user.fields.map((item) => {
+        if(!checkForDuplicate.includes(item)){
+            checkForDuplicate.push(item);
+            var obj = {};
+            obj = JSON.parse(JSON.stringify(obj));
+            obj['value'] = item;
+            fieldTypes.push(obj);
+        }
+    });
+    checkForDuplicate = [];
 
-    //         }
-    //     });
-
-	// }, []);
-
-
- 
 
     const layout = {
         labelCol: { span: 8 },
@@ -169,7 +158,7 @@ const FilterDialog = (props) => {
                             mode="multiple"
                             tagRender={tagRender}
                             style={{ width: '100%' }}
-                            options={props.fieldTypes}
+                            options={fieldTypes}
                         />
                     </Form.Item>
 

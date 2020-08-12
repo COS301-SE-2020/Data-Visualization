@@ -148,37 +148,8 @@ function Suggestions() {
     }, []);
 
 
-    // const [fieldTypes, setFieldTypes] = useState([]);
-
-    // useEffect(() => {
-        
-    //     /**
-    //       * Sets the fields for FilterDialog
-    //     */
-    //     var tempFields = [];
-    //     setFieldTypes([]);
-    //     request.user.fields = [];
-
-    //     request.filter.list('https://services.odata.org/V2/Northwind/Northwind.svc', 'Orders', function(result) {
-    //         if (result === constants.RESPONSE_CODES.SUCCESS) {
-                
-    //             request.user.fields.map((entityVal) => {
-    //                 tempFields = tempFields.concat({value : entityVal});
-    //             });
-                
-    //             console.log(tempFields);
-    //             setFieldTypes(tempFields);
-                
-    //         }
-    //     });
-       
-
-	// }, []);
-
     const [filterState, setFilterState] = React.useState(false);
     
-    
-
     const classes = useStyles();
 
     function Suggestion(props) {

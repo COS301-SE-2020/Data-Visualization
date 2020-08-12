@@ -399,7 +399,6 @@ const request = {
 		dataSourceInfo: [],
 		entities : [],
 		entitiesToDisplay: [],
-
 		entitiesToUse : [],
 		fields: [],
 	},
