@@ -145,3 +145,11 @@ export const RESPONSE_CODES = {
 		icon: ICONS.ERROR,
 	},
 };
+
+export const CHART_TYPES = {
+	LINE: 'line',
+	BAR: 'bar',
+	PIE: 'pie',
+	SCATTER: 'scatter'
+
+}

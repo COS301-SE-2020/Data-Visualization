@@ -51,6 +51,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './App.scss';
 import { WindowsOutlined } from '@ant-design/icons';
+import EditChart from '../../components/EditChart';
 
 /**
  *   globals import
@@ -523,16 +524,30 @@ function App(props) {
 					</Hidden>
 				</nav>
 
-				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
+				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {padding: '0'})} ref={targetRef}>
 
 					<div className={classes.toolbar} />
-					{
-						
-						page
-												
-					}
 
+					{page}
+					{/*<EditChart options={{*/}
+					{/*	// title: {*/}
+					{/*	// 	text: 'Confidence Band',*/}
+					{/*	// 	subtext: 'Example in MetricsGraphics.js',*/}
+					{/*	// 	left: 'center'*/}
+					{/*	// },*/}
 
+					{/*	xAxis: {*/}
+					{/*		type: 'category',*/}
+					{/*		data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']*/}
+					{/*	},*/}
+					{/*	yAxis: {*/}
+					{/*		type: 'value'*/}
+					{/*	},*/}
+					{/*	series: [{*/}
+					{/*		data: [820, 932, 901, 934, 1290, 1330, 1320],*/}
+					{/*		type: 'line'*/}
+					{/*	}]*/}
+					{/*}} />*/}
 				</main>
 
 			</div>
