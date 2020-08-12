@@ -71,19 +71,14 @@
 .outterDiv{
     width: 90%;
     height: 95%;
-    //margin : 'auto'
     text-align: center;
 }
 
 #welcomeTitle{
     font-size: 9vh;
-    padding-top: 50px;
-   
 }
 #welcomeText{
     font-size: 2.5vh;
-    padding-top: 50px;
-    
 }
 
 .getStarted{
@@ -112,8 +107,9 @@
 }
 
 #illustrationDashboardsDiv {
-    float: right;
-    margin-top: -150px;
+  float: left;
+  margin-top: -160px;
+  margin-right: 100px;
 }
 
 #explainExploreDiv{
@@ -121,16 +117,21 @@
 }
 #explainDashboardsDiv {
     text-align: center;
-    width: 400px;
 
 }
-.guideDiv{
+#guideDivExplain{
     display: flex;
     justify-content: center;
-    //height: 40em;
     width: 100%;
     text-align: center;
     margin-top: 170px;
+}
+#guideDivDashboards{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  margin-top: 80px;
 }
 
 .guideDiv__innerContainer {
@@ -215,7 +216,7 @@
 #button__dashboard {
  
     @include button--layout;
-    @include button__dashboards--backgroundColor;
+    @include button__explore--backgroundColor;
     -webkit-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     -moz-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
@@ -245,7 +246,7 @@
 #button__dashboard:hover {
     color: white;
 
-    @include button__dashboards--backgroundColor;
+    @include button__explore--backgroundColor;
     -webkit-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
     -moz-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
@@ -255,7 +256,7 @@
 #button__dashboard:active {
     color: white;
 
-    @include button__dashboards--backgroundColor;
+    @include button__explore--backgroundColor;
     -webkit-box-shadow: 0px 9px 18px -12px rgba(126,141,128,1);
     -moz-box-shadow: 0px 9px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 9px 18px -12px rgba(126,141,128,1);
