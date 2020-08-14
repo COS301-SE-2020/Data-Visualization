@@ -27,10 +27,6 @@ import React, {useState} from 'react';
 import {Button, Modal, Input, Select} from 'antd';
 import { Form } from 'antd';
 
-import request from '../../globals/requests';
-import * as constants from '../../globals/constants';
-
-
 /**
   * @param props passed from DataConnection class.
   * @return React Component
