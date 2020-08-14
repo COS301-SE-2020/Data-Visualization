@@ -53,6 +53,10 @@ function IGALoading() {
  */
 function Suggestions() {
 
+    console.log(request.user.selectedEntities);
+    console.log(request.user.selectedFields);
+    console.log(request.user.graphTypes);
+
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);

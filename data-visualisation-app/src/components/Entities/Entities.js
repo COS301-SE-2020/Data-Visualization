@@ -48,16 +48,17 @@ class Entities extends React.Component {
   onFinish = values => {
 
     var atLeastOne = false;
-    request.user.entitiesToUse = [];
+    request.user.selectedEntities = [];
     
     request.user.entitiesToDisplay.map((item) => {
       if(this.props.form.getFieldValue(item.entityName) === true){
-        request.user.entitiesToUse.push(item);
+        request.user.selectedEntities.push(item);
         atLeastOne = true;
       }
     });
   
     if(atLeastOne){
+      console.log(request.user.selectedEntities);
       this.next();
     }
     else{
@@ -88,12 +89,15 @@ class Entities extends React.Component {
     this.props.setStage('suggestions');
   };
 
-
   
   /**
     * invoked immediately after a component is mounted (inserted into the tree).
   */
   componentDidMount() {
+
+    request.user.selectedFields = [];
+    request.user.graphTypes = [];
+
     console.log(request.user.dataSources);
     if(request.user.dataSources.length === 0){
       console.log('here');
@@ -122,11 +126,11 @@ class Entities extends React.Component {
   */
   getData = callback => {
    
-  
     var Obj = {};
-    request.user.entitiesToDisplay = [];
     request.user.dataSourceInfo = [];
+
     request.user.entities = [];
+    request.user.entitiesToDisplay = [];
 
     request.user.dataSources.map((source) => {
 
@@ -145,7 +149,6 @@ class Entities extends React.Component {
               
               request.user.entitiesToDisplay.push(Obj);
             });
-          
             callback(request.user.entitiesToDisplay);
           }
         });

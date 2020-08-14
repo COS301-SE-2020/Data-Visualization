@@ -35,6 +35,7 @@
    
 }
 
+
 #button-explore-dataPage{
     @include button__explore--backgroundColor;
     -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
@@ -43,14 +44,23 @@
 
     margin: 0;
     top: 93%;
-    left: 50%;
+    left: 57%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     position: fixed;
     border: none;
+    transition: 0.3s;
+    opacity: 0.8;
 }
+
 #button-explore-dataPage:hover{
-    height: 5vh;
+    opacity: 1;
+}
+
+@media only screen and (max-width: 600px) {
+    #button-explore-dataPage{
+        left: 50%;
+    }
 }
 
 

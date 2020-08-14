@@ -411,8 +411,10 @@ const request = {
 		dataSourceInfo: [],
 		entities : [],
 		entitiesToDisplay: [],
-		entitiesToUse : [],
+		selectedEntities : [],
 		fields: [],
+		selectedFields : [],
+		graphTypes: [],
 	},
 
 	dataSources: {
