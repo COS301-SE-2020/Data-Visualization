@@ -21,58 +21,6 @@
  */
 require('../../../controllers/graphSuggester/graphSuggesterAI/graphSuggesterAI');
 const graphSuggesterController = require('../../../controllers/graphSuggester/graphSuggesterController/graphSuggesterController');
-const jsonData =  {
-	data: [
-		{
-
-			__metadata: {
-
-				uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(21)',
-				type: 'NorthwindModel.Product'
-
-			},
-			ProductID: 21,
-			ProductName: 'Sir Rodney\'s Scones',
-			SupplierID: 8,
-			CategoryID: 3,
-			QuantityPerUnit: '24 pkgs. x 4 pieces',
-			UnitPrice: '10.0000',
-			UnitsInStock: 3,
-			UnitsOnOrder: 40,
-			ReorderLevel: 5,
-			Discontinued: false,
-			Category: {
-
-				__deferred: {
-
-					uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(21)/Category'
-
-				}
-
-			},
-			// eslint-disable-next-line camelcase
-			Order_Details: {
-
-				__deferred: {
-
-					uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(21)/Order_Details'
-
-				}
-
-			},
-			Supplier: {
-
-				__deferred: {
-
-					uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(21)/Supplier'
-
-				}
-
-			}
-
-		}
-	],
-};
 	
 const fitnessChart = {
 	'title': {
@@ -172,14 +120,23 @@ const types = {
 		'int', 'int', 'int', 'int', 'bool' ],
 };
 
+const suggestion =
+{
+	title: { text: expect.any(String) },
+	dataset: { source: expect.any(Array) },
+	xAxis: { type: 'category' },
+	yAxis: {},
+	series: [{ type: expect.any(String), encode: expect.any(Object) }],
+};
+
 describe('Testing functions in the graphSuggesterController class that call functions in the suggester class', function () {
 	test('Returns a null suggestion on null call to getSuggestion', () => {
 		expect(graphSuggesterController.getSuggestions(null)).toBeNull();
 	});
 
 	test('Returns a suggestion on call to getSuggestion', () => {
-		graphSuggesterController.setMetadata({ items, associations, types });
-		expect(graphSuggesterController.getSuggestions('Product')).not.toBeNull();
+		graphSuggesterController.setMetadata('url', { items, associations, types });
+		expect(graphSuggesterController.getSuggestions('Product')).toMatchObject(suggestion);
 	});
 
 	test('Returns true when setting fitness chart', () => {
@@ -187,7 +144,14 @@ describe('Testing functions in the graphSuggesterController class that call func
 	});
 
 	test('Successfully limits fields', () => {
-		expect(graphSuggesterController.limitFields(null)).toBeUndefined();
+		expect(graphSuggesterController.limitFields([])).toBeUndefined();
+	});
+
+	test('Successfully limits entities', () => {
+		graphSuggesterController.setMetadata('url', { items, associations, types });
+		graphSuggesterController.limitEntities([ 'Product' ]);
+		expect(graphSuggesterController.getSuggestions('Product')).not.toBeNull();
+		expect(graphSuggesterController.getSuggestions('Red')).toBeNull();
 	});
 
 });

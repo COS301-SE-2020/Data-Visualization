@@ -20,6 +20,8 @@
  * 07/08/2020	 Marco Lombaard		Updated setMetadata function to accept graph types as a parameter
  * 11/08/2020	 Marco Lombaard		Adapted getSuggestions to new data format
  * 14/08/2020	 Marco Lombaard		Suggestions now generate from metadata and do not require sample data
+ * 14/08/2020	 Marco Lombaard		Renamed limitFields to setFields, notInExclusions to accepted
+ * 14/08/2020	 Marco Lombaard		Moved constructOption to graphSuggesterController.js
  *
  * Test Cases: none
  *
@@ -55,7 +57,8 @@ let graphSuggesterMaker = (function () {
 			this.nonTerminals = []; //associations with other tables - will require more requests
 			this.fieldTypes = []; //types of each field - used in chromosome representation
 
-			this.fieldExclusions = []; //fields to exclude during suggestion generation
+			this.acceptedFields = []; //fields to use during suggestion generation
+
 			this.fittestGraphType = null; //the target graph type(will have the lowest fitness value, i.e. best fitness)
 			this.fittestFieldType = null; //the target field type(will have the lowest fitness value, i.e. best fitness)
 			this.mutationRate = 0.3; //the rate at which the population should mutate
@@ -144,7 +147,7 @@ let graphSuggesterMaker = (function () {
 				//console.log(i+': ', chromosomes[i]);
 			}
 			//console.log('Options: ', options);
-			console.log('Types: ', types);
+			//console.log('Types: ', types);
 
 			let mutate = 0; //value must be below mutation rate for mutation to take place
 			let fitness = []; //all the fitness values - use to select parents
@@ -361,7 +364,7 @@ let graphSuggesterMaker = (function () {
 						name.includes('Picture') ||
 						name.includes('Description') ||
 						name.includes('Date')	//TODO periodic data - pretty useful
-					) && this.notInExclusions(name)	//check that field is not excluded from suggestions
+					) && this.accepted(name)	//check that field is in accepted fields
 				) {
 					//trim out the "useless" keys
 					types[count] = this.fieldTypes[entity][key];
@@ -424,96 +427,26 @@ let graphSuggesterMaker = (function () {
 		 * This function stores the fields that are excluded from suggestion generation
 		 * @param fields the fields that need to be excluded, in array format
 		 */
-		excludeFields(fields) {
-			this.fieldExclusions = fields;
+		setFields(fields) {
+			this.acceptedFields = fields;
 		}
 
 		/**
-		 * This function checks if the parameter is listed in excluded fields, returning false if it is, true if it isn't
+		 * This function checks if the parameter is listed in accepted fields, returning true if it is, false otherwise
 		 * @param name the name of the field that needs to be checked
-		 * @return {boolean} true if the field is not in exclusions, false if it is listed as an exclusion
+		 * @return {boolean} true if the field is in accepted fields, false otherwise
 		 */
-		notInExclusions(name) {
-			for (let i = 0; i < this.fieldExclusions.length; i++) {
-				//check all exclusions
-				if (name === this.fieldExclusions[i]) {
-					//if it is in exclusions
-					return false; //exclude it from options
-				}
+		accepted(name) {
+			//console.log(this.acceptedFields);
+			//console.log(name);
+			if (this.acceptedFields.length === 0) {
+				return true;
 			}
-
-			return true;
-		}
-
-		/**
-		 * This function constructs and returns the graph parameters for eChart graph generation in frontend.
-		 * @param data an array containing data arrays, which contain data for graphs.
-		 * @param graph the type of graph to be used.
-		 * @param params the labels for data, used to select which entries go on the x and y-axis.
-		 * @param xEntries the entry/entries used on the x-axis.
-		 * @param yEntries the entry/entries used on the y-axis.
-		 * @param graphName the suggested name of the graph
-		 * @return option the data used to generate the graph.
-		 */
-		constructOption(data, graph, params, xEntries, yEntries, graphName) {
-			let src = [];
-			src[0] = params;
-
-			for (let i = 0; i < data.length; i++) {
-				src[i + 1] = data[i];
+			for (let i = 0; i < this.acceptedFields.length; i++) {
+				if (this.acceptedFields[i].match(name))
+					return true;
 			}
-
-			//this constructs the options sent to the Apache eCharts API - this will have to be changed if
-			//a different API is used
-			let option = {
-				title: {
-					text: graphName,
-				},
-				dataset: {
-					source: src,
-				},
-				xAxis: { type: 'category' }, //TODO change this so the type(s) gets decided by frontend or by the AI
-				yAxis: {},
-				series: [
-					//construct the series of graphs, this could be one or more graphs
-					{
-						type: graph,
-						encode: {
-							x: xEntries, //TODO check if multiple values are allowed - might be useful
-							y: yEntries,
-						},
-					},
-				],
-			};
-			//the current options array works for line, bar, scatter, effectScatter charts
-			//it is also the default options array
-
-			if (graph.includes('pie')) {
-				//for pie charts
-				option.series = [
-					{
-						type: graph,
-						radius: '60%',
-						label: {
-							formatter: '{b}: {@' + yEntries + '} ({d}%)',
-						},
-						encode: {
-							itemName: xEntries,
-							value: yEntries,
-						},
-					},
-				];
-			} else if (graph.includes('parallel')) {
-				//for parallel charts - TODO to be added
-			} else if (graph.includes('candlestick')) {
-				//for candlestick charts - TODO to be added
-			} else if (graph.includes('map')) {
-				//for map charts - TODO to be added
-			} else if (graph.includes('funnel')) {
-				//for funnel charts - TODO to be added
-			}
-
-			return option;
+			return false;
 		}
 	}
 

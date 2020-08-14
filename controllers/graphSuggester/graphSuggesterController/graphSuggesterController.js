@@ -18,6 +18,7 @@
  * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
  * 11/08/2020	 Marco Lombaard		Removed deprecated changeFittestGraph function
  * 14/08/2020	 Marco Lombaard		Converted getSuggestions to use entity name and not sample data
+ * 14/08/2020	 Marco Lombaard		Moved chart construction here, added isInitialised function, modified setMetadata
  *
  * Test Cases: none
  *
@@ -40,12 +41,17 @@ const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI').getInst
 class GraphSuggesterController {
 	/**
 	 * This function sets the metadata used in graph suggestion generation
+	 * @param source the source of the metadata - used to track entity origin
 	 * @param items	the entities('tables') and their related attributes/fields
 	 * @param associations the other entities associated with this entity(containing related data)
 	 * @param types the data types of each field, organised by entity
 	 */
-	static setMetadata({ items, associations, types }) {
-		graphSuggesterAI.setMetadata(items, associations, types);
+	static setMetadata(source, { items, associations, types }) {
+		if (!this.metadata) {
+			this.metadata = [];
+			graphSuggesterAI.setMetadata(items, associations, types);	//not yet initialised, initialise it
+		}
+		this.metadata[source] = { items, associations, types };
 	}
 
 	/**
@@ -56,13 +62,49 @@ class GraphSuggesterController {
 	 */
 	static getSuggestions(entity) {
 		// eslint-disable-next-line eqeqeq
-		console.log(entity);
-		// eslint-disable-next-line eqeqeq
 		if (entity == null) {
 			console.log('no entity received for suggestion generation');
 			return null;
 		}
-		return graphSuggesterAI.getSuggestions(entity);
+		let accepted = false;
+
+		if (!this.acceptedEntities || this.acceptedEntities.length === 0) {
+			accepted = true;
+		} else {
+			for (let i = 0; i < this.acceptedEntities.length; i++) {
+				if (this.acceptedEntities[i].match(entity)) {
+					accepted = true;
+					break;
+				}
+			}
+		}
+
+		if (accepted) {
+			let suggestion = graphSuggesterAI.getSuggestions(entity);
+			// eslint-disable-next-line eqeqeq
+			if (suggestion == null) {
+				console.log('Received null suggestion');
+				return null;
+			}
+			let option = this.constructOption(suggestion[1], [ suggestion[0], 'value' ], suggestion[0],
+				'value', entity + ': ' + suggestion[0]);
+			//console.log(option);
+			return option;
+		}
+
+		console.log(entity + ' is not among ', this.acceptedEntities);
+		return null;
+	}
+
+	/**
+	 * * This function checks if the necessary parameters for suggestion generation has been set
+	 * @return {boolean} true if it is initialised, false otherwise
+	 */
+	static isInitialised() {
+		if (this.metadata.length > 0) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -70,13 +112,13 @@ class GraphSuggesterController {
 	 * @param fields the fields to be excluded in graph suggestion generation
 	 */
 	static limitFields(fields) {
-		graphSuggesterAI.excludeFields(fields);
+		graphSuggesterAI.setFields(fields);
 	}
 
 	/**
 	 */
 	static limitEntities(entities) {
-		//TODO: graphSuggesterAI.excludeEntities(entities);
+		this.acceptedEntities = entities;
 	}
 
 	/**
@@ -94,6 +136,7 @@ class GraphSuggesterController {
 	 */
 	static setFittestEChart(graph) {
 		//if the graph is null, then we are resetting preferences for the fitness target
+		// eslint-disable-next-line eqeqeq
 		if (graph == null) {
 			//eslint-disable-line
 			console.log('setFittestEChart received null, resetting fitness target...');
@@ -115,6 +158,7 @@ class GraphSuggesterController {
 		let dataset = graph['dataset'];
 
 		//check if there is a source
+		// eslint-disable-next-line eqeqeq
 		if (dataset['source'] == null) {
 			//eslint-disable-line
 			console.log('Check that dataset has a source');
@@ -134,6 +178,7 @@ class GraphSuggesterController {
 		fieldSample = fieldSample[1]; //select the first data entry
 
 		//check if entry is empty or if there is no data value
+		// eslint-disable-next-line eqeqeq
 		if (fieldSample == null || fieldSample.length === 0) {
 			//eslint-disable-line
 			console.log('Check that entries have values');
@@ -141,9 +186,10 @@ class GraphSuggesterController {
 		}
 
 		//check that encoding is present and not empty
+		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log("Check that 'encode' is not empty");
+			console.log('Check that \'encode\' is not empty');
 			return false;
 		}
 
@@ -151,7 +197,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log("check that 'encode' has keys");
+			console.log('check that \'encode\' has keys');
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries
@@ -187,6 +233,77 @@ class GraphSuggesterController {
 		graphSuggesterAI.changeFitnessTarget(graphType, fieldType); //set these values as the fitness target for the IGA
 
 		return true;
+	}
+
+	/**
+	 * This function constructs and returns the graph parameters for eChart graph generation in frontend.
+	 * @param graph the type of graph to be used.
+	 * @param params the labels for data, used to select which entries go on the x and y-axis.
+	 * @param xEntries the entry/entries used on the x-axis.
+	 * @param yEntries the entry/entries used on the y-axis.
+	 * @param graphName the suggested name of the graph
+	 * @return option the data used to generate the graph.
+	 */
+	static constructOption(graph, params, xEntries, yEntries, graphName) {
+		let src = [];
+		src[0] = params;
+
+		//TODO add the data like this at some point
+		// for (let i = 0; i < data.length; i++) {
+		// 	src[i + 1] = data[i];
+		// }
+
+		//this constructs the options sent to the Apache eCharts API - this will have to be changed if
+		//a different API is used
+		let option = {
+			title: {
+				text: graphName,
+			},
+			dataset: {
+				source: src,
+			},
+			xAxis: { type: 'category' }, //TODO change this so the type(s) gets decided by frontend or by the AI
+			yAxis: {},
+			series: [
+				//construct the series of graphs, this could be one or more graphs
+				{
+					type: graph,
+					encode: {
+						x: xEntries, //TODO check if multiple values are allowed - might be useful
+						y: yEntries,
+					},
+				},
+			],
+		};
+		//the current options array works for line, bar, scatter, effectScatter charts
+		//it is also the default options array
+
+		if (graph.includes('pie')) {
+			//for pie charts
+			option.series = [
+				{
+					type: graph,
+					radius: '60%',
+					label: {
+						formatter: '{b}: {@' + yEntries + '} ({d}%)',
+					},
+					encode: {
+						itemName: xEntries,
+						value: yEntries,
+					},
+				},
+			];
+		} else if (graph.includes('parallel')) {
+			//for parallel charts - TODO to be added
+		} else if (graph.includes('candlestick')) {
+			//for candlestick charts - TODO to be added
+		} else if (graph.includes('map')) {
+			//for map charts - TODO to be added
+		} else if (graph.includes('funnel')) {
+			//for funnel charts - TODO to be added
+		}
+
+		return option;
 	}
 }
 
