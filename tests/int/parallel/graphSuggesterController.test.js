@@ -135,7 +135,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 	});
 
 	test('Returns a suggestion on call to getSuggestion', () => {
-		graphSuggesterController.setMetadata({ items, associations, types });
+		graphSuggesterController.setMetadata('url', { items, associations, types });
 		expect(graphSuggesterController.getSuggestions('Product')).toMatchObject(suggestion);
 	});
 
@@ -148,7 +148,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 	});
 
 	test('Successfully limits entities', () => {
-		graphSuggesterController.setMetadata({ items, associations, types });
+		graphSuggesterController.setMetadata('url', { items, associations, types });
 		graphSuggesterController.limitEntities([ 'Product' ]);
 		expect(graphSuggesterController.getSuggestions('Product')).not.toBeNull();
 		expect(graphSuggesterController.getSuggestions('Red')).toBeNull();
