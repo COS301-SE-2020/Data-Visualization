@@ -152,8 +152,15 @@ describe('Testing functions in the graphSuggesterController class that call func
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
 		graphSuggesterController.limitEntities([{ entityName:'Product', source:'url' }]);
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
-		expect(suggestion).toMatchObject(suggestion);
+		expect(graphSuggesterController.getSuggestions('Product', 'url')).toMatchObject(suggestion);
 	});
 
+	test('Successfully selects an entity from filtered entities', () => {
+		graphSuggesterController.setMetadata('url', { items, associations, types });
+		let choice = graphSuggesterController.selectEntity();
+		expect(choice).toMatch('Product');
+		graphSuggesterController.limitEntities([{ entityName:'Product', source:'url' }]);
+		expect(graphSuggesterController.selectEntity()).toMatch('Product');
+	});
 
 });

@@ -6,19 +6,20 @@
  * Modules: None
  * Related Documents: SRS Document - www.example.com
  * Update History:
- * Date          Author              Changes
+ * Date          Author              				Changes
  * -------------------------------------------------------------------------------------------------
- * 30/06/2020    Marco Lombaard     Original
- * 01/07/2020    Marco Lombaard     Added parseODataMetadata function
- * 09/07/2020    Marco Lombaard     Fixed parseODataMetaData function
- * 05/08/2020	 Marco Lombaard		Changed class from singleton to normal class w/ static functions
- * 05/08/2020	 Marco Lombaard		Added limitFields and setFittestEChart functions
- * 07/08/2020	 Marco Lombaard		Added data-types array to return in parseODataMetaData function
- * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function, added setGraphTypes
- * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
- * 11/08/2020	 Marco Lombaard		Removed deprecated changeFittestGraph function
- * 14/08/2020	 Marco Lombaard		Converted getSuggestions to use entity name and not sample data
- * 14/08/2020	 Marco Lombaard		Moved chart construction here, added isInitialised function, modified setMetadata
+ * 30/06/2020    Marco Lombaard     				Original
+ * 01/07/2020    Marco Lombaard     				Added parseODataMetadata function
+ * 09/07/2020    Marco Lombaard     				Fixed parseODataMetaData function
+ * 05/08/2020	 Marco Lombaard						Changed class from singleton to normal class w/ static functions
+ * 05/08/2020	 Marco Lombaard						Added limitFields and setFittestEChart functions
+ * 07/08/2020	 Marco Lombaard						Added data-types array to return in parseODataMetaData function
+ * 07/08/2020	 Marco Lombaard						Fixed setFittestEChart function, added setGraphTypes
+ * 07/08/2020	 Phillip Schulze					Moved parseODataMetadata function to Odata.js
+ * 11/08/2020	 Marco Lombaard						Removed deprecated changeFittestGraph function
+ * 14/08/2020	 Marco Lombaard						Converted getSuggestions to use entity name and not sample data
+ * 14/08/2020	 Marco Lombaard						Moved chart construction here, added isInitialised function, modified setMetadata
+ * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
  *
  * Test Cases: none
  *
@@ -165,10 +166,10 @@ class GraphSuggesterController {
 	 */
 	static limitEntities(entities) {
 		for (let i = 0; i < entities.length; i++) {
-			if(!this.acceptedEntities[entities[i].source]) {
-				this.acceptedEntities[entities[i].source] = [ entities[i].entityName ];
+			if(!this.acceptedEntities[entities[i].source]) {	//if this source isn't listed yet
+				this.acceptedEntities[entities[i].source] = [ entities[i].entityName ];	//create it and store the entity
 			} else {
-				this.acceptedEntities[entities[i].source].push(entities[i].entityName);
+				this.acceptedEntities[entities[i].source].push(entities[i].entityName);	//add the name to the existing array
 			}
 		}
 	}
@@ -366,7 +367,26 @@ class GraphSuggesterController {
 	}
 
 	static selectEntity() {
-		return GraphSuggesterController.acceptedEntities[Math.random() * GraphSuggesterController.acceptedEntities.length];
+		if (!this.isInitialised()) {
+			console.log('Not yet initialised');
+			return null;
+		}
+
+		let keys = Object.keys(this.acceptedEntities);	//list the sources
+		let source;
+
+		if (keys.length > 0) {	//if a filter was set
+			let key = keys[Math.floor(Math.random() * keys.length)];	//pick a source index
+			source = this.acceptedEntities[key]; //select the source entities
+			return source[Math.floor(Math.random()*source.length)];	//select a random entity
+		} else {	//else just pick from all options
+			keys = Object.keys(this.metadata);	//list the sources
+			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a metadata source index
+			source = this.metadata[key]['items'];	//source entities are listed in 'items' - select it
+			keys = Object.keys(source);	//select the entity keys
+			key = keys[Math.floor(Math.random() * keys.length)];	//select a random entity key
+			return key;
+		}
 	}
 }
 GraphSuggesterController.acceptedEntities = {};
