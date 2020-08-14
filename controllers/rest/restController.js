@@ -170,7 +170,7 @@ class RestController {
 	 */
 	static setSuggestionParams(graph, entities, fields, done, error) {
 		GraphSuggesterController.setFittestEChart(graph);
-		//TODO: GraphSuggesterController.setSelectedEntities(entities);
+		GraphSuggesterController.limitEntities(entities);
 		GraphSuggesterController.limitFields(fields);
 		done();
 

@@ -58,7 +58,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		console.log(entity);
 		// eslint-disable-next-line eqeqeq
-		if(entity == null) {
+		if (entity == null) {
 			console.log('no entity received for suggestion generation');
 			return null;
 		}
@@ -71,6 +71,12 @@ class GraphSuggesterController {
 	 */
 	static limitFields(fields) {
 		graphSuggesterAI.excludeFields(fields);
+	}
+
+	/**
+	 */
+	static limitEntities(entities) {
+		//TODO: graphSuggesterAI.excludeEntities(entities);
 	}
 
 	/**
