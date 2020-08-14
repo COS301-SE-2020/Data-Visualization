@@ -60,8 +60,14 @@ class GraphSuggesterController {
 			console.log('no entity received for suggestion generation');
 			return null;
 		}
-		if (entity in this.acceptedEntities) {
+		// eslint-disable-next-line eqeqeq
+		if (this.acceptedEntities == null) {
 			return graphSuggesterAI.getSuggestions(entity);
+		}
+		for (let i = 0; i < this.acceptedEntities; i++) {
+			if (this.acceptedEntities[i] === entity){
+				return graphSuggesterAI.getSuggestions(entity);
+			}
 		}
 
 		return null;

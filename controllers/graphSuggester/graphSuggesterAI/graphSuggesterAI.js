@@ -436,7 +436,16 @@ let graphSuggesterMaker = (function () {
 		 * @return {boolean} true if the field is in accepted fields, false otherwise
 		 */
 		accepted(name) {
-			return name in this.acceptedFields;
+			console.log(this.acceptedFields);
+			console.log(name);
+			if (this.acceptedFields.length === 0) {
+				return true;
+			}
+			for (let i = 0; i < this.acceptedFields.length; i++) {
+				if (this.acceptedFields[i] === name)
+					return true;
+			}
+			return false;
 		}
 
 		/**

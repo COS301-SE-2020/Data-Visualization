@@ -56,13 +56,14 @@ const types = {
 };
 
 describe('Testing functions within the graphSuggesterAI class', function () {
-	test('Returns true to a field that is not excluded', () => {
-		expect(graphSuggesterAI.notInExclusions('yes')).toBe(true);
+	test('Returns true to a field that is included', () => {
+		expect(graphSuggesterAI.accepted('yes')).toBe(true);
 	});
 
-	test('Excludes field and returns false when checked if it is not excluded', () => {
-		graphSuggesterAI.excludeFields([ 'red' ]);
-		expect(graphSuggesterAI.notInExclusions('red')).toBe(false);
+	test('Excludes field and returns true when checked if it is included', () => {
+		graphSuggesterAI.setFields([ 'red' ]);
+		expect(graphSuggesterAI.accepted('red')).toBe(true);
+		graphSuggesterAI.setFields([]);
 	});
 
 	test('Generates a null suggestion on null input', () => {
