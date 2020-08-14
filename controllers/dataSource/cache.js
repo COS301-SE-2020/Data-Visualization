@@ -22,8 +22,14 @@ const CacheMaker = (function () {
 			return null;
 		}
 
-		getEntityData(src, entity) {
-			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) return this.entityData[src][entity].data;
+		getEntityData(src, entity, field) {
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) {
+				const data = this.entityData[src][entity].data;
+
+				const res = data.map((item) => item[field]);
+
+				return res;
+			}
 			return null;
 		}
 

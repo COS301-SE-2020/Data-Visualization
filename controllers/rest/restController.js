@@ -155,8 +155,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of the entities data
 	 */
-	static getEntityData(src, entity, done, error) {
-		DataSource.getEntityData(src, entity)
+	static getEntityData(src, entity, field, done, error) {
+		DataSource.getEntityData(src, entity, field)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
@@ -170,12 +170,27 @@ class RestController {
 	 * @param fields the list of fields that should be used for suggestion generation
 	 */
 	static setSuggestionParams(graph, entities, fields, done, error) {
-		GraphSuggesterController.setFittestEChart(graph);
-		GraphSuggesterController.limitEntities(entities);
-		GraphSuggesterController.limitFields(fields);
-		done();
+		try {
+			GraphSuggesterController.clearMetadata();
+			GraphSuggesterController.setFittestEChart(graph);
+			GraphSuggesterController.limitEntities(entities);
+			GraphSuggesterController.limitFields(fields);
 
-		// const obj = {
+			//construct array of sources from entities with no duplicates
+			const datasources = [...new Set(entities.map((entity) => entity.datasource))];
+			datasources.forEach((src, i) => {
+				DataSource.getMetaData(src)
+					.then((Meta) => {
+						GraphSuggesterController.setMetadata(src, Meta);
+					})
+					.catch((err) => console.log(err));
+			});
+			done();
+		} catch (err) {
+			error && error(err);
+		}
+
+		// req.body = {
 		// 	selectedEntities: [
 		// 		{
 		// 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
@@ -199,46 +214,67 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static getSuggestions(src, done, error) {
-		//TODO: const randEntity = GraphSuggesterController.selectEntity();
+		if (GraphSuggesterController.isInitialised()) {
+			let randEntity;
+			let suggestion;
 
-		DataSource.getMetaData(src)
-			.then((Meta) => {
-				GraphSuggesterController.setMetadata(Meta);
+			do {
+				randEntity = GraphSuggesterController.selectEntity();
+				suggestion = GraphSuggesterController.getSuggestions(randEntity.entityname, randEntity.datasource);
+			} while (suggestion == null); // eslint-disable-line eqeqeq
 
-				let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
-				const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
-				let chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
+			const { entity, field } = extractTitleData(suggestion.title.text);
+			DataSource.getEntityData(randEntity.datasource, entity, field)
+				.then((data) => {
+					//TODO: Assembly graph suggestion + data here
+					// const graph = GraphSuggesterController.assempleGraph(suggestion, data);
+					// done(graph);
+					done(null);
+				})
+				.catch((err) => error & error(err));
 
-				// eslint-disable-next-line eqeqeq
-				while (chosen != null && chosen.length === 0) {
-					//check if the item with the selected key has data
-					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
-					chosen = Meta.items[itemsKeys[randKey]];
-				}
+			//===========================OLD=============================================
+			// DataSource.getMetaData(src).then((Meta) => {
+			// 	GraphSuggesterController.setMetadata(Meta);
 
-				let randEntity = Meta.sets[randKey]; //select this entity for data source querying
+			// 	let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
+			// 	const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
+			// 	let chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
 
-				console.log('Entity: ', randEntity);
+			// 	// eslint-disable-next-line eqeqeq
+			// 	while (chosen != null && chosen.length === 0) {
+			// 		//check if the item with the selected key has data
+			// 		randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
+			// 		chosen = Meta.items[itemsKeys[randKey]];
+			// 	}
 
-				let suggestion = GraphSuggesterController.getSuggestions(randEntity);
+			// 	let randEntity = Meta.sets[randKey]; //select this entity for data source querying
 
-				// eslint-disable-next-line eqeqeq
-				while (suggestion == null) {
-					randKey = Math.floor(Math.random() * Meta.sets.length);
-					chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
+			// 	console.log('Entity: ', randEntity);
 
-					// eslint-disable-next-line eqeqeq
-					while (chosen != null && chosen.length === 0) {
-						//check if the item with the selected key has data
-						randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
-						chosen = Meta.items[itemsKeys[randKey]];
-					}
-					randEntity = Meta.sets[randKey]; //select this entity for data source querying
-					suggestion = GraphSuggesterController.getSuggestions(randEntity);
-				}
-				//TODO make function to request a specific field's data - it makes a huge difference, 4 lines per item instead of 13
-				//TODO chart assembly should then be moved here or further up
-			});
+			// 	let suggestion = GraphSuggesterController.getSuggestions(randEntity);
+
+			// 	// eslint-disable-next-line eqeqeq
+			// 	while (suggestion == null) {
+			// 		randKey = Math.floor(Math.random() * Meta.sets.length);
+			// 		chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
+
+			// 		// eslint-disable-next-line eqeqeq
+			// 		while (chosen != null && chosen.length === 0) {
+			// 			//check if the item with the selected key has data
+			// 			randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
+			// 			chosen = Meta.items[itemsKeys[randKey]];
+			// 		}
+			// 		randEntity = Meta.sets[randKey]; //select this entity for data source querying
+			// 		suggestion = GraphSuggesterController.getSuggestions(randEntity);
+			// 	}
+			// 	//TODO make function to request a specific field's data - it makes a huge difference, 4 lines per item instead of 13
+			// 	//TODO chart assembly should then be moved here or further up
+			// });
+			//=================================================================================
+		} else {
+			error && error({ error: 'Suggestion Parameters have not been set!' });
+		}
 	}
 
 	/**************** DASHBOARD ****************/
@@ -394,6 +430,22 @@ class RestController {
 
 		return list;
 	}
+}
+
+function extractTitleData(title) {
+	if (typeof title === 'string') {
+		let index = title.indexOf(':');
+
+		let entity = '';
+		let field = '';
+
+		if (index < 0) entity = title;
+		else {
+			entity = title.substr(0, index - 1);
+			field = title.substr(index + 1);
+		}
+		return { entity, field };
+	} else return title;
 }
 
 module.exports = RestController;
