@@ -18,7 +18,7 @@
  * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
  * 11/08/2020	 Marco Lombaard		Removed deprecated changeFittestGraph function
  * 14/08/2020	 Marco Lombaard		Converted getSuggestions to use entity name and not sample data
- * 14/08/2020	 Marco Lombaard		Moved chart construction here
+ * 14/08/2020	 Marco Lombaard		Moved chart construction here, added isInitialised function
  *
  * Test Cases: none
  *
@@ -89,6 +89,17 @@ class GraphSuggesterController {
 
 		console.log(entity + ' is not among ', this.acceptedEntities);
 		return null;
+	}
+
+	/**
+	 * * This function checks if the necessary parameters for suggestion generation has been set
+	 * @return {boolean} true if it is initialised, false otherwise
+	 */
+	static isInitialised() {
+		if (this.acceptedEntities.length > 0) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
