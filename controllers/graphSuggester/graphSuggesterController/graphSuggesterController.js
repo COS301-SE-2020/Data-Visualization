@@ -18,7 +18,7 @@
  * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
  * 11/08/2020	 Marco Lombaard		Removed deprecated changeFittestGraph function
  * 14/08/2020	 Marco Lombaard		Converted getSuggestions to use entity name and not sample data
- * 14/08/2020	 Marco Lombaard		Moved chart construction here, added isInitialised function
+ * 14/08/2020	 Marco Lombaard		Moved chart construction here, added isInitialised function, modified setMetadata
  *
  * Test Cases: none
  *
@@ -41,12 +41,17 @@ const graphSuggesterAI = require('../graphSuggesterAI/graphSuggesterAI').getInst
 class GraphSuggesterController {
 	/**
 	 * This function sets the metadata used in graph suggestion generation
+	 * @param source the source of the metadata - used to track entity origin
 	 * @param items	the entities('tables') and their related attributes/fields
 	 * @param associations the other entities associated with this entity(containing related data)
 	 * @param types the data types of each field, organised by entity
 	 */
-	static setMetadata({ items, associations, types }) {
-		graphSuggesterAI.setMetadata(items, associations, types);
+	static setMetadata(source, { items, associations, types }) {
+		if (!this.metadata) {
+			this.metadata = [];
+			graphSuggesterAI.setMetadata(items, associations, types);	//not yet initialised, initialise it
+		}
+		this.metadata[source] = { items, associations, types };
 	}
 
 	/**
@@ -96,7 +101,7 @@ class GraphSuggesterController {
 	 * @return {boolean} true if it is initialised, false otherwise
 	 */
 	static isInitialised() {
-		if (this.acceptedEntities.length > 0) {
+		if (this.metadata.length > 0) {
 			return true;
 		}
 		return false;
