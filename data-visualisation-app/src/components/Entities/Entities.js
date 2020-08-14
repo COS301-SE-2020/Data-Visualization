@@ -20,7 +20,7 @@
  */
 
 import './Entities.scss';
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState, useRef} from 'react';
 import { List, Avatar, Button, Skeleton, Form, Checkbox, Card, message } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
@@ -28,13 +28,14 @@ import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
 import Anime, { anime } from 'react-anime';
 
-const gridStyle = {
-  width: '25%',
-  textAlign: 'center',
-};
+
+
+var showAll = false;
 
 class Entities extends React.Component {
 
+
+  formRef = React.createRef();
 
   state = {
     initLoading: true,
@@ -51,7 +52,7 @@ class Entities extends React.Component {
     request.user.selectedEntities = [];
     
     request.user.entitiesToDisplay.map((item) => {
-      if(this.props.form.getFieldValue(item.entityName) === true){
+      if(this.formRef.current.getFieldValue(item.entityName) === true){
         request.user.selectedEntities.push(item);
         atLeastOne = true;
       }
@@ -70,19 +71,15 @@ class Entities extends React.Component {
 
   handleChange = (e) => {
 
-    this.allChecked = !this.allChecked;
-    this.setState({
-      allChecked: !this.allChecked
+    showAll = !showAll;
+    var tempItem = {};
+
+    request.user.entities.map((entityName) => {
+      tempItem[entityName] = showAll;
+      this.formRef.current.setFieldsValue(tempItem);
     });
-    
+
   }
-
-
-  onChange = (name) => {
-    // this.props.form.setFieldsValue({
-    //   name: false,
-    // });
-  };
 
 
   next = () => {
@@ -100,7 +97,6 @@ class Entities extends React.Component {
 
     console.log(request.user.dataSources);
     if(request.user.dataSources.length === 0){
-      console.log('here');
       this.setState({
         initLoading: false,
         data: [],
@@ -116,8 +112,6 @@ class Entities extends React.Component {
       });
     }
     
-      
-
   }
 
 
@@ -183,8 +177,9 @@ class Entities extends React.Component {
     
           <div>
              <Form
-                 name='entitiesForm'
-                 onFinish={this.onFinish}
+                ref={this.formRef}
+                name='entitiesForm'
+                onFinish={this.onFinish}
              >
       
                <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
@@ -201,21 +196,21 @@ class Entities extends React.Component {
                  renderItem={item => (
                    
                    <Fragment>
-                       <Card onChange = {this.onChange(item.entityName)} style= {{cursor: 'pointer'}}>
+                       <Card style= {{cursor: 'pointer'}} onClick={() => {                          
+                          var tempItem = {};
+                          tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
+                          this.formRef.current.setFieldsValue(tempItem);
+                        }} 
+                        >
+
                        <List.Item
                            key={1}
                            actions={
                              [ 
                                
-                               <Form.Item>
-                                {getFieldDecorator(item.entityName, {
-                                   valuePropName: 'checked',
-                                   initialValue: this.allChecked,
-                                 })(
-                                  <Checkbox />
-                                 )}
-                                 
-                               </Form.Item>
+                              <Form.Item name={item.entityName} valuePropName='checked'>
+                                <Checkbox/>
+                              </Form.Item>
      
                              ]
                            }>
@@ -232,11 +227,9 @@ class Entities extends React.Component {
                          </List.Item>
                        </Card> 
                    </Fragment>
-                   
                  )}
                />
-             
-                
+
                <Form.Item>
               
                  <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
@@ -253,8 +246,9 @@ class Entities extends React.Component {
       
           <div>  
              <Form
-                 name='entitiesForm'
-                 onFinish={this.onFinish}
+                ref={this.formRef}
+                name='entitiesForm'
+                onFinish={this.onFinish} 
              >
               
                <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
@@ -267,23 +261,21 @@ class Entities extends React.Component {
                  dataSource = {list}
                  
                  renderItem={item => (
-                   
                    <Fragment>
-                       <Card.Grid hoverable = {false} onChange = {this.onChange(item.entityName)} style= {{cursor: 'pointer'}}>
+                       <Card.Grid hoverable = {false} style= {{cursor: 'pointer'}} onClick={() => {                          
+                          var tempItem = {};
+                          tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
+                          this.formRef.current.setFieldsValue(tempItem);
+                        }} 
+                        >
+                        
                        <List.Item
                            key={1}
                            actions={
                              [ 
                                
-                               <Form.Item>
-                                {getFieldDecorator(item.entityName, {
-    
-                                   valuePropName: 'checked',
-                                   initialValue: this.allChecked,
-                                 })(
+                              <Form.Item name={item.entityName} valuePropName='checked'>
                                    <Checkbox/>
-                                 )}
-                                 
                                </Form.Item>
      
                              ]
@@ -301,12 +293,10 @@ class Entities extends React.Component {
                          </List.Item>
                        </Card.Grid> 
                    </Fragment>
-                   
                  )}
                />
                </Card>
-                
-
+              
                <Form.Item>
                   <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
                   Generate Suggestions

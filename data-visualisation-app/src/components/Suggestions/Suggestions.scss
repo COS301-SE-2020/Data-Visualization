@@ -54,6 +54,22 @@
   padding: 15px 20px 15px 20px;
 }
 
+.chartDiv{
+  cursor: pointer;
+  padding-top: -100px;
+  transition: 0.3s;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.checkboxItem{
+  position: absolute;
+  left: 20px;
+  float: right;
+}
+
+
 #filterButton{
   cursor:pointer;
   position: fixed;
@@ -88,3 +104,4 @@
   left: 45%;
   transform: translate(50%, 50%);
 }
+

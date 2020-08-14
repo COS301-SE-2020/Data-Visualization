@@ -28,10 +28,12 @@ import FilterDialog from '../FilterDialog';
 import './Suggestions.scss';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
+import { createForm } from 'rc-form';
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        marginTop: '12px',
         flexGrow: 1,
     },
     paper: {
@@ -51,7 +53,7 @@ function IGALoading() {
  *   @brief Component to display the chart suggestions.
  *   @details Displays a list of generated chart suggestions.
  */
-function Suggestions() {
+function Suggestions(props) {
 
     console.log(request.user.selectedEntities);
     console.log(request.user.selectedFields);
@@ -64,6 +66,28 @@ function Suggestions() {
     const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
     const newDashboardSelection = useRef(null);
     const newCurrentCharts = useRef(null);
+
+    const onFinish = values => {
+        console.log('Success:', values);
+    };
+    
+    const onFinishFailed = errorInfo => {
+        console.log('Failed:', errorInfo);
+    };
+
+    const [form] = Form.useForm();
+
+    // const handleSelect = (index) => {
+    //     console.log(index);
+    //     index = index.toString();
+    //     form.setFieldsValue({
+    //         index : true
+    //     });
+    //     document.getElementById('chartDiv_1').style.backgroundColor ='#FF6A7E';
+    //     console.log('handleSelect');
+    // };
+
+    
 
     useEffect(() => {
 
@@ -159,14 +183,6 @@ function Suggestions() {
     function Suggestion(props) {
         const [isAdded, setIsAdded] = useState(false);
 
-        const onFinish = values => {
-            console.log('Success:', values);
-          };
-        
-          const onFinishFailed = errorInfo => {
-            console.log('Failed:', errorInfo);
-          };
-
         function onAddChartToDashboard(chart, dashboard) {
 
             if (dashboardSelection[chart][dashboard]) {
@@ -250,19 +266,8 @@ function Suggestions() {
                             <StarOutlined />
                         </Grid>
                         <Grid item xs={2}>
-                            <Form
-                                id = 'my-form'
-                                name='basic'
-                                initialValues={{ remember: true }}
-                                onFinish={onFinish}
-                                onFinishFailed={onFinishFailed}
-                            >
-
-                                <Form.Item name={props.chartOption} valuePropName="checked">
-                                    <Checkbox></Checkbox>
-                                </Form.Item>
-
-                            </Form>
+                            
+                            
                         </Grid>
                     </Grid>
                 </div>
@@ -273,24 +278,54 @@ function Suggestions() {
 
     return (
         loadedFirst ?
-                <div className={classes.root}>           
+                <div className={classes.root}>    
+                    <Form
+                                    form={form}
+                                    id = 'my-form'
+                                    name='basic'
+                                    onFinish={onFinish}
+                                    onFinishFailed={onFinishFailed}
+                    >      
                     <Grid container spacing={3}>
 
-                        {currentCharts.map((achart, index) => {
-                            return <Grid item xs={12} md={6} lg={3} key={index}>
-                                <Suggestion id={index} chartData={achart}/>
-                            </Grid>;
-                        })}
+                        
+                            {currentCharts.map((achart, index) => {
+                                return <Grid item xs={12} md={6} lg={3} key={index}>
+                                            <div id = {'chartDiv_'+index} className = 'chartDiv' onClick={() => { 
+                                                
+                                                var item = {};
+                                                item[index] = !form.getFieldValue(index); 
+                                               
+                                                form.setFieldsValue(item);
+                                              
+                                                if(item[index]  === false){
+                                                    document.getElementById('chartDiv_'+index).style.backgroundColor =''; 
+                                                    document.getElementById('chartDiv_'+index).style.boxShadow = '';
+                                                }
+                                                else{
+                                               
+                                                    document.getElementById('chartDiv_'+index).style.boxShadow = '0px 0px 5px 0px rgba(0,0,0,0.75)';
+                                                }
+ 
+                                                }}>
+                                                <Form.Item name={index} valuePropName='checked'>
+                                                    <Checkbox className = 'checkboxItem' hidden = {true}></Checkbox>
+                                                </Form.Item>
+                                                <Suggestion id={index} chartData={achart}/>
+                                            </div>
+                                            </Grid>;
+                            })}
 
-                        {loading && <Grid item xs={12} md={6} lg={3}>
-                            <div id='suggestion__loading--container'>
-                                <div id='suggestion__loading--loader'>
-                                    {constants.LOADER}
+                            {loading && <Grid item xs={12} md={6} lg={3}>
+                                <div id='suggestion__loading--container'>
+                                    <div id='suggestion__loading--loader'>
+                                        {constants.LOADER}
+                                    </div>
                                 </div>
-                            </div>
-                        </Grid>}
-
+                            </Grid>}
+                        
                     </Grid>
+                    </Form>
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
                     <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large'>More like this</Button>
                     <main>
@@ -308,8 +343,9 @@ function Suggestions() {
     );
 }
 
-export default Suggestions;
 
+
+export default Suggestions;
 
 
 
