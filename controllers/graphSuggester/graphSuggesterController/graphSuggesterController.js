@@ -18,6 +18,7 @@
  * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
  * 11/08/2020	 Marco Lombaard		Removed deprecated changeFittestGraph function
  * 14/08/2020	 Marco Lombaard		Converted getSuggestions to use entity name and not sample data
+ * 14/08/2020	 Marco Lombaard		Moved chart construction here
  *
  * Test Cases: none
  *
@@ -60,16 +61,33 @@ class GraphSuggesterController {
 			console.log('no entity received for suggestion generation');
 			return null;
 		}
-		// eslint-disable-next-line eqeqeq
-		if (this.acceptedEntities == null) {
-			return graphSuggesterAI.getSuggestions(entity);
-		}
-		for (let i = 0; i < this.acceptedEntities; i++) {
-			if (this.acceptedEntities[i] === entity){
-				return graphSuggesterAI.getSuggestions(entity);
+		let accepted = false;
+
+		if (!this.acceptedEntities || this.acceptedEntities.length === 0) {
+			accepted = true;
+		} else {
+			for (let i = 0; i < this.acceptedEntities.length; i++) {
+				if (this.acceptedEntities[i].match(entity)) {
+					accepted = true;
+					break;
+				}
 			}
 		}
 
+		if (accepted) {
+			let suggestion = graphSuggesterAI.getSuggestions(entity);
+			// eslint-disable-next-line eqeqeq
+			if (suggestion == null) {
+				console.log('Received null suggestion');
+				return null;
+			}
+			let option = this.constructOption(suggestion[1], [ suggestion[0], 'value' ], suggestion[0],
+				'value', entity + ': ' + suggestion[0]);
+			//console.log(option);
+			return option;
+		}
+
+		console.log(entity + ' is not among ', this.acceptedEntities);
 		return null;
 	}
 
@@ -199,6 +217,77 @@ class GraphSuggesterController {
 		graphSuggesterAI.changeFitnessTarget(graphType, fieldType); //set these values as the fitness target for the IGA
 
 		return true;
+	}
+
+	/**
+	 * This function constructs and returns the graph parameters for eChart graph generation in frontend.
+	 * @param graph the type of graph to be used.
+	 * @param params the labels for data, used to select which entries go on the x and y-axis.
+	 * @param xEntries the entry/entries used on the x-axis.
+	 * @param yEntries the entry/entries used on the y-axis.
+	 * @param graphName the suggested name of the graph
+	 * @return option the data used to generate the graph.
+	 */
+	static constructOption(graph, params, xEntries, yEntries, graphName) {
+		let src = [];
+		src[0] = params;
+
+		//TODO add the data like this at some point
+		// for (let i = 0; i < data.length; i++) {
+		// 	src[i + 1] = data[i];
+		// }
+
+		//this constructs the options sent to the Apache eCharts API - this will have to be changed if
+		//a different API is used
+		let option = {
+			title: {
+				text: graphName,
+			},
+			dataset: {
+				source: src,
+			},
+			xAxis: { type: 'category' }, //TODO change this so the type(s) gets decided by frontend or by the AI
+			yAxis: {},
+			series: [
+				//construct the series of graphs, this could be one or more graphs
+				{
+					type: graph,
+					encode: {
+						x: xEntries, //TODO check if multiple values are allowed - might be useful
+						y: yEntries,
+					},
+				},
+			],
+		};
+		//the current options array works for line, bar, scatter, effectScatter charts
+		//it is also the default options array
+
+		if (graph.includes('pie')) {
+			//for pie charts
+			option.series = [
+				{
+					type: graph,
+					radius: '60%',
+					label: {
+						formatter: '{b}: {@' + yEntries + '} ({d}%)',
+					},
+					encode: {
+						itemName: xEntries,
+						value: yEntries,
+					},
+				},
+			];
+		} else if (graph.includes('parallel')) {
+			//for parallel charts - TODO to be added
+		} else if (graph.includes('candlestick')) {
+			//for candlestick charts - TODO to be added
+		} else if (graph.includes('map')) {
+			//for map charts - TODO to be added
+		} else if (graph.includes('funnel')) {
+			//for funnel charts - TODO to be added
+		}
+
+		return option;
 	}
 }
 

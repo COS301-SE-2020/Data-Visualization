@@ -21,6 +21,7 @@
  * 11/08/2020	 Marco Lombaard		Adapted getSuggestions to new data format
  * 14/08/2020	 Marco Lombaard		Suggestions now generate from metadata and do not require sample data
  * 14/08/2020	 Marco Lombaard		Renamed limitFields to setFields, notInExclusions to accepted
+ * 14/08/2020	 Marco Lombaard		Moved constructOption to graphSuggesterController.js
  *
  * Test Cases: none
  *
@@ -436,87 +437,16 @@ let graphSuggesterMaker = (function () {
 		 * @return {boolean} true if the field is in accepted fields, false otherwise
 		 */
 		accepted(name) {
-			console.log(this.acceptedFields);
-			console.log(name);
+			//console.log(this.acceptedFields);
+			//console.log(name);
 			if (this.acceptedFields.length === 0) {
 				return true;
 			}
 			for (let i = 0; i < this.acceptedFields.length; i++) {
-				if (this.acceptedFields[i] === name)
+				if (this.acceptedFields[i].match(name))
 					return true;
 			}
 			return false;
-		}
-
-		/**
-		 * This function constructs and returns the graph parameters for eChart graph generation in frontend.
-		 * @param data an array containing data arrays, which contain data for graphs.
-		 * @param graph the type of graph to be used.
-		 * @param params the labels for data, used to select which entries go on the x and y-axis.
-		 * @param xEntries the entry/entries used on the x-axis.
-		 * @param yEntries the entry/entries used on the y-axis.
-		 * @param graphName the suggested name of the graph
-		 * @return option the data used to generate the graph.
-		 */
-		constructOption(data, graph, params, xEntries, yEntries, graphName) {
-			let src = [];
-			src[0] = params;
-
-			for (let i = 0; i < data.length; i++) {
-				src[i + 1] = data[i];
-			}
-
-			//this constructs the options sent to the Apache eCharts API - this will have to be changed if
-			//a different API is used
-			let option = {
-				title: {
-					text: graphName,
-				},
-				dataset: {
-					source: src,
-				},
-				xAxis: { type: 'category' }, //TODO change this so the type(s) gets decided by frontend or by the AI
-				yAxis: {},
-				series: [
-					//construct the series of graphs, this could be one or more graphs
-					{
-						type: graph,
-						encode: {
-							x: xEntries, //TODO check if multiple values are allowed - might be useful
-							y: yEntries,
-						},
-					},
-				],
-			};
-			//the current options array works for line, bar, scatter, effectScatter charts
-			//it is also the default options array
-
-			if (graph.includes('pie')) {
-				//for pie charts
-				option.series = [
-					{
-						type: graph,
-						radius: '60%',
-						label: {
-							formatter: '{b}: {@' + yEntries + '} ({d}%)',
-						},
-						encode: {
-							itemName: xEntries,
-							value: yEntries,
-						},
-					},
-				];
-			} else if (graph.includes('parallel')) {
-				//for parallel charts - TODO to be added
-			} else if (graph.includes('candlestick')) {
-				//for candlestick charts - TODO to be added
-			} else if (graph.includes('map')) {
-				//for map charts - TODO to be added
-			} else if (graph.includes('funnel')) {
-				//for funnel charts - TODO to be added
-			}
-
-			return option;
 		}
 	}
 
