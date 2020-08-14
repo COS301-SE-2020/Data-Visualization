@@ -20,6 +20,7 @@
  * 07/08/2020	 Marco Lombaard		Updated setMetadata function to accept graph types as a parameter
  * 11/08/2020	 Marco Lombaard		Adapted getSuggestions to new data format
  * 14/08/2020	 Marco Lombaard		Suggestions now generate from metadata and do not require sample data
+ * 14/08/2020	 Marco Lombaard		Renamed limitFields to setFields, notInExclusions to accepted
  *
  * Test Cases: none
  *
@@ -55,7 +56,8 @@ let graphSuggesterMaker = (function () {
 			this.nonTerminals = []; //associations with other tables - will require more requests
 			this.fieldTypes = []; //types of each field - used in chromosome representation
 
-			this.fieldExclusions = []; //fields to exclude during suggestion generation
+			this.acceptedFields = []; //fields to use during suggestion generation
+
 			this.fittestGraphType = null; //the target graph type(will have the lowest fitness value, i.e. best fitness)
 			this.fittestFieldType = null; //the target field type(will have the lowest fitness value, i.e. best fitness)
 			this.mutationRate = 0.3; //the rate at which the population should mutate
@@ -361,7 +363,7 @@ let graphSuggesterMaker = (function () {
 						name.includes('Picture') ||
 						name.includes('Description') ||
 						name.includes('Date')	//TODO periodic data - pretty useful
-					) && this.notInExclusions(name)	//check that field is not excluded from suggestions
+					) && this.accepted(name)	//check that field is in accepted fields
 				) {
 					//trim out the "useless" keys
 					types[count] = this.fieldTypes[entity][key];
@@ -424,25 +426,17 @@ let graphSuggesterMaker = (function () {
 		 * This function stores the fields that are excluded from suggestion generation
 		 * @param fields the fields that need to be excluded, in array format
 		 */
-		excludeFields(fields) {
-			this.fieldExclusions = fields;
+		setFields(fields) {
+			this.acceptedFields = fields;
 		}
 
 		/**
-		 * This function checks if the parameter is listed in excluded fields, returning false if it is, true if it isn't
+		 * This function checks if the parameter is listed in accepted fields, returning true if it is, false otherwise
 		 * @param name the name of the field that needs to be checked
-		 * @return {boolean} true if the field is not in exclusions, false if it is listed as an exclusion
+		 * @return {boolean} true if the field is in accepted fields, false otherwise
 		 */
-		notInExclusions(name) {
-			for (let i = 0; i < this.fieldExclusions.length; i++) {
-				//check all exclusions
-				if (name === this.fieldExclusions[i]) {
-					//if it is in exclusions
-					return false; //exclude it from options
-				}
-			}
-
-			return true;
+		accepted(name) {
+			return name in this.acceptedFields;
 		}
 
 		/**

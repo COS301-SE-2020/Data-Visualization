@@ -56,13 +56,15 @@ class GraphSuggesterController {
 	 */
 	static getSuggestions(entity) {
 		// eslint-disable-next-line eqeqeq
-		console.log(entity);
-		// eslint-disable-next-line eqeqeq
 		if (entity == null) {
 			console.log('no entity received for suggestion generation');
 			return null;
 		}
-		return graphSuggesterAI.getSuggestions(entity);
+		if (entity in this.acceptedEntities) {
+			return graphSuggesterAI.getSuggestions(entity);
+		}
+
+		return null;
 	}
 
 	/**
@@ -70,13 +72,13 @@ class GraphSuggesterController {
 	 * @param fields the fields to be excluded in graph suggestion generation
 	 */
 	static limitFields(fields) {
-		graphSuggesterAI.excludeFields(fields);
+		graphSuggesterAI.setFields(fields);
 	}
 
 	/**
 	 */
 	static limitEntities(entities) {
-		//TODO: graphSuggesterAI.excludeEntities(entities);
+		this.acceptedEntities = entities;
 	}
 
 	/**
