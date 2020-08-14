@@ -15,6 +15,7 @@
  * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
  * 11/08/2020   Elna Pistorius                       Updated the updateGraphTypes function
  * 11/08/2020	Marco Lombaard						 Added the stringsToGraphData function
+ * 14/08/2020	Marco Lombaard						 Modified getSuggestion to only need metadata for suggestion generation
  *
  * Test Cases: none
  *
@@ -166,7 +167,7 @@ class RestController {
 	 * This function set suggestion parameters that are used when requesting suggestions
 	 * @param graph the graph that is to be set as the fittest graph
 	 * @param entities the list of entities that should be used for suggestion generation
-	 * @param fields the list of fields thatshould be used for suggestion generation
+	 * @param fields the list of fields that should be used for suggestion generation
 	 */
 	static setSuggestionParams(graph, entities, fields, done, error) {
 		GraphSuggesterController.setFittestEChart(graph);
@@ -208,24 +209,36 @@ class RestController {
 				const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
 				let chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
 
-				while (chosen !== null && chosen.length === 0) {
+				// eslint-disable-next-line eqeqeq
+				while (chosen != null && chosen.length === 0) {
 					//check if the item with the selected key has data
 					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
+					chosen = Meta.items[itemsKeys[randKey]];
 				}
 
-				const randEntity = Meta.sets[randKey]; //select this entity for data source querying
+				let randEntity = Meta.sets[randKey]; //select this entity for data source querying
 
 				console.log('Entity: ', randEntity);
 
-				DataSource.getEntityData(src, randEntity)
-					.then((Odata) => {
-						const options = GraphSuggesterController.getSuggestions(Odata);
-						if (options === null) RestController.getSuggestions(src, done, error);
-						else done(options);
-					})
-					.catch((err) => error && error(err));
-			})
-			.catch((err) => error && error(err));
+				let suggestion = GraphSuggesterController.getSuggestions(randEntity);
+
+				// eslint-disable-next-line eqeqeq
+				while (suggestion == null) {
+					randKey = Math.floor(Math.random() * Meta.sets.length);
+					chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
+
+					// eslint-disable-next-line eqeqeq
+					while (chosen != null && chosen.length === 0) {
+						//check if the item with the selected key has data
+						randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
+						chosen = Meta.items[itemsKeys[randKey]];
+					}
+					randEntity = Meta.sets[randKey]; //select this entity for data source querying
+					suggestion = GraphSuggesterController.getSuggestions(randEntity);
+				}
+				//TODO make function to request a specific field's data - it makes a huge difference, 4 lines per item instead of 13
+				//TODO chart assembly should then be moved here or further up
+			});
 	}
 
 	/**************** DASHBOARD ****************/
@@ -370,6 +383,7 @@ class RestController {
 		//values will be how many times each key has occurred
 
 		for (let i = 0; i < stringDataArray.length; i++) {
+			// eslint-disable-next-line eqeqeq
 			if (list[stringDataArray[i]] != null) {
 				//eslint-disable-line
 				list[stringDataArray[i]]++; //if this category was already created, increment how often it has occurred

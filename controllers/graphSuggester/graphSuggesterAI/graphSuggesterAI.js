@@ -144,7 +144,7 @@ let graphSuggesterMaker = (function () {
 				//console.log(i+': ', chromosomes[i]);
 			}
 			//console.log('Options: ', options);
-			console.log('Types: ', types);
+			//console.log('Types: ', types);
 
 			let mutate = 0; //value must be below mutation rate for mutation to take place
 			let fitness = []; //all the fitness values - use to select parents
