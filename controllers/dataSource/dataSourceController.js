@@ -93,13 +93,12 @@ class DataSource {
 	 * @param entity the entity that we want data from
 	 * @returns a promise of the entities data
 	 */
-	static getEntityData(src, entity) {
+	static getEntityData(src, entity, field) {
 		return new Promise((resolve, reject) => {
-			if (Cache.validateEntityData(src, entity)) {
-				resolve(DataSource.entityData(src, entity));
-			} else {
+			if (Cache.validateEntityData(src, entity)) resolve(DataSource.entityData(src, entity, field));
+			else {
 				DataSource.updateEntityData(src, entity)
-					.then(() => resolve(DataSource.entityData(src, entity)))
+					.then(() => resolve(DataSource.entityData(src, entity, field)))
 					.catch((err) => reject(err));
 			}
 		}); //Returns a promise
@@ -113,21 +112,19 @@ class DataSource {
 			entityList: data,
 		};
 	}
-	static entityData(src, entity) {
+	static entityData(src, entity, field) {
+		const entityData = Cache.getEntityData(src, entity, field);
+
 		return {
 			source: src,
 			entity: entity,
-			data: Cache.getEntityData(src, entity),
+			data: entityData,
 		};
 	}
 
 	static parseMetadata(xmlData) {
 		return Odata.parseODataMetadata(xmlData);
 	}
-}
-
-function copy(obj) {
-	return JSON.parse(JSON.stringify(obj));
 }
 
 module.exports = DataSource;

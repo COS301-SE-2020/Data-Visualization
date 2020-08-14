@@ -49,9 +49,16 @@ class GraphSuggesterController {
 	static setMetadata(source, { items, associations, types }) {
 		if (!this.metadata) {
 			this.metadata = [];
-			graphSuggesterAI.setMetadata(items, associations, types);	//not yet initialised, initialise it
+			graphSuggesterAI.setMetadata(items, associations, types); //not yet initialised, initialise it
 		}
 		this.metadata[source] = { items, associations, types };
+	}
+
+	/**
+	 * This function clears the metadata and resets it to an empty array
+	 */
+	static clearMetadata() {
+		this.metadata = [];
 	}
 
 	/**
@@ -60,7 +67,10 @@ class GraphSuggesterController {
 	 * @returns the suggestions that were generated, in JSON format.
 	 * @param entity The entity to select suggestions from
 	 */
-	static getSuggestions(entity) {
+	static getSuggestions(entity, source) {
+		const { items, associations, types } = this.metadata[source];
+		graphSuggesterAI.setMetadata(items, associations, types);
+
 		// eslint-disable-next-line eqeqeq
 		if (entity == null) {
 			console.log('no entity received for suggestion generation');
@@ -86,8 +96,7 @@ class GraphSuggesterController {
 				console.log('Received null suggestion');
 				return null;
 			}
-			let option = this.constructOption(suggestion[1], [ suggestion[0], 'value' ], suggestion[0],
-				'value', entity + ': ' + suggestion[0]);
+			let option = this.constructOption(suggestion[1], [suggestion[0], 'value'], suggestion[0], 'value', entity + ': ' + suggestion[0]);
 			//console.log(option);
 			return option;
 		}
@@ -118,7 +127,14 @@ class GraphSuggesterController {
 	/**
 	 */
 	static limitEntities(entities) {
-		this.acceptedEntities = entities;
+		GraphSuggesterController.acceptedEntities = entities;
+	}
+
+	/**
+	 * This function returns an array of fields that should not be selected in graph generation.
+	 */
+	static getAcceptedFields() {
+		return graphSuggesterAI.acceptedFields || [];
 	}
 
 	/**
@@ -189,7 +205,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log('Check that \'encode\' is not empty');
+			console.log("Check that 'encode' is not empty");
 			return false;
 		}
 
@@ -197,7 +213,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log('check that \'encode\' has keys');
+			console.log("check that 'encode' has keys");
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries
@@ -305,6 +321,11 @@ class GraphSuggesterController {
 
 		return option;
 	}
+
+	static selectEntity() {
+		return GraphSuggesterController.acceptedEntities[Math.random() * GraphSuggesterController.acceptedEntities.length];
+	}
 }
+GraphSuggesterController.acceptedEntities = [];
 
 module.exports = GraphSuggesterController;
