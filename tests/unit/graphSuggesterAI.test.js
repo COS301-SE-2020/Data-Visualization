@@ -22,56 +22,7 @@
  */
 
 const graphSuggesterAI = require('../../controllers/graphSuggester/graphSuggesterAI/graphSuggesterAI').getInstance();
-const jsonData = {
 
-	'data': [
-
-		{
-
-			'__metadata': {
-
-				'uri': 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(1)', 'type': 'NorthwindModel.Product'
-
-			},
-			'ProductID': 1,
-			'ProductName': 'Chai',
-			'SupplierID': 1,
-			'CategoryID': 1,
-			'QuantityPerUnit': '10 boxes x 20 bags',
-			'UnitPrice': '18.0000',
-			'UnitsInStock': 39,
-			'UnitsOnOrder': 0,
-			'ReorderLevel': 10,
-			'Discontinued': false,
-			'Category': {
-
-				'__deferred': {
-
-					'uri': 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(1)/Category'
-
-				}
-
-			}, 'Order_Details': {
-
-				'__deferred': {
-
-					'uri': 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(1)/Order_Details'
-
-				}
-
-			}, 'Supplier': {
-
-				'__deferred': {
-
-					'uri': 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(1)/Supplier'
-
-				}
-
-			}
-
-		}
-	]
-};
 const metadata = {
 	'Product': [
 		'ProductID',
@@ -101,7 +52,7 @@ const associations = {
 
 const types = {
 	'Product': [ 'int', 'string', 'int', 'int', 'int',
-		'int', 'int', 'int', 'int', 'bool' ],
+		'float', 'int', 'int', 'int', 'bool' ],
 };
 
 describe('Testing functions within the graphSuggesterAI class', function () {
@@ -119,17 +70,12 @@ describe('Testing functions within the graphSuggesterAI class', function () {
 	});
 
 	test('Generates a null suggestion when no metadata exists yet', () => {
-		expect(graphSuggesterAI.getSuggestions(jsonData)).toBeNull();
+		expect(graphSuggesterAI.getSuggestions('Product')).toBeNull();
 	});
 
 	test('Successfully sets metadata', () => {
 		graphSuggesterAI.setMetadata(items, associations, types);
 		expect(graphSuggesterAI.terminals).toMatchObject(metadata);
-	});
-
-	test('Generates a suggestion when receiving valid data and metadata exists', () => {
-		graphSuggesterAI.setMetadata(items, associations, types);
-		expect(graphSuggesterAI.getSuggestions(jsonData)).not.toBeNull();
 	});
 
 	test('Genetic algorithm returns null on null data', () => {
@@ -139,7 +85,14 @@ describe('Testing functions within the graphSuggesterAI class', function () {
 
 	test('Genetic algorithm returns suggestion', () => {
 		graphSuggesterAI.setMetadata(items, associations, types);
-		console.log(graphSuggesterAI.geneticAlgorithm(option, 'Product'));
-		expect(graphSuggesterAI.geneticAlgorithm(option, 'Product')).toHaveLength(3);
+		let suggestion = graphSuggesterAI.geneticAlgorithm(option, types);
+		expect(suggestion).toHaveLength(3);
+		expect(suggestion[2]).toBe(types[suggestion[0]]);	//type must match the type of the selected field
+	});
+
+	test('Generates a suggestion when receiving valid data and metadata exists', () => {
+		graphSuggesterAI.setMetadata(items, associations, types);
+		let suggestion = graphSuggesterAI.getSuggestions('Product');
+		expect(suggestion).toMatchObject([ expect.any(String), expect.any(String), expect.any(String) ]);
 	});
 });

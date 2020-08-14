@@ -179,7 +179,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 
 	test('Returns a suggestion on call to getSuggestion', () => {
 		graphSuggesterController.setMetadata({ items, associations, types });
-		expect(graphSuggesterController.getSuggestions(jsonData)).not.toBeNull();
+		expect(graphSuggesterController.getSuggestions('Product')).not.toBeNull();
 	});
 
 	test('Returns true when setting fitness chart', () => {
