@@ -1,0 +1,16 @@
+#about__container {
+  position: absolute;
+  left: 50%;
+  top: 150px;
+  margin-left: -400px;
+  width: 800px;
+}
+
+#about__p {
+  text-align: center;
+  padding: 15px;
+  background-color: rgba(248, 249, 251, 0.9);
+  -webkit-box-shadow: 0px 0px 16px 25px rgba(248,249,251,0.9);
+  -moz-box-shadow: 0px 0px 16px 25px rgba(248,249,251,0.9);
+  box-shadow: 0px 0px 16px 25px rgba(248,249,251,0.9);
+}

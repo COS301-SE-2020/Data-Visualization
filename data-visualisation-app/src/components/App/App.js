@@ -23,7 +23,7 @@
 /**
  *   imports
 */
-import React, { Fragment, useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, {useRef, useState, useLayoutEffect, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -46,36 +46,26 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Button } from 'antd';
 import {Home as HomeIcon} from '@styled-icons/feather';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import LockIcon from '@material-ui/icons/Lock';
-import InputIcon from '@material-ui/icons/Input';
 import InfoIcon from '@material-ui/icons/Info';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import AddIcon from '@material-ui/icons/Add';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import { Database } from '@styled-icons/feather';
-import Suggestions from '../Suggestions';
-
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './App.scss';
+import { WindowsOutlined } from '@ant-design/icons';
+import EditChart from '../../components/EditChart';
 
 /**
  *   globals import
 */
 import request from '../../globals/requests';
+import * as constant from '../../globals/constants';
 
 /**
  *   pages import
 */
-import Dashboard from '../../pages/Dashboard';
+import Dashboards from '../../pages/Dashboards/Dashboards';
 import About from '../../pages/About';
 import Trash from '../../pages/Trash';
 import LoginDialog from '../../pages/LoginDialog/LoginDialog';
-import LoginPopup from '../LoginPopup';
 import Home from '../../pages/Home';
 import Explore from '../../pages/Explore';
 import { MuiThemeProvider } from '@material-ui/core';
@@ -87,16 +77,18 @@ import GlobalStateProvider  from '../../globals/Store';
 import {useGlobalState} from '../../globals/Store';
 
 
-
+let w = window.innerWidth;
+let h = window.innerHeight;
 const drawerWidth = 240;
 
 const globalMaterialUITheme = createMuiTheme({
 	typography: {
 		'fontFamily': 'Segoe UI'
-	}, palette: {
+	},
+	palette: {
 
 		primary: {
-			main: '#ff4400',
+			main: '#242424',
 			mainGradient: 'linear-gradient(to right, tomato, cyan)',
 		}
 	}
@@ -169,6 +161,11 @@ const useStyles = makeStyles((theme) => ({
 		color: 'white',
 		fontSize: '1.5em',
 	},
+	typographyLocationHeading: {
+		color: 'white',
+		fontSize: '1.1em',
+		paddingRight: '7px'
+	},
 	drawerList: {
 		color: '#969698',
 	},
@@ -180,8 +177,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 
 }));
-
-
 
 /**
   * @param props
@@ -197,6 +192,7 @@ function App(props) {
 
 	const targetRef = useRef();
 	const [dimensions, setDimensions] = useState({ width:0, height: 0 });
+    const [loginButton, setLoginButton] = useState(false);
 
 	useLayoutEffect(() => {
 		if (targetRef.current) {
@@ -206,6 +202,10 @@ function App(props) {
 			});
 			setRenderHomeBackground(true);
 		}
+	}, []);
+
+	useEffect(() => {
+		setLoginButton(request.user.rememberLogin(setLoginButton));
 	}, []);
 
 	const handleDrawerToggle = () => {
@@ -226,23 +226,31 @@ function App(props) {
 	const [dashboardIndex, setDashboardIndex] = useState('');
 
 	const handlePageType = (t) => {
+		if (pageType !== 'dashboards' && t === 'dashboards') {
+			setDashboardIndex('');
+		}
 		setPageType(t);
 		return (
 			mobileOpen === true ? handleDrawerToggle() : null
 		);
 	};
-	
 
 	/**
   	  * back function 
     */
 	const handleBack = () => {
+		if(pageType === 'explore' && exploreStage === 'dataConnection'){
+			setPageType('home');
+		}
 		if(pageType === 'explore' && exploreStage === 'entities'){
 			setExploreStage('dataConnection');
 		}
 		if(pageType === 'explore' && exploreStage === 'suggestions'){
 			setExploreStage('entities');
 		}
+		if(pageType === 'dashboards' && dashboardStage === 'dashboardHome'){
+			setPageType('home');
+		}	
 		if(pageType === 'dashboards' && dashboardStage === 'selected'){
 			setDashboardStage('dashboardHome');
 			setDashboardIndex('');
@@ -254,14 +262,14 @@ function App(props) {
   	  * back button variable
     */
 	var backButton;
-	if(pageType === 'dashboards' && dashboardStage === 'selected'){
+	if(pageType === 'dashboards'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
-	else if(pageType === 'explore' && (exploreStage === 'entities' || exploreStage === 'suggestions')){
+	else if(pageType === 'explore'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else{
-		backButton = <Button id = 'backButton'  type="primary" disabled = 'true' icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+		backButton = <Button id = 'backButton'  type="primary" disabled = {true} icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 
 
@@ -269,19 +277,24 @@ function App(props) {
   	  * hanlde page title
     */
 	var pageTitle = 'Home';
+	var locationTitle = '';
+
 	if(pageType === 'home'){
 		pageTitle = 'Home';
 	}
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';
 		if(exploreStage === 'dataConnection'){
-			pageTitle = 'Connections';
+			pageTitle = 'Data Sources';
+			locationTitle = 'Explore /';
 		}
 		if(exploreStage === 'entities'){
 			pageTitle = 'Entities';
+			locationTitle = 'Explore / Data Source /';
 		}
 		if(exploreStage === 'suggestions'){
 			pageTitle = 'Suggestions';
+			locationTitle = 'Explore / Data Source / Entities /';
 		}
 	}
 	if(pageType === 'dashboards'){
@@ -308,9 +321,6 @@ function App(props) {
     */
 	var page;
 	if(pageType === 'home'){
-		//setDashboardStage('dashboadHome');
-		//setDashboardIndex('');
-		//setIsAddingDashboard(false);
 		page = <Home pType={pageType} handlePageType={handlePageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />;
 	}
 	if(pageType === 'explore'){
@@ -321,10 +331,10 @@ function App(props) {
 		page = <Trash />;
 	}
 	if(pageType === 'about'){
-		page = <About />;
+		page = <About renderBackground={renderHomeBackground} width={dimensions.width} height={dimensions.height-10}/>;
 	}
 	if(pageType === 'dashboards'){
-		page = <Dashboard 
+		page = <Dashboards
 			dashboardStage = {dashboardStage} 
 			setDashboardStage = {setDashboardStage} 
 			dashboardName = {dashboardName}
@@ -337,11 +347,6 @@ function App(props) {
 		/>;	
 	}
 
-
-	// request.user.apikey = 'bAjZ4SctoWGDYQsNYCNq';
-	// request.user.isLoggedIn = true;
-
-	
 	/**
   	  * drawer (Material UI)
     */
@@ -368,9 +373,9 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<DashboardIcon style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
+						<WindowsOutlined style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
 					</ListItemIcon>
-					<ListItemText primary="My Dashboards" />
+					<ListItemText primary="Dashboards" />
 				</MenuItem>
 
 
@@ -431,12 +436,16 @@ function App(props) {
 	const container = window !== undefined ? () => window().document.body : undefined;
 
 	return (
+	
+
+		
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 
 			<div className={classes.root}>
 				<CssBaseline />
-				<AppBar position="fixed" className={classes.appBar} style={{ background: '#242424' }}>
+				
+				<AppBar  position="fixed" className={classes.appBar} style={{ background: '' }}>
 					<Toolbar>
 						<IconButton
 							color="inherit"
@@ -444,7 +453,7 @@ function App(props) {
 							edge="start"
 							onClick={handleDrawerToggle}
 							className={classes.menuButton}
-							style={{ color: 'red' }}
+							style={{ color: 'white' }}
 
 						>
 							<MenuIcon />
@@ -454,15 +463,18 @@ function App(props) {
 							backButton
 						}
 						
+						<Typography variant="h2" className={classes.typographyLocationHeading} noWrap children={
+							locationTitle
+						} >
+						</Typography>
 
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
-
 							pageTitle
-							
 						} >
 
 						</Typography>
-						<LoginDialog 
+						<LoginDialog
+                            isLoggedIn={loginButton}
 							handlePageType ={handlePageType}
 							setDashboardIndex = {setDashboardIndex}
 							setDashboardStage = {setDashboardStage}
@@ -470,7 +482,9 @@ function App(props) {
 							setExploreStage = {setExploreStage}
 						/>
 					</Toolbar>
-				</AppBar>
+				</AppBar> : 
+				
+				
 
 				<nav className={classes.drawer} aria-label="mailbox folders">
 					{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -500,20 +514,40 @@ function App(props) {
 							open
 						>
 							{drawer}
+                            <div style={{height: '100vh', position: 'relative'}}>
+								<img src={constant.APPLICATION_LOGO_GREY} style={{height: '120px', position: 'absolute', bottom: '80px', left: '24%'}} alt="logo" className={classes.logo} />
+								<div style={{position: 'absolute', bottom: '20px', textAlign: 'center', color: '#535355'}}>
+									Copyright © Doofenshmirts Evil Incorporated
+								</div>
+                            </div>
 						</Drawer>
 					</Hidden>
 				</nav>
 
-				<main className={classes.content} style={(pageType === 'home' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
+				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {padding: '0'})} ref={targetRef}>
 
 					<div className={classes.toolbar} />
-					{
-						
-						page
-												
-					}
 
+					{page}
+					{/*<EditChart options={{*/}
+					{/*	// title: {*/}
+					{/*	// 	text: 'Confidence Band',*/}
+					{/*	// 	subtext: 'Example in MetricsGraphics.js',*/}
+					{/*	// 	left: 'center'*/}
+					{/*	// },*/}
 
+					{/*	xAxis: {*/}
+					{/*		type: 'category',*/}
+					{/*		data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']*/}
+					{/*	},*/}
+					{/*	yAxis: {*/}
+					{/*		type: 'value'*/}
+					{/*	},*/}
+					{/*	series: [{*/}
+					{/*		data: [820, 932, 901, 934, 1290, 1330, 1320],*/}
+					{/*		type: 'line'*/}
+					{/*	}]*/}
+					{/*}} />*/}
 				</main>
 
 			</div>

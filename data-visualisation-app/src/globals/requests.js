@@ -22,13 +22,11 @@
 
 import axios from 'axios';
 import * as constants from './constants.js';
-
-import { useGlobalState } from './Store';
+import LoginDialog from '../pages/LoginDialog';
 
 /**
  *   Static Variables
  */
-///// deprecated functions: /////
 function successfulResponse(res) {
 	return res.status >= 200 && res.status < 300;
 }
@@ -67,8 +65,11 @@ const API = {
 	},
 	dataSources: {
 		list: (apikey) => axios.post(constants.URL.DATASOURCE.LIST, { apikey }),
-		add: (apikey, dataSourceID, dataSourceUrl) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceID, dataSourceUrl }),
+		add: (apikey, dataSourceUrl) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceUrl }),
 		delete: (dataSourceID, apikey) => axios.post(constants.URL.DATASOURCE.REMOVE, { dataSourceID, apikey }),
+	},
+	entities: {
+		list: (sourceurl) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl }),
 	},
 	suggestion: {
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl }),
@@ -213,7 +214,7 @@ const request = {
 					.list(request.user.apikey, dashboardID)
 					.then((res) => {
 						if (callback !== undefined) {
-							request.cache.graph.list.data = res.data;
+							request.cache.graph.list = res.data;
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						}
 					})
@@ -236,10 +237,10 @@ const request = {
 					.delete(request.user.apikey, dashboardID, graphID)
 					.then((res) => {
 						if (callback !== undefined) {
-							if (request.cache.graph.list.data !== null) {
-								for (let g = 0; g < request.cache.graph.list.data.length; g++) {
-									if (request.cache.graph.list.data[g].id === graphID) {
-										request.cache.graph.list.data.splice(g, 1);
+							if (request.cache.graph.list !== null) {
+								for (let g = 0; g < request.cache.graph.list.length; g++) {
+									if (request.cache.graph.list[g].id === graphID) {
+										request.cache.graph.list.splice(g, 1);
 									}
 								}
 							}
@@ -270,11 +271,11 @@ const request = {
 						if (callback !== undefined) {
 							console.debug('Response from graph.update:', res);
 
-							if (request.cache.graph.list.data !== null) {
-								for (let g = 0; g < request.cache.graph.list.data.length; g++) {
-									if (request.cache.graph.list.data[g].id === graphID) {
+							if (request.cache.graph.list !== null) {
+								for (let g = 0; g < request.cache.graph.list.length; g++) {
+									if (request.cache.graph.list[g].id === graphID) {
 										// todo: assuming only chart title has changed!
-										request.cache.graph.list.data[g].title = fieldData[0];
+										request.cache.graph.list[g].title = fieldData[0];
 									}
 								}
 							}
@@ -288,6 +289,16 @@ const request = {
 		},
 	},
 	user: {
+		/** Log user back in if they specified to remember them.
+		 */
+		rememberLogin: (isLoggedInMutator) => {
+			request.user.setIsLoggedIn = isLoggedInMutator;
+			if (localStorage.getItem('apikey') !== 'null') {
+				request.user.apikey = localStorage.getItem('apikey');
+				request.user.isLoggedIn = true;
+			}
+			return request.user.isLoggedIn;
+		},
 		/**
 		 *  Requests an existing user to be logged in.
 		 *
@@ -295,16 +306,22 @@ const request = {
 		 *  @param password Password of the existing user account.
 		 *  @param callback Function called at end of execution.
 		 */
-		login: (email, password, callback) => {
+		login: (email, password, remember, callback) => {
 			API.user
 				.login(email, password)
 				.then((res) => {
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
-							//localStorage.setItem('apikey', res.data.apikey);
-							//localStorage.setItem('loggedInFlag', true);
-							request.user.apikey = res.data.apikey;
-							request.user.isLoggedIn = true;
+							if (remember)
+								request.user.firstName = res.data.firstname;
+								request.user.lastName = res.data.lastname;
+								console.log(request.user.firstName);
+								
+								localStorage.setItem('apikey', res.data.apikey);
+								request.user.apikey = res.data.apikey;
+								request.user.isLoggedIn = true;
+								request.user.setIsLoggedIn(true);
+							
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						} else {
 							callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -358,7 +375,9 @@ const request = {
 				.then((res) => {
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
+							localStorage.setItem('apikey', null);
 							request.user.isLoggedIn = false;
+							request.user.setIsLoggedIn(false);
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						} else {
 							callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -371,8 +390,11 @@ const request = {
 					}
 				});
 		},
+		firstName: '',
+		lastName: '',
 		apikey: localStorage.getItem('apikey'),
 		isLoggedIn: false,
+		setIsLoggedIn: null,
 		dataSources: [
 			{
 				id: 6,
@@ -380,6 +402,12 @@ const request = {
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 			},
 		],
+		addedSourceID: '',
+		dataSourceInfo: [],
+		entities : [],
+		entitiesToDisplay: [],
+		entitiesToUse : [],
+		fields: [],
 	},
 
 	dataSources: {
@@ -418,16 +446,17 @@ const request = {
 		 *  @param dataSourceUrl Fully qualified url of the new data source.
 		 *  @param callback Function called at end of execution.
 		 */
-		add: (apikey, dataSourceID, dataSourceUrl, callback) => {
+		add: (apikey, dataSourceUrl, callback) => {
 			if (request.user.isLoggedIn) {
 				API.dataSources
-					.add(apikey, dataSourceID, dataSourceUrl)
+					.add(apikey, dataSourceUrl)
 					.then((res) => {
 						console.debug(res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 								console.debug(res);
-
+								
+								request.user.addedSourceID = res.data.id;
 								//add to request.user.dataSources array
 								//request.user.dataSources = res.data;
 
@@ -474,6 +503,33 @@ const request = {
 		},
 	},
 
+	entities:{
+		/**
+		 *  Request a list of entites.
+		 *
+		 *  @param callback Function called at end of execution.
+		 */
+		list: (sourceurl, callback) => {
+			API.entities
+				.list(sourceurl)
+					.then((res) => {
+						console.debug(res);
+						if (callback !== undefined) {
+							if (successfulResponse(res)) {
+
+								console.log(res.data);
+								request.user.dataSourceInfo = res.data;
+
+								callback(constants.RESPONSE_CODES.SUCCESS);
+							} else {
+								callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+							}
+						}
+					})
+					.catch((err) => console.error(err));
+		},
+	},
+
 	suggestions: {
 		/**
 		 *  Requests a single graph suggestion.
@@ -485,21 +541,17 @@ const request = {
 		 */
 		graph: (sourceurl, callback) => {
 			console.debug('Requesting suggestion.graph with:', sourceurl);
-			if (true || canRequest()) {
-				API.suggestion
-					.graph(sourceurl)
-					.then((res) => {
-						if (callback !== undefined) {
-							console.debug('Response from suggestion.graph:', res);
-							request.cache.suggestions.graph.current = res.data;
+			API.suggestion
+				.graph(sourceurl)
+				.then((res) => {
+					if (callback !== undefined) {
+						console.debug('Response from suggestion.graph:', res);
+						request.cache.suggestions.graph.current = res.data;
 
-							callback(constants.RESPONSE_CODES.SUCCESS);
-						}
-					})
-					.catch((err) => console.error('from heere' + err));
-			} else {
-				callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
-			}
+						callback(constants.RESPONSE_CODES.SUCCESS);
+					}
+				})
+				.catch((err) => console.error(err));
 		},
 		/**
 		 *  Requests an amount of graph suggestions.
@@ -510,28 +562,24 @@ const request = {
 		 */
 		graphs: (sourceurl, amount, callback) => {
 			console.debug('Requesting suggestion.graphs with:', sourceurl, amount);
-			if (true || canRequest()) {
-				let shouldcontinue = true;
-				(async function () {
-					for (let r = 0; shouldcontinue && r < amount; r++) {
-						await new Promise(function (resolve) {
-							request.suggestions.graph(sourceurl, function (result) {
-								if (result === constants.RESPONSE_CODES.SUCCESS) {
-									resolve(request.cache.suggestions.graph.current);
-								} else {
-									shouldcontinue = false;
-								}
-							});
-						}).then(function (fetchedGraph) {
-							request.cache.suggestions.graph.list.push(fetchedGraph);
+			let shouldContinue = true;
+			(async function () {
+				for (let r = 0; shouldContinue && r < amount; r++) {
+					await new Promise(function (resolve) {
+						request.suggestions.graph(sourceurl, function (result) {
+							if (result === constants.RESPONSE_CODES.SUCCESS) {
+								resolve(request.cache.suggestions.graph.current);
+							} else {
+								shouldContinue = false;
+							}
 						});
-					}
-				})().then(function () {
-					callback(shouldcontinue ? constants.RESPONSE_CODES.SUCCESS : constants.RESPONSE_CODES.ERROR);
-				});
-			} else {
-				callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
-			}
+					}).then(function (fetchedGraph) {
+						request.cache.suggestions.graph.list.push(fetchedGraph);
+					});
+				}
+			})().then(function () {
+				callback(shouldContinue ? constants.RESPONSE_CODES.SUCCESS : constants.RESPONSE_CODES.ERROR);
+			});
 		},
 	},
 
@@ -539,14 +587,11 @@ const request = {
 		dashboard: {
 			list: {
 				timestamp: null,
-				data: null,
+				data: null
 			},
 		},
 		graph: {
-			list: {
-				timestamp: null,
-				data: null,
-			},
+			list: null,
 		},
 		user: {
 			email: '',

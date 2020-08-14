@@ -20,37 +20,46 @@
  */
 
 import './Entities.css';
-import React, { useState, Fragment } from 'react';
-import { List, Avatar, Button, Skeleton, Form, Input, Checkbox ,Typography} from 'antd';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import React, { Fragment } from 'react';
+import { List, Avatar, Button, Skeleton, Form, Checkbox } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
-import reqwest from 'reqwest';
-
-const { Title } = Typography;
-
-
-const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`;
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
+import { createForm, formShape } from 'rc-form';
 
 
 
 class Entities extends React.Component {
 
+ 
   onFinish = values => {
-    console.log('Received values of form: ', values);
+    //console.log('Received values of form: ', values);
+   
+    request.user.entitiesToUse = [];
+    request.user.entitiesToDisplay.map((item) => {
+      if(this.props.form.getFieldValue(item.entityName) === true){
+        request.user.entitiesToUse.push(item);
+      }
+    });
+
+    console.log(request.user.entitiesToUse);
+    
     this.next();
   };
 
   state = {
     initLoading: true,
     loading: false,
+    checked : true,
     data: [],
     list: [],
   };
 
 
   onChange = (item) => {
-    console.log(item.name.last);
+   
+    console.log(this.props.form.getFieldValue('Categories'));
+    
   };
 
 
@@ -59,31 +68,65 @@ class Entities extends React.Component {
   };
 
 
+  
+  /**
+    * invoked immediately after a component is mounted (inserted into the tree).
+  */
   componentDidMount() {
-    this.getData(res => {
-      this.setState({
-        initLoading: false,
-        data: res.results,
-        list: res.results,
+
+    console.log(request.user.isLoggedIn);
+      this.getData(res => {
+        this.setState({
+          initLoading: false,
+          data: request.user.entitiesToDisplay,
+          list: request.user.entitiesToDisplay,
+        });
       });
-    });
+
   }
 
+  /**
+    * Funnction uses the dataSources to update the entites list.
+  */
   getData = callback => {
-    //get data from database
-    reqwest({
-      url: fakeDataUrl,
-      type: 'json',
-      method: 'get',
-      contentType: 'application/json',
-      success: res => {
-        callback(res);
-      },
+   
+    var Obj = {};
+    request.user.entitiesToDisplay = [];
+    request.user.dataSourceInfo = [];
+    request.user.entities = [];
+
+    request.user.dataSources.map((source) => {
+
+      request.entities.list(source.sourceurl, function(result) {
+
+          if (result === constants.RESPONSE_CODES.SUCCESS) {
+  
+            request.user.entities = Object.keys(request.user.dataSourceInfo.entityList);
+            
+            request.user.entities.map((entityName) => {
+    
+              Obj = JSON.parse(JSON.stringify(Obj));
+              Obj['entityName'] = entityName;
+              Obj['datasource'] = source.sourceurl;
+              Obj['fields'] = request.user.dataSourceInfo.entityList[entityName];
+              
+              request.user.entitiesToDisplay.push(Obj);
+            });
+          
+            callback(request.user.entitiesToDisplay);
+          }
+        });
     });
+    
+   
   };
 
   render() {
+
+   
+    const { getFieldDecorator } = this.props.form;
     const { initLoading, loading, list } = this.state;
+
     const loadMore =
       !initLoading && !loading ? (
         <div
@@ -101,54 +144,66 @@ class Entities extends React.Component {
     return (
       
      <div>
-       
         <Form
-            name="entitiesForm"
+            name='entitiesForm'
             onFinish={this.onFinish}
         >
           <List
-            className="dataSourceList"
+            className='entitesList'
             loading={initLoading}
-            itemLayout="horizontal"
+            itemLayout='horizontal'
             loadMore={loadMore}
-            dataSource={list}
+            dataSource = {list}
+            
             renderItem={item => (
             
               <Fragment>
-                  {/*<div id = 'selectorDiv' onClick = {() => {this.onChange(item)}}>*/}
+                  {/* <div id = 'selectorDiv' onClick = {() => {this.onChange(item);}}> */}
                     <List.Item
-                      key={item.name.first}
+                      key={1}
                       actions={
                         [ 
-                        <Form.Item name = {item.name.first} valuePropName = 'checked'>
-                            <Checkbox defaultChecked = {false}></Checkbox>
-                        </Form.Item>
+                          
+                          <Form.Item valuePropName = 'checked'>
+                           {getFieldDecorator(item.entityName, {
+                              valuePropName: 'checked',
+                              initialValue: true
+                            })(
+                              <Checkbox />
+                            )}
+                          </Form.Item>
+
                         ]
                       }>
                       <Skeleton avatar title={false} loading={item.loading} active>
                         <List.Item.Meta
                           avatar={
-                            <Avatar src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png" />
+                            <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                           }
-                          title={<a href="https://ant.design">{item.name.last}</a>}
-                          description='Ant Design, a design language for background applications, is refined by Ant UED Team'
+                          title={item.entityName}
+                          description={item.datasource}
                         />
                         <div></div>
                       </Skeleton>
                     </List.Item>
-                    {/*</div>*/}
+                  {/* </div> */}
               </Fragment>
             )}
           />
+           
           <Form.Item>
-            <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' icon={<CompassOutlined />}>
+         
+            <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
               Generate Suggestions
             </Button>
+           
           </Form.Item>
+          
         </Form>
       </div>
     );
   }
 }
 
+Entities = createForm()(Entities);
 export default Entities;

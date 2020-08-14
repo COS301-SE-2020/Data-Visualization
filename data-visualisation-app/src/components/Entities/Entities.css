@@ -9,12 +9,13 @@
 
 #button-explore-dataPage{
     margin: 0;
-    position: relative;
-    top: 50%;
+    top: 93%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    position: fixed;
 }
+
 
 
 

@@ -19,6 +19,7 @@
  * 06/08/2020	 Marco Lombaard		Added geneticAlgorithm, calculateFitness, crossover, mutation functions
  * 07/08/2020	 Marco Lombaard		Updated setMetadata function to accept graph types as a parameter
  * 11/08/2020	 Marco Lombaard		Adapted getSuggestions to new data format
+ * 14/08/2020	 Marco Lombaard		Suggestions now generate from metadata and do not require sample data
  *
  * Test Cases: none
  *
@@ -121,11 +122,11 @@ let graphSuggesterMaker = (function () {
 		/**
 		 * This function is the Genetic Algorithm itself, generating new populations at each iteration
 		 * @param options the options to choose from when creating a population
-		 * @param entity the entity that was selected for generation
+		 * @param types the types of the options
 		 */
-		geneticAlgorithm(options, entity) {
+		geneticAlgorithm(options, types) {
 			//TODO maybe we can make it so the GA selects entities? will require restructuring other functionality - leave for later
-			if (options == null || options.length === 0 || entity == null) {//eslint-disable-line
+			if (options == null || options.length === 0 || types == null || types.length === 0) {//eslint-disable-line
 				return null;
 			}
 			let chromosomes = []; //Our population
@@ -138,13 +139,12 @@ let graphSuggesterMaker = (function () {
 			for (let i=0; i<populationSize; i++) {
 				titleIndex =  Math.trunc(Math.random() * options.length);	//select a random field title index
 				graphType = this.graphTypes[Math.trunc(Math.random() * 5)];	//select a random graph type
-				if (this.fieldTypes[entity] == null || this.fieldTypes[entity].length === 0) {//eslint-disable-line
-					console.log('No field types for entity '+entity);
-					return null;
-				}
-				fieldType = this.fieldTypes[entity][titleIndex];		//obtain the type of the selected field
+				fieldType = types[titleIndex];		//obtain the type of the selected field
 				chromosomes[i] = [ titleIndex, graphType, fieldType ];	//set up the chromosome properties
+				//console.log(i+': ', chromosomes[i]);
 			}
+			//console.log('Options: ', options);
+			console.log('Types: ', types);
 
 			let mutate = 0; //value must be below mutation rate for mutation to take place
 			let fitness = []; //all the fitness values - use to select parents
@@ -215,7 +215,7 @@ let graphSuggesterMaker = (function () {
 							mutate = Math.random();
 
 							if (mutate <= this.mutationRate) {	//check if it may mutate
-								this.mutation(chromosomes[i], options, entity);	//mutate the chromosome
+								this.mutation(chromosomes[i], options, types);	//mutate the chromosome
 								//this.mutation(chromosomes[i], options);	//TODO replace the above line with this
 							}
 						}
@@ -311,16 +311,12 @@ let graphSuggesterMaker = (function () {
 		 * The mutation operator in the GA
 		 * @param chromosome the chromosome being mutated
 		 * @param options the options for fields
-		 * @param entity the entity that was selected for suggestion generation
+		 * @param types the list of field types
 		 */
-		mutation(chromosome, options, entity) {
+		mutation(chromosome, options, types) {
 			let titleIndex = Math.trunc(Math.random() * options.length); //select a random title index
 			let graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
-			if (this.fieldTypes[entity] == null || this.fieldTypes[entity].length === 0) {//eslint-disable-line
-				console.log('No field types for entity '+entity);
-				return null;
-			}
-			let fieldType = this.fieldTypes[entity][titleIndex];	//obtain the field type
+			let fieldType = types[titleIndex];	//obtain the field type
 
 			chromosome[0] = titleIndex;
 			chromosome[1] = graphType;
@@ -328,51 +324,29 @@ let graphSuggesterMaker = (function () {
 		}
 
 		/**
-		 * This function returns the graph suggestions in JSON format.
-		 * @param jsonData the data to be used in suggestion generation, in JSON format.
-		 * @return suggestions the suggested graphs in JSON format.
+		 * This function returns the graph suggestions as an array.
+		 * @return suggestions the suggested graphs as an array.
+		 * @param entity the entity to select fields from
 		 */
-		getSuggestions(jsonData) {
-			// let object = JSON.parse(jsonData);
-			if (typeof jsonData === 'string') {
-				jsonData = JSON.parse(jsonData);
-			}
-			let object = jsonData;
-			if (object == null) {//eslint-disable-line
-				console.log('No data received to generate suggestions, returning...');
-				return null;
-			}
+		getSuggestions(entity) {
 			if (this.terminals == null && this.nonTerminals == null) {//eslint-disable-line
 				console.log('No metadata available, returning...');
-			}
-			let results = object['data']; 	//Data is contained in 'data' object
-
-			if (results == null || results.length === 0) {//eslint-disable-line
-				console.log('RESULTS array is empty.');
 				return null;
 			}
 
-			//generate suggestions
-			let type = results[0]['__metadata']['type']; //get the table type(Customers, Products, etc.)
-
-			type = type.substr(type.indexOf('.') + 1); //they all start with 'Northwind.' so trim that out
-			// NOTE: only true for Odata right now, other sources may differ
-			//TODO make it adapt to different sources
-
-			//   console.log(this.terminals);
-			//   console.log(type);
-
-			let keys = this.terminals[type]; //check the available attributes in the metadata
-				if (keys == null) {//eslint-disable-line
+			let keys = this.terminals[entity];
+			// eslint-disable-next-line eqeqeq
+			if (keys == null) {
 				console.log('No keys found in metadata');
 				console.log(this.terminals);
 				return null;
 			}
-			let options = []; //the available key options(processed later) for suggestion generation
-			let count = 0; //the index for options
-			let nameKey = null;
+			//console.log(keys);
 
-			//   console.log(keys);
+			let options = []; //the available key options(processed later) for suggestion generation
+			let types = [];
+			let count = 0; //the index for options
+			let nameKey = null; //The item name - TODO can probably be replaced by passing the individual entity names as well
 
 			for (let key = 0; key < keys.length; key++) {
 				//go through all the keys and get rid of IDs and such
@@ -383,27 +357,39 @@ let graphSuggesterMaker = (function () {
 				if (
 					!(
 						name.includes('ID') ||
-							name.includes('Name') ||
-							name.includes('Picture') ||
-							name.includes('Description') ||
-							name.includes('Date')
+						name.includes('Name') ||
+						name.includes('Picture') ||
+						name.includes('Description') ||
+						name.includes('Date')	//TODO periodic data - pretty useful
 					) && this.notInExclusions(name)	//check that field is not excluded from suggestions
 				) {
 					//trim out the "useless" keys
+					types[count] = this.fieldTypes[entity][key];
 					options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
-					} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {//eslint-disable-line
+				} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {//eslint-disable-line
 					//store the name key for later access
 					nameKey = name;
 				}
 			}
 
 			let hasData = false; //check variable used to see if data exists or if a deeper thread is followed
-
-			for (let i = 0; i < options.length; i++) {
-					if (results[0][options[i]]['__deferred'] == null) {//eslint-disable-line
-					//if this isn't a link then we have data
+			// eslint-disable-next-line eqeqeq
+			if (this.nonTerminals == null) {
+				if (options.length !== 0) {
+					//no links to other tables, what remains must be data
 					hasData = true;
-					break;
+				} else {
+					console.log('Unable to generate options');
+					return null;
+				}
+			} else {
+				for (let i = 0; i < options.length; i++) {
+					// eslint-disable-next-line eqeqeq
+					if (this.nonTerminals[options[i]] == null) {
+						//if this isn't a link then we have data
+						hasData = true;
+						break;
+					}
 				}
 			}
 
@@ -414,26 +400,14 @@ let graphSuggesterMaker = (function () {
 				return null;
 			}
 
-			let choice = Math.trunc(Math.random() * options.length); //select random index - TODO let the GA do selection
-			let data = []; //2D array containing item names and attributes
-			let params = [ nameKey, 'value' ]; //the labels for column values
-			let graph = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type - TODO replace '5' with graphTypes.length
-
-			for (let i = 0; i < results.length; i++) {
-				//Store name of field and values of its chosen attribute in data
-				data[i] = [ results[i][nameKey], results[i][options[choice]] ];
+			let suggestion = this.geneticAlgorithm(options, types);
+			let processed = [];
+			processed[0] = options[suggestion[0]];
+			for (let i = 1; i < suggestion.length; i++) {
+				processed[i] = suggestion[i];
 			}
-
-			//TODO replace most of the above code with this - data processing is being moved to dataSourceController
-			/*let geneticSuggestion = this.geneticAlgorithm(options);
-				return geneticSuggestion
-				 */
-
-			let option = this.constructOption(data, graph, params, params[0], params[1], type + ': ' + options[choice]);
-
-			return option;
+			return processed;
 		}
-		
 
 		/**
 		 * This function sets the target graph characteristics as the fittest characteristics, so the genetic algorithm \

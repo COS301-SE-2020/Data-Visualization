@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
-// const OrbitControls = require('three-orbitcontrols');
-
 
 var SEPARATION = 70, AMOUNTX = 50, AMOUNTY = 50;
 
-var particles, count = 0;
+var count = 0;
 
-var mouseX = 0, mouseY = 0;
-
-var windowHalfX = window.innerWidth / 2;
-var windowHalfY = window.innerHeight / 2;
-
-
-var UPDATEX, UPDATEY, UPDATEZ;
-
+// var UPDATEX, UPDATEY, UPDATEZ;
 
 /**
  *   @class BackgroundDots
@@ -28,15 +19,13 @@ class BackgroundDots extends Component {
         this.animate = this.animate.bind(this);
         this.addCube = this.addCube.bind(this);
         this.initializeCamera = this.initializeCamera.bind(this);
-
-        this.canvasWidth = this.props.width + 'px';
-        this.canvasHeight = this.props.height + 'px';
     }
 
     componentDidMount() {
 
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, this.props.width / this.props.height, 0.1, 1000);
+        // this.camera = new THREE.PerspectiveCamera(75, this.props.width / this.props.height, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(75, 1920 / 1080, 0.1, 1000);
 
         this.camera.position.z = 1001;
         this.camera.position.x = 205;
@@ -97,7 +86,8 @@ class BackgroundDots extends Component {
 
 
         // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.renderer.setSize(this.props.width, this.props.height);
+        // this.renderer.setSize(this.props.width, this.props.height);
+        this.renderer.setSize(1920, 1080);
         this.mount.appendChild(this.renderer.domElement);
 
         this.animate();
@@ -120,10 +110,9 @@ class BackgroundDots extends Component {
         this.frameId = window.requestAnimationFrame(this.animate);
         this.renderer.render(this.scene, this.camera);
 
-
-        UPDATEX = this.camera.position.x;
-        UPDATEY= this.camera.position.y;
-        UPDATEZ= this.camera.position.z;
+        // UPDATEX = this.camera.position.x;
+        // UPDATEY= this.camera.position.y;
+        // UPDATEZ= this.camera.position.z;
 
         var positions = this.particles.geometry.attributes.position.array;
         var scales = this.particles.geometry.attributes.scale.array;
@@ -170,7 +159,7 @@ class BackgroundDots extends Component {
                 {/*/>*/}
                 <div
                     id="boardCanvas"
-                    style={{ width: '1920px', height: '1080px',  }}
+                    style={{ width: '1920px', height: '1080px', position: 'fixed', top: '0'}}
                     ref={mount => {
                         this.mount = mount;
                     }}
@@ -181,9 +170,9 @@ class BackgroundDots extends Component {
 }
 
 window.onkeypress = function(event) {
-    if (event.key == '1') {
-        console.log('mouseX ' + UPDATEX + ' mouseY ' + UPDATEY + ' mouseZ ' + UPDATEZ);
-    }
+    // if (event.key == '1') {
+    //     console.debug('mouseX ', UPDATEX, ' mouseY ', ' mouseZ ', UPDATEZ);
+    // }
 };
 
 export default BackgroundDots;

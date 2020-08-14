@@ -17,6 +17,7 @@
  * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function, added setGraphTypes
  * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
  * 11/08/2020	 Marco Lombaard		Removed deprecated changeFittestGraph function
+ * 14/08/2020	 Marco Lombaard		Converted getSuggestions to use entity name and not sample data
  *
  * Test Cases: none
  *
@@ -50,18 +51,18 @@ class GraphSuggesterController {
 	/**
 	 * This function passes the data that suggestions need to be generated for, to the graph
 	 * suggester in graphSuggesterAI.js.
-	 * @param jsonData the data that suggestions need to be generated for, passed in JSON format
 	 * @returns the suggestions that were generated, in JSON format.
+	 * @param entity The entity to select suggestions from
 	 */
-	static getSuggestions(jsonData) {
-		if (jsonData == null) {
-			//eslint-disable-line
+	static getSuggestions(entity) {
+		// eslint-disable-next-line eqeqeq
+		console.log(entity);
+		// eslint-disable-next-line eqeqeq
+		if(entity == null) {
+			console.log('no entity received for suggestion generation');
 			return null;
 		}
-		if (typeof jsonData !== 'string') {
-			jsonData = JSON.stringify(jsonData);
-		}
-		return graphSuggesterAI.getSuggestions(jsonData);
+		return graphSuggesterAI.getSuggestions(entity);
 	}
 
 	/**

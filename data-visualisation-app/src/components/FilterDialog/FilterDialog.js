@@ -22,16 +22,10 @@
 /**
   * Imports
 */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button, Modal, Select, Tag, Form} from 'antd';
-
-
-
-//API call (to get options)
-
-const graphTypes = [{ value: 'Bar graph' }, { value: 'Pie chart' }, { value: 'Histogram' }, { value: 'Line graph' }, { value: 'Scatter plot' }];
-
-const fieldTypes = [{ value: 'Region' }, { value: 'Colour' }, { value: 'Email' }, { value: 'Hieght' }, { value: 'Abacao' }, { value: 'Long Island' }];
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
 
 
 
@@ -74,8 +68,30 @@ function tagRender(props) {
   }
 
 const FilterDialog = (props) => {
+
     const [visible, setVisible] = useState(true);
- 
+    
+    const graphTypes = [{ value: 'Bar graph' }, { value: 'Pie chart' }, { value: 'Histogram' }, { value: 'Line graph' }, { value: 'Scatter plot' }];
+
+    
+    request.user.fields = [];
+    request.user.entitiesToUse.map((item) => {
+        request.user.fields = request.user.fields.concat(item.fields);
+    });
+    
+    var fieldTypes = [];
+    var checkForDuplicate = [];
+    request.user.fields.map((item) => {
+        if(!checkForDuplicate.includes(item)){
+            checkForDuplicate.push(item);
+            var obj = {};
+            obj = JSON.parse(JSON.stringify(obj));
+            obj['value'] = item;
+            fieldTypes.push(obj);
+        }
+    });
+    checkForDuplicate = [];
+
 
     const layout = {
         labelCol: { span: 8 },
@@ -129,7 +145,6 @@ const FilterDialog = (props) => {
                         <Select
                             mode="multiple"
                             tagRender={tagRender}
-                            defaultValue={[]}
                             style={{ width: '100%' }}
                             options={graphTypes}
                         />
@@ -142,7 +157,6 @@ const FilterDialog = (props) => {
                         <Select
                             mode="multiple"
                             tagRender={tagRender}
-                            defaultValue={[]}
                             style={{ width: '100%' }}
                             options={fieldTypes}
                         />
