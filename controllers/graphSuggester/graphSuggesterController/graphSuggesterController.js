@@ -54,7 +54,6 @@ class GraphSuggesterController {
 	 * @returns the suggestions that were generated, in JSON format.
 	 * @param entity The entity to select suggestions from
 	 */
-
 	static getSuggestions(entity) {
 		// eslint-disable-next-line eqeqeq
 		console.log(entity);
@@ -74,7 +73,6 @@ class GraphSuggesterController {
 		graphSuggesterAI.excludeFields(fields);
 	}
 
-
 	/**
 	 * This function passes the graph types that should be used in suggestion generation
 	 * @param types an array of the graph types(bar, pie, scatter, etc.) that should be used in suggestion generation
@@ -90,7 +88,8 @@ class GraphSuggesterController {
 	 */
 	static setFittestEChart(graph) {
 		//if the graph is null, then we are resetting preferences for the fitness target
-		if (graph == null) {//eslint-disable-line
+		if (graph == null) {
+			//eslint-disable-line
 			console.log('setFittestEChart received null, resetting fitness target...');
 			graphSuggesterAI.changeFitnessTarget(null, null);
 			return true;
@@ -110,7 +109,8 @@ class GraphSuggesterController {
 		let dataset = graph['dataset'];
 
 		//check if there is a source
-		if (dataset['source'] == null) {//eslint-disable-line
+		if (dataset['source'] == null) {
+			//eslint-disable-line
 			console.log('Check that dataset has a source');
 			return false; //required value missing, return failure
 		}
@@ -119,7 +119,8 @@ class GraphSuggesterController {
 		let encoding = series['encode']; //get encode information
 
 		//if the dataset is empty
-		if (fieldSample.length <= 1) {//eslint-disable-line
+		if (fieldSample.length <= 1) {
+			//eslint-disable-line
 			console.log('Check that dataset source has entries');
 			return false;
 		}
@@ -127,14 +128,16 @@ class GraphSuggesterController {
 		fieldSample = fieldSample[1]; //select the first data entry
 
 		//check if entry is empty or if there is no data value
-		if (fieldSample == null || fieldSample.length === 0) {//eslint-disable-line
+		if (fieldSample == null || fieldSample.length === 0) {
+			//eslint-disable-line
 			console.log('Check that entries have values');
 			return false;
 		}
 
 		//check that encoding is present and not empty
-		if (encoding == null || encoding.isEmpty) {//eslint-disable-line
-			console.log('Check that \'encode\' is not empty');
+		if (encoding == null || encoding.isEmpty) {
+			//eslint-disable-line
+			console.log("Check that 'encode' is not empty");
 			return false;
 		}
 
@@ -142,7 +145,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log('check that \'encode\' has keys');
+			console.log("check that 'encode' has keys");
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries

@@ -35,7 +35,6 @@ const { GraphSuggesterController } = require('../graphSuggester');
  * @author Elna Pistorius & Phillip Schulze
  */
 class RestController {
-
 	/**************** USER ****************/
 
 	/**
@@ -160,6 +159,38 @@ class RestController {
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
+
+	/**************** Suggestions ****************/
+
+	/**
+	 * This function set suggestion parameters that are used when requesting suggestions
+	 * @param graph the graph that is to be set as the fittest graph
+	 * @param entities the list of entities that should be used for suggestion generation
+	 * @param fields the list of fields thatshould be used for suggestion generation
+	 */
+	static setSuggestionParams(graph, entities, fields, done, error) {
+		GraphSuggesterController.setFittestEChart(graph);
+		//TODO: GraphSuggesterController.setSelectedEntities(entities);
+		GraphSuggesterController.limitFields(fields);
+		done();
+
+		// const obj = {
+		// 	selectedEntities: [
+		// 		{
+		// 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
+		// 			entityname: 'entity1',
+		// 			fields: ['aaa', 'aaa', 'aaaa'],
+		// 		},
+		// 		{
+		// 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
+		// 			entityname: 'entity2',
+		// 			fields: ['aaa', 'aaa', 'aaaa'],
+		// 		},
+		// 	],
+		// 	selectedFields: ['AAA','asfsaf','safsaf']
+		// };
+	}
+
 	/**
 	 * This function gets suggestions based off of the source provided
 	 * @param src the source that is requested to be used to generate a suggestion
@@ -167,6 +198,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static getSuggestions(src, done, error) {
+		//TODO: const randEntity = GraphSuggesterController.selectEntity();
+
 		DataSource.getMetaData(src)
 			.then((Meta) => {
 				GraphSuggesterController.setMetadata(Meta);
@@ -179,6 +212,7 @@ class RestController {
 					//check if the item with the selected key has data
 					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
 				}
+
 				const randEntity = Meta.sets[randKey]; //select this entity for data source querying
 
 				console.log('Entity: ', randEntity);
@@ -319,7 +353,7 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static updateGraphTypes(graphTypes, done, error){
+	static updateGraphTypes(graphTypes, done, error) {
 		GraphSuggesterController.setGraphTypes(graphTypes);
 		done();
 	}
@@ -330,15 +364,17 @@ class RestController {
 	 * @param stringDataArray the string data in array format. This should just be the data, nothing else
 	 * @return {{}} an object containing categories as keys, and the amount of times each category occurs as values
 	 */
-	static stringsToGraphData(stringDataArray) {	//TODO could move this to IGA for generation on best way to represent strings
-		let list = {};	//The basic structure will be key-value pairs, where keys are unique string values
+	static stringsToGraphData(stringDataArray) {
+		//TODO could move this to IGA for generation on best way to represent strings
+		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
 
 		for (let i = 0; i < stringDataArray.length; i++) {
-			if (list[stringDataArray[i]] != null) {	//eslint-disable-line
-				list[stringDataArray[i]]++;	//if this category was already created, increment how often it has occurred
+			if (list[stringDataArray[i]] != null) {
+				//eslint-disable-line
+				list[stringDataArray[i]]++; //if this category was already created, increment how often it has occurred
 			} else {
-				list[stringDataArray[i]] = 1;	//else create the category
+				list[stringDataArray[i]] = 1; //else create the category
 			}
 		}
 
