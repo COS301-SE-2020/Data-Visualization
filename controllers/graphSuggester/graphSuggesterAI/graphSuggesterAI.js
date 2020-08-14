@@ -409,6 +409,7 @@ let graphSuggesterMaker = (function () {
 			for (let i = 1; i < suggestion.length; i++) {
 				processed[i] = suggestion[i];
 			}
+			processed[suggestion.length] = nameKey;
 			return processed;
 		}
 

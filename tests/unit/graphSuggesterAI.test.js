@@ -94,6 +94,6 @@ describe('Testing functions within the graphSuggesterAI class', function () {
 	test('Generates a suggestion when receiving valid data and metadata exists', () => {
 		graphSuggesterAI.setMetadata(items, associations, types);
 		let suggestion = graphSuggesterAI.getSuggestions('Product');
-		expect(suggestion).toMatchObject([ expect.any(String), expect.any(String), expect.any(String) ]);
+		expect(suggestion).toMatchObject([ expect.any(String), expect.any(String), expect.any(String), expect.any(String) ]);
 	});
 });

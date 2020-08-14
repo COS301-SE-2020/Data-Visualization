@@ -65,24 +65,34 @@ class GraphSuggesterController {
 	 * This function passes the data that suggestions need to be generated for, to the graph
 	 * suggester in graphSuggesterAI.js.
 	 * @returns the suggestions that were generated, in JSON format.
-	 * @param entity The entity to select suggestions from
+	 * @param entity the entity to select suggestions from
+	 * @param source the data source that the entity belongs to
 	 */
 	static getSuggestions(entity, source) {
-		const { items, associations, types } = this.metadata[source];
-		graphSuggesterAI.setMetadata(items, associations, types);
+		if (!this.isInitialised()) {
+			console.log('Metadata isn\'t initialised, returning null...');
+			return null;
+		}
+		if (!this.metadata[source]) {
+			console.log('No metadata for ' + source +', returning...');
+		}
 
 		// eslint-disable-next-line eqeqeq
 		if (entity == null) {
 			console.log('no entity received for suggestion generation');
 			return null;
 		}
+
+		const { items, associations, types } = this.metadata[source];
+		graphSuggesterAI.setMetadata(items, associations, types);
+
 		let accepted = false;
 
 		if (!this.acceptedEntities || this.acceptedEntities.length === 0) {
 			accepted = true;
 		} else {
 			for (let i = 0; i < this.acceptedEntities.length; i++) {
-				if (this.acceptedEntities[i].match(entity)) {
+				if (this.isEqual(entity, this.acceptedEntities[i])) {
 					accepted = true;
 					break;
 				}
@@ -96,7 +106,7 @@ class GraphSuggesterController {
 				console.log('Received null suggestion');
 				return null;
 			}
-			let option = this.constructOption(suggestion[1], [suggestion[0], 'value'], suggestion[0], 'value', entity + ': ' + suggestion[0]);
+			let option = this.constructOption(suggestion[1], [ suggestion[3], 'value' ], suggestion[3], 'value', entity + ': ' + suggestion[0]);
 			//console.log(option);
 			return option;
 		}
@@ -106,11 +116,32 @@ class GraphSuggesterController {
 	}
 
 	/**
+	 * This function checks if an entity is equal to another entity. Entities are represented as objects.
+	 * @return {boolean} true if the entity is accepted, false otherwise
+	 */
+	static isEqual(entity1, entity2) {
+		let keys1 = Object.keys(entity1);
+		let keys2 = Object.keys(entity2);
+
+		if (keys1.length !== keys2.length) {
+			return false;
+		}
+
+		for (let i = 0; i < keys1.length; i++) {
+			if (entity1[keys1[i]] !== entity2[keys2[i]]) {	//check if attributes match
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * * This function checks if the necessary parameters for suggestion generation has been set
 	 * @return {boolean} true if it is initialised, false otherwise
 	 */
 	static isInitialised() {
-		if (this.metadata.length > 0) {
+		//console.log(this.metadata);
+		if (this.metadata && Object.keys(this.metadata).length > 0) {
 			return true;
 		}
 		return false;
@@ -205,7 +236,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log("Check that 'encode' is not empty");
+			console.log('Check that \'encode\' is not empty');
 			return false;
 		}
 
@@ -213,7 +244,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log("check that 'encode' has keys");
+			console.log('check that \'encode\' has keys');
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries
@@ -327,5 +358,7 @@ class GraphSuggesterController {
 	}
 }
 GraphSuggesterController.acceptedEntities = [];
+GraphSuggesterController.metadata = [];
+
 
 module.exports = GraphSuggesterController;
