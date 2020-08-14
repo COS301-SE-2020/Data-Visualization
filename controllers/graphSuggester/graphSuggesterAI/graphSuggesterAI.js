@@ -340,7 +340,7 @@ let graphSuggesterMaker = (function () {
 			let keys = this.terminals[entity];
 			// eslint-disable-next-line eqeqeq
 			if (keys == null) {
-				console.log('No keys found in metadata');
+				console.log('No keys found in metadata to match', entity);
 				console.log(this.terminals);
 				return null;
 			}

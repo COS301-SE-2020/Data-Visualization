@@ -149,9 +149,10 @@ describe('Testing functions in the graphSuggesterController class that call func
 
 	test('Successfully limits entities', () => {
 		graphSuggesterController.setMetadata('url', { items, associations, types });
-		graphSuggesterController.limitEntities([ 'Product' ]);
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
-		expect(graphSuggesterController.getSuggestions('Product', 'url')).not.toBeNull();
+		graphSuggesterController.limitEntities([{ entityName:'Product', source:'url' }]);
+		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
+		expect(suggestion).toMatchObject(suggestion);
 	});
 
 

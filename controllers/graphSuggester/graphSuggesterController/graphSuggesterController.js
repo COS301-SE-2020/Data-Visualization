@@ -86,20 +86,26 @@ class GraphSuggesterController {
 		const { items, associations, types } = this.metadata[source];
 		graphSuggesterAI.setMetadata(items, associations, types);
 
-		let accepted = false;
+		let isAccepted = false;
+		let entities;
 
 		if (!this.acceptedEntities || this.acceptedEntities.length === 0) {
-			accepted = true;
+			isAccepted = true;
 		} else {
-			for (let i = 0; i < this.acceptedEntities.length; i++) {
-				if (this.isEqual(entity, this.acceptedEntities[i])) {
-					accepted = true;
-					break;
+			entities = this.acceptedEntities[source];
+			if (!entities || entities.length === 0) {
+				isAccepted = true;
+			} else {
+				for (let i = 0; i < entities.length; i++) {
+					if (entity === entities[i]) {
+						isAccepted = true;
+						break;
+					}
 				}
 			}
 		}
 
-		if (accepted) {
+		if (isAccepted) {
 			let suggestion = graphSuggesterAI.getSuggestions(entity);
 			// eslint-disable-next-line eqeqeq
 			if (suggestion == null) {
@@ -111,29 +117,29 @@ class GraphSuggesterController {
 			return option;
 		}
 
-		console.log(entity + ' is not among ', this.acceptedEntities);
+		console.log(entity + ' is not among ', entities);
 		return null;
 	}
-
-	/**
-	 * This function checks if an entity is equal to another entity. Entities are represented as objects.
-	 * @return {boolean} true if the entity is accepted, false otherwise
-	 */
-	static isEqual(entity1, entity2) {
-		let keys1 = Object.keys(entity1);
-		let keys2 = Object.keys(entity2);
-
-		if (keys1.length !== keys2.length) {
-			return false;
-		}
-
-		for (let i = 0; i < keys1.length; i++) {
-			if (entity1[keys1[i]] !== entity2[keys2[i]]) {	//check if attributes match
-				return false;
-			}
-		}
-		return true;
-	}
+	//
+	// /**
+	//  * This function checks if an entity is equal to another entity. Entities are represented as objects.
+	//  * @return {boolean} true if the entity is accepted, false otherwise
+	//  */
+	// static isEqual(entity1, entity2) {
+	// 	let keys1 = Object.keys(entity1);
+	// 	let keys2 = Object.keys(entity2);
+	//
+	// 	if (keys1.length !== keys2.length) {
+	// 		return false;
+	// 	}
+	//
+	// 	for (let i = 0; i < keys1.length; i++) {
+	// 		if (entity1[keys1[i]] !== entity2[keys2[i]]) {	//check if attributes match
+	// 			return false;
+	// 		}
+	// 	}
+	// 	return true;
+	// }
 
 	/**
 	 * * This function checks if the necessary parameters for suggestion generation has been set
@@ -158,7 +164,13 @@ class GraphSuggesterController {
 	/**
 	 */
 	static limitEntities(entities) {
-		GraphSuggesterController.acceptedEntities = entities;
+		for (let i = 0; i < entities.length; i++) {
+			if(!this.acceptedEntities[entities[i].source]) {
+				this.acceptedEntities[entities[i].source] = [ entities[i].entityName ];
+			} else {
+				this.acceptedEntities[entities[i].source].push(entities[i].entityName);
+			}
+		}
 	}
 
 	/**
@@ -357,7 +369,7 @@ class GraphSuggesterController {
 		return GraphSuggesterController.acceptedEntities[Math.random() * GraphSuggesterController.acceptedEntities.length];
 	}
 }
-GraphSuggesterController.acceptedEntities = [];
+GraphSuggesterController.acceptedEntities = {};
 GraphSuggesterController.metadata = [];
 
 
