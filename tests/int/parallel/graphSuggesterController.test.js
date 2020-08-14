@@ -21,58 +21,6 @@
  */
 require('../../../controllers/graphSuggester/graphSuggesterAI/graphSuggesterAI');
 const graphSuggesterController = require('../../../controllers/graphSuggester/graphSuggesterController/graphSuggesterController');
-const jsonData =  {
-	data: [
-		{
-
-			__metadata: {
-
-				uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(21)',
-				type: 'NorthwindModel.Product'
-
-			},
-			ProductID: 21,
-			ProductName: 'Sir Rodney\'s Scones',
-			SupplierID: 8,
-			CategoryID: 3,
-			QuantityPerUnit: '24 pkgs. x 4 pieces',
-			UnitPrice: '10.0000',
-			UnitsInStock: 3,
-			UnitsOnOrder: 40,
-			ReorderLevel: 5,
-			Discontinued: false,
-			Category: {
-
-				__deferred: {
-
-					uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(21)/Category'
-
-				}
-
-			},
-			// eslint-disable-next-line camelcase
-			Order_Details: {
-
-				__deferred: {
-
-					uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(21)/Order_Details'
-
-				}
-
-			},
-			Supplier: {
-
-				__deferred: {
-
-					uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(21)/Supplier'
-
-				}
-
-			}
-
-		}
-	],
-};
 	
 const fitnessChart = {
 	'title': {
