@@ -291,7 +291,7 @@ function Suggestions(props) {
                         
                             {currentCharts.map((achart, index) => {
                                 return <Grid item xs={12} md={6} lg={3} key={index}>
-                                            <div id = {'chartDiv_'+index} className = 'chartDiv' onClick={() => { 
+                                            <div id = {'chartDiv-'+index} className = 'chartDiv' onClick={() => { 
                                                 
                                                 var item = {};
                                                 item[index] = !form.getFieldValue(index); 
@@ -299,12 +299,11 @@ function Suggestions(props) {
                                                 form.setFieldsValue(item);
                                               
                                                 if(item[index]  === false){
-                                                    document.getElementById('chartDiv_'+index).style.backgroundColor =''; 
-                                                    document.getElementById('chartDiv_'+index).style.boxShadow = '';
+                                                    
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '';
                                                 }
                                                 else{
-                                               
-                                                    document.getElementById('chartDiv_'+index).style.boxShadow = '0px 0px 5px 0px rgba(0,0,0,0.75)';
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 5px 0px rgba(0,0,0,0.75)';
                                                 }
  
                                                 }}>
@@ -313,7 +312,7 @@ function Suggestions(props) {
                                                 </Form.Item>
                                                 <Suggestion id={index} chartData={achart}/>
                                             </div>
-                                            </Grid>;
+                                        </Grid>;
                             })}
 
                             {loading && <Grid item xs={12} md={6} lg={3}>

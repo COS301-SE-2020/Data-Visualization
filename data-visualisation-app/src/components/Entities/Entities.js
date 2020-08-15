@@ -32,9 +32,10 @@ import Anime, { anime } from 'react-anime';
 
 var showAll = false;
 
+
 class Entities extends React.Component {
 
-
+  
   formRef = React.createRef();
 
   state = {
@@ -60,6 +61,7 @@ class Entities extends React.Component {
   
     if(atLeastOne){
       console.log(request.user.selectedEntities);
+      showAll = false;
       this.next();
     }
     else{
@@ -70,13 +72,20 @@ class Entities extends React.Component {
 
 
   handleChange = (e) => {
-
+    
     showAll = !showAll;
     var tempItem = {};
 
     request.user.entities.map((entityName) => {
       tempItem[entityName] = showAll;
       this.formRef.current.setFieldsValue(tempItem);
+      if(showAll){
+        document.getElementById('card-'+entityName).style.boxShadow = 'inset 0px 0px 5px 0px rgba(0,0,0,0.75)';
+      }
+      else{
+        document.getElementById('card-'+entityName).style.boxShadow = '';
+      }
+     
     });
 
   }
@@ -169,7 +178,7 @@ class Entities extends React.Component {
       ) : null;
    
 
-      const mql = window.matchMedia('(max-width: 1024px)');
+      const mql = window.matchMedia('(max-width: 1800px)');
       let mobileView = mql.matches;
 
       if (mobileView) {
@@ -196,10 +205,17 @@ class Entities extends React.Component {
                  renderItem={item => (
                    
                    <Fragment>
-                       <Card style= {{cursor: 'pointer'}} onClick={() => {                          
+                       <Card id = {'card-'+item.entityName} onClick={() => {                          
                           var tempItem = {};
                           tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);
+
+                          if(tempItem[item.entityName]  === false){                       
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '';
+                           }
+                          else{
+                            document.getElementById('card-'+item.entityName).style.boxShadow = 'inset 0px 0px 5px 0px rgba(0,0,0,0.75)';
+                          }
                         }} 
                         >
 
@@ -262,10 +278,19 @@ class Entities extends React.Component {
                  
                  renderItem={item => (
                    <Fragment>
-                       <Card.Grid hoverable = {false} style= {{cursor: 'pointer'}} onClick={() => {                          
+                       <Card.Grid id = {'card-'+item.entityName} hoverable = {false} style= {{cursor: 'pointer', margin: '10px', width:'32%'} } onClick={() => {                          
                           var tempItem = {};
                           tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);
+
+                
+                          if(tempItem[item.entityName]  === false){                       
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '';
+                           }
+                          else{
+                            document.getElementById('card-'+item.entityName).style.boxShadow = 'inset 0px 0px 5px 0px rgba(0,0,0,0.75)';
+                          }
+                     
                         }} 
                         >
                         
