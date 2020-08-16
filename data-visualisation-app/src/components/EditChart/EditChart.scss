@@ -1,15 +1,62 @@
 @import '../../globals/globals.scss';
 
-tr {
+input {
+  border: 1px solid $color-border;
+}
+
+.EditableCell:focus {
+  outline: none;
+  width: 100%;
+  borderStyle: 'none';
+}
+
+.datatable, .datatable__top {
+  padding: 5px;
+}
+
+.datatable__spanning {
+  border: 1px solid $color-border;
+}
+
+td.datatable {
+  border-left: 1px solid;
+  border-bottom: 1px solid;
+  border-top: 1px solid;
+  border-color: $color-border;
+  transition: border 0.2s linear;
+}
+td.datatable__top {
+  border-left: 1px solid $color-border;
+  border-top: 1px solid $color-border;
+  border-color: $color-border;
+  transition: border 0.2s linear;
+}
+
+.datatable.datatable__editable:hover {
+  border: 1px solid $color-border-hover;
+}
+.datatable__top.datatable__editable:hover {
+  border: 1px solid $color-border-hover;
+}
+
+
+
+th.datatable {
+  border-left: 1px solid $color-border;
+  border-top: 1px solid $color-border;
+  border-right: 1px solid $color-border;
+}
+
+tr.properties {
   border-bottom: 1px solid $color-border;
 }
 
-td {
+td.properties {
   padding-bottom: 5px;
   padding-top: 5px;
 }
 
-table {
+table.properties {
   width: 100%;
 }
 
@@ -73,4 +120,8 @@ table {
 
 .box__content {
   padding: 10px;
+}
+
+.button__changeColour {
+  border: 1px solid red;
 }

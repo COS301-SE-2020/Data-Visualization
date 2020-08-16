@@ -411,9 +411,9 @@ function App(props) {
 					<ListItemText primary="Lock" />
 				</ListItem> */}
 
-				<ListItem button onClick={() => handlePageType('trash')}>
+				<ListItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<DeleteIcon />
+						<DeleteIcon style={(pageType === 'trash' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Trash" />
 				</ListItem>
@@ -516,19 +516,19 @@ function App(props) {
 							{drawer}
                             <div style={{height: '100vh', position: 'relative'}}>
 								<img src={constant.APPLICATION_LOGO_GREY} style={{height: '120px', position: 'absolute', bottom: '80px', left: '24%'}} alt="logo" className={classes.logo} />
-								<div style={{position: 'absolute', bottom: '20px', textAlign: 'center', color: '#535355'}}>
-									Copyright © Doofenshmirts Evil Incorporated
+								<div style={{position: 'absolute', bottom: '20px', left: '18%', textAlign: 'center', color: '#535355'}}>
+                                    Brought to you by <br/> Doofenshmirtz Evil, Inc.
 								</div>
                             </div>
 						</Drawer>
 					</Hidden>
 				</nav>
 
-				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {padding: '0'})} ref={targetRef}>
+				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
 
 					<div className={classes.toolbar} />
 
-					{page}
+					{/*{page}*/}
 					{/*<EditChart options={{*/}
 					{/*	// title: {*/}
 					{/*	// 	text: 'Confidence Band',*/}
@@ -548,6 +548,27 @@ function App(props) {
 					{/*		type: 'line'*/}
 					{/*	}]*/}
 					{/*}} />*/}
+					<EditChart options={{
+						xAxis: {},
+						yAxis: {},
+						series: [{
+							symbolSize: 20,
+							data: [
+								[10.0, 8.04],
+								[8.0, 6.95],
+								[13.0, 7.58],
+								[9.0, 8.81],
+								[11.0, 8.33],
+								[14.0, 9.96],
+								[6.0, 7.24],
+								[4.0, 4.26],
+								[12.0, 10.84],
+								[7.0, 4.82],
+								[5.0, 5.68]
+							],
+							type: 'scatter'
+						}]
+					}} />
 				</main>
 
 			</div>
