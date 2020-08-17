@@ -6,19 +6,20 @@
  * Modules: None
  * Related Documents: SRS Document - www.example.com
  * Update History:
- * Date          Author              Changes
+ * Date          Author              				Changes
  * -------------------------------------------------------------------------------------------------
- * 30/06/2020    Marco Lombaard     Original
- * 01/07/2020    Marco Lombaard     Added parseODataMetadata function
- * 09/07/2020    Marco Lombaard     Fixed parseODataMetaData function
- * 05/08/2020	 Marco Lombaard		Changed class from singleton to normal class w/ static functions
- * 05/08/2020	 Marco Lombaard		Added limitFields and setFittestEChart functions
- * 07/08/2020	 Marco Lombaard		Added data-types array to return in parseODataMetaData function
- * 07/08/2020	 Marco Lombaard		Fixed setFittestEChart function, added setGraphTypes
- * 07/08/2020	 Phillip Schulze	Moved parseODataMetadata function to Odata.js
- * 11/08/2020	 Marco Lombaard		Removed deprecated changeFittestGraph function
- * 14/08/2020	 Marco Lombaard		Converted getSuggestions to use entity name and not sample data
- * 14/08/2020	 Marco Lombaard		Moved chart construction here, added isInitialised function, modified setMetadata
+ * 30/06/2020    Marco Lombaard     				Original
+ * 01/07/2020    Marco Lombaard     				Added parseODataMetadata function
+ * 09/07/2020    Marco Lombaard     				Fixed parseODataMetaData function
+ * 05/08/2020	 Marco Lombaard						Changed class from singleton to normal class w/ static functions
+ * 05/08/2020	 Marco Lombaard						Added limitFields and setFittestEChart functions
+ * 07/08/2020	 Marco Lombaard						Added data-types array to return in parseODataMetaData function
+ * 07/08/2020	 Marco Lombaard						Fixed setFittestEChart function, added setGraphTypes
+ * 07/08/2020	 Phillip Schulze					Moved parseODataMetadata function to Odata.js
+ * 11/08/2020	 Marco Lombaard						Removed deprecated changeFittestGraph function
+ * 14/08/2020	 Marco Lombaard						Converted getSuggestions to use entity name and not sample data
+ * 14/08/2020	 Marco Lombaard						Moved chart construction here, added isInitialised function, modified setMetadata
+ * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
  *
  * Test Cases: none
  *
@@ -65,52 +66,89 @@ class GraphSuggesterController {
 	 * This function passes the data that suggestions need to be generated for, to the graph
 	 * suggester in graphSuggesterAI.js.
 	 * @returns the suggestions that were generated, in JSON format.
-	 * @param entity The entity to select suggestions from
+	 * @param entity the entity to select suggestions from
+	 * @param source the data source that the entity belongs to
 	 */
 	static getSuggestions(entity, source) {
-		const { items, associations, types } = this.metadata[source];
-		graphSuggesterAI.setMetadata(items, associations, types);
+		if (!this.isInitialised()) {
+			console.log('Metadata isn\'t initialised, returning null...');
+			return null;
+		}
+		if (!this.metadata[source]) {
+			console.log('No metadata for ' + source +', returning...');
+		}
 
 		// eslint-disable-next-line eqeqeq
 		if (entity == null) {
 			console.log('no entity received for suggestion generation');
 			return null;
 		}
-		let accepted = false;
+
+		const { items, associations, types } = this.metadata[source];
+		graphSuggesterAI.setMetadata(items, associations, types);
+
+		let isAccepted = false;
+		let entities;
 
 		if (!this.acceptedEntities || this.acceptedEntities.length === 0) {
-			accepted = true;
+			isAccepted = true;
 		} else {
-			for (let i = 0; i < this.acceptedEntities.length; i++) {
-				if (this.acceptedEntities[i].match(entity)) {
-					accepted = true;
-					break;
+			entities = this.acceptedEntities[source];
+			if (!entities || entities.length === 0) {
+				isAccepted = true;
+			} else {
+				for (let i = 0; i < entities.length; i++) {
+					if (entity === entities[i]) {
+						isAccepted = true;
+						break;
+					}
 				}
 			}
 		}
 
-		if (accepted) {
+		if (isAccepted) {
 			let suggestion = graphSuggesterAI.getSuggestions(entity);
 			// eslint-disable-next-line eqeqeq
 			if (suggestion == null) {
 				console.log('Received null suggestion');
 				return null;
 			}
-			let option = this.constructOption(suggestion[1], [suggestion[0], 'value'], suggestion[0], 'value', entity + ': ' + suggestion[0]);
+			let option = this.constructOption(suggestion[1], [ suggestion[3], 'value' ], suggestion[3], 'value', entity + ': ' + suggestion[0]);
 			//console.log(option);
 			return option;
 		}
 
-		console.log(entity + ' is not among ', this.acceptedEntities);
+		console.log(entity + ' is not among ', entities);
 		return null;
 	}
+	//
+	// /**
+	//  * This function checks if an entity is equal to another entity. Entities are represented as objects.
+	//  * @return {boolean} true if the entity is accepted, false otherwise
+	//  */
+	// static isEqual(entity1, entity2) {
+	// 	let keys1 = Object.keys(entity1);
+	// 	let keys2 = Object.keys(entity2);
+	//
+	// 	if (keys1.length !== keys2.length) {
+	// 		return false;
+	// 	}
+	//
+	// 	for (let i = 0; i < keys1.length; i++) {
+	// 		if (entity1[keys1[i]] !== entity2[keys2[i]]) {	//check if attributes match
+	// 			return false;
+	// 		}
+	// 	}
+	// 	return true;
+	// }
 
 	/**
 	 * * This function checks if the necessary parameters for suggestion generation has been set
 	 * @return {boolean} true if it is initialised, false otherwise
 	 */
 	static isInitialised() {
-		if (this.metadata.length > 0) {
+		//console.log(this.metadata);
+		if (this.metadata && Object.keys(this.metadata).length > 0) {
 			return true;
 		}
 		return false;
@@ -127,7 +165,13 @@ class GraphSuggesterController {
 	/**
 	 */
 	static limitEntities(entities) {
-		GraphSuggesterController.acceptedEntities = entities;
+		for (let i = 0; i < entities.length; i++) {
+			if(!this.acceptedEntities[entities[i].source]) {	//if this source isn't listed yet
+				this.acceptedEntities[entities[i].source] = [ entities[i].entityName ];	//create it and store the entity
+			} else {
+				this.acceptedEntities[entities[i].source].push(entities[i].entityName);	//add the name to the existing array
+			}
+		}
 	}
 
 	/**
@@ -205,7 +249,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log("Check that 'encode' is not empty");
+			console.log('Check that \'encode\' is not empty');
 			return false;
 		}
 
@@ -213,7 +257,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log("check that 'encode' has keys");
+			console.log('check that \'encode\' has keys');
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries
@@ -323,9 +367,30 @@ class GraphSuggesterController {
 	}
 
 	static selectEntity() {
-		return GraphSuggesterController.acceptedEntities[Math.random() * GraphSuggesterController.acceptedEntities.length];
+		if (!this.isInitialised()) {
+			console.log('Not yet initialised');
+			return null;
+		}
+
+		let keys = Object.keys(this.acceptedEntities);	//list the sources
+		let source;
+
+		if (keys.length > 0) {	//if a filter was set
+			let key = keys[Math.floor(Math.random() * keys.length)];	//pick a source index
+			source = this.acceptedEntities[key]; //select the source entities
+			return source[Math.floor(Math.random()*source.length)];	//select a random entity
+		} else {	//else just pick from all options
+			keys = Object.keys(this.metadata);	//list the sources
+			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a metadata source index
+			source = this.metadata[key]['items'];	//source entities are listed in 'items' - select it
+			keys = Object.keys(source);	//select the entity keys
+			key = keys[Math.floor(Math.random() * keys.length)];	//select a random entity key
+			return key;
+		}
 	}
 }
-GraphSuggesterController.acceptedEntities = [];
+GraphSuggesterController.acceptedEntities = {};
+GraphSuggesterController.metadata = [];
+
 
 module.exports = GraphSuggesterController;
