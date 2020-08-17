@@ -64,7 +64,7 @@ let graphSuggesterMaker = (function () {
 			this.mutationRate = 0.3; //the rate at which the population should mutate
 			//should we initialise these?
 
-			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom' ]);
+			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom']);
 		}
 
 		/**
@@ -92,31 +92,33 @@ let graphSuggesterMaker = (function () {
 			this.nonTerminals = {};
 			this.fieldTypes = {};
 
-			if (items != null) {//eslint-disable-line
+			if (items != null) {
+				//eslint-disable-line
 				let itemsKeys = Object.keys(items); //get the named keys for the set
 				for (let i = 0; i < itemsKeys.length; i++) {
 					this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
 				}
 			}
 
-			if (associations != null) {//eslint-disable-line
+			if (associations != null) {
+				//eslint-disable-line
 				let associationKeys = Object.keys(associations); //get the named keys for the set
 				for (let i = 0; i < associationKeys.length; i++) {
 					this.nonTerminals[associationKeys[i]] = associations[associationKeys[i]];
 				}
 			}
 
-			if (types != null) {//eslint-disable-line
+			if (types != null) {
+				//eslint-disable-line
 				let typeKeys = Object.keys(types); //get the named keys for the set
 				//it is important to note that types is an object with key-value pairs, where keys are entities
 				//and values are arrays, therefore type[typeKeys[i]] gives an array of values
 				for (let i = 0; i < typeKeys.length; i++) {
 					this.fieldTypes[typeKeys[i]] = [];
 					for (let j = 0; j < types[typeKeys[i]].length; j++) {
-						this.fieldTypes[typeKeys[i]][j] = types[typeKeys[i]][j];	//make a deep copy
+						this.fieldTypes[typeKeys[i]][j] = types[typeKeys[i]][j]; //make a deep copy
 					}
 				}
-
 			}
 
 			// console.log(this.terminals);
@@ -129,7 +131,8 @@ let graphSuggesterMaker = (function () {
 		 */
 		geneticAlgorithm(options, types) {
 			//TODO maybe we can make it so the GA selects entities? will require restructuring other functionality - leave for later
-			if (options == null || options.length === 0 || types == null || types.length === 0) {//eslint-disable-line
+			if (options == null || options.length === 0 || types == null || types.length === 0) {
+				//eslint-disable-line
 				return null;
 			}
 			let chromosomes = []; //Our population
@@ -139,11 +142,11 @@ let graphSuggesterMaker = (function () {
 			let fieldType; //the category/type of field(date, currency, boolean, string, etc.)
 
 			//initialise population
-			for (let i=0; i<populationSize; i++) {
-				titleIndex =  Math.trunc(Math.random() * options.length);	//select a random field title index
-				graphType = this.graphTypes[Math.trunc(Math.random() * 5)];	//select a random graph type
-				fieldType = types[titleIndex];		//obtain the type of the selected field
-				chromosomes[i] = [ titleIndex, graphType, fieldType ];	//set up the chromosome properties
+			for (let i = 0; i < populationSize; i++) {
+				titleIndex = Math.trunc(Math.random() * options.length); //select a random field title index
+				graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
+				fieldType = types[titleIndex]; //obtain the type of the selected field
+				chromosomes[i] = [titleIndex, graphType, fieldType]; //set up the chromosome properties
 				//console.log(i+': ', chromosomes[i]);
 			}
 			//console.log('Options: ', options);
@@ -217,8 +220,9 @@ let graphSuggesterMaker = (function () {
 						} else {
 							mutate = Math.random();
 
-							if (mutate <= this.mutationRate) {	//check if it may mutate
-								this.mutation(chromosomes[i], options, types);	//mutate the chromosome
+							if (mutate <= this.mutationRate) {
+								//check if it may mutate
+								this.mutation(chromosomes[i], options, types); //mutate the chromosome
 								//this.mutation(chromosomes[i], options);	//TODO replace the above line with this
 							}
 						}
@@ -276,35 +280,35 @@ let graphSuggesterMaker = (function () {
 			let temp; //variable used in swapping
 
 			switch (degree) {
-			case 0:
-				temp = parent1[1]; //swap graph types
-				parent1[1] = parent2[1];
-				parent2[1] = temp;
-				break;
+				case 0:
+					temp = parent1[1]; //swap graph types
+					parent1[1] = parent2[1];
+					parent2[1] = temp;
+					break;
 
-			case 1:
-				temp = parent1[2]; //swap fields(and therefore their types)
-				parent1[2] = parent2[2];
-				parent2[2] = temp;
-				temp = parent1[0];
-				parent1[0] = parent2[0];
-				parent2[0] = temp;
-				break;
+				case 1:
+					temp = parent1[2]; //swap fields(and therefore their types)
+					parent1[2] = parent2[2];
+					parent2[2] = temp;
+					temp = parent1[0];
+					parent1[0] = parent2[0];
+					parent2[0] = temp;
+					break;
 
-			case 2:
-				temp = parent1[1]; //swap all attributes(basically a reproduction)
-				parent1[1] = parent2[1];
-				parent2[1] = temp;
-				temp = parent1[2];
-				parent1[2] = parent2[2];
-				parent2[2] = temp;
-				temp = parent1[0];
-				parent1[0] = parent2[0];
-				parent2[0] = temp;
-				break;
+				case 2:
+					temp = parent1[1]; //swap all attributes(basically a reproduction)
+					parent1[1] = parent2[1];
+					parent2[1] = temp;
+					temp = parent1[2];
+					parent1[2] = parent2[2];
+					parent2[2] = temp;
+					temp = parent1[0];
+					parent1[0] = parent2[0];
+					parent2[0] = temp;
+					break;
 
-			default:
-				break; //should never reach this, default to reproduction
+				default:
+					break; //should never reach this, default to reproduction
 			}
 
 			//TODO consider decoupling representation from crossover, as suggested in calculateFitness
@@ -319,7 +323,7 @@ let graphSuggesterMaker = (function () {
 		mutation(chromosome, options, types) {
 			let titleIndex = Math.trunc(Math.random() * options.length); //select a random title index
 			let graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
-			let fieldType = types[titleIndex];	//obtain the field type
+			let fieldType = types[titleIndex]; //obtain the field type
 
 			chromosome[0] = titleIndex;
 			chromosome[1] = graphType;
@@ -332,7 +336,8 @@ let graphSuggesterMaker = (function () {
 		 * @param entity the entity to select fields from
 		 */
 		getSuggestions(entity) {
-			if (this.terminals == null && this.nonTerminals == null) {//eslint-disable-line
+			//eslint-disable-next-line eqeqeq
+			if (this.terminals == null && this.nonTerminals == null) {
 				console.log('No metadata available, returning...');
 				return null;
 			}
@@ -341,7 +346,6 @@ let graphSuggesterMaker = (function () {
 			// eslint-disable-next-line eqeqeq
 			if (keys == null) {
 				console.log('No keys found in metadata to match', entity);
-				console.log(this.terminals);
 				return null;
 			}
 			//console.log(keys);
@@ -359,17 +363,15 @@ let graphSuggesterMaker = (function () {
 
 				if (
 					!(
-						name.includes('ID') ||
-						name.includes('Name') ||
-						name.includes('Picture') ||
-						name.includes('Description') ||
-						name.includes('Date')	//TODO periodic data - pretty useful
-					) && this.accepted(name)	//check that field is in accepted fields
+						(name.includes('ID') || name.includes('Name') || name.includes('Picture') || name.includes('Description') || name.includes('Date')) //TODO periodic data - pretty useful
+					) &&
+					this.accepted(name) //check that field is in accepted fields
 				) {
 					//trim out the "useless" keys
 					types[count] = this.fieldTypes[entity][key];
 					options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
-				} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {//eslint-disable-line
+				} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {
+					//eslint-disable-line
 					//store the name key for later access
 					nameKey = name;
 				}
@@ -444,8 +446,7 @@ let graphSuggesterMaker = (function () {
 				return true;
 			}
 			for (let i = 0; i < this.acceptedFields.length; i++) {
-				if (this.acceptedFields[i].match(name))
-					return true;
+				if (this.acceptedFields[i].match(name)) return true;
 			}
 			return false;
 		}

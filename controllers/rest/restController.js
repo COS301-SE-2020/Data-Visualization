@@ -224,19 +224,19 @@ class RestController {
 			let timedout = false;
 
 			do {
-				randEntity = GraphSuggesterController.selectEntity();
-				console.log(randEntity);
-				suggestion = GraphSuggesterController.getSuggestions(randEntity.entityname, randEntity.datasource);
-
-				if (timer < maxTime) timer++;
-				else timedout = true;
+				if (timer < maxTime) {
+					timer++;
+					randEntity = GraphSuggesterController.selectEntity();
+					console.log('randEntity:', randEntity);
+					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityname, randEntity.datasource);
+				} else timedout = true;
 			} while (suggestion == null && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
 			else {
-				const { entity, field } = extractTitleData(suggestion.title.text);
-				DataSource.getEntityData(randEntity.datasource, entity, field)
-					.then((data) => done(GraphSuggesterController.assempleGraph(suggestion, data)))
+				const { field } = extractTitleData(suggestion.title.text);
+				DataSource.getEntityData(randEntity.datasource, randEntity.entityset, field)
+					.then((data) => done(GraphSuggesterController.assembleGraph(suggestion, data)))
 					.catch((err) => error & error(err));
 			}
 		} else {

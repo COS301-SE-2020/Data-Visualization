@@ -48,12 +48,12 @@ class GraphSuggesterController {
 	 * @param associations the other entities associated with this entity(containing related data)
 	 * @param types the data types of each field, organised by entity
 	 */
-	static setMetadata(source, { items, associations, types }) {
+	static setMetadata(source, { items, associations, types, sets }) {
 		if (!this.metadata) {
 			this.metadata = [];
 			graphSuggesterAI.setMetadata(items, associations, types); //not yet initialised, initialise it
 		}
-		this.metadata[source] = { items, associations, types };
+		this.metadata[source] = { items, associations, types, sets };
 	}
 
 	/**
@@ -147,11 +147,11 @@ class GraphSuggesterController {
 	 */
 	static limitEntities(entities) {
 		for (let i = 0; i < entities.length; i++) {
-			if (!this.acceptedEntities[entities[i].source]) {
+			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-				this.acceptedEntities[entities[i].source] = [entities[i].entityname]; //create it and store the entity
+				this.acceptedEntities[entities[i].datasource] = [entities[i].entityname]; //create it and store the entity
 			} else {
-				this.acceptedEntities[entities[i].source].push(entities[i].entityname); //add the name to the existing array
+				this.acceptedEntities[entities[i].datasource].push(entities[i].entityname); //add the name to the existing array
 			}
 		}
 	}
@@ -354,51 +354,40 @@ class GraphSuggesterController {
 			return null;
 		}
 
-<<<<<<< HEAD
-		let keys = Object.keys(this.acceptedEntities); //list the sources
-=======
-		let keys = Object.keys(this.acceptedEntities);	//list the sources(sources are keys to acceptedEntities)
->>>>>>> graph-suggester
+		let keys = Object.keys(this.acceptedEntities); //list the sources(sources are keys to acceptedEntities)
+
 		let source;
 		let entity = {};
 
-<<<<<<< HEAD
 		if (keys.length > 0) {
 			//if a filter was set
 			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a source index
+
+			entity['datasource'] = key;
+
 			source = this.acceptedEntities[key]; //select the source entities
-			return source[Math.floor(Math.random() * source.length)]; //select a random entity
+			entity['entityname'] = source[Math.floor(Math.random() * source.length)];
+
+			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityname']);
+			entity['entityset'] = this.metadata[entity['datasource']].sets[index];
+
+			return entity; //select a random entity
 		} else {
 			//else just pick from all options
-			keys = Object.keys(this.metadata); //list the sources
+			keys = Object.keys(this.metadata); //list the sources(sources are keys to acceptedEntities)
+
 			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a metadata source index
+			entity['datasource'] = key;
+
 			source = this.metadata[key]['items']; //source entities are listed in 'items' - select it
 			keys = Object.keys(source); //select the entity keys
-			key = keys[Math.floor(Math.random() * keys.length)]; //select a random entity key
-			return key;
-=======
-		if (keys.length > 0) {	//if a filter was set
-			let key = keys[Math.floor(Math.random() * keys.length)];	//pick a source index
-			entity['datasource'] = key;
 
-			source = this.acceptedEntities[key]; //select the source entities
-			entity['entityname'] = source[Math.floor(Math.random()*source.length)];
+			const index = Math.floor(Math.random() * keys.length);
 
-			return entity;	//select a random entity
-		} else {	//else just pick from all options
-			keys = Object.keys(this.metadata);	//list the sources(sources are keys to acceptedEntities)
-
-			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a metadata source index
-			entity['datasource'] = key;
-
-			source = this.metadata[key]['items'];	//source entities are listed in 'items' - select it
-			keys = Object.keys(source);	//select the entity keys
-			key = keys[Math.floor(Math.random() * keys.length)];	//select a random entity key
-
-			entity['entityname'] = key;
+			entity['entityname'] = keys[index]; //select a random entity key
+			entity['entityset'] = this.metadata[entity['datasource']].sets[index];
 
 			return entity;
->>>>>>> graph-suggester
 		}
 	}
 
