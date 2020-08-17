@@ -235,8 +235,23 @@ class RestController {
 			if (timedout) error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
 			else {
 				const { field } = extractTitleData(suggestion.title.text);
+
+				console.log('+++++++++++++++++++++++++++++++++');
+				console.log('src:   ', randEntity.datasource);
+				console.log('item:  ', randEntity.entityname);
+				console.log('set:   ', randEntity.entityset);
+				console.log('field: ', field);
+				console.log('+++++++++++++++++++++++++++++++++');
+
 				DataSource.getEntityData(randEntity.datasource, randEntity.entityset, field)
-					.then((data) => done(GraphSuggesterController.assembleGraph(suggestion, data)))
+					.then((data) => {
+						const graph = GraphSuggesterController.assembleGraph(suggestion, data);
+
+						console.log(graph);
+						console.log(JSON.stringify(graph));
+
+						done(graph);
+					})
 					.catch((err) => error & error(err));
 			}
 		} else {
