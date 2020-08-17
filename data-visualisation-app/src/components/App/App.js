@@ -528,7 +528,7 @@ function App(props) {
 
 					<div className={classes.toolbar} />
 
-					{/*{page}*/}
+					{page}
 					{/*<EditChart options={{*/}
 					{/*	// title: {*/}
 					{/*	// 	text: 'Confidence Band',*/}
@@ -548,7 +548,7 @@ function App(props) {
 					{/*		type: 'line'*/}
 					{/*	}]*/}
 					{/*}} />*/}
-					<EditChart options={{
+					{/* <EditChart options={{
 						xAxis: {},
 						yAxis: {},
 						series: [{
@@ -568,7 +568,7 @@ function App(props) {
 							],
 							type: 'scatter'
 						}]
-					}} />
+					}} /> */}
 				</main>
 
 			</div>

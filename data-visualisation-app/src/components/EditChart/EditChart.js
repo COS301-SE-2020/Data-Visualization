@@ -822,7 +822,7 @@ function EditChart(props) {
                 </Box>
                 {/*</Grid>*/}
                 {/*<Grid item xs={4} >*/}
-                <Box style={{overflowY: 'scroll'}} mx={0.5} width={1500} display='inline-block' height='100%' className='editCharts__container--box'>
+                <Box style={{overflowY: 'scroll'}} mx={0.5} width={600} display='inline-block' height='100%' className='editCharts__container--box'>
                     <div className='box__title'>
                         Data
                     </div>
