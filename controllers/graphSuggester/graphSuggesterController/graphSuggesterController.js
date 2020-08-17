@@ -20,6 +20,7 @@
  * 14/08/2020	 Marco Lombaard						Converted getSuggestions to use entity name and not sample data
  * 14/08/2020	 Marco Lombaard						Moved chart construction here, added isInitialised function, modified setMetadata
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
+ * 17/08/2020	 Marco Lombaard						Added assembleGraph function
  *
  * Test Cases: none
  *
@@ -76,6 +77,7 @@ class GraphSuggesterController {
 		}
 		if (!this.metadata[source]) {
 			console.log('No metadata for ' + source +', returning...');
+			return null;
 		}
 
 		// eslint-disable-next-line eqeqeq
@@ -387,6 +389,20 @@ class GraphSuggesterController {
 			key = keys[Math.floor(Math.random() * keys.length)];	//select a random entity key
 			return key;
 		}
+	}
+
+	/**
+	 * This function populates the graph with its data
+	 * @param suggestion the chart object
+	 * @param data the chart data to populate with
+	 * @return suggestion the full chart with data
+	 */
+	static assembleGraph(suggestion, data) {
+		for (let i = 0; i < data.length; i++) {
+			suggestion['dataset']['source'][i+1] = data[i];
+		}
+
+		return suggestion;
 	}
 }
 GraphSuggesterController.acceptedEntities = {};
