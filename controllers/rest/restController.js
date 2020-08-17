@@ -177,37 +177,23 @@ class RestController {
 			GraphSuggesterController.limitFields(fields);
 			GraphSuggesterController.setGraphTypes(graphTypes);
 
-			//TODO: refactor promise waiting
-
 			//construct array of sources from entities with no duplicates
 			const datasources = [...new Set(entities.map((entity) => entity.datasource))];
-			datasources.forEach((src, i) => {
-				DataSource.getMetaData(src)
-					.then((Meta) => {
-						GraphSuggesterController.setMetadata(src, Meta);
-					})
-					.catch((err) => console.log(err));
-			});
-			done();
+
+			Promise.all(datasources.map((src) => DataSource.getMetaData(src)))
+				.then((metaDataList) => {
+					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], Meta));
+					console.log('Meta Data retrieved for sources:');
+					console.log(datasources);
+
+					done();
+				})
+				.catch((err) => {
+					error && error(err);
+				});
 		} catch (err) {
 			error && error(err);
 		}
-
-		// req.body = {
-		// 	selectedEntities: [
-		// 		{
-		// 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
-		// 			entityname: 'entity1',
-		// 			fields: ['aaa', 'aaa', 'aaaa'],
-		// 		},
-		// 		{
-		// 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
-		// 			entityname: 'entity2',
-		// 			fields: ['aaa', 'aaa', 'aaaa'],
-		// 		},
-		// 	],
-		// 	selectedFields: ['AAA','asfsaf','safsaf']
-		// };
 	}
 
 	/**
@@ -418,15 +404,13 @@ function extractTitleData(title) {
 			entity = title.substr(0, index);
 			field = title.substr(index + 2);
 		}
-
-		console.log({ entity, field });
-
 		return { entity, field };
 	} else return title;
 }
 
 function outputSuggestionMeta(src, item, set, field) {
 	console.log('=====================================');
+	console.log('GENERATED SUGGESTION');
 	console.log('src:   ', src);
 	console.log('item:  ', item);
 	console.log('set:   ', set);
