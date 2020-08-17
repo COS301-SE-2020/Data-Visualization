@@ -79,6 +79,16 @@ DataSourceRouteMeta.post('/entities', (req, res) => {
 	}
 });
 
+// DataSourceRouteMeta.post('/fields', (req, res) => {
+// 	Rest.getEntityData(
+// 		req.body.sourceurl,
+// 		req.body.entity,
+// 		req.body.field,
+// 		(data) => res.status(200).json(data),
+// 		(err) => error(res, err)
+// 	);
+// });
+
 //TODO: Get data (part of the 20%)
 // DataSourceRouteSrc.post('/data', (req, res) => {
 // 	if (Object.keys(req.body).length === 0) {

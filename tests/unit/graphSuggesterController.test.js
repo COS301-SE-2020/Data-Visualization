@@ -30,4 +30,8 @@ describe('Testing functions in the graphSuggesterController class', function () 
 	test('Returns true when setting fitness chart to null', () => {
 		expect(graphSuggesterController.setFittestEChart(null)).toBe(true);
 	});
+
+	test('Returns null when an invalid entity is requested for suggestions', () => {
+		expect(graphSuggesterController.getSuggestions('Red')).toBeNull();
+	});
 });

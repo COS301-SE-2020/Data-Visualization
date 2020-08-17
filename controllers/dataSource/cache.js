@@ -22,9 +22,61 @@ const CacheMaker = (function () {
 			return null;
 		}
 
-		getEntityData(src, entity) {
-			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) return this.entityData[src][entity].data;
+		getEntityData(src, entity, field) {
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) {
+				const data = this.entityData[src][entity].data;
+
+				//TODO: refactor this
+				const prim = Object.keys(data[0])[1];
+				// console.log('Keys:', Object.keys(data[0]));
+				// console.log('Primary Key:', prim);
+
+				const res = data.map((item, i) => [item[prim], item[field]]);
+
+				// let res = [];
+				// for (let i = 0; i < 3 /*data.length*/; ++i) {
+				// 	const item = data[i];
+
+				// 	if (i === 1) {
+				// 		console.log(item, field, item[field], Object.keys(item));
+
+				// 		let index = Object.keys(item).indexOf(field);
+				// 		console.log('index:', index);
+				// 	}
+
+				// 	const primValue = item[prim];
+				// 	const value = item[field];
+
+				// 	res.push([primValue, value]);
+				// }
+
+				// console.log(res);
+
+				return res;
+			}
 			return null;
+
+			/*
+			{
+				__metadata: {
+				uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(1)',
+				type: 'NorthwindModel.Product'
+				},
+				ProductID: 1,
+				ProductName: 'Chai',
+				SupplierID: 1,
+				CategoryID: 1,
+				QuantityPerUnit: '10 boxes x 20 bags',
+				UnitPrice: '18.0000',
+				UnitsInStock: 39,
+				UnitsOnOrder: 0,
+				ReorderLevel: 10,
+				Discontinued: false,
+				Category: { __deferred: [Object] },
+				Order_Details: { __deferred: [Object] },
+				Supplier: { __deferred: [Object] }
+			}
+			*/
 		}
 
 		validateMetadata(src) {

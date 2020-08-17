@@ -15,6 +15,7 @@
  * 06/08/2020	Elna Pistorius 						 Added a function that deregisters users.
  * 11/08/2020   Elna Pistorius                       Updated the updateGraphTypes function
  * 11/08/2020	Marco Lombaard						 Added the stringsToGraphData function
+ * 14/08/2020	Marco Lombaard						 Modified getSuggestion to only need metadata for suggestion generation
  *
  * Test Cases: none
  *
@@ -35,7 +36,6 @@ const { GraphSuggesterController } = require('../graphSuggester');
  * @author Elna Pistorius & Phillip Schulze
  */
 class RestController {
-
 	/**************** USER ****************/
 
 	/**
@@ -155,43 +155,86 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of the entities data
 	 */
-	static getEntityData(src, entity, done, error) {
-		DataSource.getEntityData(src, entity)
+	static getEntityData(src, entity, field, done, error) {
+		DataSource.getEntityData(src, entity, field)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
+
+	/**************** Suggestions ****************/
+
+	/**
+	 * This function set suggestion parameters that are used when requesting suggestions
+	 * @param graph the graph that is to be set as the fittest graph
+	 * @param entities the list of entities that should be used for suggestion generation
+	 * @param fields the list of fields that should be used for suggestion generation
+	 */
+	static setSuggestionParams(graph, entities, fields, graphTypes, done, error) {
+		try {
+			GraphSuggesterController.clearMetadata();
+			GraphSuggesterController.setFittestEChart(graph);
+			GraphSuggesterController.limitEntities(entities);
+			GraphSuggesterController.limitFields(fields);
+			GraphSuggesterController.setGraphTypes(graphTypes);
+
+			//construct array of sources from entities with no duplicates
+			const datasources = [...new Set(entities.map((entity) => entity.datasource))];
+
+			Promise.all(datasources.map((src) => DataSource.getMetaData(src)))
+				.then((metaDataList) => {
+					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], Meta));
+					console.log('Meta Data retrieved for sources:');
+					console.log(datasources);
+
+					done();
+				})
+				.catch((err) => {
+					error && error(err);
+				});
+		} catch (err) {
+			error && error(err);
+		}
+	}
+
 	/**
 	 * This function gets suggestions based off of the source provided
 	 * @param src the source that is requested to be used to generate a suggestion
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static getSuggestions(src, done, error) {
-		DataSource.getMetaData(src)
-			.then((Meta) => {
-				GraphSuggesterController.setMetadata(Meta);
+	static getSuggestions(done, error) {
+		if (GraphSuggesterController.isInitialised()) {
+			let randEntity;
+			let suggestion;
 
-				let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
-				const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
-				let chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
+			const maxTime = 10;
+			let timer = 0;
+			let timedout = false;
 
-				while (chosen !== null && chosen.length === 0) {
-					//check if the item with the selected key has data
-					randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
-				}
-				const randEntity = Meta.sets[randKey]; //select this entity for data source querying
+			do {
+				if (timer < maxTime) {
+					timer++;
+					randEntity = GraphSuggesterController.selectEntity();
+					// console.log('randEntity:', randEntity);
+					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityname, randEntity.datasource);
+				} else timedout = true;
+			} while (suggestion == null && !timedout); // eslint-disable-line eqeqeq
 
-				console.log('Entity: ', randEntity);
+			if (timedout) error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
+			else {
+				//TODO: refactor field exraction
+				const { field } = extractTitleData(suggestion.title.text);
 
-				DataSource.getEntityData(src, randEntity)
-					.then((Odata) => {
-						const options = GraphSuggesterController.getSuggestions(Odata);
-						if (options === null) RestController.getSuggestions(src, done, error);
-						else done(options);
+				DataSource.getEntityData(randEntity.datasource, randEntity.entityset, field)
+					.then((data) => {
+						outputSuggestionMeta(randEntity.datasource, randEntity.entityname, randEntity.entityset, field);
+						done(GraphSuggesterController.assembleGraph(suggestion, data));
 					})
-					.catch((err) => error && error(err));
-			})
-			.catch((err) => error && error(err));
+					.catch((err) => error & error(err));
+			}
+		} else {
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first' });
+		}
 	}
 
 	/**************** DASHBOARD ****************/
@@ -319,7 +362,7 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static updateGraphTypes(graphTypes, done, error){
+	static updateGraphTypes(graphTypes, done, error) {
 		GraphSuggesterController.setGraphTypes(graphTypes);
 		done();
 	}
@@ -330,20 +373,49 @@ class RestController {
 	 * @param stringDataArray the string data in array format. This should just be the data, nothing else
 	 * @return {{}} an object containing categories as keys, and the amount of times each category occurs as values
 	 */
-	static stringsToGraphData(stringDataArray) {	//TODO could move this to IGA for generation on best way to represent strings
-		let list = {};	//The basic structure will be key-value pairs, where keys are unique string values
+	static stringsToGraphData(stringDataArray) {
+		//TODO could move this to IGA for generation on best way to represent strings
+		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
 
 		for (let i = 0; i < stringDataArray.length; i++) {
-			if (list[stringDataArray[i]] != null) {	//eslint-disable-line
-				list[stringDataArray[i]]++;	//if this category was already created, increment how often it has occurred
+			// eslint-disable-next-line eqeqeq
+			if (list[stringDataArray[i]] != null) {
+				//eslint-disable-line
+				list[stringDataArray[i]]++; //if this category was already created, increment how often it has occurred
 			} else {
-				list[stringDataArray[i]] = 1;	//else create the category
+				list[stringDataArray[i]] = 1; //else create the category
 			}
 		}
 
 		return list;
 	}
+}
+
+function extractTitleData(title) {
+	if (typeof title === 'string') {
+		let index = title.indexOf(':');
+
+		let entity = '';
+		let field = '';
+
+		if (index < 0) entity = title;
+		else {
+			entity = title.substr(0, index);
+			field = title.substr(index + 2);
+		}
+		return { entity, field };
+	} else return title;
+}
+
+function outputSuggestionMeta(src, item, set, field) {
+	console.log('=====================================');
+	console.log('GENERATED SUGGESTION');
+	console.log('src:   ', src);
+	console.log('item:  ', item);
+	console.log('set:   ', set);
+	console.log('field: ', field);
+	console.log('=====================================');
 }
 
 module.exports = RestController;
