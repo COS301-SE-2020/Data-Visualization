@@ -29,7 +29,102 @@ import './Suggestions.scss';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
+function Suggestion(props) {
+    const [isAdded, setIsAdded] = useState(false);
 
+    function onAddChartToDashboard(chart, dashboard) {
+
+        if (props.dashboardSelection[chart][dashboard]) {
+            request.graph.delete(request.cache.dashboard.list.data[dashboard].id, request.cache.suggestions.graph.list[chart].id, function(result) {
+                if (result === constants.RESPONSE_CODES.SUCCESS) {
+                    message.success('Successfully  removed chart to dashboard!');
+                    let newdashboardselection = JSON.parse(JSON.stringify(props.dashboardSelection));
+                    newdashboardselection[chart][dashboard] = !newdashboardselection[chart][dashboard];
+                    props.setDashboardSelection(newdashboardselection);
+                } else {
+                    message.error('Something went wrong. Could not remove chart to dashboard!');
+                }
+            });
+        } else {
+
+            let newid = '';
+            let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let charactersLength = characters.length;
+            for (let i = 0; i < 10; i++) {
+                newid += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+
+            request.cache.suggestions.graph.list[chart].id = newid;
+            request.graph.add(request.cache.dashboard.list.data[dashboard].id, props.currentCharts[chart].title, props.currentCharts[chart].options, {}, function(result) {
+                if (result === constants.RESPONSE_CODES.SUCCESS) {
+                    message.success('Successfully  added chart to dashboard!');
+                    let newdashboardselection = JSON.parse(JSON.stringify(props.dashboardSelection));
+                    newdashboardselection[chart][dashboard] = !newdashboardselection[chart][dashboard];
+                    props.setDashboardSelection(newdashboardselection);
+                } else {
+                    message.error('Something went wrong. Could not add chart to dashboard!');
+                }
+            });
+        }
+
+
+    }
+
+    return (
+        <div className='suggestion panel__shadow'>
+            <div style={{marginBottom: '10px'}}>
+                <Grid container spacing={3}>
+                    <Grid item xs={10}>
+                        <Typography.Title level={4}>{props.chartData.title}</Typography.Title>
+                    </Grid>
+                    <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
+
+                        {request.user.isLoggedIn &&
+                        <Dropdown overlay={(() => {
+                            return <Menu>
+                                {props.dashboardList.map((dashboardname, index) => {
+                                    return <Menu.Item key={index} onClick={() => {onAddChartToDashboard(props.id, index);}}>
+
+                                        <span>{dashboardname}</span>
+                                        <span style={{float: 'right'}}>
+                                                    {props.dashboardSelection[props.id][index] &&
+                                                    <CheckOutlined />}
+                                                </span>
+                                    </Menu.Item>;
+                                })}
+                            </Menu>;
+                        })()} placement="bottomLeft">
+                            {(isAdded ? <CheckOutlined /> : <PlusCircleOutlined />)}
+                        </Dropdown>
+                        }
+
+                    </Grid>
+                </Grid>
+            </div>
+            {/*<ReactEcharts option={props.chartData.options} style={{height: '300px', width: '100%'}} />*/}
+            <ReactEcharts option={props.chartData.options} />
+            <div style={{marginTop: '10px'}}>
+                <Grid container spacing={3}>
+                    <Grid item xs={2}>
+                        <ShareAltOutlined />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <BookOutlined />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <StarOutlined />
+                    </Grid>
+                    <Grid item xs={2}>
+
+
+                    </Grid>
+                </Grid>
+            </div>
+        </div>
+    );
+}
+
+const SuggestionMemo = React.memo(Suggestion, () => {return true;});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -345,7 +440,9 @@ function Suggestions(props) {
                                                 <Form.Item name={index} valuePropName='checked'>
                                                     <Checkbox className = 'checkboxItem' hidden = {true}></Checkbox>
                                                 </Form.Item>
-                                                <Suggestion id={index} chartData={achart}/>
+                                                {/*<Suggestion id={index} chartData={achart}/>*/}
+
+                                                <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} />
                                             </div>
                                         </Grid>;
                             })}
