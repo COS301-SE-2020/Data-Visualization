@@ -74,7 +74,7 @@ const API = {
 	suggestion: {
 	
 		set: (selectedEntities, selectedFields, graphTypes, fittestGraph) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {selectedEntities, selectedFields, graphTypes, fittestGraph}),
-		chart: () => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { }),
+		chart: () => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {}),
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl}),
 	},
 };
