@@ -73,7 +73,7 @@ const API = {
 	},
 	suggestion: {
 	
-		set: (selectedEntities, selectedFields, graphTypes, fittestGraph) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {selectedEntities, selectedFields, graphTypes, fittestGraph}),
+		set: (graphTypes, selectedEntities, selectedFields, fittestGraph) => axios.post(constants.URL.SUGGESTIONS.SET, {graphTypes, selectedEntities, selectedFields, fittestGraph}),
 		chart: () => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {}),
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl}),
 	},
@@ -544,15 +544,15 @@ const request = {
 	suggestions: {
 
 
-		set: (selectedEntities, selectedFields, graphTypes, fittestGraph, callback) => {
+		set: (graphTypes, selectedEntities, selectedFields, fittestGraph, callback) => {
 		
 			API.suggestion
-				.set(selectedEntities, selectedFields, graphTypes, fittestGraph)
+				.set(graphTypes, selectedEntities, selectedFields, fittestGraph)
 				.then((res) => {
 					if (callback !== undefined) {
 						console.debug('Response from suggestion.graph:', res);
 
-						//console.log('set');
+						console.log(res);
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
 				})
@@ -567,7 +567,7 @@ const request = {
 					if (callback !== undefined) {
 						console.debug('Response from suggestion.graph:', res);
 						request.cache.suggestions.graph.current = res.data;
-						
+
 						//console.log('get ' + res);
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}

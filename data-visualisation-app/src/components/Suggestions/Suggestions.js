@@ -151,10 +151,6 @@ function IGALoading() {
  */
 function Suggestions(props) {
 
-    console.log(request.user.selectedEntities);
-    console.log(request.user.selectedFields);
-    console.log(request.user.graphTypes);
-
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
@@ -164,6 +160,7 @@ function Suggestions(props) {
     const newCurrentCharts = useRef(null);
     const [getToReload, setGetToReload] = useState(false);
     const [filterState, setFilterState] = useState(false);
+    const [form] = Form.useForm();
 
     const onFinish = values => {
         console.log('Success:', values);
@@ -172,6 +169,8 @@ function Suggestions(props) {
     const onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
     };
+
+    
 
 
     const moreLikeThis = values =>{
@@ -184,20 +183,21 @@ function Suggestions(props) {
             }
         }
 
-        console.log(request.user.selectedEntities);
-        console.log(request.user.selectedFields);
-        console.log(request.user.graphTypes);
-        console.log( request.user.fittestGraphs);
 
-        
-        generateCharts(request.user.selectedEntities, request.user.selectedFields, request.user.graphTypes, request.user.fittestGraphs );
+        generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
 
-        //setLoading(false);
     };
 
 
-    const generateCharts = (selectedEntities, selectedFields, graphTypes, fittestGraphs)  =>{
+    const generateCharts = (graphTypes, selectedEntities, selectedFields, fittestGraphs)  =>{
+
+        console.log(graphTypes);
+        console.log(selectedEntities);
+        console.log(selectedFields);
+        console.log(graphTypes);
+
+
 
         if (request.user.isLoggedIn) {
             request.dashboard.list(function() {
@@ -210,7 +210,7 @@ function Suggestions(props) {
 
         let shouldcontinue = true;
         
-            request.suggestions.set(selectedEntities, selectedFields, graphTypes, fittestGraphs, function (result) {
+            request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
 
 
@@ -294,18 +294,20 @@ function Suggestions(props) {
     
     };
 
-    const [form] = Form.useForm();
+    
+    
 
- 
 
     useEffect(() => {
 
-        // let newDashboardSelection, newCurrentCharts;
-        generateCharts(request.user.selectedEntities, request.user.selectedFields, request.user.graphTypes, request.user.fittestGraphs);
+        generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
         
-
     }, []);
 
+    // if(filterState === false){
+    //     generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
+    //     request.user.fittestGraphs = [];
+    // }
 
    
     
@@ -462,7 +464,7 @@ function Suggestions(props) {
                     <main>
                         {
                             filterState ?
-                                <FilterDialog setFState = {setFilterState}/>
+                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts}/>
                                 :
                                 null
                         }

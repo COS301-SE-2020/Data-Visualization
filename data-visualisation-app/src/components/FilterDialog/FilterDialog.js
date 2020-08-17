@@ -71,7 +71,7 @@ const FilterDialog = (props) => {
 
     const [visible, setVisible] = useState(true);
     
-    const graphTypes = [{ value: 'Bar graph' }, { value: 'Pie chart' }, { value: 'Histogram' }, { value: 'Line graph' }, { value: 'Scatter plot' }];
+    const graphTypes = [{ value: 'bar' }, { value: 'pie' }, { value: 'line' }, { value: 'scatter' }, { value: 'effectScatter' }];
 
     
     var obj = {};
@@ -122,6 +122,7 @@ const FilterDialog = (props) => {
         console.log('Success:', values);
 
         handleFilterCancel();
+        props.generateCharts(request.user.selectedEntities, request.user.selectedFields, request.user.graphTypes, request.user.fittestGraphs);
       };
     
       const onFinishFailed = errorInfo => {
