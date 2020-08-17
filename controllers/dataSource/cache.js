@@ -1,3 +1,25 @@
+/**
+ * @file  cache.test.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             Changes
+ * -------------------------------------------------------------------------------
+ * 06/08/2020   Phillip Schulze     Original
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a cache using the singleton pattern. This cache stores data the was previously
+ * requested from external data sources, and thus can be accessed in the future without making additional requests to external sources.
+ *
+ * Error Messages: "Error"
+ * Assumptions: None
+ * Constraints: None
+ */
+
 const CacheMaker = (function () {
 	let instance = null;
 	/**
@@ -24,38 +46,12 @@ const CacheMaker = (function () {
 		getEntityData(src, entity, field) {
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) {
 				const data = this.entityData[src][entity].data;
-
 				//TODO: refactor this
 				const prim = Object.keys(data[0])[1];
 				const res = data.map((item, i) => [item[prim], item[field]]);
-				// console.log('Keys:', Object.keys(data[0]));
-				// console.log('Primary Key:', prim);
-				// console.log(res);
 				return res;
 			}
 			return null;
-
-			/*
-			{
-				__metadata: {
-				uri: 'https://services.odata.org/V2/Northwind/Northwind.svc/Products(1)',
-				type: 'NorthwindModel.Product'
-				},
-				ProductID: 1,
-				ProductName: 'Chai',
-				SupplierID: 1,
-				CategoryID: 1,
-				QuantityPerUnit: '10 boxes x 20 bags',
-				UnitPrice: '18.0000',
-				UnitsInStock: 39,
-				UnitsOnOrder: 0,
-				ReorderLevel: 10,
-				Discontinued: false,
-				Category: { __deferred: [Object] },
-				Order_Details: { __deferred: [Object] },
-				Supplier: { __deferred: [Object] }
-			}
-			*/
 		}
 
 		validateMetadata(src) {
@@ -124,7 +120,7 @@ const CacheMaker = (function () {
 	return {
 		/**
 		 * A function that returns a singleton object of the Cache type.
-		 * @return {Cache} a controller that handles all graph suggestion requests.
+		 * @return {Cache} an object that stores data from previous requests.
 		 */
 		getInstance: function () {
 			if (instance === null) {
