@@ -88,7 +88,7 @@ class Odata {
 	 * @returns an object containing the parsed items and associated tables as well as the item sets and data-types in each "table"
 	 */
 	static parseODataMetadata(xmlData) {
-		if (xmlData == null) return null; //eslint-disable-line
+		if (!xmlData || xmlData == null) return null; //eslint-disable-line
 
 		let parser = new DOMParser();
 		let xmlDoc = parser.parseFromString(xmlData, 'text/xml');
