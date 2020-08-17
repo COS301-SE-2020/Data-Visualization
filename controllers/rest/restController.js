@@ -169,12 +169,13 @@ class RestController {
 	 * @param entities the list of entities that should be used for suggestion generation
 	 * @param fields the list of fields that should be used for suggestion generation
 	 */
-	static setSuggestionParams(graph, entities, fields, done, error) {
+	static setSuggestionParams(graph, entities, fields, graphTypes, done, error) {
 		try {
 			GraphSuggesterController.clearMetadata();
 			GraphSuggesterController.setFittestEChart(graph);
 			GraphSuggesterController.limitEntities(entities);
 			GraphSuggesterController.limitFields(fields);
+			GraphSuggesterController.setGraphTypes(graphTypes);
 
 			//construct array of sources from entities with no duplicates
 			const datasources = [...new Set(entities.map((entity) => entity.datasource))];

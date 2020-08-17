@@ -37,11 +37,14 @@ router.post('/params', (req, res) => {
 		error(res, { error: 'Selected Entities Graph Undefined' }, 400);
 	} else if (req.body.selectedFields === undefined) {
 		error(res, { error: 'Selected Fields Undefined' }, 400);
+	} else if (req.body.graphTypes === undefined) {
+		error(res, { error: 'Graph Types Undefined' }, 400);
 	} else {
 		Rest.setSuggestionParams(
 			req.body.fittestGraph,
 			req.body.selectedEntities,
 			req.body.selectedFields,
+			req.body.graphTypes,
 			(list) => res.status(200).json(list),
 			(err) => error(res, err, 400)
 		);
