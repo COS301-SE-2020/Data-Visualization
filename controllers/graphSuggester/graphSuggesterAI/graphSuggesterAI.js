@@ -64,7 +64,8 @@ let graphSuggesterMaker = (function () {
 			this.mutationRate = 0.3; //the rate at which the population should mutate
 			//should we initialise these?
 
-			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter', 'parallel', 'candlestick', 'map', 'funnel', 'custom']);
+			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter']);
+			//TODO 'parallel', 'candlestick', 'map', 'funnel', 'custom'
 		}
 
 		/**
@@ -92,24 +93,24 @@ let graphSuggesterMaker = (function () {
 			this.nonTerminals = {};
 			this.fieldTypes = {};
 
+			//eslint-disable-next-line eqeqeq
 			if (items != null) {
-				//eslint-disable-line
 				let itemsKeys = Object.keys(items); //get the named keys for the set
 				for (let i = 0; i < itemsKeys.length; i++) {
 					this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
 				}
 			}
 
+			//eslint-disable-next-line eqeqeq
 			if (associations != null) {
-				//eslint-disable-line
 				let associationKeys = Object.keys(associations); //get the named keys for the set
 				for (let i = 0; i < associationKeys.length; i++) {
 					this.nonTerminals[associationKeys[i]] = associations[associationKeys[i]];
 				}
 			}
 
+			//eslint-disable-next-line eqeqeq
 			if (types != null) {
-				//eslint-disable-line
 				let typeKeys = Object.keys(types); //get the named keys for the set
 				//it is important to note that types is an object with key-value pairs, where keys are entities
 				//and values are arrays, therefore type[typeKeys[i]] gives an array of values
@@ -131,8 +132,8 @@ let graphSuggesterMaker = (function () {
 		 */
 		geneticAlgorithm(options, types) {
 			//TODO maybe we can make it so the GA selects entities? will require restructuring other functionality - leave for later
+			//eslint-disable-next-line eqeqeq
 			if (options == null || options.length === 0 || types == null || types.length === 0) {
-				//eslint-disable-line
 				return null;
 			}
 			let chromosomes = []; //Our population
@@ -143,8 +144,10 @@ let graphSuggesterMaker = (function () {
 
 			//initialise population
 			for (let i = 0; i < populationSize; i++) {
-				titleIndex = Math.trunc(Math.random() * options.length); //select a random field title index
-				graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
+				titleIndex = Math.floor(Math.random() * options.length); //select a random field title index
+				let index = Math.floor(Math.random() * this.graphTypes.length);//select a random graph type index
+
+				graphType = this.graphTypes[index]; //select a random graph type
 				fieldType = types[titleIndex]; //obtain the type of the selected field
 				chromosomes[i] = [titleIndex, graphType, fieldType]; //set up the chromosome properties
 				//console.log(i+': ', chromosomes[i]);
@@ -370,8 +373,8 @@ let graphSuggesterMaker = (function () {
 					//trim out the "useless" keys
 					types[count] = this.fieldTypes[entity][key];
 					options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
+					//eslint-disable-next-line eqeqeq
 				} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {
-					//eslint-disable-line
 					//store the name key for later access
 					nameKey = name;
 				}
