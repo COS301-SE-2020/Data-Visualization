@@ -27,30 +27,10 @@ const CacheMaker = (function () {
 
 				//TODO: refactor this
 				const prim = Object.keys(data[0])[1];
+				const res = data.map((item, i) => [item[prim], item[field]]);
 				// console.log('Keys:', Object.keys(data[0]));
 				// console.log('Primary Key:', prim);
-
-				const res = data.map((item, i) => [item[prim], item[field]]);
-
-				// let res = [];
-				// for (let i = 0; i < 3 /*data.length*/; ++i) {
-				// 	const item = data[i];
-
-				// 	if (i === 1) {
-				// 		console.log(item, field, item[field], Object.keys(item));
-
-				// 		let index = Object.keys(item).indexOf(field);
-				// 		console.log('index:', index);
-				// 	}
-
-				// 	const primValue = item[prim];
-				// 	const value = item[field];
-
-				// 	res.push([primValue, value]);
-				// }
-
 				// console.log(res);
-
 				return res;
 			}
 			return null;
