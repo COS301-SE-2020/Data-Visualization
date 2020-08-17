@@ -20,7 +20,7 @@
  * 14/08/2020	 Marco Lombaard						Converted getSuggestions to use entity name and not sample data
  * 14/08/2020	 Marco Lombaard						Moved chart construction here, added isInitialised function, modified setMetadata
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
- * 17/08/2020	 Marco Lombaard						Added assembleGraph function
+ * 17/08/2020	 Marco Lombaard						Added assembleGraph function, selectEntity now returns an object
  *
  * Test Cases: none
  *
@@ -354,20 +354,31 @@ class GraphSuggesterController {
 			return null;
 		}
 
-		let keys = Object.keys(this.acceptedEntities);	//list the sources
+		let keys = Object.keys(this.acceptedEntities);	//list the sources(sources are keys to acceptedEntities)
 		let source;
+		let entity = {};
 
 		if (keys.length > 0) {	//if a filter was set
 			let key = keys[Math.floor(Math.random() * keys.length)];	//pick a source index
+			entity['datasource'] = key;
+
 			source = this.acceptedEntities[key]; //select the source entities
-			return source[Math.floor(Math.random()*source.length)];	//select a random entity
+			entity['entityname'] = source[Math.floor(Math.random()*source.length)];
+
+			return entity;	//select a random entity
 		} else {	//else just pick from all options
-			keys = Object.keys(this.metadata);	//list the sources
+			keys = Object.keys(this.metadata);	//list the sources(sources are keys to acceptedEntities)
+
 			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a metadata source index
+			entity['datasource'] = key;
+
 			source = this.metadata[key]['items'];	//source entities are listed in 'items' - select it
 			keys = Object.keys(source);	//select the entity keys
 			key = keys[Math.floor(Math.random() * keys.length)];	//select a random entity key
-			return key;
+
+			entity['entityname'] = key;
+
+			return entity;
 		}
 	}
 

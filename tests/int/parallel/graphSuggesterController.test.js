@@ -158,9 +158,10 @@ describe('Testing functions in the graphSuggesterController class that call func
 	test('Successfully selects an entity from filtered entities', () => {
 		graphSuggesterController.setMetadata('url', { items, associations, types });
 		let choice = graphSuggesterController.selectEntity();
-		expect(choice).toMatch('Product');
+		let object = { 'datasource':'url', 'entityname':'Product' };
+		expect(choice).toMatchObject(object);
 		graphSuggesterController.limitEntities([{ entityName:'Product', source:'url' }]);
-		expect(graphSuggesterController.selectEntity()).toMatch('Product');
+		expect(graphSuggesterController.selectEntity()).toMatchObject(object);
 	});
 
 });
