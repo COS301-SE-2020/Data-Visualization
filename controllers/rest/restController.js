@@ -177,6 +177,8 @@ class RestController {
 			GraphSuggesterController.limitFields(fields);
 			GraphSuggesterController.setGraphTypes(graphTypes);
 
+			//TODO: refactor promise waiting
+
 			//construct array of sources from entities with no duplicates
 			const datasources = [...new Set(entities.map((entity) => entity.datasource))];
 			datasources.forEach((src, i) => {
@@ -214,7 +216,7 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static getSuggestions(src, done, error) {
+	static getSuggestions(done, error) {
 		if (GraphSuggesterController.isInitialised()) {
 			let randEntity;
 			let suggestion;
@@ -227,30 +229,20 @@ class RestController {
 				if (timer < maxTime) {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
-					console.log('randEntity:', randEntity);
+					// console.log('randEntity:', randEntity);
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityname, randEntity.datasource);
 				} else timedout = true;
 			} while (suggestion == null && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
 			else {
+				//TODO: refactor field exraction
 				const { field } = extractTitleData(suggestion.title.text);
-
-				console.log('+++++++++++++++++++++++++++++++++');
-				console.log('src:   ', randEntity.datasource);
-				console.log('item:  ', randEntity.entityname);
-				console.log('set:   ', randEntity.entityset);
-				console.log('field: ', field);
-				console.log('+++++++++++++++++++++++++++++++++');
 
 				DataSource.getEntityData(randEntity.datasource, randEntity.entityset, field)
 					.then((data) => {
-						const graph = GraphSuggesterController.assembleGraph(suggestion, data);
-
-						console.log(graph);
-						console.log(JSON.stringify(graph));
-
-						done(graph);
+						outputSuggestionMeta(randEntity.datasource, randEntity.entityname, randEntity.entityset, field);
+						done(GraphSuggesterController.assembleGraph(suggestion, data));
 					})
 					.catch((err) => error & error(err));
 			}
@@ -423,11 +415,23 @@ function extractTitleData(title) {
 
 		if (index < 0) entity = title;
 		else {
-			entity = title.substr(0, index - 1);
-			field = title.substr(index + 1);
+			entity = title.substr(0, index);
+			field = title.substr(index + 2);
 		}
+
+		console.log({ entity, field });
+
 		return { entity, field };
 	} else return title;
+}
+
+function outputSuggestionMeta(src, item, set, field) {
+	console.log('=====================================');
+	console.log('src:   ', src);
+	console.log('item:  ', item);
+	console.log('set:   ', set);
+	console.log('field: ', field);
+	console.log('=====================================');
 }
 
 module.exports = RestController;

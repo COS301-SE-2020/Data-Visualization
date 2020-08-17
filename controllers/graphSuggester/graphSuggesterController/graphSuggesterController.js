@@ -397,7 +397,7 @@ class GraphSuggesterController {
 	 * @param data the chart data to populate with
 	 * @return suggestion the full chart with data
 	 */
-	static assembleGraph(suggestion, data) {
+	static assembleGraph(suggestion, { data }) {
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
 		}
