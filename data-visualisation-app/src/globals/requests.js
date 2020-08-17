@@ -552,7 +552,7 @@ const request = {
 					if (callback !== undefined) {
 						console.debug('Response from suggestion.graph:', res);
 
-						console.log('set');
+						//console.log('set');
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
 				})
@@ -565,10 +565,10 @@ const request = {
 				.chart()
 				.then((res) => {
 					if (callback !== undefined) {
-
 						console.debug('Response from suggestion.graph:', res);
 						request.cache.suggestions.graph.current = res.data;
-						console.log(res);
+						
+						//console.log('get ' + res);
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
 				})

@@ -200,17 +200,7 @@ function Suggestions(props) {
 
     const [form] = Form.useForm();
 
-    // const handleSelect = (index) => {
-    //     console.log(index);
-    //     index = index.toString();
-    //     form.setFieldsValue({
-    //         index : true
-    //     });
-    //     document.getElementById('chartDiv_1').style.backgroundColor ='#FF6A7E';
-    //     console.log('handleSelect');
-    // };
-
-    
+ 
 
     useEffect(() => {
 

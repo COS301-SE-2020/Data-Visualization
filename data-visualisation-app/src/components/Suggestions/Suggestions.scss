@@ -55,7 +55,7 @@
 }
 
 .chartDiv{
-  cursor: pointer;
+  
   padding-top: -100px;
   transition: 0.3s;
   padding-bottom: 10px;
@@ -105,3 +105,6 @@
   transform: translate(50%, 50%);
 }
 
+.suggestion .panel__shadow{
+  cursor: pointer;
+}
