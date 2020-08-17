@@ -45,7 +45,7 @@ router.post('/params', (req, res) => {
 			req.body.selectedEntities,
 			req.body.selectedFields,
 			req.body.graphTypes,
-			(list) => res.status(200).json(list),
+			() => res.status(200).json({ message: 'Successfully Set Suggestion Params' }),
 			(err) => error(res, err, 400)
 		);
 	}

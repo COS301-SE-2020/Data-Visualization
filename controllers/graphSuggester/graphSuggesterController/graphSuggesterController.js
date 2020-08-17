@@ -72,11 +72,11 @@ class GraphSuggesterController {
 	 */
 	static getSuggestions(entity, source) {
 		if (!this.isInitialised()) {
-			console.log('Metadata isn\'t initialised, returning null...');
+			console.log("Metadata isn't initialised, returning null...");
 			return null;
 		}
 		if (!this.metadata[source]) {
-			console.log('No metadata for ' + source +', returning...');
+			console.log('No metadata for ' + source + ', returning...');
 			return null;
 		}
 
@@ -115,7 +115,7 @@ class GraphSuggesterController {
 				console.log('Received null suggestion');
 				return null;
 			}
-			let option = this.constructOption(suggestion[1], [ suggestion[3], 'value' ], suggestion[3], 'value', entity + ': ' + suggestion[0]);
+			let option = this.constructOption(suggestion[1], [suggestion[3], 'value'], suggestion[3], 'value', entity + ': ' + suggestion[0]);
 			//console.log(option);
 			return option;
 		}
@@ -149,7 +149,6 @@ class GraphSuggesterController {
 	 * @return {boolean} true if it is initialised, false otherwise
 	 */
 	static isInitialised() {
-		//console.log(this.metadata);
 		if (this.metadata && Object.keys(this.metadata).length > 0) {
 			return true;
 		}
@@ -168,10 +167,11 @@ class GraphSuggesterController {
 	 */
 	static limitEntities(entities) {
 		for (let i = 0; i < entities.length; i++) {
-			if(!this.acceptedEntities[entities[i].source]) {	//if this source isn't listed yet
-				this.acceptedEntities[entities[i].source] = [ entities[i].entityName ];	//create it and store the entity
+			if (!this.acceptedEntities[entities[i].source]) {
+				//if this source isn't listed yet
+				this.acceptedEntities[entities[i].source] = [entities[i].entityname]; //create it and store the entity
 			} else {
-				this.acceptedEntities[entities[i].source].push(entities[i].entityName);	//add the name to the existing array
+				this.acceptedEntities[entities[i].source].push(entities[i].entityname); //add the name to the existing array
 			}
 		}
 	}
@@ -251,7 +251,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log('Check that \'encode\' is not empty');
+			console.log("Check that 'encode' is not empty");
 			return false;
 		}
 
@@ -259,7 +259,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log('check that \'encode\' has keys');
+			console.log("check that 'encode' has keys");
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries
@@ -374,19 +374,21 @@ class GraphSuggesterController {
 			return null;
 		}
 
-		let keys = Object.keys(this.acceptedEntities);	//list the sources
+		let keys = Object.keys(this.acceptedEntities); //list the sources
 		let source;
 
-		if (keys.length > 0) {	//if a filter was set
-			let key = keys[Math.floor(Math.random() * keys.length)];	//pick a source index
+		if (keys.length > 0) {
+			//if a filter was set
+			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a source index
 			source = this.acceptedEntities[key]; //select the source entities
-			return source[Math.floor(Math.random()*source.length)];	//select a random entity
-		} else {	//else just pick from all options
-			keys = Object.keys(this.metadata);	//list the sources
+			return source[Math.floor(Math.random() * source.length)]; //select a random entity
+		} else {
+			//else just pick from all options
+			keys = Object.keys(this.metadata); //list the sources
 			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a metadata source index
-			source = this.metadata[key]['items'];	//source entities are listed in 'items' - select it
-			keys = Object.keys(source);	//select the entity keys
-			key = keys[Math.floor(Math.random() * keys.length)];	//select a random entity key
+			source = this.metadata[key]['items']; //source entities are listed in 'items' - select it
+			keys = Object.keys(source); //select the entity keys
+			key = keys[Math.floor(Math.random() * keys.length)]; //select a random entity key
 			return key;
 		}
 	}
@@ -399,7 +401,7 @@ class GraphSuggesterController {
 	 */
 	static assembleGraph(suggestion, data) {
 		for (let i = 0; i < data.length; i++) {
-			suggestion['dataset']['source'][i+1] = data[i];
+			suggestion['dataset']['source'][i + 1] = data[i];
 		}
 
 		return suggestion;
@@ -407,6 +409,5 @@ class GraphSuggesterController {
 }
 GraphSuggesterController.acceptedEntities = {};
 GraphSuggesterController.metadata = [];
-
 
 module.exports = GraphSuggesterController;

@@ -219,62 +219,28 @@ class RestController {
 			let randEntity;
 			let suggestion;
 
+			const maxTime = 10;
+			let timer = 0;
+			let timedout = false;
+
 			do {
 				randEntity = GraphSuggesterController.selectEntity();
+				console.log(randEntity);
 				suggestion = GraphSuggesterController.getSuggestions(randEntity.entityname, randEntity.datasource);
-			} while (suggestion == null); // eslint-disable-line eqeqeq
 
-			const { entity, field } = extractTitleData(suggestion.title.text);
-			DataSource.getEntityData(randEntity.datasource, entity, field)
-				.then((data) => {
-					//TODO: Assembly graph suggestion + data here
-					// const graph = GraphSuggesterController.assempleGraph(suggestion, data);
-					// done(graph);
-					done(null);
-				})
-				.catch((err) => error & error(err));
+				if (timer < maxTime) timer++;
+				else timedout = true;
+			} while (suggestion == null && !timedout); // eslint-disable-line eqeqeq
 
-			//===========================OLD=============================================
-			// DataSource.getMetaData(src).then((Meta) => {
-			// 	GraphSuggesterController.setMetadata(Meta);
-
-			// 	let randKey = Math.floor(Math.random() * Meta.sets.length); //generate a random index in the keyset
-			// 	const itemsKeys = Object.keys(Meta.items); //this is a list of the items keys
-			// 	let chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
-
-			// 	// eslint-disable-next-line eqeqeq
-			// 	while (chosen != null && chosen.length === 0) {
-			// 		//check if the item with the selected key has data
-			// 		randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
-			// 		chosen = Meta.items[itemsKeys[randKey]];
-			// 	}
-
-			// 	let randEntity = Meta.sets[randKey]; //select this entity for data source querying
-
-			// 	console.log('Entity: ', randEntity);
-
-			// 	let suggestion = GraphSuggesterController.getSuggestions(randEntity);
-
-			// 	// eslint-disable-next-line eqeqeq
-			// 	while (suggestion == null) {
-			// 		randKey = Math.floor(Math.random() * Meta.sets.length);
-			// 		chosen = Meta.items[itemsKeys[randKey]]; //select the item at this index
-
-			// 		// eslint-disable-next-line eqeqeq
-			// 		while (chosen != null && chosen.length === 0) {
-			// 			//check if the item with the selected key has data
-			// 			randKey = Math.floor(Math.random() * Meta.sets.length); //generate a new index to check in the key set
-			// 			chosen = Meta.items[itemsKeys[randKey]];
-			// 		}
-			// 		randEntity = Meta.sets[randKey]; //select this entity for data source querying
-			// 		suggestion = GraphSuggesterController.getSuggestions(randEntity);
-			// 	}
-			// 	//TODO make function to request a specific field's data - it makes a huge difference, 4 lines per item instead of 13
-			// 	//TODO chart assembly should then be moved here or further up
-			// });
-			//=================================================================================
+			if (timedout) error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
+			else {
+				const { entity, field } = extractTitleData(suggestion.title.text);
+				DataSource.getEntityData(randEntity.datasource, entity, field)
+					.then((data) => done(GraphSuggesterController.assempleGraph(suggestion, data)))
+					.catch((err) => error & error(err));
+			}
 		} else {
-			error && error({ error: 'Suggestion Parameters have not been set!' });
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first' });
 		}
 	}
 
