@@ -47,6 +47,7 @@ class GraphSuggesterController {
 	 * @param items	the entities('tables') and their related attributes/fields
 	 * @param associations the other entities associated with this entity(containing related data)
 	 * @param types the data types of each field, organised by entity
+	 * @param sets the names of the entities in a way that can be requested from the datasource(not necessarily the same as in items)
 	 */
 	static setMetadata(source, { items, associations, types, sets }) {
 		if (!this.metadata) {
@@ -72,7 +73,7 @@ class GraphSuggesterController {
 	 */
 	static getSuggestions(entity, source) {
 		if (!this.isInitialised()) {
-			console.log("Metadata isn't initialised, returning null...");
+			console.log('Metadata isn\'t initialised, returning null...');
 			return null;
 		}
 		if (!this.metadata[source]) {
@@ -115,7 +116,7 @@ class GraphSuggesterController {
 				console.log('Received null suggestion');
 				return null;
 			}
-			let option = this.constructOption(suggestion[1], [suggestion[3], 'value'], suggestion[3], 'value', entity + ': ' + suggestion[0]);
+			let option = this.constructOption(suggestion[1], [ suggestion[3], 'value' ], suggestion[3], 'value', entity + ': ' + suggestion[0]);
 			//console.log(option);
 			return option;
 		}
@@ -149,7 +150,7 @@ class GraphSuggesterController {
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-				this.acceptedEntities[entities[i].datasource] = [entities[i].entityname]; //create it and store the entity
+				this.acceptedEntities[entities[i].datasource] = [ entities[i].entityname ]; //create it and store the entity
 			} else {
 				this.acceptedEntities[entities[i].datasource].push(entities[i].entityname); //add the name to the existing array
 			}
@@ -231,7 +232,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log("Check that 'encode' is not empty");
+			console.log('Check that \'encode\' is not empty');
 			return false;
 		}
 
@@ -239,7 +240,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log("check that 'encode' has keys");
+			console.log('check that \'encode\' has keys');
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries
@@ -355,18 +356,21 @@ class GraphSuggesterController {
 		}
 
 		let keys = Object.keys(this.acceptedEntities); //list the sources(sources are keys to acceptedEntities)
-
+		
 		let source;
 		let entity = {};
 
-		if (keys.length > 0) {
+		if (keys && keys.length > 0) {
 			//if a filter was set
 			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a source index
 
 			entity['datasource'] = key;
 
 			source = this.acceptedEntities[key]; //select the source entities
+
 			entity['entityname'] = source[Math.floor(Math.random() * source.length)];
+
+			//console.log(this.metadata, ':', entity['datasource']);
 
 			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityname']);
 			entity['entityset'] = this.metadata[entity['datasource']].sets[index];
@@ -385,7 +389,7 @@ class GraphSuggesterController {
 			const index = Math.floor(Math.random() * keys.length);
 
 			entity['entityname'] = keys[index]; //select a random entity key
-			entity['entityset'] = this.metadata[entity['datasource']].sets[index];
+			entity['entityset'] = this.metadata[entity['datasource']].sets[index];	//store the set item name for database querying
 
 			return entity;
 		}

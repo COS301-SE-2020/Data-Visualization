@@ -9,7 +9,7 @@ const CacheMaker = (function () {
 		constructor() {
 			this.metaData = {}; //Meta => { 'src': {timestamp, data:{items, associations, sets, types }}}
 			this.entityData = {}; //Data => { 'src': {'entity': {timestamp, data:{items, associations, sets, types }}}}
-			this.maxTime = 1000 * 60 * 60 * 0.5; //30mins
+			this.maxTime = 1000 * 60 * 60 * 0.5; //ms => 30mins
 		}
 
 		getMetaData(src) {
@@ -18,7 +18,6 @@ const CacheMaker = (function () {
 		}
 		getEntityList(src) {
 			if (this.metaData && this.metaData[src]) return this.metaData[src].data.items;
-			console.log('++++++++++++NULL+++++++++++++');
 			return null;
 		}
 
@@ -28,30 +27,10 @@ const CacheMaker = (function () {
 
 				//TODO: refactor this
 				const prim = Object.keys(data[0])[1];
+				const res = data.map((item, i) => [item[prim], item[field]]);
 				// console.log('Keys:', Object.keys(data[0]));
 				// console.log('Primary Key:', prim);
-
-				const res = data.map((item, i) => [item[prim], item[field]]);
-
-				// let res = [];
-				// for (let i = 0; i < 3 /*data.length*/; ++i) {
-				// 	const item = data[i];
-
-				// 	if (i === 1) {
-				// 		console.log(item, field, item[field], Object.keys(item));
-
-				// 		let index = Object.keys(item).indexOf(field);
-				// 		console.log('index:', index);
-				// 	}
-
-				// 	const primValue = item[prim];
-				// 	const value = item[field];
-
-				// 	res.push([primValue, value]);
-				// }
-
 				// console.log(res);
-
 				return res;
 			}
 			return null;
@@ -80,7 +59,7 @@ const CacheMaker = (function () {
 		}
 
 		validateMetadata(src) {
-			if (this.metaData && this.metaData[src]) {
+			if (this.metaData && this.metaData[src] && Object.keys(this.metaData[src]).length > 0) {
 				if (Date.now() - this.metaData[src].timestamp >= this.maxTime) {
 					this.onMetadataTimedout(src, this.metaData[src]);
 					this.removeMetaData(src);
@@ -91,7 +70,7 @@ const CacheMaker = (function () {
 		}
 
 		validateEntityData(src, entity) {
-			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) {
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && Object.keys(this.entityData[src][entity]).length > 0) {
 				if (Date.now() - this.entityData[src][entity].timestamp >= this.maxTime) {
 					this.onEntityDataTimedout(src, entity, this.entityData[src][entity]);
 					this.removeEntityData(src, entity);
