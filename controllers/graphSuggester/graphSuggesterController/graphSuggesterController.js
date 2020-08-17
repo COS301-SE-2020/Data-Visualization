@@ -20,7 +20,7 @@
  * 14/08/2020	 Marco Lombaard						Converted getSuggestions to use entity name and not sample data
  * 14/08/2020	 Marco Lombaard						Moved chart construction here, added isInitialised function, modified setMetadata
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
- * 17/08/2020	 Marco Lombaard						Added assembleGraph function
+ * 17/08/2020	 Marco Lombaard						Added assembleGraph function, selectEntity now returns an object
  *
  * Test Cases: none
  *
@@ -123,26 +123,6 @@ class GraphSuggesterController {
 		console.log(entity + ' is not among ', entities);
 		return null;
 	}
-	//
-	// /**
-	//  * This function checks if an entity is equal to another entity. Entities are represented as objects.
-	//  * @return {boolean} true if the entity is accepted, false otherwise
-	//  */
-	// static isEqual(entity1, entity2) {
-	// 	let keys1 = Object.keys(entity1);
-	// 	let keys2 = Object.keys(entity2);
-	//
-	// 	if (keys1.length !== keys2.length) {
-	// 		return false;
-	// 	}
-	//
-	// 	for (let i = 0; i < keys1.length; i++) {
-	// 		if (entity1[keys1[i]] !== entity2[keys2[i]]) {	//check if attributes match
-	// 			return false;
-	// 		}
-	// 	}
-	// 	return true;
-	// }
 
 	/**
 	 * * This function checks if the necessary parameters for suggestion generation has been set
@@ -374,9 +354,15 @@ class GraphSuggesterController {
 			return null;
 		}
 
+<<<<<<< HEAD
 		let keys = Object.keys(this.acceptedEntities); //list the sources
+=======
+		let keys = Object.keys(this.acceptedEntities);	//list the sources(sources are keys to acceptedEntities)
+>>>>>>> graph-suggester
 		let source;
+		let entity = {};
 
+<<<<<<< HEAD
 		if (keys.length > 0) {
 			//if a filter was set
 			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a source index
@@ -390,6 +376,29 @@ class GraphSuggesterController {
 			keys = Object.keys(source); //select the entity keys
 			key = keys[Math.floor(Math.random() * keys.length)]; //select a random entity key
 			return key;
+=======
+		if (keys.length > 0) {	//if a filter was set
+			let key = keys[Math.floor(Math.random() * keys.length)];	//pick a source index
+			entity['datasource'] = key;
+
+			source = this.acceptedEntities[key]; //select the source entities
+			entity['entityname'] = source[Math.floor(Math.random()*source.length)];
+
+			return entity;	//select a random entity
+		} else {	//else just pick from all options
+			keys = Object.keys(this.metadata);	//list the sources(sources are keys to acceptedEntities)
+
+			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a metadata source index
+			entity['datasource'] = key;
+
+			source = this.metadata[key]['items'];	//source entities are listed in 'items' - select it
+			keys = Object.keys(source);	//select the entity keys
+			key = keys[Math.floor(Math.random() * keys.length)];	//select a random entity key
+
+			entity['entityname'] = key;
+
+			return entity;
+>>>>>>> graph-suggester
 		}
 	}
 
