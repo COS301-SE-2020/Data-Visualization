@@ -72,7 +72,10 @@ const API = {
 		list: (sourceurl) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl }),
 	},
 	suggestion: {
-		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl }),
+	
+		set: (selectedEntities, selectedFields, graphTypes, fittestGraph) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {selectedEntities, selectedFields, graphTypes, fittestGraph}),
+		chart: () => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { }),
+		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl}),
 	},
 };
 
@@ -415,6 +418,7 @@ const request = {
 		fields: [],
 		selectedFields : [],
 		graphTypes: [],
+		fittestGraphs: [],
 	},
 
 	dataSources: {
@@ -538,6 +542,39 @@ const request = {
 	},
 
 	suggestions: {
+
+
+		set: (selectedEntities, selectedFields, graphTypes, fittestGraph, callback) => {
+		
+			API.suggestion
+				.set(selectedEntities, selectedFields, graphTypes, fittestGraph)
+				.then((res) => {
+					if (callback !== undefined) {
+						console.debug('Response from suggestion.graph:', res);
+
+						console.log('set');
+						callback(constants.RESPONSE_CODES.SUCCESS);
+					}
+				})
+				.catch((err) => console.error(err));
+		},
+
+		chart: (callback) => {
+
+			API.suggestion
+				.chart()
+				.then((res) => {
+					if (callback !== undefined) {
+
+						console.debug('Response from suggestion.graph:', res);
+						request.cache.suggestions.graph.current = res.data;
+						console.log(res);
+						callback(constants.RESPONSE_CODES.SUCCESS);
+					}
+				})
+				.catch((err) => console.error(err));
+		},
+
 		/**
 		 *  Requests a single graph suggestion.
 		 *
