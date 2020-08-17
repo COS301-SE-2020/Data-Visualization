@@ -40,7 +40,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, makeStyles, useTheme } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+//import DashboardIcon from '@material-ui/icons/Dashboard';
 import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -52,6 +52,10 @@ import 'react-resizable/css/styles.css';
 import './App.scss';
 import { WindowsOutlined } from '@ant-design/icons';
 import EditChart from '../../components/EditChart';
+import {PlusSquare} from '@styled-icons/feather';
+import {Trash as TrashIcon} from '@styled-icons/octicons';
+import {Dashboard as DashboardIcon} from '@styled-icons/remix-line';
+import {Info} from '@styled-icons/feather';
 
 /**
  *   globals import
@@ -373,10 +377,18 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<WindowsOutlined style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
+						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Dashboards" />
 				</MenuItem>
+
+				<MenuItem button onClick={() => handlePageType('home')} selected={pageType === 'home'} classes={{selected: classes.selected}}>
+					<ListItemIcon className={classes.icon} >
+						<PlusSquare size='25' style={(pageType === 'home' ? {color: 'white'} : {})} />
+					</ListItemIcon>
+					<ListItemText primary="Create chart" />
+				</MenuItem>
+
 
 
 				{/* <MenuItem button onClick={handleOpenIcon} selected={pageType === 'connections'} classes={{selected: classes.selected}}>
@@ -411,19 +423,22 @@ function App(props) {
 					<ListItemText primary="Lock" />
 				</ListItem> */}
 
-				<ListItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
-					<ListItemIcon className={classes.icon}>
-						<DeleteIcon style={(pageType === 'trash' ? {color: 'white'} : {})} />
+
+				<MenuItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
+					<ListItemIcon className={classes.icon} >
+						<TrashIcon size='25' style={(pageType === 'trash' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Trash" />
-				</ListItem>
+				</MenuItem>
+
+
 
 			</List>
 			<Divider />
 			<List component="nav" className={classes.drawerList}>
 				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<InfoIcon style={(pageType === 'connections' ? {color: 'about'} : {})} />
+						<Info size='25' style={(pageType === 'connections' ? {color: 'about'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="About" />
 				</MenuItem>
