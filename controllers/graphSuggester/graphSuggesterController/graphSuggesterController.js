@@ -123,26 +123,6 @@ class GraphSuggesterController {
 		console.log(entity + ' is not among ', entities);
 		return null;
 	}
-	//
-	// /**
-	//  * This function checks if an entity is equal to another entity. Entities are represented as objects.
-	//  * @return {boolean} true if the entity is accepted, false otherwise
-	//  */
-	// static isEqual(entity1, entity2) {
-	// 	let keys1 = Object.keys(entity1);
-	// 	let keys2 = Object.keys(entity2);
-	//
-	// 	if (keys1.length !== keys2.length) {
-	// 		return false;
-	// 	}
-	//
-	// 	for (let i = 0; i < keys1.length; i++) {
-	// 		if (entity1[keys1[i]] !== entity2[keys2[i]]) {	//check if attributes match
-	// 			return false;
-	// 		}
-	// 	}
-	// 	return true;
-	// }
 
 	/**
 	 * * This function checks if the necessary parameters for suggestion generation has been set
