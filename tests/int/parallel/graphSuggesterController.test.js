@@ -120,6 +120,10 @@ const types = {
 		'int', 'int', 'int', 'int', 'bool' ],
 };
 
+const sets = [
+	'Products',
+];
+
 const suggestion =
 {
 	title: { text: expect.any(String) },
@@ -135,7 +139,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 	});
 
 	test('Returns a suggestion on call to getSuggestion', () => {
-		graphSuggesterController.setMetadata('url', { items, associations, types });
+		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
 		expect(graphSuggesterController.getSuggestions('Product', 'url')).toMatchObject(suggestion);
 	});
 
@@ -148,19 +152,21 @@ describe('Testing functions in the graphSuggesterController class that call func
 	});
 
 	test('Successfully limits entities', () => {
-		graphSuggesterController.setMetadata('url', { items, associations, types });
+		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
-		graphSuggesterController.limitEntities([{ entityName:'Product', source:'url' }]);
+		graphSuggesterController.limitEntities([{ entityname:'Product', datasource:'url' }]);
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
 		expect(graphSuggesterController.getSuggestions('Product', 'url')).toMatchObject(suggestion);
 	});
 
 	test('Successfully selects an entity from filtered entities', () => {
-		graphSuggesterController.setMetadata('url', { items, associations, types });
+		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
+
 		let choice = graphSuggesterController.selectEntity();
-		let object = { 'datasource':'url', 'entityname':'Product' };
+		let object = { 'datasource':'url', 'entityname':'Product', 'entityset':'Products' };
+
 		expect(choice).toMatchObject(object);
-		graphSuggesterController.limitEntities([{ entityName:'Product', source:'url' }]);
+		graphSuggesterController.limitEntities([{ entityname:'Product', datasource:'url' }]);
 		expect(graphSuggesterController.selectEntity()).toMatchObject(object);
 	});
 
