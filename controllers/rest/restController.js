@@ -16,6 +16,8 @@
  * 11/08/2020   Elna Pistorius                       Updated the updateGraphTypes function
  * 11/08/2020	Marco Lombaard						 Added the stringsToGraphData function
  * 14/08/2020	Marco Lombaard						 Modified getSuggestion to only need metadata for suggestion generation
+ * 18/08/2020	Marco Lombaard						 Modified stringsToGraphData to return a 2D array object
+ * 18/08/2020	Marco Lombaard						Added boolsToGraphData and make1DArray functions
  *
  * Test Cases: none
  *
@@ -215,19 +217,27 @@ class RestController {
 				if (timer < maxTime) {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
-					// console.log('randEntity:', randEntity);
-					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityname, randEntity.datasource);
+					console.log('randEntity:', randEntity);
+					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
 			} while (suggestion == null && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
 			else {
-				//TODO: refactor field exraction
+				//TODO: refactor field extraction
+				let fieldType = suggestion.fieldType;
+				suggestion = suggestion.option;
 				const { field } = extractTitleData(suggestion.title.text);
 
-				DataSource.getEntityData(randEntity.datasource, randEntity.entityset, field)
+				DataSource.getEntityData(randEntity.datasource, randEntity.entitySet, field)
 					.then((data) => {
-						outputSuggestionMeta(randEntity.datasource, randEntity.entityname, randEntity.entityset, field);
+						if (fieldType.includes('String')) {
+							//string data requires additional processing
+							data = this.stringsToGraphData(data); //process the data
+						} else if (fieldType.includes('Bool')) {
+							data = this.boolsToGraphData(data);
+						}
+						outputSuggestionMeta(randEntity.datasource, randEntity.entityName, randEntity.entitySet, field);
 						done(GraphSuggesterController.assembleGraph(suggestion, data));
 					})
 					.catch((err) => error & error(err));
@@ -370,25 +380,94 @@ class RestController {
 	/**
 	 * This function transforms string data into data we can represent as graphs. Right now it's just a "count" of
 	 * how many times each category occurs.
-	 * @param stringDataArray the string data in array format. This should just be the data, nothing else
-	 * @return {{}} an object containing categories as keys, and the amount of times each category occurs as values
+	 * @param stringDataArray an object containing a value 'data' which is an array containing the string data
+	 * @return {data} an object containing a 2D array of label-value pairs
 	 */
 	static stringsToGraphData(stringDataArray) {
 		//TODO could move this to IGA for generation on best way to represent strings
 		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
-
-		for (let i = 0; i < stringDataArray.length; i++) {
+		let dataArray = stringDataArray.data;
+		for (let i = 0; i < dataArray.length; i++) {
 			// eslint-disable-next-line eqeqeq
-			if (list[stringDataArray[i]] != null) {
+			if (list[dataArray[i]] != null) {
 				//eslint-disable-line
-				list[stringDataArray[i]]++; //if this category was already created, increment how often it has occurred
+				list[dataArray[i]]++; //if this category was already created, increment how often it has occurred
 			} else {
-				list[stringDataArray[i]] = 1; //else create the category
+				list[dataArray[i]] = 1; //else create the category
 			}
 		}
 
-		return list;
+		let data = [];
+		let keys = Object.keys(list); //get the keys
+		for (let i = 0; i < keys.length; i++) {
+			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
+		}
+
+		return { data };
+	}
+
+	/**
+	 * This function transforms string data into data we can represent as graphs. Right now it's just a "count" of
+	 * how many times each category occurs.
+	 * @param boolDataArray an object containing a value 'data' which is an array containing the boolean data
+	 * @return {data} an object containing a 2D array of label-value pairs
+	 */
+	static boolsToGraphData(boolDataArray) {
+		//TODO could move this to IGA for generation on best way to represent strings
+
+		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
+		//values will be how many times each key has occurred
+		let dataArray = boolDataArray.data;
+		console.log(dataArray);
+		dataArray = this.make1DArray(dataArray);
+		console.log('DataArray: ', dataArray);
+		let boolVal;
+		for (let i = 0; i < dataArray.length; i++) {
+			if (dataArray[i].includes('false')) {
+				boolVal = false;
+			} else {
+				boolVal = true;
+			}
+
+			// eslint-disable-next-line eqeqeq
+			if (list[boolVal] != null) {
+				//eslint-disable-line
+				list[boolVal]++; //if this category was already created, increment how often it has occurred
+			} else {
+				list[boolVal] = 1; //else create the category
+			}
+		}
+
+		let data = [];
+		let keys = Object.keys(list); //get the keys
+		for (let i = 0; i < keys.length; i++) {
+			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
+		}
+
+		return { data };
+	}
+
+	static make1DArray(dataArray) {
+		if (dataArray.constructor !== Array) {
+			//if it's just one value
+			return [dataArray];
+		} else if (dataArray[0].constructor !== Array) {
+			//if it's a 1D array
+			return dataArray;
+		} else if (dataArray[0].constructor === Array) {
+			//if it's a 2D array
+			let oneDArray = [];
+			for (let i = 0; i < dataArray.length; i++) {
+				oneDArray[i] = '';
+				for (let j = 0; j < dataArray[i].length; j++) {
+					oneDArray[i] += dataArray[i][j];
+				}
+			}
+			return oneDArray;
+		} else {
+			console.log('Arrays with dimensions larger than 2 are not supported');
+		}
 	}
 }
 
