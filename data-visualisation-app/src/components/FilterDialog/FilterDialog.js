@@ -112,7 +112,7 @@ const FilterDialog = (props) => {
             request.user.selectedFields = values.fieldSelect;
         }
         
-        request.user.graphTypes = [];
+        request.user.graphTypes = ['bar','line', 'pie', 'scatter', 'effectScatter'];
         if(values.graphSelect !== undefined){
             request.user.graphTypes = values.graphSelect;
         }
@@ -122,7 +122,7 @@ const FilterDialog = (props) => {
         console.log('Success:', values);
 
         handleFilterCancel();
-        props.generateCharts(request.user.selectedEntities, request.user.selectedFields, request.user.graphTypes, request.user.fittestGraphs);
+        props.generateCharts(request.user.graphTypes, request.user.selectedFields, request.user.selectedEntities, request.user.fittestGraphs);
       };
     
       const onFinishFailed = errorInfo => {
@@ -163,6 +163,7 @@ const FilterDialog = (props) => {
                             tagRender={tagRender}
                             style={{ width: '100%' }}
                             options={graphTypes}
+                            defaultValue={request.user.graphTypes}
                         />
                     </Form.Item>
 
@@ -175,6 +176,7 @@ const FilterDialog = (props) => {
                             tagRender={tagRender}
                             style={{ width: '100%' }}
                             options={fieldsToDisplay}
+                            defaultValue={[]}
                         />
                     </Form.Item>
 

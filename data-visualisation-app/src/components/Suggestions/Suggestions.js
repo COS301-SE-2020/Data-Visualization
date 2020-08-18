@@ -195,8 +195,8 @@ function Suggestions(props) {
         console.log(graphTypes);
         console.log(selectedEntities);
         console.log(selectedFields);
-        console.log(graphTypes);
-
+        console.log(fittestGraphs);
+        
 
 
         if (request.user.isLoggedIn) {
@@ -300,7 +300,10 @@ function Suggestions(props) {
 
     useEffect(() => {
 
+       
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
+        
+        
         
     }, []);
 

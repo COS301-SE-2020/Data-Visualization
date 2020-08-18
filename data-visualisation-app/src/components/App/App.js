@@ -382,9 +382,9 @@ function App(props) {
 					<ListItemText primary="Dashboards" />
 				</MenuItem>
 
-				<MenuItem button onClick={() => handlePageType('explore')} selected={pageType === 'explore'} classes={{selected: classes.selected}}>
+				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<PlusSquare size='25' style={(pageType === 'explore' ? {color: 'white'} : {})} />
+						<PlusSquare size='25' style={(pageType === 'about' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Create chart" />
 				</MenuItem>
@@ -438,7 +438,7 @@ function App(props) {
 			<List component="nav" className={classes.drawerList}>
 				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<Info size='25' style={(pageType === 'connections' ? {color: 'about'} : {})} />
+						<Info size='25' style={(pageType === 'about' ? {color: 'about'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="About" />
 				</MenuItem>
