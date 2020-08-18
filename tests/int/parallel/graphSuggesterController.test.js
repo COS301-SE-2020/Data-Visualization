@@ -119,7 +119,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
 
 		let choice = graphSuggesterController.selectEntity();
-		let object = { datasource: 'url', entityName: 'Product', entityset: 'Products' };
+		let object = { datasource: 'url', entityName: 'Product', entitySet: 'Products' };
 
 		expect(choice).toMatchObject(object);
 		graphSuggesterController.limitEntities([{ entityName: 'Product', datasource: 'url' }]);
