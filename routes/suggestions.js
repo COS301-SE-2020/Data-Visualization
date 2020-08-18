@@ -31,14 +31,16 @@ const { Rest } = require('../controllers');
 router.post('/params', (req, res) => {
 	if (Object.keys(req.body).length === 0) {
 		error(res, { error: 'Body Undefined' }, 400);
-	} else if (req.body.fittestGraph === undefined) {
-		error(res, { error: 'Fittest Graph Undefined' }, 400);
 	} else if (req.body.selectedEntities === undefined) {
 		error(res, { error: 'Selected Entities Graph Undefined' }, 400);
 	} else if (req.body.selectedFields === undefined) {
 		error(res, { error: 'Selected Fields Undefined' }, 400);
 	} else if (req.body.graphTypes === undefined) {
 		error(res, { error: 'Graph Types Undefined' }, 400);
+	} else if (req.body.fittestGraph === undefined) {
+		error(res, { error: 'Fittest Graph Undefined' }, 400);
+	} else if (!validateEntityStructure(req.body.selectedEntities)) {
+		error(res, { error: 'The structure of the selected entities are invalid.', hint: 'the structure should have the format of [ { datasource:string, entityName:string }:object ]:array' }, 400);
 	} else {
 		Rest.setSuggestionParams(
 			req.body.fittestGraph,
@@ -58,63 +60,15 @@ router.post('/graphs', (req, res) => {
 	);
 });
 
+function validateEntityStructure(entities) {
+	function validateEntity(entity) {
+		return entity && entity.datasource && entity.entityName ? true : false;
+	}
+	return entities.every((entity) => validateEntity(entity));
+}
+
 function error(res, err, status = 400) {
 	console.error(err);
 	res.status(status).json(err);
 }
 module.exports = router;
-
-// const obj = {
-// 	selectedEntities: [
-// 		{
-// 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
-// 			entityName: 'entity1',
-// 			fields: ['aaa', 'aaa', 'aaaa'],
-// 		},
-// 		{
-// 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
-// 			entityName: 'entity2',
-// 			fields: ['aaa', 'aaa', 'aaaa'],
-// 		},
-// 	],
-// 	selectedFields: ['AAA','asfsaf','safsaf']
-// };
-
-// const src = {
-// 	sources: [
-// 		{
-// 			sourceurl: 'wwww.source1.com',
-// 			entities: [
-// 				{
-// 					name: 'entity1',
-// 					fields: ['f1', 'f2', 'f3'],
-// 				},
-// 				{
-// 					name: 'entity2',
-// 					fields: ['g1', 'g2', 'g3'],
-// 				},
-// 				{
-// 					name: 'entity3',
-// 					fields: ['h1', 'h2', 'h3'],
-// 				},
-// 			],
-// 		},
-// 		{
-// 			sourceurl: 'wwww.source2.com',
-// 			entities: [
-// 				{
-// 					name: 'entity1',
-// 					fields: ['f1', 'f2', 'f3'],
-// 				},
-// 				{
-// 					name: 'entity2',
-// 					fields: ['g1', 'g2', 'g3'],
-// 				},
-// 				{
-// 					name: 'entity3',
-// 					fields: ['h1', 'h2', 'h3'],
-// 				},
-// 			],
-// 		},
-// 	],
-// };
