@@ -492,7 +492,7 @@ function Suggestions(props) {
                     </Grid>
                     </Form>
                     <Button id = 'filterButton' type = 'secondary' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}> More like this <AddIcon size='25'/></Button>
+                    <Button id = 'moreLikeThisButton' type = 'dashed' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis} danger> More like this <AddIcon size='25'/></Button>
                     <main>
                         {
                             filterState ?

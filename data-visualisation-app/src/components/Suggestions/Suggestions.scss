@@ -16,11 +16,8 @@
 }
 
 @mixin button__moreLikeThis--backgroundColor {
-  background: rgb(117,48,154);
-  background: -moz-linear-gradient(97deg, #FF4242 0%, #FF47C7 100%);
-  background: -webkit-linear-gradient(97deg, #FF4242 0%, #FF47C7 100%);
-  background: linear-gradient(97deg, #FF4242 0%, #FF47C7 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
+  background: red;
+  
 }
 
 #moreLikeThisButton{
@@ -29,18 +26,17 @@
   -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
   box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
   
-  margin: 0;
-  top: 90%;
-  left: 57%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  position: fixed;
-  border: none;
+  margin-top: 50px;
+  
+  left: 45%;
+  color: white;
+  border: white;
   transition: 0.3s;
-  opacity: 0.95;
-  width: 200px;
-  height: 50px;
-  font-size: 20pt;
+  opacity: 0.8;
+  width: 180px;
+  height: 40px;
+  font-size: 15pt;
+  text-align: center;
 }
 #moreLikeThisButton:hover{
   opacity: 1;
@@ -48,7 +44,7 @@
 
 @media only screen and (max-width: 600px) {
   #moreLikeThisButton{
-      left: 50%;
+      left: 35%;
   }
 }
 
