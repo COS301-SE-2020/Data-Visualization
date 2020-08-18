@@ -32,6 +32,7 @@ import { createForm } from 'rc-form';
 import EditChart from '../EditChart';
 import {Add as AddIcon} from '@styled-icons/ionicons-solid/Add';
 import { animateScroll } from 'react-scroll';
+import {Filter as FilterIcon} from '@styled-icons/feather';
 
 const renderChart = {index: -1};
 
@@ -491,8 +492,8 @@ function Suggestions(props) {
                         
                     </Grid>
                     </Form>
-                    <Button id = 'filterButton' type = 'secondary' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'dashed' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis} danger> More like this <AddIcon size='25'/></Button>
+                    <Button id = 'filterButton' type = 'secondary' icon={<FilterIcon size = {40}/>} onClick={() => setFilterState(true)}></Button>
+                    <Button id = 'moreLikeThisButton' type = 'primary' htmlType='submit' form='my-form' size = 'large' onClick={moreLikeThis}> More like this</Button>
                     <main>
                         {
                             filterState ?

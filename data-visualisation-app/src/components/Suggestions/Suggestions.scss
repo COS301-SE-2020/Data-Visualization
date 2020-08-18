@@ -16,7 +16,7 @@
 }
 
 @mixin button__moreLikeThis--backgroundColor {
-  background: red;
+
   
 }
 
@@ -29,8 +29,8 @@
   margin-top: 50px;
   
   left: 45%;
+  background-color: red;
   color: white;
-  border: white;
   transition: 0.3s;
   opacity: 0.8;
   width: 180px;
@@ -38,14 +38,15 @@
   font-size: 15pt;
   text-align: center;
 }
-#moreLikeThisButton:hover{
-  opacity: 1;
-}
 
 @media only screen and (max-width: 600px) {
   #moreLikeThisButton{
       left: 35%;
   }
+}
+
+#addIcon{
+ 
 }
 
 .chartDiv{
@@ -65,6 +66,7 @@
 
 
 #filterButton{
+  opacity: 0.9;
   cursor:pointer;
   position: fixed;
   bottom: 0px;
@@ -73,6 +75,8 @@
   outline:none;
   margin-bottom: 15px;
   margin-right: 15px;
+  width: 100px;
+  height: 100px;
 }
 
 #igaloading {
