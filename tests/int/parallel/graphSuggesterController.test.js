@@ -21,119 +21,72 @@
  */
 require('../../../controllers/graphSuggester/graphSuggesterAI/graphSuggesterAI');
 const graphSuggesterController = require('../../../controllers/graphSuggester/graphSuggesterController/graphSuggesterController');
-	
+
 const fitnessChart = {
-	'title': {
-		'text': 'Orders_Qry:Country'
+	title: {
+		text: 'Orders_Qry:Country',
 	},
-	'dataset': {
-		'source': [
-			[
-				'OrderID',
-				'value'
-			],
-			[
-				10383,
-				'UK'
-			],
-			[
-				10453,
-				'UK'
-			],
-			[
-				10501,
-				'Germany'
-			],
-			[
-				10509,
-				'Germany'
-			],
-			[
-				10801,
-				'Spain'
-			],
-			[
-				10970,
-				'Spain'
-			],
-			
-			[
-				10932,
-				'France'
-			],
-			[
-				10940,
-				'France'
-			],
-			[
-				11076,
-				'France'
-			],
-			[
-				10389,
-				'Canada'
-			],
-			[
-				10410,
-				'Canada'
-			],
-			[
-				10411,
-				'Canada'
-			],
-			[
-				10431,
-				'Canada'
-			],
-		]
+	dataset: {
+		source: [
+			['OrderID', 'value'],
+			[10383, 'UK'],
+			[10453, 'UK'],
+			[10501, 'Germany'],
+			[10509, 'Germany'],
+			[10801, 'Spain'],
+			[10970, 'Spain'],
+
+			[10932, 'France'],
+			[10940, 'France'],
+			[11076, 'France'],
+			[10389, 'Canada'],
+			[10410, 'Canada'],
+			[10411, 'Canada'],
+			[10431, 'Canada'],
+		],
 	},
-	'xAxis': {
-		'type': 'category'
+	xAxis: {
+		type: 'category',
 	},
-	'yAxis': {},
-	'series': [
+	yAxis: {},
+	series: [
 		{
-			'type': 'pie',
-			'radius': '60%',
-			'label': {
-				'formatter': '{b}: {@value} ({d}%)'
+			type: 'pie',
+			radius: '60%',
+			label: {
+				formatter: '{b}: {@value} ({d}%)',
 			},
-			'encode': {
-				'itemName': 'OrderID',
-				'value': 'value'
-			}
-		}
-	]
+			encode: {
+				itemName: 'OrderID',
+				value: 'value',
+			},
+		},
+	],
 };
 
 const items = {
-	'Product': [ 'ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit',
-		'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued' ],
+	Product: ['ProductID', 'ProductName', 'SupplierID', 'CategoryID', 'QuantityPerUnit', 'UnitPrice', 'UnitsInStock', 'UnitsOnOrder', 'ReorderLevel', 'Discontinued'],
 };
 
 const associations = {
-	'Product': [ 'Category', 'Order_Details', 'Supplier' ],
+	Product: ['Category', 'Order_Details', 'Supplier'],
 };
 
 const types = {
-	'Product': [ 'int', 'string', 'int', 'int', 'int',
-		'int', 'int', 'int', 'int', 'bool' ],
+	Product: ['int', 'string', 'int', 'int', 'int', 'int', 'int', 'int', 'int', 'bool'],
 };
 
-const sets = [
-	'Products',
-];
+const sets = ['Products'];
 
-const suggestion =
-{
+const suggestion = {
 	fieldType: expect.any(String),
 	option: {
-		title: {text: expect.any(String)},
-		dataset: {source: expect.any(Array)},
-		xAxis: {type: 'category'},
+		title: { text: expect.any(String) },
+		dataset: { source: expect.any(Array) },
+		xAxis: { type: 'category' },
 		yAxis: {},
-		series: [{type: expect.any(String), encode: expect.any(Object)}],
-	}
+		series: [{ type: expect.any(String), encode: expect.any(Object) }],
+	},
 };
 
 describe('Testing functions in the graphSuggesterController class that call functions in the suggester class', function () {
@@ -157,7 +110,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 	test('Successfully limits entities', () => {
 		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
-		graphSuggesterController.limitEntities([{ entityname:'Product', datasource:'url' }]);
+		graphSuggesterController.limitEntities([{ entityName: 'Product', datasource: 'url' }]);
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
 		expect(graphSuggesterController.getSuggestions('Product', 'url')).toMatchObject(suggestion);
 	});
@@ -166,11 +119,10 @@ describe('Testing functions in the graphSuggesterController class that call func
 		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
 
 		let choice = graphSuggesterController.selectEntity();
-		let object = { 'datasource':'url', 'entityname':'Product', 'entityset':'Products' };
+		let object = { datasource: 'url', entityName: 'Product', entityset: 'Products' };
 
 		expect(choice).toMatchObject(object);
-		graphSuggesterController.limitEntities([{ entityname:'Product', datasource:'url' }]);
+		graphSuggesterController.limitEntities([{ entityName: 'Product', datasource: 'url' }]);
 		expect(graphSuggesterController.selectEntity()).toMatchObject(object);
 	});
-
 });

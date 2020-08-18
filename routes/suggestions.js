@@ -68,12 +68,12 @@ module.exports = router;
 // 	selectedEntities: [
 // 		{
 // 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
-// 			entityname: 'entity1',
+// 			entityName: 'entity1',
 // 			fields: ['aaa', 'aaa', 'aaaa'],
 // 		},
 // 		{
 // 			datasource: 'www.sdafsdfs.sadfsdafas.saf',
-// 			entityname: 'entity2',
+// 			entityName: 'entity2',
 // 			fields: ['aaa', 'aaa', 'aaaa'],
 // 		},
 // 	],

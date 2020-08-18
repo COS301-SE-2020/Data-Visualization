@@ -217,8 +217,8 @@ class RestController {
 				if (timer < maxTime) {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
-					// console.log('randEntity:', randEntity);
-					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityname, randEntity.datasource);
+					console.log('randEntity:', randEntity);
+					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
 			} while (suggestion == null && !timedout); // eslint-disable-line eqeqeq
 
@@ -229,15 +229,15 @@ class RestController {
 				suggestion = suggestion.option;
 				const { field } = extractTitleData(suggestion.title.text);
 
-				DataSource.getEntityData(randEntity.datasource, randEntity.entityset, field)
+				DataSource.getEntityData(randEntity.datasource, randEntity.entitySet, field)
 					.then((data) => {
-						if (fieldType.includes('String')) {	//string data requires additional processing
-							data = this.stringsToGraphData(data);	//process the data
-						}
-						else if (fieldType.includes('Bool')) {
+						if (fieldType.includes('String')) {
+							//string data requires additional processing
+							data = this.stringsToGraphData(data); //process the data
+						} else if (fieldType.includes('Bool')) {
 							data = this.boolsToGraphData(data);
 						}
-						outputSuggestionMeta(randEntity.datasource, randEntity.entityname, randEntity.entityset, field);
+						outputSuggestionMeta(randEntity.datasource, randEntity.entityName, randEntity.entitySet, field);
 						done(GraphSuggesterController.assembleGraph(suggestion, data));
 					})
 					.catch((err) => error & error(err));
@@ -399,9 +399,9 @@ class RestController {
 		}
 
 		let data = [];
-		let keys = Object.keys(list);	//get the keys
+		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([ keys[i], list[keys[i]] ]);	//push a label-value pair, label is the key and value is that 'list' item
+			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -424,7 +424,6 @@ class RestController {
 		console.log('DataArray: ', dataArray);
 		let boolVal;
 		for (let i = 0; i < dataArray.length; i++) {
-
 			if (dataArray[i].includes('false')) {
 				boolVal = false;
 			} else {
@@ -441,22 +440,23 @@ class RestController {
 		}
 
 		let data = [];
-		let keys = Object.keys(list);	//get the keys
+		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([ keys[i], list[keys[i]] ]);	//push a label-value pair, label is the key and value is that 'list' item
+			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
 	}
 
 	static make1DArray(dataArray) {
-		if (dataArray.constructor !== Array) {	//if it's just one value
-			return [ dataArray ];
-		}
-		else if (dataArray[0].constructor !== Array) {	//if it's a 1D array
+		if (dataArray.constructor !== Array) {
+			//if it's just one value
+			return [dataArray];
+		} else if (dataArray[0].constructor !== Array) {
+			//if it's a 1D array
 			return dataArray;
-		}
-		else if (dataArray[0].constructor === Array) {	//if it's a 2D array
+		} else if (dataArray[0].constructor === Array) {
+			//if it's a 2D array
 			let oneDArray = [];
 			for (let i = 0; i < dataArray.length; i++) {
 				oneDArray[i] = '';
@@ -465,8 +465,7 @@ class RestController {
 				}
 			}
 			return oneDArray;
-		}
-		else {
+		} else {
 			console.log('Arrays with dimensions larger than 2 are not supported');
 		}
 	}
