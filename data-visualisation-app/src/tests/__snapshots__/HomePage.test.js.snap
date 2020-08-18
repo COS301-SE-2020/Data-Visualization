@@ -1,5 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`DashboardsList component DashboardsList renders correctly 1`] = `
+<div
+  className="content--padding"
+>
+  <div
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    <div
+      className="ant-spin ant-spin-spinning"
+    >
+      <span
+        className="ant-spin-dot ant-spin-dot-spin"
+      >
+        <i
+          className="ant-spin-dot-item"
+        />
+        <i
+          className="ant-spin-dot-item"
+        />
+        <i
+          className="ant-spin-dot-item"
+        />
+        <i
+          className="ant-spin-dot-item"
+        />
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`HomePage component HomePage renders correctly 1`] = `
 <div
   className="content--padding"

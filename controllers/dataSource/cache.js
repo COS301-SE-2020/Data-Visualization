@@ -44,7 +44,7 @@ const CacheMaker = (function () {
 		}
 
 		getEntityData(src, entity, field) {
-			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) {
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				const data = this.entityData[src][entity].data;
 				//TODO: refactor this
 				const prim = Object.keys(data[0])[1];

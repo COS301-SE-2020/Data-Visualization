@@ -4,9 +4,8 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
-		"start": "npm run lint && node server.js",
-		"start:win":"node server.js",
-		"lint": "if [ \"$NODE_ENV\" = \"development\" ]; then eslint . --fix; fi",
+		"start": "node server.js",
+		"lint": "eslint . --fix",
 		"build": "npm run build --prefix ./data-visualisation-app",
 		"test": "npm run test:back",
 		"test:back": "npm run test:unit && npm run test:int",
@@ -21,7 +20,8 @@
 		"test:int:seq:update": "jest -u --runInBand sequential --updateSnapshot",
 		"test:int:par:update": "jest -u parallel --updateSnapshot",
 		"posttest": "",
-		"postinstall": "if [ ! \"$NODE_ENV\" = \"development\" ]; then npm install --prefix ./data-visualisation-app; fi"
+		"install:front": "npm install --prefix ./data-visualisation-app",
+		"postinstall": "npm run install:front"
 	},
 	"repository": {
 		"type": "git",
