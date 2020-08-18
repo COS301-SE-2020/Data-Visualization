@@ -20,14 +20,32 @@
  */
 const restController = require('../../controllers/rest/restController');
 
-const stringArray = [
-	'Red', 'Blue', 'Red', 'Green', 'Blue', 'Red'
-];
-describe('Testing in-class functions', function () {
+const stringArray = {
+	data: [
+	'Red', 'Blue', 'Red', 'Green', 'Blue', 'Red',
+],
+};
+const boolArray = {
+	data: [
+	'true', 'false', 'false', 'true', 'true', 'true',
+],
+};
+describe('Testing in-class restController functions', function () {
 	test('Successfully transforms string data into graph data', () => {
 		let results = restController.stringsToGraphData(stringArray);
-		expect(results['Red']).toEqual(3);
-		expect(results['Blue']).toEqual(2);
-		expect(results['Green']).toEqual(1);
+
+		expect(results).not.toBeNull();
+		expect(results).not.toBeUndefined();
+		expect(results.data).toMatchObject(expect.any(Array));
+		expect(results.data[0]).toMatchObject(expect.any(Array));
+	});
+
+	test('Successfully transforms boolean data into graph data', () => {
+		let results = restController.boolsToGraphData(boolArray);
+
+		expect(results).not.toBeNull();
+		expect(results).not.toBeUndefined();
+		expect(results.data).toMatchObject(expect.any(Array));
+		expect(results.data[0]).toMatchObject(expect.any(Array));
 	});
 });
