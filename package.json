@@ -19,7 +19,7 @@
 		"test:int:par": "jest -u parallel --verbose",
 		"test:int:seq:update": "jest -u --runInBand sequential --updateSnapshot",
 		"test:int:par:update": "jest -u parallel --updateSnapshot",
-		"posttest": "npm run test:front",
+		"posttest": "",
 		"install:front": "npm install --prefix ./data-visualisation-app",
 		"postinstall": "npm run install:front"
 	},
