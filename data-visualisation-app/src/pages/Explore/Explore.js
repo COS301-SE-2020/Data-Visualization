@@ -27,6 +27,7 @@ import React from 'react';
 import DataConnection from '../../components/DataConnection';
 import Entities from '../../components/Entities';
 import Suggestions from '../../components/Suggestions';
+import Anime, { anime } from 'react-anime';
 
 
 

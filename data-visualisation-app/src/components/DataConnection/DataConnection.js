@@ -221,8 +221,8 @@ class DataConnection extends React.Component {
           }}
         >
      
-          <Button shape = 'round' onClick={this.changeAddState} style ={{marginRight: '10px'}}>Add Connection</Button>
-          <Button type = 'primary' shape = 'round' onClick={this.next}>Next</Button>
+          <Button onClick={this.changeAddState} style ={{marginRight: '10px'}}>Add Connection</Button>
+          <Button type = 'primary' onClick={this.next}>Next</Button>
           
     
           
@@ -232,6 +232,7 @@ class DataConnection extends React.Component {
 
     return (
      <div>
+       
         <List
           className="dataSourceList"
           loading={initLoading}

@@ -17,9 +17,9 @@
 
 @mixin button__moreLikeThis--backgroundColor {
   background: rgb(117,48,154);
-  background: -moz-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
-  background: -webkit-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
-  background: linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+  background: -moz-linear-gradient(97deg, #FF4242 0%, #FF47C7 100%);
+  background: -webkit-linear-gradient(97deg, #FF4242 0%, #FF47C7 100%);
+  background: linear-gradient(97deg, #FF4242 0%, #FF47C7 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
 }
 
@@ -30,14 +30,17 @@
   box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
   
   margin: 0;
-  top: 93%;
+  top: 90%;
   left: 57%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   position: fixed;
   border: none;
   transition: 0.3s;
-  opacity: 0.8;
+  opacity: 0.95;
+  width: 200px;
+  height: 50px;
+  font-size: 20pt;
 }
 #moreLikeThisButton:hover{
   opacity: 1;
@@ -48,8 +51,6 @@
       left: 50%;
   }
 }
-
-
 
 .chartDiv{
   
@@ -107,6 +108,5 @@
   background-color: #FAFAFA;
   cursor: pointer;
   padding: 15px 20px 15px 20px;
-  
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+
 }

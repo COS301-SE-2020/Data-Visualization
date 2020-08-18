@@ -55,7 +55,7 @@ import {PlusSquare} from '@styled-icons/feather';
 import {Trash as TrashIcon} from '@styled-icons/octicons';
 import {Dashboard as DashboardIcon} from '@styled-icons/remix-line';
 import {Info} from '@styled-icons/feather';
-
+import Anime, {anime} from 'react-anime';
 /**
  *   globals import
 */
@@ -112,6 +112,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	appBar: {
+		backgroundColor: '#FF5E5E',
 		[theme.breakpoints.up('sm')]: {
 			width: `calc(100% - ${drawerWidth}px)`,
 			marginLeft: drawerWidth,
@@ -477,16 +478,19 @@ function App(props) {
 							backButton
 						}
 						
+						
 						<Typography variant="h2" className={classes.typographyLocationHeading} noWrap children={
 							locationTitle
 						} >
 						</Typography>
 
+						<Anime delay={anime.stagger(100)} scale={[.7, 1]}>
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
 							pageTitle
 						} >
-
 						</Typography>
+						</Anime>
+
 						<LoginDialog
                             isLoggedIn={loginButton}
 							handlePageType ={handlePageType}
