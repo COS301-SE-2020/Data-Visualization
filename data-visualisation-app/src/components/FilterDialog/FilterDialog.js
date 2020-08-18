@@ -122,7 +122,7 @@ const FilterDialog = (props) => {
         console.log('Success:', values);
 
         handleFilterCancel();
-        props.generateCharts(request.user.graphTypes, request.user.selectedFields, request.user.selectedEntities, request.user.fittestGraphs);
+        props.generateCharts(request.user.graphTypes, request.user.selectedEntities,  request.user.selectedFields, request.user.fittestGraphs);
       };
     
       const onFinishFailed = errorInfo => {
