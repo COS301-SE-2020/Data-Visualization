@@ -54,65 +54,26 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 </details>
 
-## Installation Instruction
+<details> 
+<summary><b>Demo 3</b></summary>
 
-The React-App that can be found in the *data-visualisation-app/* directory.
-The Node.js server that serves the React-App and can be found in the *root/* directory.
- 
-To install dependecies:
-  1.  Install the Node.js server dependencies: 
-```
-npm install
-```
-  2.  Change directory to data-visualisation-app: 
-```
-cd data-visualisation-app
-```
-  3.  Install the React-App dependencies: 
-```
-npm install
-```
+##### Video Demo
 
-To run the React-App:
+* [Demo 3 Video Link](https://drive.google.com/file/d/1RMqz7AFnv58JTfPBNzPGliMMUQ3tLyl3/view?usp=sharing)
 
-1.  Change directory to data-visualisation-app: 
-```
-cd data-visualisation-app
-```
-2.  View the React-App in development mode with live reloading: 
-```
-npm start
-```
+##### Documentation
 
-To run the Node.js server:
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_SRS_Update.pdf).
 
-1.  Build React-App into production mode, and start the Node.js server: 
-```
-npm start
-```
+* Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_CodingStandards.pdf).
 
-## Testing Instructions
+* User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_UserManual.pdf).
 
-The React-App that can be found in the *data-visualisation-app/* directory.
-The Node.js server that serves the React-App and can be found in the *root/* directory.
+* API Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_API_Manual.pdf).
 
-To test the React-App: (currently no tests for the react-app)
+* Technical Installation can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_API_Manual.pdf).
 
-1.  Change directory to data-visualisation-app: 
-```
-cd data-visualisation-app
-```
-2.  View the React-App in development mode with live reloading: 
-```
-npm test
-```
-
-To test the Node.js server: (Currently no tests for the server)
-
-1.  Build React-App into production mode, and start the Node.js server: 
-```
-npm test
-```
+</details>
 
 ## Collaborators
 
