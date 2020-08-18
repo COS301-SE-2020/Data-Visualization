@@ -358,7 +358,7 @@ function Dashboard(props) {
 						<Space size={9}>
 						{hasCharts &&
 						<Button ghost={!editMode} onClick={(editMode ? onSaveDashboardClick : onEditDashboardClick)}>
-							 {(editMode ? 'Save Dashboards' : 'Edit Dashboards')}
+							 {(editMode ? 'Save Dashboard' : 'Edit Dashboard')}
 						</Button>}
 						{editMode &&
 							<React.Fragment>

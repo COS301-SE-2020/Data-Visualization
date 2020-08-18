@@ -29,6 +29,9 @@ import './Suggestions.scss';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
+import EditChart from '../EditChart';
+
+const renderChart = {index: -1};
 
 function Suggestion(props) {
     const [isAdded, setIsAdded] = useState(false);
@@ -116,8 +119,7 @@ function Suggestion(props) {
                         <StarOutlined />
                     </Grid>
                     <Grid item xs={2}>
-
-
+                        <Button onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; console.debug('what is ', props.editChartParameters);  props.setShowEditChart(true);}}>Customize</Button>
                     </Grid>
                 </Grid>
             </div>
@@ -125,7 +127,9 @@ function Suggestion(props) {
     );
 }
 
-const SuggestionMemo = React.memo(Suggestion, () => {return true;});
+const SuggestionMemo = React.memo(Suggestion, (prevProps, nextProps) => {
+    if (nextProps.id === renderChart.index) {renderChart.index = -1; return false;} else return true;
+});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -151,11 +155,13 @@ function IGALoading() {
  */
 function Suggestions(props) {
 
+    const [showEditChart, setShowEditChart] = useState(false);
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
     const [dashboardSelection, setDashboardSelection] = useState([]);
     const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
+    const editChartParameters = useRef({});
     const newDashboardSelection = useRef(null);
     const newCurrentCharts = useRef(null);
     const [getToReload, setGetToReload] = useState(false);
@@ -171,7 +177,16 @@ function Suggestions(props) {
     };
 
     
-
+    const synchronizeChanges = (chartIndex) => {
+        console.debug('chartIndex', currentCharts)
+        renderChart.index = chartIndex;
+        let newCurrentCharts = JSON.parse(JSON.stringify(currentCharts));
+        newCurrentCharts[chartIndex].options = request.cache.suggestions.graph.list[chartIndex];
+        setCurrentCharts(newCurrentCharts);
+        console.debug('request.cache.suggestions.graph.list', request.cache.suggestions.graph.list)
+        console.debug('newCurrentCharts', newCurrentCharts)
+        setShowEditChart(false);
+    };
 
     const moreLikeThis = values =>{
 
@@ -223,6 +238,7 @@ function Suggestions(props) {
                                     resolve(request.cache.suggestions.graph.current);
                                 } else {
                                     // todo: handle network error
+                                    resolve(request.cache.suggestions.graph.current);
                                 }
                             });
                         }).then(function (fetchedGraph) {
@@ -412,7 +428,9 @@ function Suggestions(props) {
     }
 
 
-    return (
+    return (showEditChart ? <EditChart options={editChartParameters.current.options} mutablePointer={request.cache.suggestions.graph.list} directory={editChartParameters.current.directory} synchronizeChanges={synchronizeChanges}/>
+        :
+        (
         loadedFirst ?
                 <div className={classes.root}>    
                     <Form
@@ -447,7 +465,7 @@ function Suggestions(props) {
                                                     <Checkbox className = 'checkboxItem' hidden = {true}></Checkbox>
                                                 </Form.Item>
                                                 {/*<Suggestion id={index} chartData={achart}/>*/}
-                                                <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} />
+                                                <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={setShowEditChart} />
                                             </div>
                                         </Grid>;
                             })}
@@ -476,6 +494,7 @@ function Suggestions(props) {
                 </div>
             :
                 IGALoading()
+        )
     );
 }
 

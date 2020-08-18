@@ -15,7 +15,7 @@
  */
 
 import React, {useEffect, useState, useRef, usePagination} from 'react';
-import {Collapse, Input, Checkbox, Button, InputNumber, Space, message, Dropdown, Menu, Cascader} from 'antd';
+import {Collapse, Input, Checkbox, Button, InputNumber, Space, message, Dropdown, Menu, Cascader, Divider} from 'antd';
 import './EditChart.scss';
 import ReactEcharts from 'echarts-for-react';
 import * as constants from '../../globals/constants';
@@ -23,6 +23,8 @@ import Box from '@material-ui/core/Box';
 import { useTable } from 'react-table';
 import InputColor from 'react-input-color';
 import request from '../../globals/requests';
+import Grid from '@material-ui/core/Grid';
+import useUndo from 'use-undo';
 
 /**
  *   @brief Component to edit charts data and metadata.
@@ -31,20 +33,27 @@ import request from '../../globals/requests';
 function EditChart(props) {
 
     const [chartOptions, setChartOptions] = useState(props.options);
+    const [renderAxisTable, setRenderAxisTable] = useState(false);
+    const [columnsAxisCaptions, setColumnsAxisCaptions] = useState([{
+            Header: 'Axis',
+            accessor: 'axis'
+        }
+    ]);
+    const [dataAxisCaptions, setDataAxisCaptions] = useState([]);
     const columns = useRef([{
         Header: 'Name',
         columns: [{
-                Header: 'Series',
-                accessor: 'series',
-            }, {
-                Header: 'Dimension',
-                accessor: 'dimension',
-            }
+            Header: 'Series',
+            accessor: 'series',
+        }, {
+            Header: 'Dimension',
+            accessor: 'dimension',
+        }
         ]}, {
         Header: 'Data',
         columns: [
         ]
-        },
+    },
     ]);
     const [data, setData] = useState([]);
     const [seriesProperty, setSeriesProperty] = useState([]);
@@ -58,6 +67,19 @@ function EditChart(props) {
     const currentBuffer = useRef(true);
     const optionsChanges = useRef([]);
     const storedPointers = useRef({});
+
+    const [
+        currentOptions,
+        {
+            set: setCurrentOptions,
+            reset: resetCurrentOptions,
+            undo: undoCurrentOptions,
+            redo: redoCurrentOptions,
+            canUndo,
+            canRedo
+        }
+    ] = useUndo(props.options);
+    const { present: presentCurrentOptions } = currentOptions;
 
     // const [boxStart, setBoxStart] = useState([100, 100]);
     // const [boxSize, setBoxSize] = useState([100, 100]);
@@ -174,6 +196,10 @@ function EditChart(props) {
                 for (let s = 0; s < optionsBuffer.current[+currentBuffer.current].series.length; s++) {
                     if (optionsBuffer.current[+currentBuffer.current].series[s].hasOwnProperty('data')) {
                         return optionsBuffer.current[+currentBuffer.current].series[s].data.length;
+                    } else if (optionsBuffer.current[+currentBuffer.current].series[s].hasOwnProperty('encode')) {
+                        if (optionsBuffer.current[+currentBuffer.current].dataset.hasOwnProperty('source')) {
+                            return optionsBuffer.current[+currentBuffer.current].dataset.source.length-1;
+                        }
                     }
                 }
             }
@@ -225,8 +251,12 @@ function EditChart(props) {
 
         let tmp, dataLength = determineDataLength();
 
-        for (let d = 1; d <= dataLength; d++)
-            columns.current[1].columns.push({Header: d.toString(), accessor: d.toString()});
+
+        if (optionsBuffer.current[+currentBuffer.current].series.length > 0 && optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('itemName'))
+            columns.current[1].columns.push({Header: 'Value', accessor: 'value'});
+        else
+            for (let d = 1; d <= dataLength; d++)
+                columns.current[1].columns.push({Header: d.toString(), accessor: d.toString()});
 
         let keyLookup = [];
         for (let d = 0; d < columns.current.length; d++) {
@@ -241,39 +271,116 @@ function EditChart(props) {
         }
 
         // todo: add xaxis label table
-        // if (optionsBuffer.current[+currentBuffer.current].hasOwnProperty('xAxis')) {
-        //     if (optionsBuffer.current[+currentBuffer.current].xAxis.hasOwnProperty('data')) {
-        //         /**
-        //          *   Add xAxis row to data object.
-        //          */
-        //         prevGridData.current.grid.push({});
-        //         prevGridData.current.grid[prevGridData.current.grid.length-1].push({ readOnly: true, value: 'X-Axis Labels', colSpan: 2 });
-        //         for (let i = 0; i < COLUMNS.length-1 + optionsBuffer.current[+currentBuffer.current].xAxis.data.length; i++) {
-        //             if (i < COLUMNS.length-1)
-        //                 prevGridData.current.grid[prevGridData.current.grid.length-1].push({ value: '', readOnly: true });
-        //             else
-        //                 prevGridData.current.grid[prevGridData.current.grid.length-1].push({ value: optionsBuffer.current[+currentBuffer.current].xAxis.data[i - (COLUMNS.length-1)], pointers: [optionsBuffer.current[0].xAxis.data, optionsBuffer.current[1].xAxis.data], pointerOffset: i });
-        //         }
-        //     }
-        // }
+        if (optionsBuffer.current[+currentBuffer.current].hasOwnProperty('xAxis')) {
+            if (optionsBuffer.current[+currentBuffer.current].xAxis.hasOwnProperty('data')) {
+                /**
+                 *   Add xAxis row to data object.
+                 */
+                let tempColumns = [{
+                    Header: 'Axis',
+                    accessor: 'axis'
+                }];
+                let tempData = [{
+                    axis: 'X'
+                }];
+                // tempData.push({});
+                // tempData[tempData.length-1]['axis'] = 'X-Axis';
+                for (let i = 0; i < optionsBuffer.current[+currentBuffer.current].xAxis.data.length; i++) {
+                    tempColumns.push({
+                        Header: 'Caption ' + i,
+                        accessor: i.toString()
+                    });
+                    tempData[0][i.toString()] = optionsBuffer.current[+currentBuffer.current].xAxis.data[i];
+                    // prevGridData.current.grid[prevGridData.current.grid.length-1][i.toString()] = optionsBuffer.current[+currentBuffer.current].xAxis.data[i];
+                    //, pointers: [optionsBuffer.current[0].xAxis.data, optionsBuffer.current[1].xAxis.data], pointerOffset: i });
+                    storedPointers.current['0' + i.toString()] = ['xAxis', 'data', i];
+                }
+                console.debug('tempColumns', tempColumns)
+                console.debug('tempData', tempData)
+                setColumnsAxisCaptions(tempColumns);
+                setDataAxisCaptions(tempData);
+                setRenderAxisTable(true);
+            }
+        }
 
-        /** Add series rows to data object. */
-        if (optionsBuffer.current[+currentBuffer.current].hasOwnProperty('series')) {
-            for (let s = 0; s < optionsBuffer.current[+currentBuffer.current].series.length; s++) {
-                if (optionsBuffer.current[+currentBuffer.current].series[s].hasOwnProperty('data')) {
-                    /**
-                     *   Add data row with "Series..." span over n data dimension.
-                     */
-                    if (optionsBuffer.current[+currentBuffer.current].series[s].data.length > 0) {
-                        if (Array.isArray(optionsBuffer.current[+currentBuffer.current].series[s].data[0])) {
-                            for (let dimension = 0; dimension < optionsBuffer.current[+currentBuffer.current].series[s].data[0].length; dimension++) {
+        if (optionsBuffer.current[+currentBuffer.current].hasOwnProperty('dataset')) {
+
+
+            let isArray = true;
+            let isValue = false;
+
+            if (optionsBuffer.current[+currentBuffer.current].series.length > 0 && optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('x')) {
+                let s = 0;
+                for (let dimension = 0; dimension < 2; dimension++) {
+                    prevGridData.current.grid.push({});
+                    tmp = prevGridData.current.grid.length-1;
+
+                    if (dimension === 0) {
+                        prevGridData.current.grid[tmp][keyLookup[0]] = 'Series 1';
+                        seriesProperty.push({name: 'Series 1'});
+                        prevGridData.current.grid[tmp]['rowspan'] = 2;
+
+                    }
+                    for (let i = 1; i < dataLength+1; i++) {
+
+                        if (i === 1) {
+                            prevGridData.current.grid[tmp].dimension = dimensionName(dimension);
+                        }
+
+                        prevGridData.current.grid[tmp][keyLookup[i+1]] = (optionsBuffer.current[+currentBuffer.current].dataset.source[i][dimension] == null ? '' : optionsBuffer.current[+currentBuffer.current].dataset.source[i][dimension]);
+                        storedPointers.current[tmp + keyLookup[i+1]] = ['dataset', 'source', i, dimension];
+                    }
+                }
+            } else {
+                for (let s = 1; s < optionsBuffer.current[+currentBuffer.current].dataset.source.length; s++) {
+                    for (let dimension = 0; dimension < 2; dimension++) {
+                        prevGridData.current.grid.push({});
+                        tmp = prevGridData.current.grid.length - 1;
+
+                        if (dimension === 0) {
+                            prevGridData.current.grid[tmp][keyLookup[0]] = 'Series ' + s;
+                            seriesProperty.push({name: 'Series ' + s});
+                            prevGridData.current.grid[tmp]['rowspan'] = 2;
+                        }
+
+                        prevGridData.current.grid[tmp]['dimension'] = dimensionName(dimension);
+                        prevGridData.current.grid[tmp]['value'] = (optionsBuffer.current[+currentBuffer.current].dataset.source[s][dimension] == null ? 'null' : optionsBuffer.current[+currentBuffer.current].dataset.source[s][dimension]);
+                        storedPointers.current[tmp + 'value'] = ['dataset', 'source', s, dimension];
+                    }
+                }
+            }
+
+            // isValue = optionsBuffer.current[+currentBuffer.current].series[s].data[0].hasOwnProperty('value');
+
+            // if (Array.isArray(optionsBuffer.current[+currentBuffer.current].series[s].data[0])) {
+            // if (!isArray && optionsBuffer.current[+currentBuffer.current].series[s].data[0].hasOwnProperty('value')) {
+            //
+            // } else
+        } else {
+            /** Add series rows to data object. */
+            if (optionsBuffer.current[+currentBuffer.current].hasOwnProperty('series')) {
+                for (let s = 0; s < optionsBuffer.current[+currentBuffer.current].series.length; s++) {
+                    if (optionsBuffer.current[+currentBuffer.current].series[s].hasOwnProperty('data')) {
+                        /** Add data row with "Series..." span over n data dimension. */
+                        if (optionsBuffer.current[+currentBuffer.current].series[s].data.length > 0) {
+                            let isArray = Array.isArray(optionsBuffer.current[+currentBuffer.current].series[s].data[0]);
+                            let isValue = false;
+                            if (!isArray)
+                                isValue = optionsBuffer.current[+currentBuffer.current].series[s].data[0].hasOwnProperty('value');
+                            // if (Array.isArray(optionsBuffer.current[+currentBuffer.current].series[s].data[0])) {
+                            // if (!isArray && optionsBuffer.current[+currentBuffer.current].series[s].data[0].hasOwnProperty('value')) {
+                            //
+                            // } else
+                            for (let dimension = 0; dimension < (isArray ? optionsBuffer.current[+currentBuffer.current].series[s].data[0].length : 1); dimension++) {
+
+
                                 prevGridData.current.grid.push({});
                                 tmp = prevGridData.current.grid.length-1;
 
                                 if (dimension === 0) {
                                     prevGridData.current.grid[tmp][keyLookup[0]] = 'Series ' + (s+1).toString();
                                     seriesProperty.push({name: 'Series ' + (s+1).toString()});
-                                    prevGridData.current.grid[tmp]['rowspan'] = optionsBuffer.current[+currentBuffer.current].series[s].data[0].length;
+                                    prevGridData.current.grid[tmp]['rowspan'] = (isArray ? optionsBuffer.current[+currentBuffer.current].series[s].data[0].length : 1);
                                     /** Construct seriesProperty. */
 
                                     /** Add color property. */
@@ -305,12 +412,12 @@ function EditChart(props) {
                                     if (i === 1) {
                                         prevGridData.current.grid[tmp][keyLookup[i]] = dimensionName(dimension);
                                     } else {
-                                        prevGridData.current.grid[tmp][keyLookup[i]] = optionsBuffer.current[+currentBuffer.current].series[s].data[i - (keyLookup.length-dataLength)][dimension];
-                                        storedPointers.current[tmp + keyLookup[i]] = ['series', s, 'data', i - (keyLookup.length-dataLength), dimension];
+                                        prevGridData.current.grid[tmp][keyLookup[i]] = (isArray ? optionsBuffer.current[+currentBuffer.current].series[s].data[i - (keyLookup.length-dataLength)][dimension] : (isValue ? optionsBuffer.current[+currentBuffer.current].series[s].data[dimension].value : optionsBuffer.current[+currentBuffer.current].series[s].data[i - (keyLookup.length-dataLength)]));
+                                        storedPointers.current[tmp + keyLookup[i]] = (isArray ? ['series', s, 'data', i - (keyLookup.length-dataLength), dimension] : (isValue ? ['series', s, 'data', i - (keyLookup.length-dataLength), 'value'] : ['series', s, 'data', i - (keyLookup.length-dataLength)]));
                                     }
                                 }
                             }
-                        } else {
+                            // } else {
                             // todo: integrate code below
                             // prevGridData.current.grid[tmp][keyLookup[0]] = 'Series ' + (s+1).toString();
                             // for (let i = 0; i < COLUMNS.length + optionsBuffer.current[+currentBuffer.current].series[s].data.length; i++) {
@@ -337,17 +444,18 @@ function EditChart(props) {
                             //         prevGridData.current.grid[tmp][keyLookup[0]] = optionsBuffer.current[+currentBuffer.current].series[s].data[i - COLUMNS.length];
                             //             //, pointers: [optionsBuffer.current[0].series[seriesHasType].data, optionsBuffer.current[1].series[seriesHasType].data], pointerOffset: i - COLUMNS.length });
                             // }
+                            // }
+                        } else {
+                            throw 'data is empty';
                         }
-                    } else {
-                        throw 'data is empty';
+
+                    } else if (optionsBuffer.current[+currentBuffer.current].series.hasOwnProperty('value')) {
+
                     }
-
-                } else if (optionsBuffer.current[+currentBuffer.current].series.hasOwnProperty('value')) {
-
                 }
             }
         }
-
+        console.debug('prevGridData.current.grid', prevGridData.current.grid)
         setData(prevGridData.current.grid);
     }
 
@@ -396,11 +504,50 @@ function EditChart(props) {
                     object[property] = {
                     };
                     break;
+                case 'text':
+                    object[property] = '';
+                    break;
+                case 'textAlign':
+                    object[property] = 'auto';
+                    break;
+                case 'textVerticalAlign':
+                    object[property] = 'auto';
+                    break;
+                case 'textStyle':
+                    object[property] = {
+                        fontSize: 18,
+                        fontStyle: '',
+                        fontWeight: 'normal'
+                    };
+                    break;
+                case 'left':
+                    object[property] = 'auto';
+                    break;
+                case 'top':
+                    object[property] = 'auto';
+                    break;
+                case 'subtext':
+                    object[property] = '';
+                    break;
+                case 'subtextStyle':
+                    object[property] = {
+                        color: '#aaa',
+                        fontStyle: 'normal',
+                        fontWeight: 'normal',
+                        fontSize: 12,
+                        lineHeight: 56
+                    };
+                    break;
+                case 'orient':
+                    object[property] = 'horizontal';
+                    break;
             }
         }
     }
 
     function modifyAtomic(key, value) {
+        console.debug('key, value', key, value)
+        console.debug('optionsBuffer.current[+currentBuffer.current]',optionsBuffer.current[+currentBuffer.current])
         addProperty(optionsBuffer.current[+currentBuffer.current], key[0]);
         let pointer = optionsBuffer.current[+currentBuffer.current][key[0]];
         for (let k = 1; k < key.length-1; k++) {
@@ -414,7 +561,8 @@ function EditChart(props) {
     function modify(key, value) {
         modifyAtomic(key, value);
 
-        setChartOptions(optionsBuffer.current[+currentBuffer.current]);
+        // setChartOptions(optionsBuffer.current[+currentBuffer.current]);
+        setCurrentOptions(JSON.parse(JSON.stringify(optionsBuffer.current[+currentBuffer.current])));
         currentBuffer.current = !currentBuffer.current;
         optionsChanges.current.push([optionsBuffer.current[+currentBuffer.current], key, value]);
 
@@ -427,7 +575,8 @@ function EditChart(props) {
             optionsChanges.current.push([optionsBuffer.current[+!currentBuffer.current], eventChain[ev].key, eventChain[ev].value]);
         }
 
-        setChartOptions(optionsBuffer.current[+currentBuffer.current]);
+        // setChartOptions(optionsBuffer.current[+currentBuffer.current]);
+        setCurrentOptions(JSON.parse(JSON.stringify(optionsBuffer.current[+currentBuffer.current])));
         currentBuffer.current = !currentBuffer.current;
         setTimeout(flushChanges, 100);
     }
@@ -472,7 +621,6 @@ function EditChart(props) {
 
             optionsBuffer.current[+currentBuffer.current].series.push([{name: 'Legend Value 1'}]);
             optionsBuffer.current[+!currentBuffer.current].series.push([{name: 'Legend Value 1'}]);
-
         }
         data.push('Legend Value 1');
         return data;
@@ -490,8 +638,11 @@ function EditChart(props) {
         currentBuffer.current = !currentBuffer.current;
         optionsBuffer.current[+currentBuffer.current] = JSON.parse(JSON.stringify(props.options));
 
-        setChartOptions(optionsBuffer.current[+currentBuffer.current]);
+        // setChartOptions(optionsBuffer.current[+currentBuffer.current]);
+        resetCurrentOptions(JSON.parse(JSON.stringify(optionsBuffer.current[+currentBuffer.current])));
         currentBuffer.current = !currentBuffer.current;
+
+        console.debug('what is props.options', props.options)
 
         generateData();
     }, []);
@@ -555,6 +706,13 @@ function EditChart(props) {
             }, {
                 value: 'scatter',
                 label: 'Scatter'
+            }],
+            ORIENT: [{
+                value: 'horizontal',
+                label: 'Horizontal'
+            }, {
+                value: 'vertical',
+                label: 'Vertical'
             }]
         }
     };
@@ -562,6 +720,21 @@ function EditChart(props) {
     function updateData(rowIndex, columnId, value) {
 
         setData(old =>
+            old.map((row, index) => {
+                if (index === rowIndex) {
+                    return {
+                        ...old[rowIndex],
+                        [columnId]: value,
+                    };
+                }
+                return row;
+            })
+        );
+    }
+
+    function updateAxisData(rowIndex, columnId, value) {
+
+        setDataAxisCaptions(old =>
             old.map((row, index) => {
                 if (index === rowIndex) {
                     return {
@@ -646,13 +819,73 @@ function EditChart(props) {
 
                                 if (cellIndex === 0) {
                                     if (cell.row.original.hasOwnProperty('series'))
-                                        return <td rowSpan={2} className='datatable__spanning'>{cell.row.original.series}</td>;
+                                        return <td rowSpan={2} className='datatable__spanning' key={i + cellIndex.toString()}>{cell.row.original.series}</td>;
                                     else
                                         return null;
                                 } else if (cellIndex < 2) {
-                                    return <td className={(i === 0 ? 'datatable__top' : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')}>{cell.row.original.dimension}</td>;
+                                    return <td className={(i === 0 ? (cell.row.original.rowspan === 1 ? 'datatable__single' : 'datatable__top') : 'datatable')} key={i + cellIndex.toString()}>{cell.row.original.dimension}</td>;
                                 } else {
-                                    return <td {...cell.getCellProps()} className={(i === 0 ? 'datatable__top' : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')}>{cell.render('Cell')}</td>;
+                                    return <td {...cell.getCellProps()} className={(i === 0 ? (cell.row.original.rowspan === 1 ? (cellIndex === row.cells.length-1 ? 'datatable__single--last ' : '') + 'datatable__single' : 'datatable__top') : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')} key={i + cellIndex.toString()}>{cell.render('Cell')}</td>;
+                                }
+                            })}
+                        </tr>
+                    );
+                })}
+                </tbody>
+            </table>
+        );
+    }
+
+    function AxisTable({ columns, data, updateMyData }) {
+
+        const {
+            getTableProps,
+            getTableBodyProps,
+            headerGroups,
+            prepareRow,
+            rows,
+            canPreviousPage,
+            canNextPage,
+            pageOptions,
+            pageCount,
+            gotoPage,
+            nextPage,
+            previousPage,
+            setPageSize,
+            state: { pageIndex, pageSize },
+        } = useTable(
+            {
+                columns,
+                data,
+                defaultColumn,
+                autoResetPage: false,
+                updateMyData
+            },
+            usePagination
+        );
+
+        return (
+            <table {...getTableProps()}>
+                <thead>
+                {headerGroups.map(headerGroup => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map(column => (
+                            <th {...column.getHeaderProps()} className='datatable'>{column.render('Header')}</th>
+                        ))}
+                    </tr>
+                ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                {rows.map((row, i) => {
+                    prepareRow(row);
+                    return (
+                        <tr {...row.getRowProps()}>
+                            {row.cells.map((cell, cellIndex) => {
+
+                                if (cellIndex < 1) {
+                                    return <td className={(i === 0 ? (cell.row.original.rowspan === 1 ? 'datatable__single' : 'datatable__top') : 'datatable')}>{cell.render('Cell')}</td>;
+                                } else {
+                                    return <td {...cell.getCellProps()} className={(i === 0 ? (cell.row.original.rowspan === 1 ? (cellIndex === row.cells.length-1 ? 'datatable__single--last ' : '') + 'datatable__single' : 'datatable__top') : 'datatable') + (cellIndex > 0 ? ' datatable__editable' : '')}>{cell.render('Cell')}</td>;
                                 }
                             })}
                         </tr>
@@ -665,228 +898,188 @@ function EditChart(props) {
 
     return (
         <div id='editCharts'>
-
-            {/*<div style={{position: 'fixed', top: boxStart[1] + 'px', left: boxStart[0] + 'px', width: boxSize[0] + 'px', height: boxSize[1] + 'px', backgroundColor: 'black', opacity: '0.2', zIndex: '100'}}></div>*/}
             <div id='editCharts__header'>
                 <Space size={9} align="center">
-                    <Button >Undo</Button>
-                    <Button >Redo</Button>
+                    <Button ghost onClick={() => {undoCurrentOptions();}} disabled={!canUndo}>
+                        Undo
+                    </Button>
+                    <Button ghost onClick={() => {redoCurrentOptions();}} disabled={!canRedo}>
+                        Redo
+                    </Button>
+                    <Button ghost style={{float: 'right'}} onClick={() => {
+                        console.debug('props.directory[0]', props.directory[0])
+                        request.cache.suggestions.graph[props.directory[0]] = optionsBuffer.current[0];
+                        props.mutablePointer[props.directory[0]] = optionsBuffer.current[+currentBuffer.current];
+                        props.synchronizeChanges(props.directory[0]);
+                    }}>Save</Button>
                 </Space>
             </div>
+            <div id='editCharts__properties' className='editCharts__container--box'>
+                <div className='box__title'>
+                    Properties
+                </div>
+                <div className='box__content'>
+                    <Collapse defaultActiveKey={['1']}>
+                        <Collapse.Panel header="Title" key="1">
+                            <table className='properties'>
+                                <tbody>
+                                <tr className='properties'>
+                                    <td className='properties'>Text</td>
+                                    <td className='properties'><Input onPressEnter={e => {modify(['title', 'text'], e.target.value);}}/></td>
+                                </tr>
+                                <tr className='properties'>
+                                    <td className='properties'>Size</td>
+                                    <td className='properties'><InputNumber min={1} max={72} defaultValue={24} onChange={v => {modify(['title', 'textStyle', 'fontSize'], parseInt(v));}} /></td>
+                                </tr>
+                                <tr className='properties'>
+                                    <td className='properties'>Bold</td>
+                                    <td className='properties'><Checkbox onClick={e => {modify(['title', 'textStyle', 'fontWeight'], (e.target.checked ? 'bold' : 'normal'));}} /></td>
+                                </tr>
+                                <tr className='properties'>
+                                    <td className='properties'>Horizontal Alignment</td>
+                                    <td className='properties'>
+                                        <Cascader options={DEFAULT_PROPERTIES.TITLE.HORIZONTAL_ALIGNMENT} onChange={v => {modify(['title', 'left'], v[0]);}} defaultValue={[DEFAULT_PROPERTIES.TITLE.HORIZONTAL_ALIGNMENT[0].label]} />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className='properties'>Vertical  Alignment</td>
+                                    <td className='properties'>
+                                        <Cascader options={DEFAULT_PROPERTIES.TITLE.VERTICAL_ALIGNMENT} onChange={v => {modify(['title', 'top'], v[0]);}} defaultValue={[DEFAULT_PROPERTIES.TITLE.VERTICAL_ALIGNMENT[0].label]} />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </Collapse.Panel>
+                        <Collapse.Panel header="Link" key="2">
+                            <table className='properties'>
+                                <tbody>
+                                <tr className='properties'>
+                                    <td className='properties'>Text</td>
+                                    <td className='properties'><Input onPressEnter={e => {modify(['title', 'subtext'], e.target.value);}}/></td>
+                                </tr>
+                                <tr className='properties'>
+                                    <td className='properties'>Size</td>
+                                    <td className='properties'><InputNumber min={1} max={72} defaultValue={24} onChange={v => {modify(['title', 'subtextStyle', 'fontSize'], parseInt(v));}} /></td>
+                                </tr>
+                                <tr className='properties'>
+                                    <td className='properties'>Bold</td>
+                                    <td><Checkbox onClick={e => {modify(['title', 'subtextStyle', 'fontWeight'], (e.target.checked ? 'bold' : 'normal'));}} /></td>
+                                </tr>
+                                <tr>
+                                    <td className='properties'>Top Margin</td>
+                                    <td className='properties'><InputNumber min={1} max={300} defaultValue={56} onChange={v => {modify(['title', 'subtextStyle', 'lineHeight'], parseInt(v));}} /></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </Collapse.Panel>
+                        <Collapse.Panel header="Legend" key="3">
+                            <table className='properties'>
+                                <tbody>
+                                <tr className='properties'>
+                                    <td className='properties'>Show Legend</td>
+                                    <td><Checkbox onClick={e => {modify(['legend', 'show'], e.target.checked);}} /></td>
+                                </tr>
+                                <tr className='properties'>
+                                    <td className='properties'>Orientation</td>
+                                    {/*<td className='properties'><InputNumber min={1} max={72} defaultValue={24} onChange={v => {modify(['title', 'subtextStyle', 'fontSize'], parseInt(v));}} /></td>*/}
+                                    <td>
+                                        <Cascader options={DEFAULT_PROPERTIES.LEGEND.ORIENT} onChange={v => {modify(['legend', 'orient'], v[0]);}} defaultValue={[DEFAULT_PROPERTIES.LEGEND.ORIENT[0].label]} />
+                                    </td>
+                                </tr>
+                                <tr className='properties'>
+                                    <td className='properties'>Horizontal Alignment</td>
+                                    <td className='properties'>
+                                        <Cascader options={DEFAULT_PROPERTIES.LEGEND.HORIZONTAL_ALIGNMENT} onChange={v => {modify(['legend', 'left'], v[0]);}} defaultValue={['Auto']}/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className='properties'>Vertical  Alignment</td>
+                                    <td className='properties'>
+                                        <Cascader options={DEFAULT_PROPERTIES.TITLE.VERTICAL_ALIGNMENT} onChange={v => {modify(['legend', 'top'], v[0]);}} defaultValue={['Auto']}/>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </Collapse.Panel>
 
-            <Box height={600} width="100%">
-            {/*<Grid container spacing={1} id='editCharts__container'>*/}
-            {/*    <Grid item xs={3} style={{border: '1px solid green' }} >*/}
-                    <Box style={{overflowY: 'scroll'}} mx={0.5} width={400} display='inline-block' height='100%' className='editCharts__container--box'>
-                        <div className='box__title'>
-                            Properties
-                        </div>
-                        <div className='box__content'>
-                            <Collapse defaultActiveKey={['1']}>
-                                <Collapse.Panel header="Title" key="1">
-                                    <table className='properties'>
-                                        <tbody>
-                                        <tr className='properties'>
-                                            <td className='properties'>Text</td>
-                                            <td className='properties'><Input onPressEnter={e => {modify(['title', 'text'], e.target.value);}}/></td>
-                                        </tr>
-                                        <tr className='properties'>
-                                            <td className='properties'>Size</td>
-                                            <td className='properties'><InputNumber min={1} max={72} defaultValue={24} onChange={v => {modify(['title', 'textStyle', 'fontSize'], parseInt(v));}} /></td>
-                                        </tr>
-                                        <tr className='properties'>
-                                            <td className='properties'>Bold</td>
-                                            <td className='properties'><Checkbox onClick={e => {modify(['title', 'textStyle', 'fontWeight'], (e.target.checked ? 'bold' : 'normal'));}} /></td>
-                                        </tr>
-                                        <tr className='properties'>
-                                            <td className='properties'>Horizontal Alignment</td>
-                                            <td className='properties'>
-                                                <Cascader options={DEFAULT_PROPERTIES.TITLE.HORIZONTAL_ALIGNMENT} onChange={v => {modify(['title', 'left'], v[0]);}} defaultValue={[DEFAULT_PROPERTIES.TITLE.HORIZONTAL_ALIGNMENT[0].label]} />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className='properties'>Vertical  Alignment</td>
-                                            <td className='properties'>
-                                                <Cascader options={DEFAULT_PROPERTIES.TITLE.VERTICAL_ALIGNMENT} onChange={v => {modify(['title', 'top'], v[0]);}} defaultValue={[DEFAULT_PROPERTIES.TITLE.VERTICAL_ALIGNMENT[0].label]} />
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </Collapse.Panel>
-                                <Collapse.Panel header="Link" key="2">
-                                    <table className='properties'>
-                                        <tbody>
-                                        <tr className='properties'>
-                                            <td className='properties'>Text</td>
-                                            <td className='properties'><Input onPressEnter={e => {modify(['title', 'subtext'], e.target.value);}}/></td>
-                                        </tr>
-                                        <tr className='properties'>
-                                            <td className='properties'>Size</td>
-                                            <td className='properties'><InputNumber min={1} max={72} defaultValue={24} onChange={v => {modify(['title', 'subtextStyle', 'fontSize'], parseInt(v));}} /></td>
-                                        </tr>
-                                        <tr className='properties'>
-                                            <td className='properties'>Bold</td>
-                                            <td><Checkbox onClick={e => {modify(['title', 'subtextStyle', 'fontWeight'], (e.target.checked ? 'bold' : 'normal'));}} /></td>
-                                        </tr>
-                                        <tr>
-                                            <td className='properties'>Top Margin</td>
-                                            <td className='properties'><InputNumber min={1} max={300} defaultValue={56} onChange={v => {modify(['title', 'subtextStyle', 'lineHeight'], parseInt(v));}} /></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </Collapse.Panel>
-                                <Collapse.Panel header="Legend" key="3">
-                                    <table className='properties'>
-                                        <tbody>
-                                        <tr className='properties'>
-                                            <td className='properties'>Show Legend</td>
-                                            <td><Checkbox onClick={e => {modify(['legend', 'show'], e.target.checked);}} /></td>
-                                        </tr>
-                                        <tr className='properties'>
-                                            <td className='properties'>Orientation</td>
-                                            <td className='properties'><InputNumber min={1} max={72} defaultValue={24} onChange={v => {modify(['title', 'subtextStyle', 'fontSize'], parseInt(v));}} /></td>
-                                        </tr>
-                                        <tr className='properties'>
-                                            <td className='properties'>Horizontal Alignment</td>
-                                            <td className='properties'>
-                                                <Cascader options={DEFAULT_PROPERTIES.LEGEND.HORIZONTAL_ALIGNMENT} onChange={v => {modify(['title', 'left'], v);}} value={['Auto']}/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className='properties'>Vertical  Alignment</td>
-                                            <td className='properties'><InputNumber min={1} max={300} defaultValue={56} onChange={v => {modify(['title', 'subtextStyle', 'lineHeight'], parseInt(v));}} /></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </Collapse.Panel>
-                                <Collapse.Panel header="Series" key="4">
-                                    <Collapse defaultActiveKey={['1']} ghost>
-                                        {seriesProperty.map((s, seriesIndex) => {
-                                            return <Collapse.Panel header={s.name} key={seriesIndex}>
-                                                <table className='properties'>
-                                                    <tbody>
-                                                    <tr className='properties'>
-                                                        <td className='properties'>Name</td>
-                                                        <td className='properties'>
-                                                            <Input onPressEnter={e => {
-                                                                modifyChain([{key: ['legend', 'data', seriesIndex], value: e.target.value}, {key: s.label.directory, value: e.target.value}]);
-                                                                let tmp = JSON.parse(JSON.stringify(seriesProperty[seriesIndex]));
-                                                                tmp.label.value = e.target.value;
-                                                                setSeriesProperty(seriesProperty.map((newSeries, newSeriesIndex) => {
-                                                                    if (newSeriesIndex === seriesIndex) return tmp;
-                                                                    else return newSeries;
-                                                                }));
-                                                            }} placeholder={s.label.value}/>
-                                                        </td>
-                                                    </tr>
-                                                    <tr className='properties'>
-                                                        <td className='properties'>Colour</td>
-                                                        <td className='properties'>
-                                                            <InputColor initialValue={s.color.hexvalue} onChange={v => {
-                                                                modify(s.color.directory, v.rgba);
-                                                            }} placement="right" />
-                                                        </td>
-                                                    </tr>
-                                                    <tr className='properties'>
-                                                        <td className='properties'>Type</td>
-                                                        <td className='properties'>
-                                                            <Cascader options={DEFAULT_PROPERTIES.LEGEND.TYPE} onChange={v => {
-                                                                if (v.length > 0) {
-                                                                    modify(s.type.directory, v[0]);
-                                                                    let tmp = JSON.parse(JSON.stringify(seriesProperty));
-                                                                    tmp[seriesIndex].type.value = v[0];
-                                                                    setSeriesProperty(tmp);
-                                                                }
-                                                            }} value={[s.type.value]}/>
-                                                        </td>
-                                                    </tr>
+                        {/*<Collapse.Panel header="Series" key="4">*/}
+                        {/*    <Collapse defaultActiveKey={['1']} ghost>*/}
+                        {/*        {seriesProperty.map((s, seriesIndex) => {*/}
+                        {/*            return <Collapse.Panel header={s.name} key={seriesIndex}>*/}
+                        {/*                <table className='properties'>*/}
+                        {/*                    <tbody>*/}
+                        {/*                    <tr className='properties'>*/}
+                        {/*                        <td className='properties'>Name</td>*/}
+                        {/*                        <td className='properties'>*/}
+                        {/*                            <Input onPressEnter={e => {*/}
+                        {/*                                modifyChain([{key: ['legend', 'data', seriesIndex], value: e.target.value}, {key: s.label.directory, value: e.target.value}]);*/}
+                        {/*                                let tmp = JSON.parse(JSON.stringify(seriesProperty[seriesIndex]));*/}
+                        {/*                                tmp.label.value = e.target.value;*/}
+                        {/*                                setSeriesProperty(seriesProperty.map((newSeries, newSeriesIndex) => {*/}
+                        {/*                                    if (newSeriesIndex === seriesIndex) return tmp;*/}
+                        {/*                                    else return newSeries;*/}
+                        {/*                                }));*/}
+                        {/*                            }} placeholder={s.label.value}/>*/}
+                        {/*                        </td>*/}
+                        {/*                    </tr>*/}
+                        {/*                    <tr className='properties'>*/}
+                        {/*                        <td className='properties'>Colour</td>*/}
+                        {/*                        <td className='properties'>*/}
+                        {/*                            <InputColor initialValue={s.color.hexvalue} onChange={v => {*/}
+                        {/*                                modify(s.color.directory, v.rgba);*/}
+                        {/*                            }} placement="right" />*/}
+                        {/*                        </td>*/}
+                        {/*                    </tr>*/}
+                        {/*                    <tr className='properties'>*/}
+                        {/*                        <td className='properties'>Type</td>*/}
+                        {/*                        <td className='properties'>*/}
+                        {/*                            <Cascader options={DEFAULT_PROPERTIES.LEGEND.TYPE} onChange={v => {*/}
+                        {/*                                if (v.length > 0) {*/}
+                        {/*                                    modify(s.type.directory, v[0]);*/}
+                        {/*                                    let tmp = JSON.parse(JSON.stringify(seriesProperty));*/}
+                        {/*                                    tmp[seriesIndex].type.value = v[0];*/}
+                        {/*                                    setSeriesProperty(tmp);*/}
+                        {/*                                }*/}
+                        {/*                            }} value={[s.type.value]}/>*/}
+                        {/*                        </td>*/}
+                        {/*                    </tr>*/}
 
-                                                    </tbody>
-                                                </table>
-                                            </Collapse.Panel>;
-                                        })}
-                                    </Collapse>
-                                </Collapse.Panel>
-                            </Collapse>
-                        </div>
-                    </Box>
-                {/*</Grid>*/}
-                {/*<Grid item xs={5} >*/}
-                <Box style={{overflowY: 'scroll'}} mx={0.5} width={500} display='inline-block' height='100%' className='editCharts__container--box'>
-                    <div className='box__title'>
-                        Chart
-                    </div>
-                    <div className='box__content'>
-                        <ReactEcharts option={chartOptions} />
-                    </div>
-                </Box>
-                {/*</Grid>*/}
-                {/*<Grid item xs={4} >*/}
-                <Box style={{overflowY: 'scroll'}} mx={0.5} width={600} display='inline-block' height='100%' className='editCharts__container--box'>
-                    <div className='box__title'>
-                        Data
-                    </div>
-                    <div className='box__content'>
-                        <div>
-                            {/*<Table columns={columns} dataSource={data} />*/}
+                        {/*                    </tbody>*/}
+                        {/*                </table>*/}
+                        {/*            </Collapse.Panel>;*/}
+                        {/*        })}*/}
+                        {/*    </Collapse>*/}
+                        {/*</Collapse.Panel>*/}
 
-                            <Table columns={columns.current} data={data} updateMyData={updateData}/>
-                        </div>
-                        <div className='box__content'>
-                            <Button onClick={
-                                () => {
-                                }
-                            }>Update</Button>
-                        </div>
-                    </div>
-                </Box>
-            {/*     </Grid>*/}
-            {/* </Grid>*/}
-            </Box>
-            <div id='editCharts__footer'>
-                <Button style={{float: 'right'}} onClick={() => {
-                    message.loading('Saving dashboard...');
+                    </Collapse>
+                </div>
 
-                    // request.graph.update(props.dashboardID, request.cache.graph.list[r].id, fields, fielddata, function(result) {
-                    //     // todo: handle error
-                    //     resolve(true);
-                    // });
-                    //
-                    // (async function() {
-                    //     for (let r = 0; r < presentDashboard.chartNames.length; r++) {
-                    //         await new Promise(function(resolve){
-                    //             let fields = [];
-                    //             let fielddata = [];
-                    //             fielddata.push(presentDashboard.chartNames[r]);
-                    //             fields.push('title');
-                    //             if (currentLayout.current != null) {
-                    //                 fields.push('metadata');
-                    //                 fielddata.push({
-                    //                     // lg: {
-                    //                     w: currentLayout.current[r].w,
-                    //                     h: currentLayout.current[r].h,
-                    //                     x: currentLayout.current[r].x,
-                    //                     y: currentLayout.current[r].y
-                    //                     // },
-                    //                     // md: [],
-                    //                     // sm: [],
-                    //                     // xs: [],
-                    //                     // xxs: []
-                    //                 });
-                    //             }
-                    //             request.graph.update(props.dashboardID, request.cache.graph.list[r].id, fields, fielddata, function(result) {
-                    //                 // todo: handle error
-                    //                 resolve(true);
-                    //             });
-                    //         } );
-                    //     }
-                    // })().then(function() {
-                    //     message.success('Changes saved!');
-                    //
-                    //     setEditMode(!editMode);
-                    // });
-                }}>Save</Button>
+
             </div>
+            <div id='editCharts__stage' className='editCharts__container--box'>
+
+                <div className='box__title'>
+                    Chart
+                </div>
+                <div className='box__content'>
+                    <ReactEcharts option={presentCurrentOptions} />
+                </div>
+
+                <div className='box__title'>
+                    Data
+                </div>
+
+                <div className='box__content'>
+                    <div style={{overflow: 'scroll'}}>
+                        {/*<Table columns={columns} dataSource={data} />*/}
+
+                        {renderAxisTable && <AxisTable columns={columnsAxisCaptions} data={dataAxisCaptions} updateMyData={updateAxisData}/>}
+
+                        <Table columns={columns.current} data={data} updateMyData={updateData}/>
+                    </div>
+                </div>
+            </div>
+
         </div>
     );
 }
