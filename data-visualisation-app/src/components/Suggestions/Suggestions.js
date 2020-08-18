@@ -30,6 +30,8 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
 import EditChart from '../EditChart';
+import {Add as AddIcon} from '@styled-icons/ionicons-solid/Add';
+import { animateScroll } from 'react-scroll';
 
 const renderChart = {index: -1};
 
@@ -133,6 +135,7 @@ const SuggestionMemo = React.memo(Suggestion, (prevProps, nextProps) => {
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        background: 'transparent',
         marginTop: '12px',
         flexGrow: 1,
     },
@@ -176,15 +179,20 @@ function Suggestions(props) {
         console.log('Failed:', errorInfo);
     };
 
+    const scrollToBottom = () => {
+        animateScroll.scrollToBottom({
+            containerId: 'outterContairner'
+          });
+    };
     
     const synchronizeChanges = (chartIndex) => {
-        console.debug('chartIndex', currentCharts)
+        console.debug('chartIndex', currentCharts);
         renderChart.index = chartIndex;
         let newCurrentCharts = JSON.parse(JSON.stringify(currentCharts));
         newCurrentCharts[chartIndex].options = request.cache.suggestions.graph.list[chartIndex];
         setCurrentCharts(newCurrentCharts);
-        console.debug('request.cache.suggestions.graph.list', request.cache.suggestions.graph.list)
-        console.debug('newCurrentCharts', newCurrentCharts)
+        console.debug('request.cache.suggestions.graph.list', request.cache.suggestions.graph.list);
+        console.debug('newCurrentCharts', newCurrentCharts);
         setShowEditChart(false);
     };
 
@@ -194,11 +202,16 @@ function Suggestions(props) {
         
         for(var i = 0; i < request.cache.suggestions.graph.list.length-1; i++){
             if(form.getFieldValue(i) === true){
+               
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
+                var item = {};
+                item[i] = false;                          
+                form.setFieldsValue(item);
+                document.getElementById('chartDiv-'+i).style.boxShadow = '';
             }
         }
 
-
+        setLoading(true);
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
 
@@ -235,6 +248,7 @@ function Suggestions(props) {
                             request.suggestions.chart( function (result) {
                                 if (result === constants.RESPONSE_CODES.SUCCESS) {
                                     console.log('graph');
+                                    scrollToBottom();
                                     resolve(request.cache.suggestions.graph.current);
                                 } else {
                                     // todo: handle network error
@@ -301,6 +315,7 @@ function Suggestions(props) {
                     }
                 })().then(function () {
                     setLoading(false);
+                    scrollToBottom();
                 });
                 } else {
                     // todo: handle network error
@@ -323,10 +338,6 @@ function Suggestions(props) {
         
     }, []);
 
-    // if(filterState === false){
-    //     generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
-    //     request.user.fittestGraphs = [];
-    // }
 
    
     
@@ -432,7 +443,7 @@ function Suggestions(props) {
         :
         (
         loadedFirst ?
-                <div className={classes.root}>    
+            <div className={classes.root} id = 'outterContainer'>    
                     <Form
                                     form={form}
                                     id = 'my-form'
@@ -480,12 +491,12 @@ function Suggestions(props) {
                         
                     </Grid>
                     </Form>
-                    <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More like this</Button>
+                    <Button id = 'filterButton' type = 'secondary' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
+                    <Button id = 'moreLikeThisButton' type = 'primary' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}> More like this <AddIcon size='25'/></Button>
                     <main>
                         {
                             filterState ?
-                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts}/>
+                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts} setLoading = {setLoading}/>
                                 :
                                 null
                         }
