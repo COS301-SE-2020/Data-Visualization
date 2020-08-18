@@ -265,7 +265,7 @@ class Entities extends React.Component {
                 onFinish={this.onFinish} 
              >
               
-               <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
                <Checkbox onChange={this.handleChange}  >Check all</Checkbox>
                <List
                  className='entitesList'

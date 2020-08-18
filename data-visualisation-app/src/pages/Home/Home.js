@@ -38,12 +38,12 @@ function Home(props) {
 	return (
 		<div className='outterDiv' bg={grid} >
 
-			<img src={grid} id='home__background'/>
+			
 
-			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
+			<Anime delay={anime.stagger(100)} scale={[.6, 1]}>
 				<div id='header__title'>
-					<Title id='welcomeTitle'>Visualize your data.</Title>
-					<Text id='welcomeText'>Data Visualization Generator makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link to generate chart suggestions!</Text>
+					<p id='welcomeTitle'>Visualize Data.</p>
+					<p id='welcomeText'>Data Visualization Generator makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link to generate chart suggestions!</p>
 
 				</div>
 		
@@ -52,7 +52,7 @@ function Home(props) {
 				</div>
 				
 				<div class = 'getStarted'>
-					<Title id='getStartedTitle'>Get Started</Title>
+					<p id='getStartedTitle'>Get Started</p>
 					<Link className='ico animated'
 						to="illustrationExploreDiv"
 						spy={true}
@@ -100,7 +100,7 @@ function Home(props) {
 								Explore
 							</Button>
 							<div className='spacerDiv'></div>
-							<Text id='explainExplore'>Find suggestions. Add them to dashboards.</Text>
+							<p id='explainExplore'>Find suggestions. Add them to dashboards.</p>
 						</div>
 					</div>
 				</div>
@@ -115,7 +115,7 @@ function Home(props) {
 								Dashboards
 							</Button>
 							<div className='spacerDiv'></div>
-							<Text id='explainDashboards'>View your dashboards.</Text>
+							<p id='explainDashboards'>View your dashboards.</p>
 						</div>
 					</div>
 				</div>
