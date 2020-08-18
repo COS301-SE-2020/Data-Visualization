@@ -21,7 +21,7 @@
 		"test:int:par:update": "jest -u parallel --updateSnapshot",
 		"posttest": "",
 		"install:front": "npm install --prefix ./data-visualisation-app",
-		"postinstall": "npm run install:front"
+		"postinstall": ""
 	},
 	"repository": {
 		"type": "git",
