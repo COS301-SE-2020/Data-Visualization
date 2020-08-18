@@ -126,11 +126,14 @@ const sets = [
 
 const suggestion =
 {
-	title: { text: expect.any(String) },
-	dataset: { source: expect.any(Array) },
-	xAxis: { type: 'category' },
-	yAxis: {},
-	series: [{ type: expect.any(String), encode: expect.any(Object) }],
+	fieldType: expect.any(String),
+	option: {
+		title: {text: expect.any(String)},
+		dataset: {source: expect.any(Array)},
+		xAxis: {type: 'category'},
+		yAxis: {},
+		series: [{type: expect.any(String), encode: expect.any(Object)}],
+	}
 };
 
 describe('Testing functions in the graphSuggesterController class that call functions in the suggester class', function () {

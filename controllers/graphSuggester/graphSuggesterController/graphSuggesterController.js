@@ -118,7 +118,11 @@ class GraphSuggesterController {
 			}
 			let option = this.constructOption(suggestion[1], [ suggestion[3], 'value' ], suggestion[3], 'value', entity + ': ' + suggestion[0]);
 			//console.log(option);
-			return option;
+			let chartSuggestion = {
+				'fieldType': suggestion[2],
+				'option': option,
+			}
+			return chartSuggestion;
 		}
 
 		console.log(entity + ' is not among ', entities);
@@ -402,6 +406,7 @@ class GraphSuggesterController {
 	 * @return suggestion the full chart with data
 	 */
 	static assembleGraph(suggestion, { data }) {
+		console.log(data);
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
 		}
