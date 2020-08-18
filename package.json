@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "node server.js",
 		"lint": "eslint . --fix",
-		"build": "npm run build --prefix ./data-visualisation-app",
+		"build": "npm run build:front",
 		"test": "npm run test:back",
 		"test:back": "npm run test:unit && npm run test:int",
 		"test:front": "npm test --prefix ./data-visualisation-app",
@@ -21,7 +21,10 @@
 		"test:int:par:update": "jest -u parallel --updateSnapshot",
 		"posttest": "",
 		"install:front": "npm install --prefix ./data-visualisation-app",
-		"postinstall": ""
+		"build:front": "npm run build --prefix ./data-visualisation-app",
+		"postinstall": "",
+		"heroku-prebuild": "npm run install:front",
+		"heroku-postbuild": "npm run build:front"
 	},
 	"repository": {
 		"type": "git",
