@@ -39,7 +39,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, makeStyles, useTheme } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
 //import DashboardIcon from '@material-ui/icons/Dashboard';
 import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
