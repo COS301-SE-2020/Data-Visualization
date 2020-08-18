@@ -406,7 +406,7 @@ class GraphSuggesterController {
 	 * @return suggestion the full chart with data
 	 */
 	static assembleGraph(suggestion, { data }) {
-		console.log(data);
+		//console.log(data);
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
 		}
