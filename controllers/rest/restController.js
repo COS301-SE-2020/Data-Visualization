@@ -220,10 +220,13 @@ class RestController {
 					console.log('randEntity:', randEntity);
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
-			} while (suggestion == null && !timedout); // eslint-disable-line eqeqeq
+			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
-			if (timedout) error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
-			else {
+			if (timedout) {
+				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
+			} else if (!suggestion) {
+				done({});
+			} else {
 				//TODO: refactor field extraction
 				let fieldType = suggestion.fieldType;
 				suggestion = suggestion.option;
@@ -238,7 +241,13 @@ class RestController {
 							data = this.boolsToGraphData(data);
 						}
 						outputSuggestionMeta(randEntity.datasource, randEntity.entityName, randEntity.entitySet, field);
-						done(GraphSuggesterController.assembleGraph(suggestion, data));
+						// eslint-disable-next-line eqeqeq
+						if (data == null) {
+							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
+							done({});
+						} else {
+							done(GraphSuggesterController.assembleGraph(suggestion, data));
+						}
 					})
 					.catch((err) => error & error(err));
 			}
@@ -388,6 +397,13 @@ class RestController {
 		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
 		let dataArray = stringDataArray.data;
+
+		// eslint-disable-next-line eqeqeq
+		if (dataArray == null) {
+			console.log('No data received for this entity and field');
+			return null;
+		}
+
 		for (let i = 0; i < dataArray.length; i++) {
 			// eslint-disable-next-line eqeqeq
 			if (list[dataArray[i]] != null) {
@@ -419,9 +435,15 @@ class RestController {
 		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
 		let dataArray = boolDataArray.data;
-		console.log(dataArray);
+
+		// eslint-disable-next-line eqeqeq
+		if (dataArray == null) {
+			console.log('No data received for this entity and field');
+			return null;
+		}
+
 		dataArray = this.make1DArray(dataArray);
-		console.log('DataArray: ', dataArray);
+
 		let boolVal;
 		for (let i = 0; i < dataArray.length; i++) {
 			if (dataArray[i].includes('false')) {

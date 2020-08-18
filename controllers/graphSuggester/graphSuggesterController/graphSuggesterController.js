@@ -407,6 +407,12 @@ class GraphSuggesterController {
 	 */
 	static assembleGraph(suggestion, { data }) {
 		//console.log(data);
+		// eslint-disable-next-line eqeqeq
+		if (suggestion == null) {
+			console.log('No suggestion object to add data to');
+			return suggestion;
+		}
+
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
 		}
