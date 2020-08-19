@@ -208,5 +208,10 @@ $HEIGHT_TOOLBAR: 60px;
 
 @font-face {
   font-family: 'Segoe UI Semibold';
-  src: local('Segoe UI'), url(../assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+  src: local('Segoe UI Semibold'), url(../assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Futura Md BT';
+  src: local('Futura Md BT'), url(../assets/fonts/futura/futura_medium_bt.ttf) format('truetype');
 }
