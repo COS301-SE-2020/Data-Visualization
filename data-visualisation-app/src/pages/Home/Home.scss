@@ -1,9 +1,11 @@
 @import '../../globals/globals.scss';
 
 @mixin button__explore--backgroundColor {
-    background: white;
-    color: #161a35;
-    
+    background: rgb(117,48,154);
+    background: -moz-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+    background: -webkit-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+    background: linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
 }
 
 @mixin button__dashboards--backgroundColor {
@@ -15,17 +17,20 @@
 }
 
 @mixin button--layout {
-    height: 2vw;
+    height: 6vh;
     border: none;
+  padding-bottom: 8px;
+  padding-right: 20px;
+  padding-left: 20px;
+
 }
 
 #header__title {
     margin-top: 100px;
     margin-left: 90px;
     text-align: left;
-    color: white !important;;
+
     width: 700px;
-    font-size: 80pt;
 }
 
 #header__graphic {
@@ -36,9 +41,11 @@
 }
 
 #home__background {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
+  z-index: 0;
+  width: 130%;
 }
 
 .square{
@@ -71,13 +78,19 @@
     width: 90%;
     height: 95%;
     text-align: center;
+  //overflow: hidden;
 }
 
 #welcomeTitle{
     font-size: 9vh;
+  font-family: 'Futura Md BT';
+  color: $color-primary;
+  text-shadow: 4px 4px 14px rgba(0,0,0,0.18);
 }
 #welcomeText{
     font-size: 2.5vh;
+  color: $color-primary;
+  text-shadow: 4px 4px 14px rgba(0,0,0,0.11);
 }
 
 .getStarted{
@@ -86,20 +99,21 @@
 }
 
 #getStartedTitle{
-    color: white;
-    font-size: 4vh;
-    margin-top: 170px;
-    margin-bottom: 65px;
+  font-size: 4vh;
+  margin-left: -2px;
+  margin-top: 170px;
+  margin-bottom: 100px;
+  text-shadow: 4px 4px 14px rgba(0,0,0,0.23);
 }
 
 #explainExplore{
-    color: #EEF1FF;
-    font-size: 3.5vh;
+  font-size: 2vh;
+  color: $color-primary;
 }
 
 #explainDashboards{
-    color: #EEF1FF;
-    font-size: 3.5vh;
+  font-size: 2vh;
+  color: $color-primary;
 }
 
 #illustrationExploreDiv{
@@ -121,6 +135,22 @@
     text-align: center;
 
 }
+
+.home__pageSection {
+  background-color: white;
+  margin-left: -10%;
+  margin-top: 100px;
+  width: 130%;
+  height: 100vh;
+  border-radius: 30% 30% 0 0 / 10% 10% 0 0;
+  overflow: hidden;
+}
+
+.home__pageSection--title {
+  margin-top: 150px;
+  font-size: 4vh;
+}
+
 #guideDivExplain{
     display: flex;
     justify-content: center;
@@ -162,7 +192,7 @@
 
 .spacerDiv{
     width: 2vw;
-    height: 2vw;
+    height: 8vh;
 }
 
 .button__home {
@@ -210,9 +240,10 @@
     -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
     box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
 
-    font-size: 2.3vw;
-    width: 20vw;
-    height: 7vw;
+  font-size: 20px;
+
+  //width: vw;
+  //height: 3vw;
 }
 
 #button__dashboard {
@@ -223,9 +254,12 @@
     -moz-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
 
-    font-size: 2.3vw;
-    width: 20vw;
-    height: 7vw;
+
+  font-size: 20px;
+
+    //font-size: 20px;
+    //width: 20vw;
+    //height: 7vw;
 }
 
 #button__explore:hover {
@@ -234,7 +268,7 @@
     -webkit-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
     -moz-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
     box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
-    color: #2c2f42;
+    color: #f0f0f0;
 }
 
 #button__explore:active {
@@ -252,7 +286,7 @@
     -webkit-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
     -moz-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
-    color: #2c2f42;
+    color: #f0f0f0;
 }
 
 #button__dashboard:active {
@@ -301,8 +335,8 @@
 
 
 $circle-w: 100px;
-$circle-bg: #EEF1FF;
-$arrow-bg:#242424;
+$circle-bg: #242424;
+$arrow-bg:#fff;
 $bezier: cubic-bezier(0.770, 0.000, 0.175, 1.000);
 $bezier-bounce: cubic-bezier(.87,-.41,.19,1.44);
 $anim-timing: 3s;

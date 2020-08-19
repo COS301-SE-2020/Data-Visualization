@@ -117,10 +117,11 @@ const FilterDialog = (props) => {
             request.user.graphTypes = values.graphSelect;
         }
         
+
+        //API call (to send options and reload suggestions)
         console.log('Success:', values);
 
         handleFilterCancel();
-        props.setLoading(true);
         props.generateCharts(request.user.graphTypes, request.user.selectedEntities,  request.user.selectedFields, request.user.fittestGraphs);
       };
     
