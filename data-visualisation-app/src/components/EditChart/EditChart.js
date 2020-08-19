@@ -179,9 +179,9 @@ function EditChart(props) {
         function dimensionName(dimension) {
             switch(dimension) {
                 case 0:
-                    return 'Y-Axis';
-                case 1:
                     return 'X-Axis';
+                case 1:
+                    return 'Y-Axis';
                 default:
                     return 'Dataset ' + dimension.toString();
             }
@@ -343,7 +343,7 @@ function EditChart(props) {
                             prevGridData.current.grid[tmp]['rowspan'] = 2;
                         }
 
-                        prevGridData.current.grid[tmp]['dimension'] = dimensionName(dimension);
+                        prevGridData.current.grid[tmp]['dimension'] = (dimension+1).toString();
                         prevGridData.current.grid[tmp]['value'] = (optionsBuffer.current[+currentBuffer.current].dataset.source[s][dimension] == null ? 'null' : optionsBuffer.current[+currentBuffer.current].dataset.source[s][dimension]);
                         storedPointers.current[tmp + 'value'] = ['dataset', 'source', s, dimension];
                     }
