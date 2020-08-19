@@ -447,8 +447,8 @@ function Suggestions(props) {
                                                     document.getElementById('chartDiv-'+index).style.border = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 50px -12px #161a35';
-                                                    document.getElementById('chartDiv-'+index).style.border = '2px solid #161a35';
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 30px -12px #161a35';
+                                                    document.getElementById('chartDiv-'+index).style.border = '1.5px solid #353c69';
                                                 }
  
                                                 }}>
