@@ -58,7 +58,9 @@ $HEIGHT_TOOLBAR: 60px;
 }
 
 .panel__shadow {
-  
+  -webkit-box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
+  -moz-box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
+  box-shadow: 0px 0px 17px 2px rgba(224,224,224,1);
 }
 
 ::-webkit-scrollbar {
@@ -208,5 +210,10 @@ $HEIGHT_TOOLBAR: 60px;
 
 @font-face {
   font-family: 'Segoe UI Semibold';
-  src: local('Segoe UI'), url(../assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+  src: local('Segoe UI Semibold'), url(../assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Futura Md BT';
+  src: local('Futura Md BT'), url(../assets/fonts/futura/futura_medium_bt.ttf) format('truetype');
 }
