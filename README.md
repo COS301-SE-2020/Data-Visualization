@@ -63,15 +63,15 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 ##### Documentation
 
-* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_SRS_Update.pdf).
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo3_SRS_Update.pdf).
 
-* Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_CodingStandards.pdf).
+* Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo3_CodingStandard.pdf).
 
-* User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_UserManual.pdf).
+* User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo3_UserManual.pdf).
 
-* API Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_API_Manual.pdf).
+* API Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo3_API_Manual.pdf).
 
-* Technical Installation can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo2_API_Manual.pdf).
+* Technical Installation can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo3_TechnicalInstallation.pdf).
 
 </details>
 
