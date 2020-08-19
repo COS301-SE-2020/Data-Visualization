@@ -185,7 +185,7 @@ class GraphSuggesterController {
 	static setFittestEChart(graph) {
 		//if the graph is null, then we are resetting preferences for the fitness target
 		// eslint-disable-next-line eqeqeq
-		if (graph || graph === {}) {
+		if (graph || graph === {} || graph == null) {
 			//eslint-disable-line
 			console.log('setFittestEChart received null, resetting fitness target...');
 			graphSuggesterAI.changeFitnessTarget(null, null);
