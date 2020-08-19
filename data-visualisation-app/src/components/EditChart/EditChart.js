@@ -7,8 +7,7 @@
  *   Update History:
  *   Date        Author              Changes
  *   -------------------------------------------------------
- *   1/8/2020    Gian Uys           Original
- *   10/8/2020    Gian Uys          Added support for scatter and line charts.
+ *   1/7/2020    Gian Uys           Original
  *
  *   Error Messages: "Error"
  *   Assumptions: None
@@ -82,7 +81,6 @@ function EditChart(props) {
     ] = useUndo(props.options);
     const { present: presentCurrentOptions } = currentOptions;
 
-    /** @remark Reserve below code when mouse click and drag functionality is needed. */
     // const [boxStart, setBoxStart] = useState([100, 100]);
     // const [boxSize, setBoxSize] = useState([100, 100]);
     // const boxStartImmediate  = useRef([100, 100]);
@@ -297,6 +295,8 @@ function EditChart(props) {
                     //, pointers: [optionsBuffer.current[0].xAxis.data, optionsBuffer.current[1].xAxis.data], pointerOffset: i });
                     storedPointers.current['0' + i.toString()] = ['xAxis', 'data', i];
                 }
+                console.debug('tempColumns', tempColumns)
+                console.debug('tempData', tempData)
                 setColumnsAxisCaptions(tempColumns);
                 setDataAxisCaptions(tempData);
                 setRenderAxisTable(true);
@@ -417,9 +417,8 @@ function EditChart(props) {
                                     }
                                 }
                             }
-
-                            /** @remark Below code still to be integrated. */
                             // } else {
+                            // todo: integrate code below
                             // prevGridData.current.grid[tmp][keyLookup[0]] = 'Series ' + (s+1).toString();
                             // for (let i = 0; i < COLUMNS.length + optionsBuffer.current[+currentBuffer.current].series[s].data.length; i++) {
                             //     if (i === 0)
@@ -456,7 +455,7 @@ function EditChart(props) {
                 }
             }
         }
-
+        console.debug('prevGridData.current.grid', prevGridData.current.grid)
         setData(prevGridData.current.grid);
     }
 
@@ -547,6 +546,8 @@ function EditChart(props) {
     }
 
     function modifyAtomic(key, value) {
+        console.debug('key, value', key, value)
+        console.debug('optionsBuffer.current[+currentBuffer.current]',optionsBuffer.current[+currentBuffer.current])
         addProperty(optionsBuffer.current[+currentBuffer.current], key[0]);
         let pointer = optionsBuffer.current[+currentBuffer.current][key[0]];
         for (let k = 1; k < key.length-1; k++) {
@@ -640,6 +641,8 @@ function EditChart(props) {
         // setChartOptions(optionsBuffer.current[+currentBuffer.current]);
         resetCurrentOptions(JSON.parse(JSON.stringify(optionsBuffer.current[+currentBuffer.current])));
         currentBuffer.current = !currentBuffer.current;
+
+        console.debug('what is props.options', props.options)
 
         generateData();
     }, []);
@@ -822,8 +825,7 @@ function EditChart(props) {
                                 } else if (cellIndex < 2) {
                                     return <td className={(i === 0 ? (cell.row.original.rowspan === 1 ? 'datatable__single' : 'datatable__top') : 'datatable')} key={i + cellIndex.toString()}>{cell.row.original.dimension}</td>;
                                 } else {
-                                    // return <td {...cell.getCellProps()} className={(i === 0 ? (cell.row.original.rowspan === 1 ? (cellIndex === row.cells.length-1 ? 'datatable__single--last ' : '') + 'datatable__single' : 'datatable__top') : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')} key={i + cellIndex.toString()}>{cell.render('Cell')}</td>;
-                                    return <td {...cell.getCellProps()} className={(cellIndex === row.cells.length-1 ? 'datatable__single--last ' : '') + (i === 0 ? (cell.row.original.rowspan === 1 ?  'datatable__single' : 'datatable__top') : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')} key={i + cellIndex.toString()}>{cell.render('Cell')}</td>;
+                                    return <td {...cell.getCellProps()} className={(i === 0 ? (cell.row.original.rowspan === 1 ? (cellIndex === row.cells.length-1 ? 'datatable__single--last ' : '') + 'datatable__single' : 'datatable__top') : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')} key={i + cellIndex.toString()}>{cell.render('Cell')}</td>;
                                 }
                             })}
                         </tr>
@@ -905,6 +907,7 @@ function EditChart(props) {
                         Redo
                     </Button>
                     <Button ghost style={{float: 'right'}} onClick={() => {
+                        console.debug('props.directory[0]', props.directory[0])
                         request.cache.suggestions.graph[props.directory[0]] = optionsBuffer.current[0];
                         props.mutablePointer[props.directory[0]] = optionsBuffer.current[+currentBuffer.current];
                         props.synchronizeChanges(props.directory[0]);

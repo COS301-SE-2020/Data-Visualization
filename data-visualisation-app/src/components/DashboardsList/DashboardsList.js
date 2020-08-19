@@ -54,9 +54,12 @@ function HomePanelButton(props) {
         if (props.isAddButton) {
             return (
                 <div
-                    style={{paddingTop: '100px', paddingLeft: '100px'}}
+                    className='panelLayout home-panel-add'
+                    style={{...getSizeStyle()}}
                     onClick={() => props.action()}>
-                    <div className='panelLayout home-panel-add' id='button__addDashboards'>+</div>
+                    <div>
+                        <div style={{marginTop: '35px'}}>+</div>
+                    </div>
                 </div>
             );
         } else {

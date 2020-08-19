@@ -30,6 +30,9 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
 import EditChart from '../EditChart';
+import {Add as AddIcon} from '@styled-icons/ionicons-solid/Add';
+import { animateScroll } from 'react-scroll';
+import {Filter as FilterIcon} from '@styled-icons/feather';
 
 const renderChart = {index: -1};
 
@@ -75,7 +78,7 @@ function Suggestion(props) {
     }
 
     return (
-        <div className='panel__shadow'>
+        <div className='suggestion panel__shadow'>
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
@@ -118,8 +121,8 @@ function Suggestion(props) {
                     <Grid item xs={2}>
                         <StarOutlined />
                     </Grid>
-                    <Grid item xs={6}>
-                        <Button style={{float: 'right'}} onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; props.setShowEditChart(true);}}>Customize</Button>
+                    <Grid item xs={2}>
+                        <Button onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; console.debug('what is ', props.editChartParameters);  props.setShowEditChart(true);}}>Customize</Button>
                     </Grid>
                 </Grid>
             </div>
@@ -133,6 +136,7 @@ const SuggestionMemo = React.memo(Suggestion, (prevProps, nextProps) => {
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        background: 'transparent',
         marginTop: '12px',
         flexGrow: 1,
     },
@@ -176,12 +180,20 @@ function Suggestions(props) {
         console.log('Failed:', errorInfo);
     };
 
+    const scrollToBottom = () => {
+        animateScroll.scrollToBottom({
+            containerId: 'outterContairner'
+          });
+    };
     
     const synchronizeChanges = (chartIndex) => {
+        console.debug('chartIndex', currentCharts);
         renderChart.index = chartIndex;
         let newCurrentCharts = JSON.parse(JSON.stringify(currentCharts));
         newCurrentCharts[chartIndex].options = request.cache.suggestions.graph.list[chartIndex];
         setCurrentCharts(newCurrentCharts);
+        console.debug('request.cache.suggestions.graph.list', request.cache.suggestions.graph.list);
+        console.debug('newCurrentCharts', newCurrentCharts);
         setShowEditChart(false);
     };
 
@@ -191,11 +203,16 @@ function Suggestions(props) {
         
         for(var i = 0; i < request.cache.suggestions.graph.list.length-1; i++){
             if(form.getFieldValue(i) === true){
+               
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
+                var item = {};
+                item[i] = false;                          
+                form.setFieldsValue(item);
+                document.getElementById('chartDiv-'+i).style.boxShadow = '';
             }
         }
 
-
+        setLoading(true);
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
 
@@ -204,10 +221,11 @@ function Suggestions(props) {
 
     const generateCharts = (graphTypes, selectedEntities, selectedFields, fittestGraphs)  =>{
 
-        // console.log(graphTypes);
-        // console.log(selectedEntities);
-        // console.log(selectedFields);
-        // console.log(fittestGraphs);
+        console.log(graphTypes);
+        console.log(selectedEntities);
+        console.log(selectedFields);
+        console.log(fittestGraphs);
+        
 
 
         if (request.user.isLoggedIn) {
@@ -230,7 +248,8 @@ function Suggestions(props) {
                         await new Promise(function (resolve) {
                             request.suggestions.chart( function (result) {
                                 if (result === constants.RESPONSE_CODES.SUCCESS) {
-                                    // console.log('graph');
+                                    console.log('graph');
+                                    scrollToBottom();
                                     resolve(request.cache.suggestions.graph.current);
                                 } else {
                                     // todo: handle network error
@@ -297,6 +316,7 @@ function Suggestions(props) {
                     }
                 })().then(function () {
                     setLoading(false);
+                    scrollToBottom();
                 });
                 } else {
                     // todo: handle network error
@@ -319,10 +339,6 @@ function Suggestions(props) {
         
     }, []);
 
-    // if(filterState === false){
-    //     generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
-    //     request.user.fittestGraphs = [];
-    // }
 
    
     
@@ -370,7 +386,7 @@ function Suggestions(props) {
         }
 
         return (
-            <div className='panel__shadow'>
+            <div className='suggestion panel__shadow'>
                 <div style={{marginBottom: '10px'}}>
                     <Grid container spacing={3}>
                         <Grid item xs={10}>
@@ -428,7 +444,7 @@ function Suggestions(props) {
         :
         (
         loadedFirst ?
-                <div className={classes.root}>    
+            <div className={classes.root} id = 'outterContainer'>    
                     <Form
                                     form={form}
                                     id = 'my-form'
@@ -441,7 +457,7 @@ function Suggestions(props) {
                         
                             {currentCharts.map((achart, index) => {
                                 return <Grid item xs={12} md={6} lg={3} key={index}>
-                                            <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={() => {
+                                            <div id = {'chartDiv-'+index} className = 'chartDiv' onClick={() => { 
                                                 
                                                 var item = {};
                                                 item[index] = !form.getFieldValue(index); 
@@ -451,16 +467,14 @@ function Suggestions(props) {
                                                 if(item[index]  === false){
                                                     
                                                     document.getElementById('chartDiv-'+index).style.boxShadow = '';
-                                                    document.getElementById('chartDiv-'+index).style.border = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
-                                                    document.getElementById('chartDiv-'+index).style.border = '1px solid #292929';
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 5px 0px rgba(0,0,0,0.75)';
                                                 }
  
                                                 }}>
                                                 <Form.Item name={index} valuePropName='checked'>
-                                                    <Checkbox className = 'checkboxItem' hidden = {true} style={{visibility: 'hidden'}}></Checkbox>
+                                                    <Checkbox className = 'checkboxItem' hidden = {true}></Checkbox>
                                                 </Form.Item>
                                                 {/*<Suggestion id={index} chartData={achart}/>*/}
                                                 <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={setShowEditChart} />
@@ -478,12 +492,12 @@ function Suggestions(props) {
                         
                     </Grid>
                     </Form>
-                    <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like Thiscon</Button>
+                    <Button id = 'filterButton' type = 'secondary' icon={<FilterIcon size = {40}/>} onClick={() => setFilterState(true)}></Button>
+                    <Button id = 'moreLikeThisButton' type = 'primary' htmlType='submit' form='my-form' size = 'large' onClick={moreLikeThis}> More like this</Button>
                     <main>
                         {
                             filterState ?
-                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts}/>
+                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts} setLoading = {setLoading}/>
                                 :
                                 null
                         }

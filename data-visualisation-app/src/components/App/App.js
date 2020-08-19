@@ -55,7 +55,7 @@ import {PlusSquare} from '@styled-icons/feather';
 import {Trash as TrashIcon} from '@styled-icons/octicons';
 import {Dashboard as DashboardIcon} from '@styled-icons/remix-line';
 import {Info} from '@styled-icons/feather';
-
+import Anime, {anime} from 'react-anime';
 /**
  *   globals import
 */
@@ -77,8 +77,6 @@ import { MuiThemeProvider } from '@material-ui/core';
  *   State Variables import
 */
 import GlobalStateProvider  from '../../globals/Store';
-import {useGlobalState} from '../../globals/Store';
-
 
 let w = window.innerWidth;
 let h = window.innerHeight;
@@ -98,20 +96,28 @@ const globalMaterialUITheme = createMuiTheme({
 });
 
 
+
 const useStyles = makeStyles((theme) => ({
 	root: {
+		background: 'white',
+		display: 'flex'
+	},
+	homeRoot : {
+		background: 'linear-gradient(45deg, #D83F87 4%, #49b676 79%)',
 		display: 'flex'
 	},
 	selected: {
 		color: 'white'
 	},
 	drawer: {
+	
 		[theme.breakpoints.up('sm')]: {
 			width: drawerWidth,
 			flexShrink: 0,
 		},
 	},
 	appBar: {
+		background: '#161a35',
 		[theme.breakpoints.up('sm')]: {
 			width: `calc(100% - ${drawerWidth}px)`,
 			marginLeft: drawerWidth,
@@ -142,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	drawerPaper: {
 		width: drawerWidth,
-		background: '#242424',
+		background: '#161a35',
 	},
 	content: {
 		flexGrow: 1,
@@ -151,7 +157,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	nested: {
 		paddingLeft: theme.spacing(11),
-		color: '#e6e6e6',
+		color: '#CEF0FF',
 	},
 	nestedNoIcon: {
 		paddingLeft: theme.spacing(9),
@@ -170,13 +176,13 @@ const useStyles = makeStyles((theme) => ({
 		paddingRight: '7px'
 	},
 	drawerList: {
-		color: '#969698',
+		color: '#EEF1FF',
 	},
 	icon: {
-		color: '#969698',
+		color: '#EEF1FF',
 	},
 	drawerListCollapse: {
-		color: '#969698',
+		color: '#EEF1FF',
 	},
 
 }));
@@ -272,7 +278,7 @@ function App(props) {
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else{
-		// backButton = <Button id = 'backButton'  type="primary" disabled = {true} icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+		backButton = <Button id = 'backButton'  type="primary" disabled = {true} icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 
 
@@ -451,12 +457,10 @@ function App(props) {
 
 	return (
 	
-
-		
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 
-			<div className={classes.root}>
+			<div className={`box ${pageType === 'home' ? classes.homeRoot : classes.root}`} >
 				<CssBaseline />
 				
 				<AppBar  position="fixed" className={classes.appBar} style={{ background: '' }}>
@@ -477,16 +481,19 @@ function App(props) {
 							backButton
 						}
 						
+						
 						<Typography variant="h2" className={classes.typographyLocationHeading} noWrap children={
 							locationTitle
 						} >
 						</Typography>
 
+						<Anime delay={anime.stagger(100)} scale={[.7, 1]}>
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
 							pageTitle
 						} >
-
 						</Typography>
+						</Anime>
+
 						<LoginDialog
                             isLoggedIn={loginButton}
 							handlePageType ={handlePageType}
@@ -538,7 +545,7 @@ function App(props) {
 					</Hidden>
 				</nav>
 
-				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : (pageType === 'home' ? {padding: '0', overflow: 'hidden'} : {}))} ref={targetRef}>
+				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {})} ref={targetRef}>
 
 					<div className={classes.toolbar} />
 

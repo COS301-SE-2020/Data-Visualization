@@ -89,6 +89,7 @@ class Trash extends React.Component {
      * @return Array of dashboards with associated charts from the parsed string value.
      */
     static parseStoredTrash(storedString) {
+        console.debug('doing parseStoredTrash');
         if (storedString != null && typeof storedString !== 'undefined' && storedString !== '') {
             if (storedString.includes(Trash.DELIMITER_OUTER)) {
                 storedString = storedString.split(Trash.DELIMITER_OUTER);

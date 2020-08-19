@@ -80,7 +80,7 @@ class Entities extends React.Component {
       tempItem[entityName] = showAll;
       this.formRef.current.setFieldsValue(tempItem);
       if(showAll){
-        document.getElementById('card-'+entityName).style.boxShadow = 'inset 0px 0px 5px 0px rgba(0,0,0,0.75)';
+        document.getElementById('card-'+entityName).style.boxShadow = '0px 0px 5px 0px rgba(0,0,0,0.75)';
       }
       else{
         document.getElementById('card-'+entityName).style.boxShadow = '';
@@ -192,9 +192,8 @@ class Entities extends React.Component {
              >
       
                <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
-                 <Checkbox onChange={this.handleChange}>Check All</Checkbox>
+                 <Checkbox onChange={this.handleChange}>Check all</Checkbox>
                 </Card>
-               
                <List
                  className='entitesList'
                  loading={initLoading}
@@ -205,7 +204,7 @@ class Entities extends React.Component {
                  renderItem={item => (
                    
                    <Fragment>
-                       <Card id = {'card-'+item.entityName} onClick={() => {                          
+                       <Card id = {'card-'+item.entityName}  style={{ margin: '5px' }} onClick={() => {                          
                           var tempItem = {};
                           tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);
@@ -214,7 +213,7 @@ class Entities extends React.Component {
                             document.getElementById('card-'+item.entityName).style.boxShadow = '';
                            }
                           else{
-                            document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 5px 0px rgba(0,0,0,0.75)';
                           }
                         }} 
                         >
@@ -245,10 +244,9 @@ class Entities extends React.Component {
                    </Fragment>
                  )}
                />
-
                <Form.Item>
               
-                 <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                 <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" size = 'large' icon={<CompassOutlined />}>
                    Generate Suggestions
                  </Button>
                 
@@ -267,7 +265,7 @@ class Entities extends React.Component {
                 onFinish={this.onFinish} 
              >
               
-               <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
                <Checkbox onChange={this.handleChange}  >Check all</Checkbox>
                <List
                  className='entitesList'
@@ -278,7 +276,7 @@ class Entities extends React.Component {
                  
                  renderItem={item => (
                    <Fragment>
-                       <Card.Grid className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', width:'32%'} } onClick={() => {
+                       <Card.Grid id = {'card-'+item.entityName} hoverable = {false} style= {{cursor: 'pointer', margin: '10px', width:'32%'} } onClick={() => {                          
                           var tempItem = {};
                           tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);
@@ -288,7 +286,7 @@ class Entities extends React.Component {
                             document.getElementById('card-'+item.entityName).style.boxShadow = '';
                            }
                           else{
-                            document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 5px 0px rgba(0,0,0,0.75)';
                           }
                      
                         }} 
@@ -300,7 +298,7 @@ class Entities extends React.Component {
                              [ 
                                
                               <Form.Item name={item.entityName} valuePropName='checked'>
-                                   <Checkbox style={{visibility: 'hidden'}}/>
+                                   <Checkbox/>
                                </Form.Item>
      
                              ]
@@ -323,7 +321,7 @@ class Entities extends React.Component {
                </Card>
               
                <Form.Item>
-                  <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                  <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" size = 'large' icon={<CompassOutlined />}>
                   Generate Suggestions
                   </Button>
                </Form.Item>

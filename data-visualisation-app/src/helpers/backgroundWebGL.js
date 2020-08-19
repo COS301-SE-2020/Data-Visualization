@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
-import GaussianBlur from 'react-gaussian-blur';
 
 var SEPARATION = 70, AMOUNTX = 50, AMOUNTY = 50;
 
@@ -26,8 +25,7 @@ class BackgroundDots extends Component {
 
         this.scene = new THREE.Scene();
         // this.camera = new THREE.PerspectiveCamera(75, this.props.width / this.props.height, 0.1, 1000);
-        // this.camera = new THREE.PerspectiveCamera(75, 1920 / 1080, 0.1, 1000);
-        this.camera = new THREE.PerspectiveCamera(75, 2100 / 1300, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(75, 1920 / 1080, 0.1, 1000);
 
         this.camera.position.z = 1001;
         this.camera.position.x = 205;
@@ -67,9 +65,8 @@ class BackgroundDots extends Component {
 
         var material = new THREE.ShaderMaterial( {
 
-            // 0x242424
             uniforms: {
-                color: { value: new THREE.Color( 0xcccccc ) },
+                color: { value: new THREE.Color( 0x242424 ) },
             },
             vertexShader: document.getElementById( 'vertexshader' ).textContent,
             fragmentShader: document.getElementById( 'fragmentshader' ).textContent
@@ -90,8 +87,7 @@ class BackgroundDots extends Component {
 
         // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         // this.renderer.setSize(this.props.width, this.props.height);
-        // this.renderer.setSize(1920, 1080);
-        this.renderer.setSize(2100, 1300);
+        this.renderer.setSize(1920, 1080);
         this.mount.appendChild(this.renderer.domElement);
 
         this.animate();
@@ -143,7 +139,7 @@ class BackgroundDots extends Component {
         this.particles.geometry.attributes.position.needsUpdate = true;
         this.particles.geometry.attributes.scale.needsUpdate = true;
 
-        count += 0.04;
+        count += 0.06;
     }
 
     addCube(cube) {
@@ -161,15 +157,13 @@ class BackgroundDots extends Component {
                 {/*        this.mount = mount;*/}
                 {/*    }}*/}
                 {/*/>*/}
-                <GaussianBlur x="8" y="5">
-                    <div
-                        id="boardCanvas"
-                        style={{ width: '2100px', height: '1300px', position: 'fixed', top: '-300px', left: '-10px'}}
-                        ref={mount => {
-                            this.mount = mount;
-                        }}
-                    />
-                </GaussianBlur>
+                <div
+                    id="boardCanvas"
+                    style={{ width: '1920px', height: '1080px', position: 'fixed', top: '0'}}
+                    ref={mount => {
+                        this.mount = mount;
+                    }}
+                />
             </div>
         );
     }
