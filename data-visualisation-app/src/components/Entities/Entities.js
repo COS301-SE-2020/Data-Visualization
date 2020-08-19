@@ -286,9 +286,11 @@ class Entities extends React.Component {
                 
                           if(tempItem[item.entityName]  === false){                       
                             document.getElementById('card-'+item.entityName).style.boxShadow = '';
+                              document.getElementById('card-'+item.entityName).style.border = '';
                            }
                           else{
                             document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
+                              document.getElementById('card-'+item.entityName).style.border = '1px solid #292929';
                           }
                      
                         }} 
