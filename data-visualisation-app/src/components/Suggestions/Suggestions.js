@@ -178,13 +178,10 @@ function Suggestions(props) {
 
     
     const synchronizeChanges = (chartIndex) => {
-        console.debug('chartIndex', currentCharts)
         renderChart.index = chartIndex;
         let newCurrentCharts = JSON.parse(JSON.stringify(currentCharts));
         newCurrentCharts[chartIndex].options = request.cache.suggestions.graph.list[chartIndex];
         setCurrentCharts(newCurrentCharts);
-        console.debug('request.cache.suggestions.graph.list', request.cache.suggestions.graph.list)
-        console.debug('newCurrentCharts', newCurrentCharts)
         setShowEditChart(false);
     };
 
@@ -207,11 +204,10 @@ function Suggestions(props) {
 
     const generateCharts = (graphTypes, selectedEntities, selectedFields, fittestGraphs)  =>{
 
-        console.log(graphTypes);
-        console.log(selectedEntities);
-        console.log(selectedFields);
-        console.log(fittestGraphs);
-        
+        // console.log(graphTypes);
+        // console.log(selectedEntities);
+        // console.log(selectedFields);
+        // console.log(fittestGraphs);
 
 
         if (request.user.isLoggedIn) {
@@ -234,7 +230,7 @@ function Suggestions(props) {
                         await new Promise(function (resolve) {
                             request.suggestions.chart( function (result) {
                                 if (result === constants.RESPONSE_CODES.SUCCESS) {
-                                    console.log('graph');
+                                    // console.log('graph');
                                     resolve(request.cache.suggestions.graph.current);
                                 } else {
                                     // todo: handle network error
@@ -483,7 +479,7 @@ function Suggestions(props) {
                     </Grid>
                     </Form>
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like This</Button>
+                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like Thiscon</Button>
                     <main>
                         {
                             filterState ?

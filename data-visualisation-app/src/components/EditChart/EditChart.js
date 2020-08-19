@@ -297,8 +297,6 @@ function EditChart(props) {
                     //, pointers: [optionsBuffer.current[0].xAxis.data, optionsBuffer.current[1].xAxis.data], pointerOffset: i });
                     storedPointers.current['0' + i.toString()] = ['xAxis', 'data', i];
                 }
-                console.debug('tempColumns', tempColumns)
-                console.debug('tempData', tempData)
                 setColumnsAxisCaptions(tempColumns);
                 setDataAxisCaptions(tempData);
                 setRenderAxisTable(true);
@@ -458,7 +456,7 @@ function EditChart(props) {
                 }
             }
         }
-        console.debug('prevGridData.current.grid', prevGridData.current.grid)
+
         setData(prevGridData.current.grid);
     }
 
@@ -549,8 +547,6 @@ function EditChart(props) {
     }
 
     function modifyAtomic(key, value) {
-        console.debug('key, value', key, value)
-        console.debug('optionsBuffer.current[+currentBuffer.current]',optionsBuffer.current[+currentBuffer.current])
         addProperty(optionsBuffer.current[+currentBuffer.current], key[0]);
         let pointer = optionsBuffer.current[+currentBuffer.current][key[0]];
         for (let k = 1; k < key.length-1; k++) {
@@ -644,8 +640,6 @@ function EditChart(props) {
         // setChartOptions(optionsBuffer.current[+currentBuffer.current]);
         resetCurrentOptions(JSON.parse(JSON.stringify(optionsBuffer.current[+currentBuffer.current])));
         currentBuffer.current = !currentBuffer.current;
-
-        console.debug('what is props.options', props.options)
 
         generateData();
     }, []);
@@ -911,7 +905,6 @@ function EditChart(props) {
                         Redo
                     </Button>
                     <Button ghost style={{float: 'right'}} onClick={() => {
-                        console.debug('props.directory[0]', props.directory[0])
                         request.cache.suggestions.graph[props.directory[0]] = optionsBuffer.current[0];
                         props.mutablePointer[props.directory[0]] = optionsBuffer.current[+currentBuffer.current];
                         props.synchronizeChanges(props.directory[0]);
