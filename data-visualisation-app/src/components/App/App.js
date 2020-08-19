@@ -55,7 +55,7 @@ import {PlusSquare} from '@styled-icons/feather';
 import {Trash as TrashIcon} from '@styled-icons/octicons';
 import {Dashboard as DashboardIcon} from '@styled-icons/remix-line';
 import {Info} from '@styled-icons/feather';
-import Anime, {anime} from 'react-anime';
+
 /**
  *   globals import
 */
@@ -77,6 +77,8 @@ import { MuiThemeProvider } from '@material-ui/core';
  *   State Variables import
 */
 import GlobalStateProvider  from '../../globals/Store';
+import {useGlobalState} from '../../globals/Store';
+
 
 let w = window.innerWidth;
 let h = window.innerHeight;
@@ -96,28 +98,20 @@ const globalMaterialUITheme = createMuiTheme({
 });
 
 
-
 const useStyles = makeStyles((theme) => ({
 	root: {
-		background: 'white',
-		display: 'flex'
-	},
-	homeRoot : {
-		background: 'linear-gradient(45deg, #D83F87 4%, #49b676 79%)',
 		display: 'flex'
 	},
 	selected: {
 		color: 'white'
 	},
 	drawer: {
-	
 		[theme.breakpoints.up('sm')]: {
 			width: drawerWidth,
 			flexShrink: 0,
 		},
 	},
 	appBar: {
-		background: '#161a35',
 		[theme.breakpoints.up('sm')]: {
 			width: `calc(100% - ${drawerWidth}px)`,
 			marginLeft: drawerWidth,
@@ -148,7 +142,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	drawerPaper: {
 		width: drawerWidth,
-		background: '#161a35',
+		background: '#242424',
 	},
 	content: {
 		flexGrow: 1,
@@ -157,7 +151,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	nested: {
 		paddingLeft: theme.spacing(11),
-		color: '#CEF0FF',
+		color: '#e6e6e6',
 	},
 	nestedNoIcon: {
 		paddingLeft: theme.spacing(9),
@@ -176,13 +170,13 @@ const useStyles = makeStyles((theme) => ({
 		paddingRight: '7px'
 	},
 	drawerList: {
-		color: '#EEF1FF',
+		color: '#969698',
 	},
 	icon: {
-		color: '#EEF1FF',
+		color: '#969698',
 	},
 	drawerListCollapse: {
-		color: '#EEF1FF',
+		color: '#969698',
 	},
 
 }));
@@ -457,10 +451,12 @@ function App(props) {
 
 	return (
 	
+
+		
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 
-			<div className={`box ${pageType === 'home' ? classes.homeRoot : classes.root}`} >
+			<div className={classes.root}>
 				<CssBaseline />
 				
 				<AppBar  position="fixed" className={classes.appBar} style={{ background: '' }}>
@@ -481,19 +477,16 @@ function App(props) {
 							backButton
 						}
 						
-						
 						<Typography variant="h2" className={classes.typographyLocationHeading} noWrap children={
 							locationTitle
 						} >
 						</Typography>
 
-						<Anime delay={anime.stagger(100)} scale={[.7, 1]}>
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
 							pageTitle
 						} >
-						</Typography>
-						</Anime>
 
+						</Typography>
 						<LoginDialog
                             isLoggedIn={loginButton}
 							handlePageType ={handlePageType}

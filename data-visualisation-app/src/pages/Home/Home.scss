@@ -1,9 +1,11 @@
 @import '../../globals/globals.scss';
 
 @mixin button__explore--backgroundColor {
-    background: white;
-    color: #161a35;
-    
+    background: rgb(117,48,154);
+    background: -moz-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+    background: -webkit-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+    background: linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
 }
 
 @mixin button__dashboards--backgroundColor {
@@ -23,9 +25,8 @@
     margin-top: 100px;
     margin-left: 90px;
     text-align: left;
-    color: white !important;;
+
     width: 700px;
-    font-size: 80pt;
 }
 
 #header__graphic {
@@ -86,19 +87,16 @@
 }
 
 #getStartedTitle{
-    color: white;
     font-size: 4vh;
     margin-top: 170px;
     margin-bottom: 65px;
 }
 
 #explainExplore{
-    color: #EEF1FF;
     font-size: 3.5vh;
 }
 
 #explainDashboards{
-    color: #EEF1FF;
     font-size: 3.5vh;
 }
 
@@ -234,7 +232,7 @@
     -webkit-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
     -moz-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
     box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
-    color: #2c2f42;
+    color: #f0f0f0;
 }
 
 #button__explore:active {
@@ -252,7 +250,7 @@
     -webkit-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
     -moz-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
-    color: #2c2f42;
+    color: #f0f0f0;
 }
 
 #button__dashboard:active {
@@ -301,8 +299,8 @@
 
 
 $circle-w: 100px;
-$circle-bg: #EEF1FF;
-$arrow-bg:#242424;
+$circle-bg: #242424;
+$arrow-bg:#fff;
 $bezier: cubic-bezier(0.770, 0.000, 0.175, 1.000);
 $bezier-bounce: cubic-bezier(.87,-.41,.19,1.44);
 $anim-timing: 3s;
