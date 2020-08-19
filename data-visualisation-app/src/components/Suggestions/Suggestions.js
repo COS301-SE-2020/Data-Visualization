@@ -192,6 +192,9 @@ function Suggestions(props) {
         for(var i = 0; i < request.cache.suggestions.graph.list.length-1; i++){
             if(form.getFieldValue(i) === true){
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
+
+                document.getElementById('chartDiv-'+i).style.boxShadow = '';
+                document.getElementById('chartDiv-'+i).style.border = '';
             }
         }
 
@@ -307,9 +310,6 @@ function Suggestions(props) {
     };
 
     
-    
-
-
     useEffect(() => {
 
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
@@ -447,8 +447,8 @@ function Suggestions(props) {
                                                     document.getElementById('chartDiv-'+index).style.border = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
-                                                    document.getElementById('chartDiv-'+index).style.border = '1px solid #292929';
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 50px -12px #161a35';
+                                                    document.getElementById('chartDiv-'+index).style.border = '2px solid #161a35';
                                                 }
  
                                                 }}>
@@ -472,11 +472,11 @@ function Suggestions(props) {
                     </Grid>
                     </Form>
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like Thiscon</Button>
+                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like This</Button>
                     <main>
                         {
                             filterState ?
-                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts}/>
+                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts} setLoading = {setLoading} />
                                 :
                                 null
                         }
