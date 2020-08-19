@@ -75,7 +75,7 @@ function Suggestion(props) {
     }
 
     return (
-        <div className='panel__shadow'>
+        <div>
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
@@ -312,7 +312,8 @@ function Suggestions(props) {
 
     useEffect(() => {
 
-       
+       if (props.newPage)
+           request.cache.suggestions.graph.list = [];
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
         
         
@@ -370,7 +371,7 @@ function Suggestions(props) {
         }
 
         return (
-            <div className='panel__shadow'>
+            <div>
                 <div style={{marginBottom: '10px'}}>
                     <Grid container spacing={3}>
                         <Grid item xs={10}>
