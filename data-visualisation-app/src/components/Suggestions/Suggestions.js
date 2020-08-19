@@ -192,9 +192,6 @@ function Suggestions(props) {
         for(var i = 0; i < request.cache.suggestions.graph.list.length-1; i++){
             if(form.getFieldValue(i) === true){
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
-
-                document.getElementById('chartDiv-'+i).style.boxShadow = '';
-                document.getElementById('chartDiv-'+i).style.border = '';
             }
         }
 
@@ -310,12 +307,22 @@ function Suggestions(props) {
     };
 
     
+    
+
+
     useEffect(() => {
 
+       
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
-    
+        
+        
+        
     }, []);
 
+    // if(filterState === false){
+    //     generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
+    //     request.user.fittestGraphs = [];
+    // }
 
    
     
@@ -447,8 +454,8 @@ function Suggestions(props) {
                                                     document.getElementById('chartDiv-'+index).style.border = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 30px -12px #161a35';
-                                                    document.getElementById('chartDiv-'+index).style.border = '1.5px solid #353c69';
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
+                                                    document.getElementById('chartDiv-'+index).style.border = '1px solid #292929';
                                                 }
  
                                                 }}>
@@ -472,11 +479,11 @@ function Suggestions(props) {
                     </Grid>
                     </Form>
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like This</Button>
+                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like Thiscon</Button>
                     <main>
                         {
                             filterState ?
-                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts} setLoading = {setLoading} />
+                                <FilterDialog setFState = {setFilterState} generateCharts = {generateCharts}/>
                                 :
                                 null
                         }
@@ -505,3 +512,4 @@ export default Suggestions;
     });
  *
  */
+

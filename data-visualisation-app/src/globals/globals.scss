@@ -36,7 +36,7 @@ $color-active: black;
 $color-focus: black;
 $color-hover: black;
 $color-primary: #292929;
-$color-secondary: white;
+$color-secondary: #F8F9FB;
 $color-box-shadow: rgba(97,97,97, 0.2);
 
 $WIDTH_SIDE_NAVIGATION: 240px;
@@ -199,4 +199,14 @@ $HEIGHT_TOOLBAR: 60px;
   100% {
     transform: scale(0.3);
   }
+}
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: local('Segoe UI'), url(../assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Segoe UI Semibold';
+  src: local('Segoe UI'), url(../assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
 }
