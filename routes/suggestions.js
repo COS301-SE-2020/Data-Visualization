@@ -39,15 +39,16 @@ router.post('/params', (req, res) => {
 		error(res, { error: 'Graph Types Undefined' }, 400);
 	} else if (req.body.fittestGraph === undefined) {
 		error(res, { error: 'Fittest Graph Undefined' }, 400);
-	} else if (!Array.isArray(req.body.fittestGraph)) {
-		error(res, { error: 'Fittest Graph has to be an array of graphs' }, 400);
-	} else if (req.body.fittestGraph.length <= 0) {
-		error(res, { error: 'Fittest Graph has to have at least 1 element' }, 400);
+		// } else if (!Array.isArray(req.body.fittestGraph)) {
+		// 	error(res, { error: 'Fittest Graph has to be an array of graphs' }, 400);
+		// } else if (req.body.fittestGraph.length <= 0) {
+		// 	error(res, { error: 'Fittest Graph has to have at least 1 element' }, 400);
 	} else if (!validateEntityStructure(req.body.selectedEntities)) {
 		error(res, { error: 'The structure of the selected entities are invalid.', hint: 'the structure should have the format of [ { datasource:string, entityName:string }:object ]:array' }, 400);
 	} else {
 		Rest.setSuggestionParams(
-			req.body.fittestGraph[0],
+			// req.body.fittestGraph[0],
+			req.body.fittestGraph,
 			req.body.selectedEntities,
 			req.body.selectedFields,
 			req.body.graphTypes,
