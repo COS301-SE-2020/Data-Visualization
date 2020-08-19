@@ -151,6 +151,7 @@ class GraphSuggesterController {
 	/**
 	 */
 	static limitEntities(entities) {
+		this.acceptedEntities = {};
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
