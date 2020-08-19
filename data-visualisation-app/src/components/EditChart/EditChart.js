@@ -7,7 +7,8 @@
  *   Update History:
  *   Date        Author              Changes
  *   -------------------------------------------------------
- *   1/7/2020    Gian Uys           Original
+ *   1/8/2020    Gian Uys           Original
+ *   10/8/2020    Gian Uys          Added support for scatter and line charts.
  *
  *   Error Messages: "Error"
  *   Assumptions: None
@@ -81,6 +82,7 @@ function EditChart(props) {
     ] = useUndo(props.options);
     const { present: presentCurrentOptions } = currentOptions;
 
+    /** @remark Reserve below code when mouse click and drag functionality is needed. */
     // const [boxStart, setBoxStart] = useState([100, 100]);
     // const [boxSize, setBoxSize] = useState([100, 100]);
     // const boxStartImmediate  = useRef([100, 100]);
@@ -417,8 +419,9 @@ function EditChart(props) {
                                     }
                                 }
                             }
+
+                            /** @remark Below code still to be integrated. */
                             // } else {
-                            // todo: integrate code below
                             // prevGridData.current.grid[tmp][keyLookup[0]] = 'Series ' + (s+1).toString();
                             // for (let i = 0; i < COLUMNS.length + optionsBuffer.current[+currentBuffer.current].series[s].data.length; i++) {
                             //     if (i === 0)
@@ -825,7 +828,8 @@ function EditChart(props) {
                                 } else if (cellIndex < 2) {
                                     return <td className={(i === 0 ? (cell.row.original.rowspan === 1 ? 'datatable__single' : 'datatable__top') : 'datatable')} key={i + cellIndex.toString()}>{cell.row.original.dimension}</td>;
                                 } else {
-                                    return <td {...cell.getCellProps()} className={(i === 0 ? (cell.row.original.rowspan === 1 ? (cellIndex === row.cells.length-1 ? 'datatable__single--last ' : '') + 'datatable__single' : 'datatable__top') : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')} key={i + cellIndex.toString()}>{cell.render('Cell')}</td>;
+                                    // return <td {...cell.getCellProps()} className={(i === 0 ? (cell.row.original.rowspan === 1 ? (cellIndex === row.cells.length-1 ? 'datatable__single--last ' : '') + 'datatable__single' : 'datatable__top') : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')} key={i + cellIndex.toString()}>{cell.render('Cell')}</td>;
+                                    return <td {...cell.getCellProps()} className={(cellIndex === row.cells.length-1 ? 'datatable__single--last ' : '') + (i === 0 ? (cell.row.original.rowspan === 1 ?  'datatable__single' : 'datatable__top') : 'datatable') + (cellIndex > 1 ? ' datatable__editable' : '')} key={i + cellIndex.toString()}>{cell.render('Cell')}</td>;
                                 }
                             })}
                         </tr>
