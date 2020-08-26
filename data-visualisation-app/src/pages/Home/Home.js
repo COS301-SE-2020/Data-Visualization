@@ -38,8 +38,8 @@ function Home(props) {
 	//Our app is makes visualizing data easy! We require data sources then we generate chart suggestions of your data with the help of an Interactive Genetic Algorithm.
 	return (
 		<>
-		{props.renderBackground && <BackgroundDots width={props.width} height={props.height}/>}
-		<div className='outterDiv' bg={grid} style={{border: '1px solid green'}} >
+		{/* {props.renderBackground && <BackgroundDots width={props.width} height={props.height}/>} */}
+		<div className='outterDiv' >
 
 			{/*<img src={grid} id='home__background'/>*/}
 
@@ -50,14 +50,19 @@ function Home(props) {
 
 				</div>
 		
-				<div id='header__graphic'>
-					<WelcomeGraphic/>
+				
+				<div class = 'callToActionDiv'>	
+					<Button id='button__explore__1' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('explore')}>
+						Go Explore
+					</Button>
 				</div>
 				
+				
+
 				<div class = 'getStarted'>
-					<Title id='getStartedTitle'>Get Started</Title>
+					<Title id='getStartedTitle'>Learn More</Title>
 					<Link className='ico animated'
-						to="illustrationExploreDiv"
+						to="guideDivExplain"
 						spy={true}
 						smooth={true}
 						offset={-250}
@@ -91,15 +96,16 @@ function Home(props) {
 					</div>
 					</Link>
 				</div>
+
 				
 
 				<div className='home__pageSection'>
 					<div className='home__pageSection--title'>Explore Data</div>
 					<div id='guideDivExplain'>
 						<div className='guideDiv__innerContainer'>
-							<div id='illustrationExploreDiv'>
+							{/* <div id='illustrationExploreDiv'>
 								<ExploreIllustration className='exploreIllustration' />
-							</div>
+							</div> */}
 							<div id='explainExploreDiv'>
 								<Text id='explainExplore'>Explore big data sources with an OData link. <br/> Generate and customize chart suggestions which can then be added a dashboard.</Text>
 								<div className='spacerDiv'></div>
@@ -117,13 +123,13 @@ function Home(props) {
 				</div>
 
 				<div className='home__pageSection' style={{marginTop: '-200px'}}>
-					<img src={grid} id='home__background'/>
+
 					<div className='home__pageSection--title' style={{marginTop: '70px', marginBottom: '160px'}}>Visualize Data</div>
 					<div id='guideDivDashboards'>
 						<div className='guideDiv__innerContainer'>
-							<div id='illustrationDashboardsDiv'>
+							{/* <div id='illustrationDashboardsDiv'>
 								<DashboardIllustration className='dashboardIllustration' />
-							</div>
+							</div> */}
 							<div id='explainDashboardsDiv'>
 								{/*<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' icon={<WindowsOutlined />} onClick={() => props.handlePageType('dashboards')}>*/}
 								{/*	View Dashboards*/}
@@ -136,6 +142,9 @@ function Home(props) {
 							</div>
 						</div>
 					</div>
+					{/* <div id='header__graphic'>
+					<WelcomeGraphic/>
+					</div> */}
 				</div>
 			</Anime>
 		</div>

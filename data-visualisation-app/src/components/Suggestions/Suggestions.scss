@@ -31,7 +31,7 @@
   
   margin: 0;
   top: 93%;
-  left: 57%;
+  left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   position: fixed;
@@ -44,9 +44,7 @@
 }
 
 @media only screen and (max-width: 600px) {
-  #moreLikeThisButton{
-      left: 50%;
-  }
+ 
 }
 
 

@@ -239,7 +239,7 @@ class DataConnection extends React.Component {
           loadMore={loadMore}
           dataSource={list}
           renderItem={item => (
-            <Card hoverable>
+            <Card hoverable className = 'dataConnectionCard'>
             <List.Item
               key={item.id}
               actions={

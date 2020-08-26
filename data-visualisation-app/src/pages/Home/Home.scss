@@ -75,14 +75,13 @@
 }
 
 .outterDiv{
-    width: 90%;
-    height: 95%;
-    text-align: center;
+  border: none;
+  text-align: center;
   //overflow: hidden;
 }
 
 #welcomeTitle{
-    font-size: 9vh;
+  font-size: 9vh;
   font-family: 'Futura Md BT';
   color: $color-primary;
   text-shadow: 4px 4px 14px rgba(0,0,0,0.18);
@@ -138,9 +137,6 @@
 
 .home__pageSection {
   background-color: white;
-  margin-left: -10%;
-  margin-top: 100px;
-  width: 130%;
   height: 100vh;
   border-radius: 30% 30% 0 0 / 10% 10% 0 0;
   overflow: hidden;
@@ -232,31 +228,40 @@
     z-index: 100;
 }
 
+
+#button__explore__1{
+  @include button--layout;
+  @include button__explore--backgroundColor;
+  -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+  -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+  box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+  font-size: 50px;
+  width: 700px;
+  height: 200px;
+  left: 50%;
+//width: vw;
+//height: 3vw;
+}
+
 #button__explore {
-    
-    @include button--layout;
-    @include button__explore--backgroundColor;
-    -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-    -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-    box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-
+  @include button--layout;
+  @include button__explore--backgroundColor;
+  -webkit-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
+  -moz-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
+  box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
   font-size: 20px;
-
-  //width: vw;
-  //height: 3vw;
+  //font-size: 20px;
+  //width: 20vw;
+  //height: 7vw;
 }
 
 #button__dashboard {
- 
     @include button--layout;
     @include button__explore--backgroundColor;
     -webkit-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     -moz-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
-
-
-  font-size: 20px;
-
+    font-size: 20px;
     //font-size: 20px;
     //width: 20vw;
     //height: 7vw;
@@ -269,6 +274,15 @@
     -moz-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
     box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
     color: #f0f0f0;
+}
+
+#button__explore__1:hover {
+  color: white;
+  @include button__explore--backgroundColor;
+  -webkit-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
+  -moz-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
+  box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
+  color: #f0f0f0;
 }
 
 #button__explore:active {
@@ -301,7 +315,6 @@
 
 #masterPalette{
     width: 750px;
-    position: absolute;
     top: 50%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
@@ -331,6 +344,10 @@
 }
 
 
+.callToActionDiv{
+  display: flex;
+  float: left;
+}
 
 
 
