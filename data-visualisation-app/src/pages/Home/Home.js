@@ -39,7 +39,7 @@ function Home(props) {
 	return (
 		<>
 		{props.renderBackground && <BackgroundDots width={props.width} height={props.height}/>}
-		<div className='outterDiv' bg={grid} style={{border: '1px solid green'}} >
+		<div className='outterDiv' bg={grid} >
 
 			{/*<img src={grid} id='home__background'/>*/}
 
@@ -55,7 +55,7 @@ function Home(props) {
 				</div>
 				
 				<div class = 'getStarted'>
-					<Title id='getStartedTitle'>Get Started</Title>
+					<Title id='getStartedTitle' >Get Started</Title>
 					<Link className='ico animated'
 						to="illustrationExploreDiv"
 						spy={true}
@@ -116,7 +116,7 @@ function Home(props) {
 					</div>
 				</div>
 
-				<div className='home__pageSection' style={{marginTop: '-200px'}}>
+				<div className='home__pageSection' id='home__visualizeDataSection' style={{marginTop: '-200px'}}>
 					<img src={grid} id='home__background'/>
 					<div className='home__pageSection--title' style={{marginTop: '70px', marginBottom: '160px'}}>Visualize Data</div>
 					<div id='guideDivDashboards'>

@@ -88,7 +88,7 @@
   text-shadow: 4px 4px 14px rgba(0,0,0,0.18);
 }
 #welcomeText{
-    font-size: 2.5vh;
+  font-size: 2.5vh;
   color: $color-primary;
   text-shadow: 4px 4px 14px rgba(0,0,0,0.11);
 }
@@ -308,10 +308,47 @@
     transform: translate(-50%, -50%);
 }
 
-@media only screen and (max-width: 1200px) {
+
+//#home__visualizeDataSection {
+//  margin-top: 600px;
+//}
+
+@media only screen and (max-width: 1700px) {
+  #header__graphic {
+    //float: none;
+    //width: 400px;
+    //float: right;
+    //margin-top: -300px;
+    //margin-left: 30px;
+    margin-right: -200px;
+  }
+}
+
+@media only screen and (max-width: 1500px) {
+  #header__graphic {
+    //float: none;
+    width: 400px;
+    //float: right;
+    //margin-top: -300px;
+    //margin-left: 30px;
+    //margin-right: -200px;
+  }
+}
+
+@media only screen and (max-width: 1300px) {
     #masterPalette{
         left: 60%;
     }
+  #header__graphic {
+    //float: none;
+    //width: 400px;
+    //float: right;
+    margin-top: 0;
+    width: 600px;
+    //margin-left: 30px;
+    //margin-right: -200px;
+    float: none;
+  }
 }
 
 @media only screen and (max-width: 1000px) {
@@ -322,12 +359,59 @@
     #button__dashboard {
         float: left;
     }
+  #home__visualizeDataSection {
+    margin-top: 600px;
+  }
 }
 
 @media only screen and (max-width: 600px) {
     #masterPalette{
         width: 100%;
     }
+
+
+  #header__graphic {
+    width: 100%;
+    margin: auto;
+  }
+
+  #header__title {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    //text-align: left;
+
+    //margin: auto;
+    width: 100%;
+  }
+
+  .getStarted{
+    //margin-left: 1rem;
+    margin: auto;
+    width: 20%;
+  }
+
+  #getStartedTitle{
+    //margin-left: -2px;
+    //margin-top: 170px;
+    //margin-bottom: 100px;
+    //margin: auto;
+    width: 300%;
+    margin-left: -3rem;
+  }
+
+  //.st11, .st10, .st9 {
+  //  visibility: hidden;
+  //}
+
+  //.remove__xs {
+  //  visibility: hidden;
+  //  //border: 1px solid red;
+  //}
+
+
+  #welcomeTitle {
+    font-size: 7vh;
+  }
 }
 
 
@@ -454,3 +538,5 @@ $anim-timing: 3s;
     transform: translate3d(0,50%,0) rotateX(-90deg) scale(0.5) skewX(-3deg);
   }
 }
+
+
