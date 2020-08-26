@@ -151,6 +151,7 @@ class GraphSuggesterController {
 	/**
 	 */
 	static limitEntities(entities) {
+		this.acceptedEntities = {};
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
@@ -184,7 +185,7 @@ class GraphSuggesterController {
 	static setFittestEChart(graph) {
 		//if the graph is null, then we are resetting preferences for the fitness target
 		// eslint-disable-next-line eqeqeq
-		if (graph == null) {
+		if (graph || graph === {} || graph == null) {
 			//eslint-disable-line
 			console.log('setFittestEChart received null, resetting fitness target...');
 			graphSuggesterAI.changeFitnessTarget(null, null);
