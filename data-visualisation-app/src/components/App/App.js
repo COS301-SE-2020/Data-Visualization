@@ -103,7 +103,7 @@ const globalMaterialUITheme = createMuiTheme({
 	palette: {
 
 		primary: {
-			main: '#242424',
+			main: '#161748',
 			mainGradient: 'linear-gradient(to right, tomato, cyan)',
 		}
 	}
@@ -117,8 +117,14 @@ const useStyles = makeStyles((theme) => ({
 		height: '100%',
 		width: '100%',
 	},
-	homeRoot : {
+	dataConnectionRoot: {
 		background: 'linear-gradient(45deg, #ffafbd 12%, #ffc3a0 79%)',
+		position: 'absolute',
+		height: '100%',
+		width: '100%',
+	},
+	homeRoot : {
+		background: 'linear-gradient(45deg, #ffafbd 12%, #ffc3a0 79%)', //linear-gradient(45deg, #ffafbd 12%, #ffc3a0 79%)
 		flexGrow: 1,
 	},
 	selected: {
@@ -629,8 +635,8 @@ function App(props) {
 	
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
-		<div className={`box ${pageType === 'home' || exploreStage === 'entities' ? classes.homeRoot : classes.root}`}>
-			<AppBar position="static">
+		<div className={`box ${pageType === 'home' || exploreStage === 'entities' ? classes.homeRoot : exploreStage === 'dataConnection' ? classes.dataConnectionRoot : classes.root}`}>
+			<AppBar position="sticky" style = {{backgroundColor: '#161748', opacity: '0.95'}}>
 				<Toolbar>
 				
 				{/* <Typography className={classes.title} variant="h6" noWrap>

@@ -267,7 +267,7 @@ class Entities extends React.Component {
                 onFinish={this.onFinish} 
              >
               
-               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Datasources' style= {{width:'80%', margin: '0 auto', marginTop: '20px', backgroundColor: 'transparent'}} headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Datasources' style= {{width:'80%', margin: '0 auto', marginTop: '20px', backgroundColor: 'transparent'}} headStyle={{ border: 0, textAlign: 'center'}}>
                <Checkbox onChange={this.handleChange}  >Check All</Checkbox>
                <List
                  className='entitesList'
@@ -278,7 +278,7 @@ class Entities extends React.Component {
                  
                  renderItem={item => (
                    <Fragment>
-                       <Card.Grid hoverable = {false} className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', marginLeft: '15px', width:'28%'}}  onClick={() => {
+                       <Card.Grid hoverable = {false} className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', marginLeft: '50px', width:'28%'}}  onClick={() => {
                           var tempItem = {};
                           tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);

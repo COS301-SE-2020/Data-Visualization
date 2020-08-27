@@ -1,6 +1,7 @@
 @import '../../globals/globals.scss';
 
 @mixin button__explore--backgroundColor {
+    //background: #F95D9B;
     background: rgb(117,48,154);
     background: -moz-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
     background: -webkit-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
@@ -26,14 +27,34 @@
 }
 
 #header__title {
-    margin-top: 100px;
-    margin-left: 90px;
-    text-align: left;
-
-    width: 700px;
+  margin-top: 100px;
+  margin-left: 90px;
+  text-align: left;
 }
 
+#header__text{
+  
+  text-align: left;
+  margin-left: 90px;
+  width: 70vh;
+  float: left;
+}
+
+#welcomeTitle{
+  font-size: 8vw;
+  font-family: 'Futura Md BT';
+  color: #161748;
+  text-shadow: 4px 4px 14px rgba(0,0,0,0.18);
+}
+#welcomeText{
+  font-size: 2.5vh;
+  color: #161748;
+  text-shadow: 4px 4px 14px rgba(0,0,0,0.11);
+}
+
+
 #header__graphic {
+ 
     width: 600px;
     float: right;
     margin-top: -300px;
@@ -44,8 +65,8 @@
     position: absolute;
     top: 0;
     left: 0;
-  z-index: 0;
-  width: 130%;
+    z-index: 0;
+    width: 130%;
 }
 
 .square{
@@ -80,27 +101,17 @@
   //overflow: hidden;
 }
 
-#welcomeTitle{
-  font-size: 9vh;
-  font-family: 'Futura Md BT';
-  color: $color-primary;
-  text-shadow: 4px 4px 14px rgba(0,0,0,0.18);
-}
-#welcomeText{
-    font-size: 2.5vh;
-  color: $color-primary;
-  text-shadow: 4px 4px 14px rgba(0,0,0,0.11);
-}
 
 .getStarted{
-    margin-left: 250px;
-    width: 20%;
+  margin-left: 250px;
+  width: 20%;
 }
 
 #getStartedTitle{
+  color: #F95D9B;
   font-size: 4vh;
   margin-left: -2px;
-  margin-top: 170px;
+ 
   margin-bottom: 100px;
   text-shadow: 4px 4px 14px rgba(0,0,0,0.23);
 }
@@ -231,16 +242,63 @@
 
 #button__explore__1{
   @include button--layout;
-  @include button__explore--backgroundColor;
-  -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-  -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-  box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-  font-size: 50px;
-  width: 700px;
-  height: 200px;
-  left: 50%;
+ 
+  -webkit-box-shadow: 0px 17px 40px -12px rgba(101,112,192,1);
+  -moz-box-shadow: 0px 17px 40px -12px rgba(101,112,192,1);
+  box-shadow: 0px 17px 40px -12px rgba(101,112,192,1);
+  font-size: 4em;
+  width: 50vw;
+  height: 30vh;
+  background-color: transparent;
+  color: #161748;
+  margin-left: 26%;
+  display: inline-block;
+
 //width: vw;
 //height: 3vw;
+}
+@media only screen and (max-width: 1024px) {
+  #button__explore__1{
+    margin:0 auto;
+    display:block;
+    width: 80%;
+    height: 20vh;
+    font-size: 3em;
+  }
+
+  #header__title {
+    text-align: center;
+    margin:0 auto;
+    margin-top: 80px;
+    width: 90%;
+  }
+  #header__text{
+    margin: 0;
+    text-align: center;
+    margin:0 auto;
+    float: none;
+    width: 90%;
+    margin-bottom: 50px;
+  }
+  #welcomeTitle{
+    font-size: 12vw;
+    font-family: 'Futura Md BT';
+    color: #161748;
+    text-shadow: 4px 4px 14px rgba(0,0,0,0.18);
+  }
+  #welcomeText{
+    font-size: 2.5vh;
+    color: #161748;
+    text-shadow: 4px 4px 14px rgba(0,0,0,0.11);
+  }
+}
+
+#button__explore__1:hover {
+  letter-spacing: 3px;
+  -webkit-box-shadow: 0px 13px 40px -12px rgba(101,112,192,1);
+  -moz-box-shadow: 0px 13px 40px -12px rgba(101,112,192,1);
+  box-shadow: 0px 13px 40px -12px rgba(101,112,192,1);
+  transition: all 0.3s ease 0s;
 }
 
 #button__explore {
@@ -276,14 +334,7 @@
     color: #f0f0f0;
 }
 
-#button__explore__1:hover {
-  color: white;
-  @include button__explore--backgroundColor;
-  -webkit-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
-  -moz-box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
-  box-shadow: 0px 13px 18px -12px rgba(101,112,192,1);
-  color: #f0f0f0;
-}
+
 
 #button__explore:active {
     @include button__explore--backgroundColor;
@@ -345,8 +396,8 @@
 
 
 .callToActionDiv{
+  display: inline;
   display: flex;
-  float: left;
 }
 
 
@@ -412,6 +463,30 @@ $anim-timing: 3s;
     z-index:9;
     position:relative;
 }
+
+@media only screen and (max-width: 1024px) {
+  .getStarted{
+    margin: auto;
+    margin-top: 80px;
+    width: 70%;
+  }
+  
+  #getStartedTitle{
+    color: #F95D9B;
+    font-size: 3vh;
+    margin:auto;
+    margin-bottom: 10px;
+ 
+    text-shadow: 4px 4px 14px rgba(0,0,0,0.23);
+  }
+
+  .ico {
+    transform: translateX(0%);
+  }
+  
+}
+
+
   
 @keyframes blob-1-anim {
   0%{

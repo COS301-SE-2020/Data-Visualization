@@ -46,10 +46,12 @@ function Home(props) {
 			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
 				<div id='header__title'>
 					<Title id='welcomeTitle'>Visualize Data</Title>
-					<Text id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link and visualize away!</Text>
-
 				</div>
-		
+
+
+				<div id='header__text'>
+					<Text id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link and visualize away!</Text>
+				</div>
 				
 				<div class = 'callToActionDiv'>	
 					<Button id='button__explore__1' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('explore')}>
@@ -62,7 +64,7 @@ function Home(props) {
 				<div class = 'getStarted'>
 					<Title id='getStartedTitle'>Learn More</Title>
 					<Link className='ico animated'
-						to="guideDivExplain"
+						to="home__pageSection"
 						spy={true}
 						smooth={true}
 						offset={-250}
