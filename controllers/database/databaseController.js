@@ -21,6 +21,7 @@
  * Constraints: None
  */
 require('dotenv').config();
+const Authentication = require('../Authentication');
 // const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 const Pool = require('pg-pool');
@@ -94,7 +95,7 @@ class Database {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
 							// if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful');
 							delete result.rows[0].password;
-							result.rows[0].apikey = generateApiKey();
+							result.rows[0].apikey = Authentication.generateApiKey();
 							resolve(result.rows[0]);
 						} else {
 							// if (!PRODUCTION) console.log('==> AUTHENTICATION: failed');
@@ -126,7 +127,7 @@ class Database {
 				.then((response) => {
 					// if (!PRODUCTION) console.log('REGISTER RESPONSE');
 					if (response.rows.length > 0) {
-						response.rows[0].apikey = generateApiKey();
+						response.rows[0].apikey = Authentication.generateApiKey();
 						resolve(response.rows[0]);
 					} else reject(response);
 				})
@@ -361,19 +362,6 @@ function fieldUpdates(fields, data, offset) {
 		output = output + ' ' + fields[i] + ' = $' + d + (i < fields.length - 1 && i < data.length - 1 ? ', ' : '');
 	}
 	return output;
-}
-/**
- * This function is used to generate an api key, represented as a random alpha-numeric string of length 20
- * @returns an apikey
- */
-function generateApiKey() {
-	let result = '';
-	let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	let charactersLength = characters.length;
-	for (let i = 0; i < 20; i++) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	}
-	return result;
 }
 /**
  * This function is used to format an error to be displayed.
