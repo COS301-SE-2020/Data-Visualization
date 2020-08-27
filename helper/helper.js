@@ -1,3 +1,11 @@
+function error(res, err) {
+	const status = err.status || 400;
+	const message = err.error || 'Unkown Error';
+
+	console.error(err);
+	res.status(status).json({ error: message });
+}
+
 const LogAuthUsers = (users) => {
 	console.log('=====================================');
 	console.log(
@@ -15,4 +23,4 @@ const LogReqParams = (req) => {
 	console.log('=====================================');
 };
 
-module.exports = { LogAuthUsers, LogReqParams };
+module.exports = { LogAuthUsers, LogReqParams, error };
