@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Testing functions that retrieve data from an Odata source Function that retrieves entity-data as JSON from a given Odata source entity-url 1`] = `
+exports[`Testing functions that retrieve data from an Odata source Function that retrieves entity-data as JSON from a given Data Source entity-url 1`] = `
 Object {
   "data": Array [
     undefined,
@@ -271,7 +271,7 @@ Object {
 }
 `;
 
-exports[`Testing functions that retrieve data from an Odata source Function that retrieves the metadata XML file for a given Odata source 1`] = `
+exports[`Testing functions that retrieve data from an Odata source Function that retrieves the metadata XML file for a given Data Source 1`] = `
 Object {
   "associations": Object {
     "Alphabetical_list_of_product": Array [],
