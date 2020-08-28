@@ -102,6 +102,8 @@ export const URL = {
 		UPDATE: URL_ROOT.GRAPH + '/update',
 	},
 	SUGGESTIONS: {
+		SET: URL_ROOT.SUGGESTIONS + '/params',
+		CHART: URL_ROOT.SUGGESTIONS + '/graphs',
 		GRAPHS: URL_ROOT.SUGGESTIONS + '/graphs',
 	},
 };

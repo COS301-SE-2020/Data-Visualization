@@ -71,23 +71,26 @@ const FilterDialog = (props) => {
 
     const [visible, setVisible] = useState(true);
     
-    const graphTypes = [{ value: 'Bar graph' }, { value: 'Pie chart' }, { value: 'Histogram' }, { value: 'Line graph' }, { value: 'Scatter plot' }];
+    const graphTypes = [{ value: 'bar' }, { value: 'pie' }, { value: 'line' }, { value: 'scatter' }, { value: 'effectScatter' }];
 
     
+    var obj = {};
+    var checkForDuplicate = [];
+
     request.user.fields = [];
-    request.user.entitiesToUse.map((item) => {
+    var fieldsToDisplay = [];
+    
+    request.user.selectedEntities.map((item) => {
         request.user.fields = request.user.fields.concat(item.fields);
     });
-    
-    var fieldTypes = [];
-    var checkForDuplicate = [];
+
     request.user.fields.map((item) => {
         if(!checkForDuplicate.includes(item)){
             checkForDuplicate.push(item);
-            var obj = {};
+            obj = {};
             obj = JSON.parse(JSON.stringify(obj));
             obj['value'] = item;
-            fieldTypes.push(obj);
+            fieldsToDisplay.push(obj);
         }
     });
     checkForDuplicate = [];
@@ -102,11 +105,24 @@ const FilterDialog = (props) => {
       };
 
       const onFinish = values => {
-       
-        //API call (to send options and reload suggestions)
 
+        
+        request.user.selectedFields = [];
+        if(values.fieldSelect !== undefined){
+            request.user.selectedFields = values.fieldSelect;
+        }
+        
+        request.user.graphTypes = ['bar','line', 'pie', 'scatter', 'effectScatter'];
+        if(values.graphSelect !== undefined){
+            request.user.graphTypes = values.graphSelect;
+        }
+        
+
+        //API call (to send options and reload suggestions)
         console.log('Success:', values);
+
         handleFilterCancel();
+        props.generateCharts(request.user.graphTypes, request.user.selectedEntities,  request.user.selectedFields, request.user.fittestGraphs);
       };
     
       const onFinishFailed = errorInfo => {
@@ -147,6 +163,7 @@ const FilterDialog = (props) => {
                             tagRender={tagRender}
                             style={{ width: '100%' }}
                             options={graphTypes}
+                            defaultValue={request.user.graphTypes}
                         />
                     </Form.Item>
 
@@ -158,7 +175,8 @@ const FilterDialog = (props) => {
                             mode="multiple"
                             tagRender={tagRender}
                             style={{ width: '100%' }}
-                            options={fieldTypes}
+                            options={fieldsToDisplay}
+                            defaultValue={[]}
                         />
                     </Form.Item>
 

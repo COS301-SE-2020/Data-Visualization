@@ -26,6 +26,7 @@ $font-light: 'Segoe UI Light';
 $font-default: 'Segoe UI';
 $font-semibold: 'Segoe UI Semibold';
 
+$color-menu-selected-background: #f1f1f1;
 $color-border-hover: #616161;
 $color-border-active: #616161;
 $color-border-focus: #616161;
@@ -200,4 +201,19 @@ $HEIGHT_TOOLBAR: 60px;
   100% {
     transform: scale(0.3);
   }
+}
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: local('Segoe UI'), url(../assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Segoe UI Semibold';
+  src: local('Segoe UI Semibold'), url(../assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Futura Md BT';
+  src: local('Futura Md BT'), url(../assets/fonts/futura/futura_medium_bt.ttf) format('truetype');
 }

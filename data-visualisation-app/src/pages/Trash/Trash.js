@@ -89,24 +89,26 @@ class Trash extends React.Component {
      * @return Array of dashboards with associated charts from the parsed string value.
      */
     static parseStoredTrash(storedString) {
-        if (storedString.includes(Trash.DELIMITER_OUTER)) {
-            storedString = storedString.split(Trash.DELIMITER_OUTER);
+        if (storedString != null && typeof storedString !== 'undefined' && storedString !== '') {
+            if (storedString.includes(Trash.DELIMITER_OUTER)) {
+                storedString = storedString.split(Trash.DELIMITER_OUTER);
 
-            for (let s = 0; s < storedString.length; s++) {
-                storedString[s] = JSON.parse(storedString[s]);
-                storedString[s].charts = storedString[s].charts.split(Trash.DELIMITER_INNER);
-                for (let c = 0; c < storedString[s].charts.length; c++) {
-                    storedString[s].charts[c] = JSON.parse(storedString[s].charts[c]);
+                for (let s = 0; s < storedString.length; s++) {
+                    storedString[s] = JSON.parse(storedString[s]);
+                    storedString[s].charts = storedString[s].charts.split(Trash.DELIMITER_INNER);
+                    for (let c = 0; c < storedString[s].charts.length; c++) {
+                        storedString[s].charts[c] = JSON.parse(storedString[s].charts[c]);
+                    }
                 }
-            }
 
-        } else {
-            storedString = [JSON.parse(storedString)];
-            storedString[0].charts = storedString[0].charts.split(Trash.DELIMITER_INNER);
+            } else {
+                storedString = [JSON.parse(storedString)];
+                storedString[0].charts = storedString[0].charts.split(Trash.DELIMITER_INNER);
 
-            for (let s = 0; s < storedString.length; s++) {
-                for (let c = 0; c <  storedString[s].charts.length; c++) {
-                    storedString[s].charts[c] = JSON.parse(storedString[s].charts[c]);
+                for (let s = 0; s < storedString.length; s++) {
+                    for (let c = 0; c <  storedString[s].charts.length; c++) {
+                        storedString[s].charts[c] = JSON.parse(storedString[s].charts[c]);
+                    }
                 }
             }
         }
@@ -154,7 +156,7 @@ class Trash extends React.Component {
         let storedString = localStorage.getItem('trashedCharts');
         let chartsArray = '';
         let chartObjectPointer = null;
-        if (storedString === '') {
+        if (storedString === '' || storedString == null || typeof storedString === 'undefined') {
             Trash.charts = [{
                 dashboard: owner,
                 dashboardID: dashboardID,
@@ -162,7 +164,7 @@ class Trash extends React.Component {
             }];
         } else {
             Trash.charts = Trash.parseStoredTrash(localStorage.getItem('trashedCharts'));
-            if (storedString.includes('"dashboardID":' + dashboardID)) {
+            if (storedString.includes('"dashboardID":' + dashboardID) && Trash.charts != null && Trash.charts.length > 0) {
                 for (let o = 0; o < Trash.charts.length; o++) {
                     if (Trash.charts[o].dashboard === owner) {
                         chartObjectPointer = Trash.charts[o];

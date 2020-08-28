@@ -19,33 +19,24 @@
  *   Constraints: None
  */
 
-import './Entities.css';
-import React, { Fragment } from 'react';
-import { List, Avatar, Button, Skeleton, Form, Checkbox } from 'antd';
+import './Entities.scss';
+import React, { Fragment, useEffect, useState, useRef} from 'react';
+import { List, Avatar, Button, Skeleton, Form, Checkbox, Card, message } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-import { createForm, formShape } from 'rc-form';
+import { createForm } from 'rc-form';
+import Anime, { anime } from 'react-anime';
 
+
+
+var showAll = false;
 
 
 class Entities extends React.Component {
 
- 
-  onFinish = values => {
-    //console.log('Received values of form: ', values);
-   
-    request.user.entitiesToUse = [];
-    request.user.entitiesToDisplay.map((item) => {
-      if(this.props.form.getFieldValue(item.entityName) === true){
-        request.user.entitiesToUse.push(item);
-      }
-    });
-
-    console.log(request.user.entitiesToUse);
-    
-    this.next();
-  };
+  
+  formRef = React.createRef();
 
   state = {
     initLoading: true,
@@ -53,20 +44,56 @@ class Entities extends React.Component {
     checked : true,
     data: [],
     list: [],
+    allChecked: false,
   };
 
+  onFinish = values => {
 
-  onChange = (item) => {
-   
-    console.log(this.props.form.getFieldValue('Categories'));
+    var atLeastOne = false;
+    request.user.selectedEntities = [];
+    
+    request.user.entitiesToDisplay.map((item) => {
+      if(this.formRef.current.getFieldValue(item.entityName) === true){
+        request.user.selectedEntities.push(item);
+        atLeastOne = true;
+      }
+    });
+  
+    if(atLeastOne){
+      console.log(request.user.selectedEntities);
+      showAll = false;
+      this.next();
+    }
+    else{
+      message.error('Please select at least one entity');
+    }
     
   };
+
+
+  handleChange = (e) => {
+    
+    showAll = !showAll;
+    var tempItem = {};
+
+    request.user.entities.map((entityName) => {
+      tempItem[entityName] = showAll;
+      this.formRef.current.setFieldsValue(tempItem);
+      if(showAll){
+        document.getElementById('card-'+entityName).style.boxShadow = 'inset 0px 0px 5px 0px rgba(0,0,0,0.75)';
+      }
+      else{
+        document.getElementById('card-'+entityName).style.boxShadow = '';
+      }
+     
+    });
+
+  }
 
 
   next = () => {
     this.props.setStage('suggestions');
   };
-
 
   
   /**
@@ -74,7 +101,17 @@ class Entities extends React.Component {
   */
   componentDidMount() {
 
-    console.log(request.user.isLoggedIn);
+    request.user.selectedFields = [];
+    request.user.graphTypes = ['bar','line', 'pie', 'scatter', 'effectScatter'];
+
+    console.log(request.user.dataSources);
+    if(request.user.dataSources.length === 0){
+      this.setState({
+        initLoading: false,
+        data: [],
+        list: [],
+      });
+    }else{
       this.getData(res => {
         this.setState({
           initLoading: false,
@@ -82,8 +119,10 @@ class Entities extends React.Component {
           list: request.user.entitiesToDisplay,
         });
       });
-
+    }
+    
   }
+
 
   /**
     * Funnction uses the dataSources to update the entites list.
@@ -91,9 +130,10 @@ class Entities extends React.Component {
   getData = callback => {
    
     var Obj = {};
-    request.user.entitiesToDisplay = [];
     request.user.dataSourceInfo = [];
+
     request.user.entities = [];
+    request.user.entitiesToDisplay = [];
 
     request.user.dataSources.map((source) => {
 
@@ -112,18 +152,15 @@ class Entities extends React.Component {
               
               request.user.entitiesToDisplay.push(Obj);
             });
-          
             callback(request.user.entitiesToDisplay);
           }
         });
     });
-    
    
   };
 
   render() {
-
-   
+  
     const { getFieldDecorator } = this.props.form;
     const { initLoading, loading, list } = this.state;
 
@@ -141,67 +178,162 @@ class Entities extends React.Component {
       ) : null;
    
 
-    return (
-      
-     <div>
-        <Form
-            name='entitiesForm'
-            onFinish={this.onFinish}
-        >
-          <List
-            className='entitesList'
-            loading={initLoading}
-            itemLayout='horizontal'
-            loadMore={loadMore}
-            dataSource = {list}
-            
-            renderItem={item => (
-            
-              <Fragment>
-                  {/* <div id = 'selectorDiv' onClick = {() => {this.onChange(item);}}> */}
-                    <List.Item
-                      key={1}
-                      actions={
-                        [ 
-                          
-                          <Form.Item valuePropName = 'checked'>
-                           {getFieldDecorator(item.entityName, {
-                              valuePropName: 'checked',
-                              initialValue: true
-                            })(
-                              <Checkbox />
-                            )}
-                          </Form.Item>
+      const mql = window.matchMedia('(max-width: 1800px)');
+      let mobileView = mql.matches;
 
-                        ]
-                      }>
-                      <Skeleton avatar title={false} loading={item.loading} active>
-                        <List.Item.Meta
-                          avatar={
-                            <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
+      if (mobileView) {
+        return (
+    
+          <div>
+             <Form
+                ref={this.formRef}
+                name='entitiesForm'
+                onFinish={this.onFinish}
+             >
+      
+               <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+                 <Checkbox onChange={this.handleChange}>Check All</Checkbox>
+                </Card>
+               
+               <List
+                 className='entitesList'
+                 loading={initLoading}
+                 itemLayout='horizontal'
+                 loadMore={loadMore}
+                 dataSource = {list}
+                 
+                 renderItem={item => (
+                   
+                   <Fragment>
+                       <Card id = {'card-'+item.entityName} onClick={() => {                          
+                          var tempItem = {};
+                          tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
+                          this.formRef.current.setFieldsValue(tempItem);
+
+                          if(tempItem[item.entityName]  === false){                       
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '';
+                           }
+                          else{
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
                           }
-                          title={item.entityName}
-                          description={item.datasource}
-                        />
-                        <div></div>
-                      </Skeleton>
-                    </List.Item>
-                  {/* </div> */}
-              </Fragment>
-            )}
-          />
-           
-          <Form.Item>
-         
-            <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
-              Generate Suggestions
-            </Button>
-           
-          </Form.Item>
-          
-        </Form>
-      </div>
-    );
+                        }} 
+                        >
+
+                       <List.Item
+                           key={1}
+                           actions={
+                             [ 
+                               
+                              <Form.Item name={item.entityName} valuePropName='checked'>
+                                <Checkbox/>
+                              </Form.Item>
+     
+                             ]
+                           }>
+                           <Skeleton avatar title={false} loading={item.loading} active>
+                             <List.Item.Meta
+                               avatar={
+                                 <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
+                               }
+                               title={item.entityName}
+                               description={item.datasource}
+                             />
+                             <div></div>
+                           </Skeleton>
+                         </List.Item>
+                       </Card> 
+                   </Fragment>
+                 )}
+               />
+
+               <Form.Item>
+              
+                 <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                   Generate Suggestions
+                 </Button>
+                
+               </Form.Item>
+               
+             </Form>
+           </div>
+         );
+      } else {
+        return (
+      
+          <div>  
+             <Form
+                ref={this.formRef}
+                name='entitiesForm'
+                onFinish={this.onFinish} 
+             >
+              
+               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+               <Checkbox onChange={this.handleChange}  >Check All</Checkbox>
+               <List
+                 className='entitesList'
+                 loading={initLoading}
+                 itemLayout='horizontal'
+                 loadMore={loadMore}
+                 dataSource = {list}
+                 
+                 renderItem={item => (
+                   <Fragment>
+                       <Card.Grid className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', width:'32%'} } onClick={() => {
+                          var tempItem = {};
+                          tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
+                          this.formRef.current.setFieldsValue(tempItem);
+
+                
+                          if(tempItem[item.entityName]  === false){                       
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '';
+                              document.getElementById('card-'+item.entityName).style.border = '';
+                           }
+                          else{
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1), inset 0px 0px 0px 1px rgba(89,89,89,1)';
+                          }
+                     
+                        }} 
+                        >
+                        
+                       <List.Item
+                           key={1}
+                           actions={
+                             [ 
+                               
+                              <Form.Item name={item.entityName} valuePropName='checked'>
+                                   <Checkbox style={{visibility: 'hidden'}}/>
+                               </Form.Item>
+     
+                             ]
+                           }>
+                           <Skeleton avatar title={false} loading={item.loading} active>
+                             <List.Item.Meta
+                               avatar={
+                                 <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
+                               }
+                               title={item.entityName}
+                               description={item.datasource}
+                             />
+                             <div></div>
+                           </Skeleton>
+                         </List.Item>
+                       </Card.Grid> 
+                   </Fragment>
+                 )}
+               />
+               </Card>
+              
+               <Form.Item>
+                  <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                  Generate Suggestions
+                  </Button>
+               </Form.Item>
+               
+             </Form>
+           </div>
+         );
+      }
+    
   }
 }
 
