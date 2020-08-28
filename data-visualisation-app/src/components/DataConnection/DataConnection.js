@@ -24,7 +24,7 @@
   * Imports
 */ 
 import React from 'react';
-import { List, Avatar, Button, Skeleton } from 'antd';
+import { List, Avatar, Button, Skeleton, Card } from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import './DataConnection.scss';
@@ -239,11 +239,12 @@ class DataConnection extends React.Component {
           loadMore={loadMore}
           dataSource={list}
           renderItem={item => (
+            <Card hoverable>
             <List.Item
               key={item.id}
               actions={
                 [
-                  <Button id = 'deleteButton' onClick={() => {this.deleteItem(item);}} >delete</Button>
+                  <Button id = 'deleteButton' onClick={() => {this.deleteItem(item);}} >Delete</Button>
                 ]
               }>
               <Skeleton avatar title={false} loading={item.loading} active>
@@ -257,6 +258,7 @@ class DataConnection extends React.Component {
                 <div></div>
               </Skeleton>
             </List.Item>
+            </Card>
           )}
         />
         <main>

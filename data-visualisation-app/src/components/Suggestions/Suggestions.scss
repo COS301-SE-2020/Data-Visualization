@@ -15,10 +15,57 @@
   }
 }
 
-.suggestion {
-  background-color: white;
-  padding: 15px 20px 15px 20px;
+@mixin button__moreLikeThis--backgroundColor {
+  background: rgb(117,48,154);
+  background: -moz-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+  background: -webkit-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+  background: linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
 }
+
+#moreLikeThisButton{
+  @include button__moreLikeThis--backgroundColor;
+  -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+  -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+  box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+  
+  margin: 0;
+  top: 93%;
+  left: 57%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  position: fixed;
+  border: none;
+  transition: 0.3s;
+  opacity: 0.8;
+}
+#moreLikeThisButton:hover{
+  opacity: 1;
+}
+
+@media only screen and (max-width: 600px) {
+  #moreLikeThisButton{
+      left: 50%;
+  }
+}
+
+
+
+.chartDiv{
+  
+  padding-top: -100px;
+  transition: 0.3s;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.checkboxItem{
+  position: absolute;
+  left: 20px;
+  float: right;
+}
+
 
 #filterButton{
   cursor:pointer;
@@ -29,17 +76,6 @@
   outline:none;
   margin-bottom: 15px;
   margin-right: 15px;
-}
-
-
-
-#moreLikeThisButton{
-  margin: 0;
-  top: 93%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  position: fixed;
 }
 
 #igaloading {
@@ -64,4 +100,20 @@
   top: 45%;
   left: 45%;
   transform: translate(50%, 50%);
+}
+
+
+.suggestion{
+  border: 1px solid $color-border;
+  border-radius: 2%;
+  background-color: white;
+  cursor: pointer;
+  padding: 15px 20px 15px 20px;
+
+  transition: border-color 0.4s linear;
+  //box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+
+.suggestion:hover {
+  border-color: $color-border-hover;
 }

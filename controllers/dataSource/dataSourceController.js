@@ -8,7 +8,8 @@
  * Update History:
  * Date          Author              Changes
  * -------------------------------------------------------------------------------
- * 2/07/2020    Phillip Schulze     Original
+ * 02/07/2020    Phillip Schulze     Original
+ * 06/08/2020    Phillip Schulze     DataSource now uses a cache to stored passed requests
  *
  * Test Cases: none
  *
@@ -27,6 +28,11 @@ const Odata = require('./Odata');
  * @author Phillip Schulze
  */
 class DataSource {
+	/**
+	 * This function updates meta data that is stored in the cache for this data source.
+	 * @param src the source where this Odata must be retrieved from
+	 * @returns a promise of Odata
+	 */
 	static updateMetaData(src) {
 		return new Promise((resolve, reject) => {
 			Odata.getMetaData(src)
@@ -40,6 +46,12 @@ class DataSource {
 		});
 	}
 
+	/**
+	 * This function updates entity data that is stored in the cache for this data source and entity.
+	 * @param src the source where this Odata must be retrieved from
+	 * @param entity the entity to which the data belongs to
+	 * @returns a promise of Odata
+	 */
 	static updateEntityData(src, entity) {
 		return new Promise((resolve, reject) => {
 			Odata.getEntityData(src, entity)
@@ -74,13 +86,13 @@ class DataSource {
 	static getEntityList(src) {
 		return new Promise((resolve, reject) => {
 			if (Cache.validateMetadata(src)) {
-				const data = DataSource.entityList(src);
-				resolve(data);
+				const data = Cache.getEntityList(src);
+				resolve(formatList(src, data));
 			} else {
 				DataSource.updateMetaData(src)
 					.then(() => {
-						const data = DataSource.entityList(src);
-						resolve(data);
+						const data = Cache.getEntityList(src);
+						resolve(formatList(src, data));
 					})
 					.catch((err) => reject(err));
 			}
@@ -95,36 +107,58 @@ class DataSource {
 	 */
 	static getEntityData(src, entity, field) {
 		return new Promise((resolve, reject) => {
-			if (Cache.validateEntityData(src, entity)) resolve(DataSource.entityData(src, entity, field));
-			else {
+			if (Cache.validateEntityData(src, entity)) {
+				const data = Cache.getEntityData(src, entity, field);
+				resolve(formatData(src, entity, field, data));
+			} else {
 				DataSource.updateEntityData(src, entity)
-					.then(() => resolve(DataSource.entityData(src, entity, field)))
+					.then(() => {
+						const data = Cache.getEntityData(src, entity, field);
+						resolve(formatData(src, entity, field, data));
+					})
 					.catch((err) => reject(err));
 			}
-		}); //Returns a promise
+		});
 	}
 
-	static entityList(src) {
-		const data = Cache.getEntityList(src);
-
-		return {
-			source: src,
-			entityList: data,
-		};
-	}
-	static entityData(src, entity, field) {
-		const entityData = Cache.getEntityData(src, entity, field);
-
-		return {
-			source: src,
-			entity: entity,
-			data: entityData,
-		};
-	}
-
+	/**
+	 * This function parses XML metadata to a standard JS object.
+	 * @param xmlData the XML metadata received from an external data source
+	 * @returns a standard JS object
+	 */
 	static parseMetadata(xmlData) {
 		return Odata.parseODataMetadata(xmlData);
 	}
+}
+
+/**
+ * This function formats entity list.
+ * @param src the source where the entity data was retrieved from
+ * @param data the entity list and each of its fields
+ * @returns a JS object
+ */
+function formatList(src, data) {
+	return {
+		source: src,
+		entityList: data,
+	};
+}
+
+/**
+ * This function formats entity list.
+ * @param src the source where the entity data was retrieved from
+ * @param entity the entity to which the field belongs to
+ * @param field the field to which the data belongs to
+ * @param entityData the field data for each item from this entity
+ * @returns a JS object
+ */
+function formatData(src, entity, field, entityData) {
+	return {
+		source: src,
+		entity: entity,
+		field: field,
+		data: entityData,
+	};
 }
 
 module.exports = DataSource;

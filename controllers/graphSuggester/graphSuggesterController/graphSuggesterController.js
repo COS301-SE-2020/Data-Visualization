@@ -47,6 +47,7 @@ class GraphSuggesterController {
 	 * @param items	the entities('tables') and their related attributes/fields
 	 * @param associations the other entities associated with this entity(containing related data)
 	 * @param types the data types of each field, organised by entity
+	 * @param sets the names of the entities in a way that can be requested from the datasource(not necessarily the same as in items)
 	 */
 	static setMetadata(source, { items, associations, types, sets }) {
 		if (!this.metadata) {
@@ -117,7 +118,11 @@ class GraphSuggesterController {
 			}
 			let option = this.constructOption(suggestion[1], [ suggestion[3], 'value' ], suggestion[3], 'value', entity + ': ' + suggestion[0]);
 			//console.log(option);
-			return option;
+			let chartSuggestion = {
+				fieldType: suggestion[2],
+				option: option,
+			};
+			return chartSuggestion;
 		}
 
 		console.log(entity + ' is not among ', entities);
@@ -146,16 +151,13 @@ class GraphSuggesterController {
 	/**
 	 */
 	static limitEntities(entities) {
+		this.acceptedEntities = {};
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-<<<<<<< Updated upstream
-				this.acceptedEntities[entities[i].datasource] = [entities[i].entityname]; //create it and store the entity
-=======
 				this.acceptedEntities[entities[i].datasource] = [ entities[i].entityName ]; //create it and store the entity
->>>>>>> Stashed changes
 			} else {
-				this.acceptedEntities[entities[i].datasource].push(entities[i].entityname); //add the name to the existing array
+				this.acceptedEntities[entities[i].datasource].push(entities[i].entityName); //add the name to the existing array
 			}
 		}
 	}
@@ -183,7 +185,7 @@ class GraphSuggesterController {
 	static setFittestEChart(graph) {
 		//if the graph is null, then we are resetting preferences for the fitness target
 		// eslint-disable-next-line eqeqeq
-		if (graph == null) {
+		if (graph || graph === {} || graph == null) {
 			//eslint-disable-line
 			console.log('setFittestEChart received null, resetting fitness target...');
 			graphSuggesterAI.changeFitnessTarget(null, null);
@@ -363,7 +365,7 @@ class GraphSuggesterController {
 		let source;
 		let entity = {};
 
-		if (keys.length > 0) {
+		if (keys && keys.length > 0) {
 			//if a filter was set
 			let num = Math.floor(Math.random() * keys.length);
 			let key = keys[num]; //pick a source index
@@ -378,19 +380,18 @@ class GraphSuggesterController {
 			entity['datasource'] = key;
 
 			source = this.acceptedEntities[key]; //select the source entities
-			entity['entityname'] = source[Math.floor(Math.random() * source.length)];
 
-<<<<<<< Updated upstream
-			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityname']);
-			entity['entityset'] = this.metadata[entity['datasource']].sets[index];
-=======
 			entity['entityName'] = source[Math.floor(Math.random() * source.length)];	//select a random entity from the source
 
-			//console.log(this.metadata, ':', entity['datasource']);
+			// eslint-disable-next-line eqeqeq
+			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {
+				console.log('Entity metadata is not defined');
+				console.log(this.metadata, ':', entity['datasource']);
+				return null;
+			}
 
 			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']);	//select the index of the entity in metadata
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index];	//select the set name(different from the entity name) for database querying
->>>>>>> Stashed changes
 
 			return entity; //return the random entity
 		} else {
@@ -420,8 +421,8 @@ class GraphSuggesterController {
 
 			const index = Math.floor(Math.random() * keys.length);
 
-			entity['entityname'] = keys[index]; //select a random entity key
-			entity['entityset'] = this.metadata[entity['datasource']].sets[index];
+			entity['entityName'] = keys[index]; //select a random entity key
+			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //store the set item name for database querying
 
 			return entity;
 		}
@@ -433,18 +434,15 @@ class GraphSuggesterController {
 	 * @param data the chart data to populate with
 	 * @return suggestion the full chart with data
 	 */
-<<<<<<< Updated upstream
-	static assembleGraph(suggestion, data) {
-=======
+
 	static assembleGraph(suggestion, { data }) {
 		//console.log(data);
 		// eslint-disable-next-line eqeqeq
-		if (suggestion == null || suggestion) {
+		if (suggestion == null) {
 			console.log('No suggestion object to add data to');
 			return suggestion;
 		}
 
->>>>>>> Stashed changes
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
 		}

@@ -1,0 +1,9 @@
+@import './globals.scss';
+
+.data-grid-container .data-grid .cell.selected {
+  border: 1px double green;
+}
+
+.data-grid-container .data-grid .cell > input {
+  border: 2px solid yellow;
+}

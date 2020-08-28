@@ -134,6 +134,8 @@
   // border-color: transparent !important;
 }
 
+// Ant Design Checkbox
+
 .ant-checkbox-checked .ant-checkbox-inner {
   background-color: $color-primary;
   border-color: $color-border;
@@ -143,6 +145,30 @@
 .ant-checkbox:hover .ant-checkbox-inner,
 .ant-checkbox-input:focus + .ant-checkbox-inner {
   border-color: $color-border-hover;
+}
+
+.ant-checkbox-checked::after {
+  border-color: $color-border-hover;
+}
+
+// Ant Design Cascader
+
+.ant-cascader-picker:focus .ant-cascader-input {
+  border-color: $color-primary;
+}
+.ant-cascader-picker-label:hover + .ant-cascader-input {
+  border-color: $color-primary;
+}
+.ant-cascader-picker:focus .ant-cascader-input {
+  border-color: $color-primary;
+  border-right-width: 1px !important;
+  outline: 0;
+  -webkit-box-shadow: 0 0 0 2px $color-box-shadow;
+  box-shadow: 0 0 0 2px $color-box-shadow;
+}
+.ant-cascader-menu-item-active:not(.ant-cascader-menu-item-disabled),
+.ant-cascader-menu-item-active:not(.ant-cascader-menu-item-disabled):hover {
+  background-color: $color-menu-selected-background;
 }
 
 .ant-input-affix-wrapper:focus,

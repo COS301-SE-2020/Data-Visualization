@@ -1,3 +1,25 @@
+/**
+ * @file  cache.test.js
+ * Project: Data Visualisation Generator
+ * Copyright: Open Source
+ * Organisation: Doofenshmirtz Evil Incorporated
+ * Modules: None
+ * Related Documents: SRS Document - www.example.com
+ * Update History:
+ * Date          Author             Changes
+ * -------------------------------------------------------------------------------
+ * 06/08/2020   Phillip Schulze     Original
+ *
+ * Test Cases: none
+ *
+ * Functional Description: This file implements a cache using the singleton pattern. This cache stores data the was previously
+ * requested from external data sources, and thus can be accessed in the future without making additional requests to external sources.
+ *
+ * Error Messages: "Error"
+ * Assumptions: None
+ * Constraints: None
+ */
+
 const CacheMaker = (function () {
 	let instance = null;
 	/**
@@ -9,7 +31,7 @@ const CacheMaker = (function () {
 		constructor() {
 			this.metaData = {}; //Meta => { 'src': {timestamp, data:{items, associations, sets, types }}}
 			this.entityData = {}; //Data => { 'src': {'entity': {timestamp, data:{items, associations, sets, types }}}}
-			this.maxTime = 1000 * 60 * 60 * 0.5; //30mins
+			this.maxTime = 1000 * 60 * 60 * 0.5; //ms => 30mins
 		}
 
 		getMetaData(src) {
@@ -18,23 +40,22 @@ const CacheMaker = (function () {
 		}
 		getEntityList(src) {
 			if (this.metaData && this.metaData[src]) return this.metaData[src].data.items;
-			console.log('++++++++++++NULL+++++++++++++');
 			return null;
 		}
 
 		getEntityData(src, entity, field) {
-			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) {
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				const data = this.entityData[src][entity].data;
-
-				const res = data.map((item) => item[field]);
-
+				//TODO: refactor this
+				const prim = Object.keys(data[0])[1];
+				const res = data.map((item, i) => [item[prim], item[field]]);
 				return res;
 			}
 			return null;
 		}
 
 		validateMetadata(src) {
-			if (this.metaData && this.metaData[src]) {
+			if (this.metaData && this.metaData[src] && Object.keys(this.metaData[src]).length > 0) {
 				if (Date.now() - this.metaData[src].timestamp >= this.maxTime) {
 					this.onMetadataTimedout(src, this.metaData[src]);
 					this.removeMetaData(src);
@@ -45,7 +66,7 @@ const CacheMaker = (function () {
 		}
 
 		validateEntityData(src, entity) {
-			if (this.entityData && this.entityData[src] && this.entityData[src][entity]) {
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && Object.keys(this.entityData[src][entity]).length > 0) {
 				if (Date.now() - this.entityData[src][entity].timestamp >= this.maxTime) {
 					this.onEntityDataTimedout(src, entity, this.entityData[src][entity]);
 					this.removeEntityData(src, entity);
@@ -99,7 +120,7 @@ const CacheMaker = (function () {
 	return {
 		/**
 		 * A function that returns a singleton object of the Cache type.
-		 * @return {Cache} a controller that handles all graph suggestion requests.
+		 * @return {Cache} an object that stores data from previous requests.
 		 */
 		getInstance: function () {
 			if (instance === null) {

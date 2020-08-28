@@ -16,7 +16,7 @@
  */
 
 import React, { useRef } from 'react';
-import { Link, animateScroll as scroll } from "react-scroll";
+import { Link, animateScroll as scroll } from 'react-scroll';
 import { Typography } from 'antd';
 import './Home.scss';
 import Anime, { anime } from 'react-anime';
@@ -26,6 +26,7 @@ import { Button } from 'antd';
 import { CompassOutlined, WindowsOutlined } from '@ant-design/icons';
 import { ReactComponent as WelcomeGraphic } from '../../assets/svg/welcome.svg';
 import grid from '../../assets/svg/grid.svg';
+import BackgroundDots from '../../helpers/backgroundWebGL';
 
 const { Title, Text } = Typography;
 
@@ -36,13 +37,16 @@ function Home(props) {
 	
 	//Our app is makes visualizing data easy! We require data sources then we generate chart suggestions of your data with the help of an Interactive Genetic Algorithm.
 	return (
-		<div className='outterDiv' bg={grid} >
+		<>
+		{props.renderBackground && <BackgroundDots width={props.width} height={props.height}/>}
+		<div className='outterDiv' bg={grid} style={{border: '1px solid green'}} >
 
-			<img src={grid} id='home__background'/>
+			{/*<img src={grid} id='home__background'/>*/}
+
 			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
 				<div id='header__title'>
-					<Title id='welcomeTitle'>Visualize your data.</Title>
-					<Text id='welcomeText'>Data Visualization Generator makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link to generate chart suggestions!</Text>
+					<Title id='welcomeTitle'>Visualize Data</Title>
+					<Text id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link and visualize away!</Text>
 
 				</div>
 		
@@ -56,7 +60,7 @@ function Home(props) {
 						to="illustrationExploreDiv"
 						spy={true}
 						smooth={true}
-						offset={-70}
+						offset={-250}
 						duration={500}>
 
 					
@@ -89,37 +93,53 @@ function Home(props) {
 				</div>
 				
 
-				<div className='guideDiv'>
-					<div className='guideDiv__innerContainer'>
-						<div id='illustrationExploreDiv'>
-							<ExploreIllustration className='exploreIllustration' />
-						</div>
-						<div id='explainExploreDiv'>
-							<Button id='button__explore' type="primary" htmlType="submit" shape='round' icon={<CompassOutlined />} onClick={() => props.handlePageType('explore')}>
-								Explore
-							</Button>
-							<div className='spacerDiv'></div>
-							<Text id='explainExplore'>Find suggestions. Add them to dashboards.</Text>
+				<div className='home__pageSection'>
+					<div className='home__pageSection--title'>Explore Data</div>
+					<div id='guideDivExplain'>
+						<div className='guideDiv__innerContainer'>
+							<div id='illustrationExploreDiv'>
+								<ExploreIllustration className='exploreIllustration' />
+							</div>
+							<div id='explainExploreDiv'>
+								<Text id='explainExplore'>Explore big data sources with an OData link. <br/> Generate and customize chart suggestions which can then be added a dashboard.</Text>
+								<div className='spacerDiv'></div>
+
+								{/*<div id='button__explore' onClick={() => props.handlePageType('explore')}>Explore</div>*/}
+								{/*<Button id='button__explore' type="primary" htmlType="submit" shape='round' icon={<CompassOutlined />} onClick={() => props.handlePageType('explore')}>*/}
+								{/*	Go Explore*/}
+								{/*</Button>*/}
+								<Button id='button__explore' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('explore')}>
+									Go Explore
+								</Button>
+							</div>
 						</div>
 					</div>
 				</div>
 
-				<div className='guideDiv'>
-					<div className='guideDiv__innerContainer'>
-						<div id='illustrationDashboardsDiv'>
-							<DashboardIllustration className='dashboardIllustration' />
-						</div>
-						<div id='explainDashboardsDiv'>
-							<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' icon={<WindowsOutlined />} onClick={() => props.handlePageType('dashboards')}>
-								Dashboards
-							</Button>
-							<div className='spacerDiv'></div>
-							<Text id='explainDashboards'>View your dashboards.</Text>
+				<div className='home__pageSection' style={{marginTop: '-200px'}}>
+					<img src={grid} id='home__background'/>
+					<div className='home__pageSection--title' style={{marginTop: '70px', marginBottom: '160px'}}>Visualize Data</div>
+					<div id='guideDivDashboards'>
+						<div className='guideDiv__innerContainer'>
+							<div id='illustrationDashboardsDiv'>
+								<DashboardIllustration className='dashboardIllustration' />
+							</div>
+							<div id='explainDashboardsDiv'>
+								{/*<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' icon={<WindowsOutlined />} onClick={() => props.handlePageType('dashboards')}>*/}
+								{/*	View Dashboards*/}
+								{/*</Button>*/}
+								<Text id='explainDashboards'>Create a dashboard for all suggested charts or manually crafted visualizations.</Text>
+								<div className='spacerDiv'></div>
+								<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('dashboards')}>
+									View Dashboards
+								</Button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</Anime>
 		</div>
+		</>
 	);
 }
 

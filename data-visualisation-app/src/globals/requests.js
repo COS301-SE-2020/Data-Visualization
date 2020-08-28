@@ -48,7 +48,7 @@ function generateID() {
 const API = {
 	dashboard: {
 		list: (apikey) => axios.post(constants.URL.DASHBOARD.LIST, { apikey }),
-		add: (apikey, dashboardID, name, description) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, dashboardID, name, description }),
+		add: (apikey, dashboardID, name, description, metadata) => axios.post(constants.URL.DASHBOARD.ADD, { apikey, dashboardID, name, description, metadata }),
 		delete: (apikey, dashboardID) => axios.post(constants.URL.DASHBOARD.REMOVE, { apikey, dashboardID }),
 		update: (apikey, dashboardID, fields, data) => axios.post(constants.URL.DASHBOARD.UPDATE, { apikey, dashboardID, fields, data }),
 	},
@@ -72,7 +72,10 @@ const API = {
 		list: (sourceurl) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl }),
 	},
 	suggestion: {
-		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl }),
+	
+		set: (graphTypes, selectedEntities, selectedFields, fittestGraph) => axios.post(constants.URL.SUGGESTIONS.SET, {graphTypes, selectedEntities, selectedFields, fittestGraph}),
+		chart: () => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {}),
+		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl}),
 	},
 };
 
@@ -98,6 +101,7 @@ const request = {
 				API.dashboard
 					.list(request.user.apikey)
 					.then((res) => {
+						console.debug('Response from dashboard.list:', res);
 						if (callback !== undefined) {
 							request.cache.dashboard.list.data = res.data;
 							callback(constants.RESPONSE_CODES.SUCCESS);
@@ -115,11 +119,12 @@ const request = {
 		 *  @param description Description of the new dashboard.
 		 *  @param callback Function called at end of execution.
 		 */
-		add: (name, description, callback) => {
+		add: (name, description, metadata, callback) => {
 			if (canRequest) {
 				API.dashboard
-					.add(request.user.apikey, generateID(), name, description)
+					.add(request.user.apikey, generateID(), name, description, metadata)
 					.then((res) => {
+						console.debug('Response from dashboard.add:', res);
 						if (callback !== undefined) {
 							request.cache.dashboard.list.data = res.data;
 							callback(constants.RESPONSE_CODES.SUCCESS);
@@ -141,6 +146,7 @@ const request = {
 				API.dashboard
 					.delete(request.user.apikey, dashboardID)
 					.then((res) => {
+						console.debug('Response from dashboard.delete:', res);
 						if (callback !== undefined) {
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						}
@@ -164,6 +170,7 @@ const request = {
 				API.dashboard
 					.update(request.user.apikey, dashboardID, updateFields, fieldData)
 					.then((res) => {
+						console.debug('Response from dashboard.update:', res);
 						if (callback !== undefined) {
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						}
@@ -192,6 +199,7 @@ const request = {
 				API.graph
 					.add(request.user.apikey, dashboardID, title, generateID(), options, metadata)
 					.then((res) => {
+						console.debug('Response from dashboard.add:', res);
 						if (callback !== undefined) {
 							console.debug('Response from graph.add:', res);
 							callback(constants.RESPONSE_CODES.SUCCESS);
@@ -213,6 +221,7 @@ const request = {
 				API.graph
 					.list(request.user.apikey, dashboardID)
 					.then((res) => {
+						console.debug('Response from graph.list:', res);
 						if (callback !== undefined) {
 							request.cache.graph.list = res.data;
 							callback(constants.RESPONSE_CODES.SUCCESS);
@@ -236,6 +245,7 @@ const request = {
 				API.graph
 					.delete(request.user.apikey, dashboardID, graphID)
 					.then((res) => {
+						console.debug('Response from graph.delete:', res);
 						if (callback !== undefined) {
 							if (request.cache.graph.list !== null) {
 								for (let g = 0; g < request.cache.graph.list.length; g++) {
@@ -268,8 +278,8 @@ const request = {
 				API.graph
 					.update(request.user.apikey, dashboardID, graphID, updateFields, fieldData)
 					.then((res) => {
+						console.debug('Response from graph.update:', res);
 						if (callback !== undefined) {
-							console.debug('Response from graph.update:', res);
 
 							if (request.cache.graph.list !== null) {
 								for (let g = 0; g < request.cache.graph.list.length; g++) {
@@ -293,7 +303,10 @@ const request = {
 		 */
 		rememberLogin: (isLoggedInMutator) => {
 			request.user.setIsLoggedIn = isLoggedInMutator;
-			if (localStorage.getItem('apikey') !== 'null') {
+			if (localStorage.getItem('apikey') == null || localStorage.getItem('apikey') !== '') {
+				console.debug('localStorage.getItem(\'apikey\')', localStorage.getItem('apikey'))
+				request.user.firstName = localStorage.getItem('firstName');
+				request.user.lastName = localStorage.getItem('lastName');
 				request.user.apikey = localStorage.getItem('apikey');
 				request.user.isLoggedIn = true;
 			}
@@ -310,13 +323,15 @@ const request = {
 			API.user
 				.login(email, password)
 				.then((res) => {
+					console.debug('Response from user.login:', res);
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
 							if (remember)
+
+								localStorage.setItem('firstName', res.data.firstname);
 								request.user.firstName = res.data.firstname;
+								localStorage.setItem('lastName', res.data.lastname);
 								request.user.lastName = res.data.lastname;
-								console.log(request.user.firstName);
-								
 								localStorage.setItem('apikey', res.data.apikey);
 								request.user.apikey = res.data.apikey;
 								request.user.isLoggedIn = true;
@@ -348,6 +363,7 @@ const request = {
 			API.user
 				.register(name, surname, email, password, confirmPassword)
 				.then((res) => {
+					console.debug('Response from user.register:', res);
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
 							request.user.apikey = res.data.apikey;
@@ -373,9 +389,12 @@ const request = {
 			API.user
 				.logout()
 				.then((res) => {
+					console.debug('Response from user.logout:', res);
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
-							localStorage.setItem('apikey', null);
+							localStorage.setItem('firstName', '');
+							localStorage.setItem('lastName', '');
+							localStorage.setItem('apikey', '');
 							request.user.isLoggedIn = false;
 							request.user.setIsLoggedIn(false);
 							callback(constants.RESPONSE_CODES.SUCCESS);
@@ -390,8 +409,8 @@ const request = {
 					}
 				});
 		},
-		firstName: '',
-		lastName: '',
+		firstName: localStorage.getItem('firstName'),
+		lastName: localStorage.getItem('lastName'),
 		apikey: localStorage.getItem('apikey'),
 		isLoggedIn: false,
 		setIsLoggedIn: null,
@@ -406,8 +425,11 @@ const request = {
 		dataSourceInfo: [],
 		entities : [],
 		entitiesToDisplay: [],
-		entitiesToUse : [],
+		selectedEntities : [],
 		fields: [],
+		selectedFields : [],
+		graphTypes: ['bar','line', 'pie', 'scatter', 'effectScatter'],
+		fittestGraphs: [],
 	},
 
 	dataSources: {
@@ -421,7 +443,7 @@ const request = {
 				API.dataSources
 					.list(apikey)
 					.then((res) => {
-						console.debug(res);
+						console.debug('Response from dataSources.list:', res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 								console.debug(res);
@@ -451,7 +473,7 @@ const request = {
 				API.dataSources
 					.add(apikey, dataSourceUrl)
 					.then((res) => {
-						console.debug(res);
+						console.debug('Response from dataSources.add:', res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 								console.debug(res);
@@ -483,10 +505,9 @@ const request = {
 				API.dataSources
 					.delete(dataSourceID, apikey)
 					.then((res) => {
-						console.debug(res);
+						console.debug('Response from dataSources.delete:', res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
-								console.debug(res);
 
 								//delete from request.user.dataSources array
 								//request.user.dataSources = res.data;
@@ -513,7 +534,7 @@ const request = {
 			API.entities
 				.list(sourceurl)
 					.then((res) => {
-						console.debug(res);
+						console.debug('Response from suggestion.list:', res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 
@@ -531,6 +552,39 @@ const request = {
 	},
 
 	suggestions: {
+
+
+		set: (graphTypes, selectedEntities, selectedFields, fittestGraph, callback) => {
+
+			API.suggestion
+				.set(graphTypes, selectedEntities, selectedFields, fittestGraph)
+				.then((res) => {
+					if (callback !== undefined) {
+						console.debug('Response from suggestion.graph:', res);
+
+						console.log(res);
+						callback(constants.RESPONSE_CODES.SUCCESS);
+					}
+				})
+				.catch((err) => console.error(err));
+		},
+
+		chart: (callback) => {
+
+			API.suggestion
+				.chart()
+				.then((res) => {
+					if (callback !== undefined) {
+						console.debug('Response from suggestion.graph:', res);
+						request.cache.suggestions.graph.current = res.data;
+
+						//console.log('get ' + res);
+						callback(constants.RESPONSE_CODES.SUCCESS);
+					}
+				})
+				.catch((err) => console.error(err));
+		},
+
 		/**
 		 *  Requests a single graph suggestion.
 		 *

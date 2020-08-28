@@ -39,8 +39,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, makeStyles, useTheme } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+//import DashboardIcon from '@material-ui/icons/Dashboard';
 import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -52,6 +51,10 @@ import 'react-resizable/css/styles.css';
 import './App.scss';
 import { WindowsOutlined } from '@ant-design/icons';
 import EditChart from '../../components/EditChart';
+import {PlusSquare} from '@styled-icons/feather';
+import {Trash as TrashIcon} from '@styled-icons/octicons';
+import {Dashboard as DashboardIcon} from '@styled-icons/remix-line';
+import {Info} from '@styled-icons/feather';
 
 /**
  *   globals import
@@ -269,7 +272,7 @@ function App(props) {
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else{
-		backButton = <Button id = 'backButton'  type="primary" disabled = {true} icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+		// backButton = <Button id = 'backButton'  type="primary" disabled = {true} icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 
 
@@ -373,10 +376,18 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<WindowsOutlined style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
+						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Dashboards" />
 				</MenuItem>
+
+				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
+					<ListItemIcon className={classes.icon} >
+						<PlusSquare size='25' style={(pageType === 'about' ? {color: 'white'} : {})} />
+					</ListItemIcon>
+					<ListItemText primary="Create chart" />
+				</MenuItem>
+
 
 
 				{/* <MenuItem button onClick={handleOpenIcon} selected={pageType === 'connections'} classes={{selected: classes.selected}}>
@@ -411,19 +422,22 @@ function App(props) {
 					<ListItemText primary="Lock" />
 				</ListItem> */}
 
-				<ListItem button onClick={() => handlePageType('trash')}>
-					<ListItemIcon className={classes.icon}>
-						<DeleteIcon />
+
+				<MenuItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
+					<ListItemIcon className={classes.icon} >
+						<TrashIcon size='25' style={(pageType === 'trash' ? {color: 'white'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Trash" />
-				</ListItem>
+				</MenuItem>
+
+
 
 			</List>
 			<Divider />
 			<List component="nav" className={classes.drawerList}>
 				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<InfoIcon style={(pageType === 'connections' ? {color: 'about'} : {})} />
+						<Info size='25' style={(pageType === 'about' ? {color: 'about'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="About" />
 				</MenuItem>
@@ -516,15 +530,15 @@ function App(props) {
 							{drawer}
                             <div style={{height: '100vh', position: 'relative'}}>
 								<img src={constant.APPLICATION_LOGO_GREY} style={{height: '120px', position: 'absolute', bottom: '80px', left: '24%'}} alt="logo" className={classes.logo} />
-								<div style={{position: 'absolute', bottom: '20px', textAlign: 'center', color: '#535355'}}>
-									Copyright © Doofenshmirts Evil Incorporated
+								<div style={{position: 'absolute', bottom: '20px', left: '18%', textAlign: 'center', color: '#535355'}}>
+                                    Brought to you by <br/> Doofenshmirtz Evil, Inc.
 								</div>
                             </div>
 						</Drawer>
 					</Hidden>
 				</nav>
 
-				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : {padding: '0'})} ref={targetRef}>
+				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : (pageType === 'home' ? {padding: '0', overflow: 'hidden'} : {}))} ref={targetRef}>
 
 					<div className={classes.toolbar} />
 
@@ -548,6 +562,27 @@ function App(props) {
 					{/*		type: 'line'*/}
 					{/*	}]*/}
 					{/*}} />*/}
+					{/* <EditChart options={{
+						xAxis: {},
+						yAxis: {},
+						series: [{
+							symbolSize: 20,
+							data: [
+								[10.0, 8.04],
+								[8.0, 6.95],
+								[13.0, 7.58],
+								[9.0, 8.81],
+								[11.0, 8.33],
+								[14.0, 9.96],
+								[6.0, 7.24],
+								[4.0, 4.26],
+								[12.0, 10.84],
+								[7.0, 4.82],
+								[5.0, 5.68]
+							],
+							type: 'scatter'
+						}]
+					}} /> */}
 				</main>
 
 			</div>

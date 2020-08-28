@@ -238,7 +238,7 @@ function Dashboard(props) {
 					let fielddata = [];
 					fielddata.push(presentDashboard.chartNames[r]);
 					fields.push('title');
-					if (currentLayout.current != null) {
+					if (currentLayout.current != null && typeof currentLayout.current !== 'undefined') {
 						fields.push('metadata');
 						fielddata.push({
 							// lg: {
@@ -303,8 +303,13 @@ function Dashboard(props) {
 				message.success('Chart was successfully deleted.', 2.5);
 
 				showAllCharts(false);
-
-				resetDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
+				let newChartName = [];
+				for (let a = 0; a < presentDashboard.chartNames.length; a++) {
+					if (a !== chartIndex)
+						newChartName.push(presentDashboard.chartNames[a]);
+				}
+				// resetDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: presentDashboard.chartNames});
+				resetDashboardState({name: presentDashboard.name, description: presentDashboard.description, chartNames: newChartName});
 
 				constructLayout(request.cache.graph.list.length);
 
@@ -358,7 +363,7 @@ function Dashboard(props) {
 						<Space size={9}>
 						{hasCharts &&
 						<Button ghost={!editMode} onClick={(editMode ? onSaveDashboardClick : onEditDashboardClick)}>
-							 {(editMode ? 'Save Dashboards' : 'Edit Dashboards')}
+							 {(editMode ? 'Save Dashboard' : 'Edit Dashboard')}
 						</Button>}
 						{editMode &&
 							<React.Fragment>

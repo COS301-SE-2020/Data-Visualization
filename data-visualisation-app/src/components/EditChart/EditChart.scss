@@ -1,20 +1,87 @@
 @import '../../globals/globals.scss';
 
-tr {
+input {
+  border: 1px solid $color-border;
+}
+
+.EditableCell:focus {
+  outline: none;
+  width: 100%;
+  borderStyle: 'none';
+}
+
+.datatable, .datatable__top {
+  padding: 5px;
+}
+
+.datatable__single {
+  border-top: 1px solid $color-border;
+  border-left: 1px solid $color-border;
   border-bottom: 1px solid $color-border;
 }
 
-td {
+.datatable__single--last {
+  border-right: 1px solid $color-border;
+}
+
+.datatable__spanning {
+  border: 1px solid $color-border;
+}
+
+td.datatable {
+  border-left: 1px solid;
+  border-bottom: 1px solid;
+  border-top: 1px solid;
+  border-color: $color-border;
+  transition: border 0.2s linear;
+}
+td.datatable__top {
+  border-left: 1px solid $color-border;
+  border-top: 1px solid $color-border;
+  border-color: $color-border;
+  transition: border 0.2s linear;
+}
+
+//.datatable__single:hover {
+//  border: 1px solid $color-border-hover;
+//}
+
+//.datatable.datatable__editable:hover {
+//  border: 1px solid $color-border-hover;
+//}
+//.datatable__top.datatable__editable:hover {
+//  border: 1px solid $color-border-hover;
+//}
+.datatable__editable:hover {
+  border: 1px solid $color-border-hover;
+}
+
+
+th.datatable {
+  border-left: 1px solid $color-border;
+  border-top: 1px solid $color-border;
+  border-right: 1px solid $color-border;
+}
+
+tr.properties {
+  border-bottom: 1px solid $color-border;
+}
+
+td.properties {
   padding-bottom: 5px;
   padding-top: 5px;
 }
 
-table {
+table.properties {
   width: 100%;
 }
 
 #editCharts {
   //margin-top: 60px;
+
+  display: grid;
+  height: 90vh;
+  grid-template: auto 1fr auto / auto 1fr auto
 }
 
 #editCharts__header {
@@ -23,25 +90,51 @@ table {
   //left: $WIDTH_SIDE_NAVIGATION;
   width: 100%;
   height: 60px;
-  background-color: white;
-  border-bottom: 1px solid $color-border-panels;
+  //background-color: white;
+  //border-bottom: 1px solid $color-border-panels;
   margin-bottom: 10px;
-  padding: 11px;
-  flex: none;
-  display: inline-block;
+  //padding: 11px;
+  //flex: none;
+  //display: inline-block;
+
+
+  //background: lightpink;
+  //padding: 2rem;
+  padding-top: 20px;
+  grid-column: 1 / 4;
 
 }
 
+#editCharts__properties {
+  //background: lightblue;
+  grid-column: 1 / 2;
+
+  overflow: scroll;
+}
+
+#editCharts__stage {
+  //background: coral;
+  grid-column: 2 / 3;
+
+  overflow: scroll;
+}
+
 #editCharts__footer {
-  position: fixed;
-  bottom: 0;
-  //left: $WIDTH_SIDE_NAVIGATION;
-  left:0;
-  width: 100%;
-  height: 60px;
-  background-color: white;
-  border-top: 1px solid $color-border-panels;
-  padding: 11px;
+  //position: fixed;
+  //bottom: 0;
+  ////left: $WIDTH_SIDE_NAVIGATION;
+  //left:0;
+  //width: 100%;
+  //height: 60px;
+  //background-color: white;
+  //border-top: 1px solid $color-border-panels;
+  //padding: 11px;
+
+
+  background: wheat;
+  padding: 2rem;
+  text-align: center;
+  grid-column: 1 / 4;
 }
 
 .noselect {
@@ -55,13 +148,14 @@ table {
 
 #editCharts__container {
   //width: 100vw;
-  //height: 100vh;
+  height: 70vh;
 }
 
 .editCharts__container--box {
   border: 1px solid $color-border-panels;
   border-radius: 5px;
   background-color: white;
+  margin: 5px;
 }
 
 .box__title {
@@ -73,4 +167,8 @@ table {
 
 .box__content {
   padding: 10px;
+}
+
+.button__changeColour {
+  border: 1px solid red;
 }

@@ -12,6 +12,11 @@
  * 30/06/2020   Phillip Schulze     Added more root modules
  *
  * Test Cases: none
+ * - Testing functions that retrieve data from an Odata source
+ * 		- Function that retrieves the entity list as JSON from a given Data Source
+ * 		- Function that retrieves the metadata XML file for a given Data Source
+ * 		- Function that retrieves entity-data as JSON from a given Data Source entity-url
+ * 		- Function that tests the parsing of the XML Meta Data
  *
  * Functional Description: This file implements a snapshot, and tests if the data source controller,
  * retrieves the appropriate data.
@@ -25,25 +30,32 @@
  */
 const { DataSource } = require('../../../controllers/controllers');
 
-describe('Testing functions that retrieve data from an Odata source', () => {
-	const sourceUrl = 'https://services.odata.org/V2/Northwind/Northwind.svc';
-	const entity = 'Products';
+const SRC_URL = 'https://services.odata.org/V2/Northwind/Northwind.svc';
+const SRC_ENTITY = 'Products';
 
+describe('Testing functions that retrieve data from an Odata source', () => {
 	test('Function that retrieves the entity list as JSON from a given Data Source', () => {
-		return DataSource.getEntityList(sourceUrl).then((list) => {
+		return DataSource.getEntityList(SRC_URL).then((list) => {
 			expect(list).toMatchSnapshot();
 		});
 	});
 
-	test('Function that retrieves the metadata XML file for a given Odata source', () => {
-		return DataSource.getMetaData(sourceUrl).then((xmlString) => {
+	test('Function that retrieves the metadata XML file for a given Data Source', () => {
+		return DataSource.getMetaData(SRC_URL).then((xmlString) => {
 			expect(xmlString).toMatchSnapshot();
 		});
 	});
 
-	test('Function that retrieves entity-data as JSON from a given Odata source entity-url', () => {
-		return DataSource.getEntityData(sourceUrl, entity).then((data) => {
+	test('Function that retrieves entity-data as JSON from a given Data Source entity-url', () => {
+		return DataSource.getEntityData(SRC_URL, SRC_ENTITY).then((data) => {
 			expect(data).toMatchSnapshot();
 		});
 	});
+
+	// test('Function that tests the parsing of the XML Meta Data', () => {
+	// 	return DataSource.getMetaData(SRC_URL).then((meta) => {
+	// 		const data = DataSource.parseMetadata(meta);
+	// 		expect(data).toMatchSnapshot();
+	// 	});
+	// });
 });

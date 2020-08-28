@@ -3,28 +3,89 @@
 exports[`Testing functions that retrieve data from an Odata source Function that retrieves entity-data as JSON from a given Data Source entity-url 1`] = `
 Object {
   "data": Array [
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
+    Array [
+      1,
+      undefined,
+    ],
+    Array [
+      2,
+      undefined,
+    ],
+    Array [
+      3,
+      undefined,
+    ],
+    Array [
+      4,
+      undefined,
+    ],
+    Array [
+      5,
+      undefined,
+    ],
+    Array [
+      6,
+      undefined,
+    ],
+    Array [
+      7,
+      undefined,
+    ],
+    Array [
+      8,
+      undefined,
+    ],
+    Array [
+      9,
+      undefined,
+    ],
+    Array [
+      10,
+      undefined,
+    ],
+    Array [
+      11,
+      undefined,
+    ],
+    Array [
+      12,
+      undefined,
+    ],
+    Array [
+      13,
+      undefined,
+    ],
+    Array [
+      14,
+      undefined,
+    ],
+    Array [
+      15,
+      undefined,
+    ],
+    Array [
+      16,
+      undefined,
+    ],
+    Array [
+      17,
+      undefined,
+    ],
+    Array [
+      18,
+      undefined,
+    ],
+    Array [
+      19,
+      undefined,
+    ],
+    Array [
+      20,
+      undefined,
+    ],
   ],
   "entity": "Products",
+  "field": undefined,
   "source": "https://services.odata.org/V2/Northwind/Northwind.svc",
 }
 `;
