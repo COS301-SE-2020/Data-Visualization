@@ -111,6 +111,7 @@ class GraphSuggesterController {
 
 		if (isAccepted) {
 			let suggestion = graphSuggesterAI.getSuggestions(entity);
+			console.log('Suggestion: ', suggestion);
 			// eslint-disable-next-line eqeqeq
 			if (suggestion == null) {
 				console.log('Received null suggestion');
@@ -351,6 +352,8 @@ class GraphSuggesterController {
 			//for funnel charts - TODO to be added
 		}
 
+		console.log(option);
+
 		return option;
 	}
 
@@ -446,6 +449,8 @@ class GraphSuggesterController {
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
 		}
+
+		console.log('suggestion w/ data', suggestion['dataset']);
 
 		return suggestion;
 	}
