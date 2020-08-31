@@ -36,7 +36,7 @@ class Odata {
 		// if (!PRODUCTION) console.log('Odata: ', formatMetaData(src));
 		return new Promise((resolve, reject) => {
 			axios
-				.get(formatMetaData(src))
+				.get(Odata.formatMetaData(src))
 				.then((res) => {
 					const { data } = res;
 					resolve(data);
@@ -53,7 +53,7 @@ class Odata {
 		// if (!PRODUCTION) console.log('Odata: ', format(src));
 		return new Promise((resolve, reject) => {
 			axios
-				.get(format(src))
+				.get(Odata.format(src))
 				.then((res) => {
 					const { EntitySets } = res.data.d;
 					resolve(EntitySets);
@@ -71,7 +71,7 @@ class Odata {
 		// if (!PRODUCTION) console.log('Odata: ', formatEntity(src, entity));
 		return new Promise((resolve, reject) => {
 			axios
-				.get(formatEntity(src, entity))
+				.get(Odata.formatEntity(src, entity))
 				.then((res) => {
 					const { results } = res.data.d;
 					resolve(results);
@@ -134,40 +134,43 @@ class Odata {
 		}
 		return { items, associations, sets, types };
 	}
-}
-/**
- * This function formats data in to json.
- * @param src the source that needs to be formatted
- * @returns string of json format
- */
-function format(src) {
-	return `${src}/?$format=json`;
-}
-/**
- * This function formats an entity in to json.
- * @param src the source that needs to be formatted
- * @param entity the entity that needs to be formatted
- * @returns string of json format
- */
-function formatEntity(src, entity) {
-	return `${src}/${entity}/?$format=json`;
-}
-/**
- * This function formats an entity in to json and removes the metadata.
- * @param obj the json object to be formatted
- * @returns string of json format
- */
-// function removeMeta(obj) {
-// 	console.log(delete obj['__metadata']);
-// 	return obj;
-// }
-/**
- * This function formats an metadata in to json.
- * @param src the source that needs to be formatted
- * @returns string of json format
- */
-function formatMetaData(src) {
-	return `${src}/$metadata`;
+
+	/**
+	 * This function formats data in to json.
+	 * @param src the source that needs to be formatted
+	 * @returns string of json format
+	 */
+	static format(src) {
+		return `${src}/?$format=json`;
+	}
+
+	/**
+	 * This function formats an entity in to json.
+	 * @param src the source that needs to be formatted
+	 * @param entity the entity that needs to be formatted
+	 * @returns string of json format
+	 */
+	static formatEntity(src, entity) {
+		return `${src}/${entity}/?$format=json`;
+	}
+
+	/**
+	 * This function formats an entity in to json and removes the metadata.
+	 * @param obj the json object to be formatted
+	 * @returns string of json format
+	 */
+	// function removeMeta(obj) {
+	// 	console.log(delete obj['__metadata']);
+	// 	return obj;
+	// }
+	/**
+	 * This function formats an metadata in to json.
+	 * @param src the source that needs to be formatted
+	 * @returns string of json format
+	 */
+	static formatMetaData(src) {
+		return `${src}/$metadata`;
+	}
 }
 
 module.exports = Odata;

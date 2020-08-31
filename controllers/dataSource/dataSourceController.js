@@ -20,7 +20,7 @@
  * Constraints: None
  */
 const Cache = require('./cache');
-const Odata = require('./Odata');
+const Odata = require('./Odata/Odata');
 /**
  * Purpose: This class is responsible for getting DataSources.
  * Usage Instructions: Use the corresponding getters to retrieve class variables.

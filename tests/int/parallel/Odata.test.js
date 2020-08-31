@@ -29,7 +29,7 @@
 /**
  * @jest-environment node
  */
-const Odata = require('../../../controllers/dataSource/Odata.js');
+const Odata = require('../../../controllers/dataSource/Odata');
 
 const SRC_URL = 'https://services.odata.org/V2/Northwind/Northwind.svc';
 const SRC_ENTITY = 'Products';
