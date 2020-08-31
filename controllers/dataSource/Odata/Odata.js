@@ -33,7 +33,7 @@ class Odata {
 	 * @returns a promise of Odata
 	 */
 	static getMetaData(src) {
-		// if (!PRODUCTION) console.log('Odata: ', formatMetaData(src));
+		if (Odata.logging) console.log('Odata: ', Odata.formatMetaData(src));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(Odata.formatMetaData(src))
@@ -50,7 +50,7 @@ class Odata {
 	 * @returns a promise of the entity list
 	 */
 	static getEntityList(src) {
-		// if (!PRODUCTION) console.log('Odata: ', format(src));
+		if (Odata.logging) console.log('Odata: ', Odata.format(src));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(Odata.format(src))
@@ -68,7 +68,7 @@ class Odata {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity) {
-		// if (!PRODUCTION) console.log('Odata: ', formatEntity(src, entity));
+		if (Odata.logging) console.log('Odata: ', Odata.formatEntity(src, entity));
 		return new Promise((resolve, reject) => {
 			axios
 				.get(Odata.formatEntity(src, entity))
@@ -87,7 +87,7 @@ class Odata {
 	 * @param xmlData the metadata in XML format.
 	 * @returns an object containing the parsed items and associated tables as well as the item sets and data-types in each "table"
 	 */
-	static parseODataMetadata(xmlData) {
+	static parseMetadata(xmlData) {
 		if (!xmlData || xmlData == null) return null; //eslint-disable-line
 
 		let parser = new DOMParser();
@@ -172,5 +172,6 @@ class Odata {
 		return `${src}/$metadata`;
 	}
 }
+Odata.logging = false;
 
 module.exports = Odata;

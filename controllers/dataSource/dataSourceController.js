@@ -126,8 +126,8 @@ class DataSource {
 	 * @param xmlData the XML metadata received from an external data source
 	 * @returns a standard JS object
 	 */
-	static parseMetadata(xmlData) {
-		return Odata.parseODataMetadata(xmlData);
+	static parseMetadata(data) {
+		return Odata.parseMetadata(data);
 	}
 }
 
