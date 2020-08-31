@@ -164,7 +164,7 @@ class Trash extends React.Component {
             }];
         } else {
             Trash.charts = Trash.parseStoredTrash(localStorage.getItem('trashedCharts'));
-            if (storedString.includes('"dashboardID":' + dashboardID) && Trash.charts != null && Trash.charts.length > 0) {
+            if (storedString.includes('"dashboardID":' + dashboardID)) {
                 for (let o = 0; o < Trash.charts.length; o++) {
                     if (Trash.charts[o].dashboard === owner) {
                         chartObjectPointer = Trash.charts[o];

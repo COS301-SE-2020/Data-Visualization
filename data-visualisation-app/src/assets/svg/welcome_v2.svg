@@ -4,16 +4,16 @@
 	 viewBox="0 0 547.6 511" style="enable-background:new 0 0 547.6 511;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:#FFFFFF;}
-	.st1{fill:#5F2018;}
-	.st2{fill:#822C22;}
-	.st3{fill:#993428;}
-	.st4{fill:#A7382C;}
+	.st1{fill:#7D2C0D;}
+	.st2{fill:#99350F;}
+	.st3{fill:#BF4313;}
+	.st4{fill:#D74A15;}
 	.st5{filter:url(#pie_filter);
 		animation: movePiece 6s 3s ease infinite;
 	}
-	.st6{fill:#bd3f32;}
+	.st6{fill:#E95B22;}
 	.st7{fill:none;stroke:#000000;stroke-width:0.5;stroke-miterlimit:10;}
-	.st8{fill:#44a08d;
+	.st8{fill:#994FFD;
 
     	transform: scale(1);
     	transform-origin: 50% 50%;
@@ -2054,7 +2054,7 @@ wMM50SegfsDgfavvBnd/Ik8gPYH3Xn7/EzBPy2k5LafltJyW03JaTstpOS23vvx/AQYA3UXTVS2E
 	</g>
 </g>
 <polyline class="st7" points="286.6,239 286.6,397 442.6,397 "/>
-<circle id="circle_1" class="st8" cx="312.1" cy="260.5" r="2.5"/>
+<circle stroke="red" id="circle_1" class="st8" cx="312.1" cy="260.5" r="2.5"/>
 <circle id="circle_2" class="st8" cx="337.1" cy="291.5" r="2.5"/>
 <circle id="circle_3" class="st8" cx="379.1" cy="286.5" r="2.5"/>
 <circle id="circle_4" class="st8" cx="324.1" cy="317.5" r="2.5"/>
@@ -2120,29 +2120,29 @@ QiI2/BvEP0FSTgb47TIDAMD/jX8EGADVixkZX/+36wAAAABJRU5ErkJggg==" transform="matrix(
 </g>
 <g class="st9 remove__xs">
 	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="304.3214" y1="107" x2="498.9533" y2="107">
-		<stop  offset="0" style="stop-color:#bd3f32"/>
-		<stop  offset="1" style="stop-color:#bd3f32"/>
+		<stop  offset="0" style="stop-color:#F37335"/>
+		<stop  offset="1" style="stop-color:#FDC830"/>
 	</linearGradient>
 	<path class="st10" d="M304.3,159.6c21.4-46.7,52.5-58.1,87-24.5C420,163,478.4,168.2,499,54.4"/>
 </g>
 <g class="st11 remove__xs">
 	<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="100.1538" y1="77.3571" x2="218.1209" y2="77.3571">
-		<stop  offset="0" style="stop-color:#44a08d"/>
-		<stop  offset="1" style="stop-color:#9C5849"/>
+		<stop  offset="0" style="stop-color:#4B134F"/>
+		<stop  offset="1" style="stop-color:#C94B4B"/>
 	</linearGradient>
 	<rect x="100.2" y="62.9" class="st12" width="118" height="29"/>
 </g>
 <g class="st11 remove__xs">
 	<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="100.1538" y1="168.4286" x2="190.6813" y2="168.4286">
-		<stop  offset="0" style="stop-color:#44a08d"/>
-		<stop  offset="1" style="stop-color:#9C5849"/>
+		<stop  offset="0" style="stop-color:#4B134F"/>
+		<stop  offset="1" style="stop-color:#C94B4B"/>
 	</linearGradient>
 	<rect x="100.2" y="153.9" class="st13" width="90.5" height="29"/>
 </g>
 <g class="st11 remove__xs">
 	<linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="99.1538" y1="123.1593" x2="129.7582" y2="123.1593">
-		<stop  offset="0" style="stop-color:#44a08d"/>
-		<stop  offset="1" style="stop-color:#9C5849"/>
+		<stop  offset="0" style="stop-color:#4B134F"/>
+		<stop  offset="1" style="stop-color:#C94B4B"/>
 	</linearGradient>
 	<rect x="99.2" y="108.7" class="st14" width="30.6" height="29"/>
 </g>

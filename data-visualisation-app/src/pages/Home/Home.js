@@ -23,7 +23,6 @@ import Anime, { anime } from 'react-anime';
 import { ReactComponent as ExploreIllustration } from '../../assets/svg/explore_ill.svg';
 import { ReactComponent as DashboardIllustration } from '../../assets/svg/dashboard_ill.svg';
 import { Button } from 'antd';
-import { CompassOutlined, WindowsOutlined } from '@ant-design/icons';
 import { ReactComponent as WelcomeGraphic } from '../../assets/svg/welcome.svg';
 import grid from '../../assets/svg/grid.svg';
 import BackgroundDots from '../../helpers/backgroundWebGL';
@@ -34,14 +33,10 @@ const { Title, Text } = Typography;
 
 function Home(props) {
 
-	
-	//Our app is makes visualizing data easy! We require data sources then we generate chart suggestions of your data with the help of an Interactive Genetic Algorithm.
 	return (
 		<>
 		{props.renderBackground && <BackgroundDots width={props.width} height={props.height}/>}
 		<div className='outterDiv' bg={grid} >
-
-			{/*<img src={grid} id='home__background'/>*/}
 
 			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
 				<div id='header__title'>
@@ -96,41 +91,6 @@ function Home(props) {
 				<div className='home__getStartedSections'>
 
 
-					{/*<div className='section__container'>*/}
-					{/*	<div className='section__item--spanning section__item--center' >*/}
-					{/*		<div className='home__pageSection--title' >Explore Data</div>*/}
-					{/*	</div>*/}
-					{/*	<div>*/}
-					{/*		<ExploreIllustration className='exploreIllustration' />*/}
-					{/*	</div>*/}
-					{/*	<div>*/}
-					{/*		<Text id='explainExplore'>Explore Big Data sources with an OData link. <br/> Generate and customize chart suggestions which can then be added a dashboard.</Text>*/}
-					{/*	</div>*/}
-					{/*	<div className='section__item--spanning' >*/}
-					{/*		<Button id='button__explore' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('explore')}>*/}
-					{/*			Go Explore*/}
-					{/*		</Button>*/}
-					{/*	</div>*/}
-					{/*</div>*/}
-
-					{/*<div className='section__container'>*/}
-					{/*	<div className='section__item--spanning section__item--center' >*/}
-					{/*		<div className='home__pageSection--title'>Visualize Data</div>*/}
-					{/*	</div>*/}
-					{/*	<div>*/}
-					{/*		<DashboardIllustration className='dashboardIllustration' />*/}
-					{/*	</div>*/}
-					{/*	<div>*/}
-					{/*		<Text id='explainDashboards'>Create a dashboard for all suggested charts or manually crafted visualizations.</Text>*/}
-					{/*	</div>*/}
-					{/*	<div className='section__item--spanning' >*/}
-					{/*		<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('dashboards')}>*/}
-					{/*			View Dashboards*/}
-					{/*		</Button>*/}
-					{/*	</div>*/}
-					{/*</div>*/}
-
-
 					<div className='home__container' id='id__explore'>
 						<div className='home__section--title' ><div className='home__pageSection--title' >Explore Data</div></div>
 						<div className='home__section--middle'>
@@ -139,8 +99,6 @@ function Home(props) {
 								<Text id='explainExplore'>Explore Big Data sources with an OData link. <br/> Generate and customize chart suggestions which can then be added a dashboard.</Text>
 							</div>
 						</div>
-						{/*<div className='home__section--graphic' >title</div>*/}
-						{/*<div className='home__section--description' >Visualize Data</div>*/}
 						<div className='home__section--button' >
 							<Button id='button__explore' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('explore')}>
 								Go Explore
@@ -158,108 +116,14 @@ function Home(props) {
 								</div>
 							</div>
 						</div>
-						{/*<div className='home__section--graphic' >title</div>*/}
-						{/*<div className='home__section--description' >Visualize Data</div>*/}
 						<div className='home__section--button' >
 							<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('dashboards')}>
 								View Dashboards
 							</Button>
 						</div>
 					</div>
-
-
-					{/*<div>*/}
-					{/*	sdflkjsdf*/}
-					{/*<div className='section__block'>*/}
-					{/*	<div id='illustrationExploreDiv'>*/}
-					{/*		<ExploreIllustration className='exploreIllustration' />*/}
-					{/*	</div>*/}
-					{/*	<div className='home__pageSection--title' style={{border: '1px solid green'}}>Explore Data</div>*/}
-					{/*	<div id='explainExploreDiv'>*/}
-					{/*		<Text id='explainExplore'>Explore big data sources with an OData link. <br/> Generate and customize chart suggestions which can then be added a dashboard.</Text>*/}
-					{/*		<div className='spacerDiv'></div>*/}
-
-					{/*		/!*<div id='button__explore' onClick={() => props.handlePageType('explore')}>Explore</div>*!/*/}
-					{/*		/!*<Button id='button__explore' type="primary" htmlType="submit" shape='round' icon={<CompassOutlined />} onClick={() => props.handlePageType('explore')}>*!/*/}
-					{/*		/!*	Go Explore*!/*/}
-					{/*		/!*</Button>*!/*/}
-					{/*		<Button id='button__explore' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('explore')}>*/}
-					{/*			Go Explore*/}
-					{/*		</Button>*/}
-					{/*	</div>*/}
-					{/*</div>*/}
-					{/*<div className='section__block'>*/}
-					{/*	<div className='home__pageSection--title' >Visualize Data</div>*/}
-
-					{/*</div>*/}
-
-						{/*<div className='section__block'>*/}
-						{/*	<div className='home__pageSection--title' id='section___explore' style={{border: '1px solid green'}}>Explore Data</div>*/}
-						{/*	<div id='guideDivExplain' style={{border: '1px solid yellow'}}>*/}
-						{/*		<div className='guideDiv__innerContainer'>*/}
-						{/*			<div id='illustrationExploreDiv'>*/}
-						{/*				<ExploreIllustration className='exploreIllustration' />*/}
-						{/*			</div>*/}
-						{/*			<div id='explainExploreDiv'>*/}
-						{/*				<Text id='explainExplore'>Explore big data sources with an OData link. <br/> Generate and customize chart suggestions which can then be added a dashboard.</Text>*/}
-						{/*				<div className='spacerDiv'></div>*/}
-
-						{/*				/!*<div id='button__explore' onClick={() => props.handlePageType('explore')}>Explore</div>*!/*/}
-						{/*				/!*<Button id='button__explore' type="primary" htmlType="submit" shape='round' icon={<CompassOutlined />} onClick={() => props.handlePageType('explore')}>*!/*/}
-						{/*				/!*	Go Explore*!/*/}
-						{/*				/!*</Button>*!/*/}
-						{/*				<Button id='button__explore' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('explore')}>*/}
-						{/*					Go Explore*/}
-						{/*				</Button>*/}
-						{/*			</div>*/}
-						{/*		</div>*/}
-						{/*	</div>*/}
-						{/*</div>*/}
-						{/*<div className='section__block'>*/}
-						{/*	/!*<img src={grid} id='home__background'/>*!/*/}
-						{/*	<div className='home__pageSection--title' style={{marginTop: '70px', marginBottom: '160px'}}>Visualize Data</div>*/}
-						{/*	<div id='guideDivDashboards'>*/}
-						{/*		<div className='guideDiv__innerContainer'>*/}
-						{/*			<div id='illustrationDashboardsDiv'>*/}
-						{/*				<DashboardIllustration className='dashboardIllustration' />*/}
-						{/*			</div>*/}
-						{/*			<div id='explainDashboardsDiv'>*/}
-						{/*				/!*<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' icon={<WindowsOutlined />} onClick={() => props.handlePageType('dashboards')}>*!/*/}
-						{/*				/!*	View Dashboards*!/*/}
-						{/*				/!*</Button>*!/*/}
-						{/*				<Text id='explainDashboards'>Create a dashboard for all suggested charts or manually crafted visualizations.</Text>*/}
-						{/*				<div className='spacerDiv'></div>*/}
-						{/*				<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('dashboards')}>*/}
-						{/*					View Dashboards*/}
-						{/*				</Button>*/}
-						{/*			</div>*/}
-						{/*		</div>*/}
-						{/*	</div>*/}
-						{/*</div>*/}
-					{/*</div>*/}
 				</div>
 
-				{/*<div className='home__pageSection' id='home__visualizeDataSection' style={{marginTop: '-200px'}}>*/}
-				{/*	<img src={grid} id='home__background'/>*/}
-				{/*	<div className='home__pageSection--title' style={{marginTop: '70px', marginBottom: '160px'}}>Visualize Data</div>*/}
-				{/*	<div id='guideDivDashboards'>*/}
-				{/*		<div className='guideDiv__innerContainer'>*/}
-				{/*			<div id='illustrationDashboardsDiv'>*/}
-				{/*				<DashboardIllustration className='dashboardIllustration' />*/}
-				{/*			</div>*/}
-				{/*			<div id='explainDashboardsDiv'>*/}
-				{/*				/!*<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' icon={<WindowsOutlined />} onClick={() => props.handlePageType('dashboards')}>*!/*/}
-				{/*				/!*	View Dashboards*!/*/}
-				{/*				/!*</Button>*!/*/}
-				{/*				<Text id='explainDashboards'>Create a dashboard for all suggested charts or manually crafted visualizations.</Text>*/}
-				{/*				<div className='spacerDiv'></div>*/}
-				{/*				<Button id='button__dashboard' type="primary" htmlType="submit" shape='round' onClick={() => props.handlePageType('dashboards')}>*/}
-				{/*					View Dashboards*/}
-				{/*				</Button>*/}
-				{/*			</div>*/}
-				{/*		</div>*/}
-				{/*	</div>*/}
-				{/*</div>*/}
 			</Anime>
 		</div>
 		</>
