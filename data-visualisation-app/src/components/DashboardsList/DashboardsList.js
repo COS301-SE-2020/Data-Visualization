@@ -54,6 +54,7 @@ function HomePanelButton(props) {
         if (props.isAddButton) {
             return (
                 <div
+                    className='dashboardList__container--item'
                     style={{paddingTop: '100px', paddingLeft: '100px'}}
                     onClick={() => props.action()}>
                     <div className='panelLayout home-panel-add' id='button__addDashboards'>+</div>
@@ -62,8 +63,8 @@ function HomePanelButton(props) {
         } else {
             return (
                 <div
-                    className='panelLayout panelStyling'
-                    style={{...getSizeStyle(),  ...props.colour}}
+                    className='dashboardList__container--item panelLayout panelStyling'
+                    style={props.colour}
                     onClick={() => props.action()}>
                         <Title ellipsis level={(props.data.name.length < 14 ? 2 : (props.data.name.length > 20 ? 4 : 3))} style={{...getContentPositionStyle(), color: 'white'}}>{props.data.name}</Title>
                         <Paragraph ellipsis={{rows: 7}} style={ {...getContentPositionStyle1(), color: 'white'}} >{props.data.description}</Paragraph>
@@ -121,7 +122,7 @@ function DashboardsList(props) {
     }
 
     return (
-        <div className='content--padding'>
+        <div className='content--padding' id='dashboardList__container'>
 
             {isReady ?
                 <React.Fragment>
