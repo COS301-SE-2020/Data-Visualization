@@ -2,10 +2,31 @@
     
 }
 
-#login-div{
+#login-div{  
     position: absolute;
-    margin-left: 70vw;
+    float: right;
+    left: 91%;
 }
+
+@media only screen and (max-width: 1400px) {
+    #login-div{
+        left: 81%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    #login-div{
+        left: 71%;
+    }
+}
+
+@media only screen and (max-width: 440px) {
+    #login-div{
+        left: 61%;
+        width: 20%;
+    }
+}
+
 
 #loginButton{
     color: #818481;

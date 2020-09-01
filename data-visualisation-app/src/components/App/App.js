@@ -100,10 +100,11 @@ const globalMaterialUITheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
 	root: {
+		//background: 'wheat',
 		display: 'flex'
 	},
 	selected: {
-		color: 'white'
+		color: '#3EC195'
 	},
 	drawer: {
 		[theme.breakpoints.up('sm')]: {
@@ -161,11 +162,12 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(9),
 	},
 	typographyHeading: {
-		color: 'white',
+		color: '#3EC195',
 		fontSize: '1.5em',
+		marginRight: '100px', 
 	},
 	typographyLocationHeading: {
-		color: 'white',
+		color: '#969698',
 		fontSize: '1.1em',
 		paddingRight: '7px'
 	},
@@ -477,7 +479,7 @@ function App(props) {
 							backButton
 						}
 						
-						<Typography variant="h2" className={classes.typographyLocationHeading} noWrap children={
+						<Typography variant="h2" id = 'locationTitle'className={classes.typographyLocationHeading} noWrap children={
 							locationTitle
 						} >
 						</Typography>

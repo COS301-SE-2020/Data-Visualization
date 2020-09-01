@@ -35,13 +35,13 @@ function Home(props) {
 
 	return (
 		<>
-		{props.renderBackground && <BackgroundDots width={props.width} height={props.height}/>}
+		
 		<div className='outterDiv' bg={grid} >
 
 			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
 				<div id='header__title'>
-					<Title id='welcomeTitle'>Visualize Data</Title>
-					<Text id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link and visualize away!</Text>
+					<p id='welcomeTitle'>Visualize Data</p>
+					<p id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link and visualize away!</p>
 
 				</div>
 		
@@ -52,7 +52,7 @@ function Home(props) {
 				<div class = 'getStarted'>
 					<Title id='getStartedTitle' >Get Started</Title>
 					<Link className='ico animated'
-						to="id__explore"
+						to="home__getStartedSections"
 						spy={true}
 						smooth={true}
 						offset={-100}

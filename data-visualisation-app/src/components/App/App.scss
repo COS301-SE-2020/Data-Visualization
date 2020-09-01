@@ -49,3 +49,10 @@
   height: 100%;
   background-color:'#FFD1AE';
 }
+
+
+@media only screen and (max-width: 900px) {
+  #locationTitle{
+    display: none;
+  }
+}

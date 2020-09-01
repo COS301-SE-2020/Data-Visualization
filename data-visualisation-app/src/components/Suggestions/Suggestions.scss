@@ -17,31 +17,55 @@
 
 @mixin button__moreLikeThis--backgroundColor {
   background: rgb(117,48,154);
-  background: -moz-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
-  background: -webkit-linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
-  background: linear-gradient(97deg, rgba(117,48,154,1) 0%, rgba(89,163,224,1) 100%);
+  background: -moz-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
+  background: -webkit-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
+  background: linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
 }
 
 #moreLikeThisButton{
-  @include button__moreLikeThis--backgroundColor;
-  -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-  -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-  box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+  //@include button__moreLikeThis--backgroundColor;
+  background-color: #242424;
+    border: 1px solid #d8f3eb;
+    color: white;
   
   margin: 0;
-  top: 93%;
-  left: 57%;
+  top: 96%;
+  left: 91%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   position: fixed;
   border: none;
   transition: 0.3s;
-  opacity: 0.8;
+  font-weight: bold;
+
 }
-#moreLikeThisButton:hover{
+
+#moreLikeThisButton span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+#moreLikeThisButton span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+#moreLikeThisButton:hover span {
+  padding-right: 25px;
+}
+
+#moreLikeThisButton:hover span:after {
   opacity: 1;
+  right: 0;
 }
+
 
 @media only screen and (max-width: 600px) {
   #moreLikeThisButton{
@@ -76,6 +100,10 @@
   outline:none;
   margin-bottom: 15px;
   margin-right: 15px;
+  
+  background-color: #3EC195;
+  border: 1px solid #d8f3eb;
+  color: white;
 }
 
 #igaloading {
@@ -115,5 +143,10 @@
 }
 
 .suggestion:hover {
-  border-color: $color-border-hover;
+  //border-color: #3EC195;
 }
+
+
+
+
+

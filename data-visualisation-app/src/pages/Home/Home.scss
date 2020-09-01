@@ -1,11 +1,7 @@
 @import '../../globals/globals.scss';
 
 @mixin button__explore--backgroundColor {
-    background: rgb(117,48,154);
-    background: -moz-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-    background: -webkit-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-    background: linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
+  background: #3EC195;
 }
 
 @mixin button__dashboards--backgroundColor {
@@ -27,11 +23,11 @@
 }
 
 #header__title {
-    margin-top: 100px;
-    margin-left: 90px;
-    text-align: left;
+  margin-top: 100px;
+  margin-left: 90px;
+  text-align: left;
 
-    width: 700px;
+  width: 700px;
 }
 
 #header__graphic {
@@ -93,14 +89,16 @@
 }
 
 #welcomeTitle{
-    font-size: 9vh;
+
+  font-size: 9vh;
   font-family: 'Futura Md BT';
-  color: $color-primary;
+
   text-shadow: 4px 4px 14px rgba(0,0,0,0.18);
 }
 #welcomeText{
+ 
   font-size: 2.5vh;
-  color: $color-primary;
+ 
   text-shadow: 4px 4px 14px rgba(0,0,0,0.11);
 }
 
@@ -155,13 +153,13 @@
 }
 
 .home__getStartedSections {
-  //background-color: wheat;
+  background-color: #d8f3ea;
   margin-left: -10%;
   margin-top: 100px;
   padding-top: 150px;
   width: 130%;
-  height: 200vh;
-  border-radius: 30% 30% 0 0 / 10% 10% 0 0;
+  height: 100vh;
+  border-radius: 30% 30% 30% 30% / 10% 10% 10% 10%;
   overflow: hidden;
   display: flex;
   flex-wrap: wrap;
@@ -291,7 +289,6 @@
     -webkit-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     -moz-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
-
 
   font-size: 18px;
 

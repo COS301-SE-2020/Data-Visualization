@@ -80,7 +80,7 @@ class Entities extends React.Component {
       tempItem[entityName] = showAll;
       this.formRef.current.setFieldsValue(tempItem);
       if(showAll){
-        document.getElementById('card-'+entityName).style.boxShadow = 'inset 0px 0px 5px 0px rgba(0,0,0,0.75)';
+        document.getElementById('card-'+entityName).style.boxShadow = '0 2.8px 2.2px #3EC195,0 6.7px 5.3px #3EC195,0 1.5px 1px #3EC195,0 2.3px 1.9px #3EC195,0 4.8px 3.4px #3EC195,0 10px 8px #3EC195';
       }
       else{
         document.getElementById('card-'+entityName).style.boxShadow = '';
@@ -177,8 +177,8 @@ class Entities extends React.Component {
         </div>
       ) : null;
    
-
-      const mql = window.matchMedia('(max-width: 1800px)');
+      //1800px
+      const mql = window.matchMedia('(max-width: 1000px)');
       let mobileView = mql.matches;
 
       if (mobileView) {
@@ -236,7 +236,7 @@ class Entities extends React.Component {
                                  <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                                }
                                title={item.entityName}
-                               description={item.datasource}
+                               description={item.datasource.slice(item.datasource.length - 13)}
                              />
                              <div></div>
                            </Skeleton>
@@ -267,7 +267,7 @@ class Entities extends React.Component {
                 onFinish={this.onFinish} 
              >
               
-               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Datasources' style= {{width:'80%', margin: '0 auto', marginTop: '20px', backgroundColor: 'transparent'}} headStyle={{ border: 0, textAlign: 'center'}}>
                <Checkbox onChange={this.handleChange}  >Check All</Checkbox>
                <List
                  className='entitesList'
@@ -278,18 +278,17 @@ class Entities extends React.Component {
                  
                  renderItem={item => (
                    <Fragment>
-                       <Card.Grid className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', width:'32%'} } onClick={() => {
+                       <Card.Grid hoverable = {false} className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', marginLeft: '50px', width:'28%',  backgroundColor: 'white'}}  onClick={() => {
                           var tempItem = {};
                           tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);
 
                 
                           if(tempItem[item.entityName]  === false){                       
-                            document.getElementById('card-'+item.entityName).style.boxShadow = '';
-                              document.getElementById('card-'+item.entityName).style.border = '';
+                            document.getElementById('card-'+item.entityName).style.boxShadow  = '';
                            }
                           else{
-                            document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1), inset 0px 0px 0px 1px rgba(89,89,89,1)';
+                            document.getElementById('card-'+item.entityName).style.boxShadow  = '0 2.8px 2.2px #3EC195,0 6.7px 5.3px #3EC195,0 1.5px 1px #3EC195,0 2.3px 1.9px #3EC195,0 4.8px 3.4px #3EC195,0 10px 8px #3EC195';
                           }
                      
                         }} 
@@ -312,7 +311,7 @@ class Entities extends React.Component {
                                  <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                                }
                                title={item.entityName}
-                               description={item.datasource}
+                               description={item.datasource.slice(item.datasource.length - 13)}
                              />
                              <div></div>
                            </Skeleton>

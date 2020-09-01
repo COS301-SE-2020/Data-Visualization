@@ -221,8 +221,8 @@ class DataConnection extends React.Component {
           }}
         >
      
-          <Button shape = 'round' onClick={this.changeAddState} style ={{marginRight: '10px'}}>Add Connection</Button>
-          <Button type = 'primary' shape = 'round' onClick={this.next}>Next</Button>
+          <Button id = 'addConnetion__button' shape = 'round' onClick={this.changeAddState} style ={{marginRight: '10px'}}>Add Connection</Button>
+          <Button id = 'next__button' shape = 'round' onClick={this.next}>Next</Button>
           
     
           
@@ -239,7 +239,7 @@ class DataConnection extends React.Component {
           loadMore={loadMore}
           dataSource={list}
           renderItem={item => (
-            <Card hoverable>
+            <Card hoverable className = 'dataConnectionCard'>
             <List.Item
               key={item.id}
               actions={
