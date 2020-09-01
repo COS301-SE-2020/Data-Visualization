@@ -22,6 +22,7 @@
  * 14/08/2020	 Marco Lombaard		Suggestions now generate from metadata and do not require sample data
  * 14/08/2020	 Marco Lombaard		Renamed limitFields to setFields, notInExclusions to accepted
  * 14/08/2020	 Marco Lombaard		Moved constructOption to graphSuggesterController.js
+ * 01/09/2020	 Marco Lombaard		Added scaleFitnessTarget and a way to scale fitness for multiple characteristics
  *
  * Test Cases: none
  *
@@ -62,7 +63,11 @@ let graphSuggesterMaker = (function () {
 			this.fittestGraphType = null; //the target graph type(will have the lowest fitness value, i.e. best fitness)
 			this.fittestFieldType = null; //the target field type(will have the lowest fitness value, i.e. best fitness)
 			this.mutationRate = 0.3; //the rate at which the population should mutate
-			//should we initialise these?
+
+			this.graphTypeWeights = [];	//the weights for each of the graph types
+			this.fieldTypeWeights = [];	//the weights for each of the field types
+
+			this.defaultWeight = 10;
 
 			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter' ]);
 			//TODO 'parallel', 'candlestick', 'map', 'funnel', 'custom'
@@ -75,11 +80,11 @@ let graphSuggesterMaker = (function () {
 		 */
 		setGraphTypes(newTypes) {
 			this.graphTypes = [];
+			this.graphTypeWeights = [];
 			for (let i = 0; i < newTypes.length; i++) {
 				this.graphTypes[i] = newTypes[i];
+				this.graphTypeWeights[newTypes[i]] = this.defaultWeight;
 			}
-
-			//TODO maybe add some way to carry over/reset weights?
 		}
 
 		/**
@@ -118,6 +123,9 @@ let graphSuggesterMaker = (function () {
 					this.fieldTypes[typeKeys[i]] = [];
 					for (let j = 0; j < types[typeKeys[i]].length; j++) {
 						this.fieldTypes[typeKeys[i]][j] = types[typeKeys[i]][j]; //make a deep copy
+						if (!this.fieldTypeWeights[types[typeKeys[i]][j]]) {
+							this.fieldTypeWeights[types[typeKeys[i]][j]] = this.defaultWeight;
+						}
 					}
 				}
 			}
@@ -265,6 +273,18 @@ let graphSuggesterMaker = (function () {
 			if (chromosome[2] !== this.fittestFieldType) {
 				//check if field type is the best
 				fitness += penalty;
+			}
+
+			if (this.fieldTypeWeights[chromosome[2]]) {	//if the field type has a weight
+				fitness+=this.fieldTypeWeights[chromosome[2]]; //add the weight
+			} else {
+				fitness+=this.defaultWeight; //add a default weight
+			}
+
+			if (this.graphTypeWeights[chromosome[1]]) { //if the graph type has a weight
+				fitness+=this.graphTypeWeights[chromosome[1]]; //add the weight
+			} else {
+				fitness+=this.defaultWeight; //add a default weight
 			}
 
 			return fitness;
@@ -427,6 +447,36 @@ let graphSuggesterMaker = (function () {
 		changeFitnessTarget(graphType, fieldType) {
 			this.fittestGraphType = graphType;
 			this.fittestFieldType = fieldType;
+			this.scaleFitnessTarget(graphType, fieldType);
+		}
+
+		/**
+		 * This function scales the fitness values so that all characteristics have a fitness value
+		 * @param graphType the graphType to make fitter
+		 * @param fieldType the fieldType to make fitter
+		 */
+		scaleFitnessTarget(graphType, fieldType) {
+			this.graphTypeWeights[graphType]--;	//better fitness
+			if (this.graphTypeWeights[graphType] === -1) {//if we go below 0 then everyone has to move up
+				let keys = Object.keys(this.graphTypeWeights);
+
+				for (let i = 0; i < keys.length; i++) {	//everyone else gets worse fitness(if >10 fitness targets are used this is necessary)
+					this.graphTypeWeights[keys[i]]++;	//set to worse fitness(best fitness will be 0, the rest will move down)
+				}
+			}
+
+			if (!this.fieldTypeWeights[fieldType]) { //if we haven't encountered this type yet
+				this.fieldTypeWeights[fieldType] = this.defaultWeight;
+			}
+
+			this.fieldTypeWeights[fieldType]--;//better fitness
+			if (this.fieldTypeWeights[fieldType] === -1) {//if we go below 0 then everyone has to move up
+				let keys = Object.keys(this.fieldTypeWeights);
+
+				for (let i = 0; i < keys.length; i++) { //everyone else gets worse fitness(if >10 fitness targets are used this is necessary)
+					this.fieldTypeWeights[keys[i]]++;	//set to worse fitness(best fitness will be 0, the rest will move down)
+				}
+			}
 		}
 
 		/**

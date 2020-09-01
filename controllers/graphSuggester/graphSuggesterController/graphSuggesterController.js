@@ -150,6 +150,8 @@ class GraphSuggesterController {
 	}
 
 	/**
+	 * This function sets the entities that can be used in suggestion generation
+	 * @param entities the entities that can be used in suggestion generation
 	 */
 	static limitEntities(entities) {
 		this.acceptedEntities = {};
