@@ -82,7 +82,7 @@ import {useGlobalState} from '../../globals/Store';
 
 let w = window.innerWidth;
 let h = window.innerHeight;
-const drawerWidth = 240;
+var drawerWidth = 240;
 
 const globalMaterialUITheme = createMuiTheme({
 	typography: {
@@ -104,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex'
 	},
 	home: {
-		//background: '#03befc', //#03befc
+		background: '#3EC195', //#03befc
 		display: 'flex'
 	},
 	selected: {
@@ -119,6 +119,11 @@ const useStyles = makeStyles((theme) => ({
 	appBar: {
 		[theme.breakpoints.up('sm')]: {
 			width: `calc(100% - ${drawerWidth}px)`,
+			marginLeft: drawerWidth,
+		},
+	},
+	appBarNotLoggedIn: {
+		[theme.breakpoints.up('sm')]: {
 			marginLeft: drawerWidth,
 		},
 	},
@@ -457,15 +462,13 @@ function App(props) {
 
 	return (
 	
-
-		
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 
 		<div className={`box ${pageType === 'home' ? classes.home : classes.root}`}>
 				<CssBaseline />
 				
-				<AppBar  position="fixed" className={classes.appBar} style={{ background: '' }}>
+				<AppBar  position="fixed"style={{ background: '' }}  className={`box ${!request.user.isLoggedIn ? classes.appBarNotLoggedIn : classes.appBar}`} >
 					<Toolbar>
 						<IconButton
 							color="inherit"
@@ -504,45 +507,49 @@ function App(props) {
 					</Toolbar>
 				</AppBar> : 
 				
-				
-
-				<nav className={classes.drawer} aria-label="mailbox folders">
-					{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-					<Hidden smUp implementation="css">
-						<Drawer
-							container={container}
-							variant="temporary"
-							anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-							open={mobileOpen}
-							onClose={handleDrawerToggle}
-							classes={{
-								paper: classes.drawerPaper,
-							}}
-							ModalProps={{
-								keepMounted: true, // Better open performance on mobile.
-							}}
-						>
-							{drawer}
-						</Drawer>
-					</Hidden>
-					<Hidden xsDown implementation="css">
-						<Drawer
-							classes={{
-								paper: classes.drawerPaper,
-							}}
-							variant="permanent"
-							open
-						>
-							{drawer}
-                            <div style={{height: '100vh', position: 'relative'}}>
-								<img src={constant.APPLICATION_LOGO_GREY} style={{height: '120px', position: 'absolute', bottom: '80px', left: '24%'}} alt="logo" className={classes.logo} />
-								<div style={{position: 'absolute', bottom: '20px', left: '18%', textAlign: 'center', color: '#535355'}}>
-                                    Brought to you by <br/> Doofenshmirtz Evil, Inc.
+				{request.user.isLoggedIn ? 
+					
+					<nav className={classes.drawer} aria-label="mailbox folders">
+						{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+						<Hidden smUp implementation="css">
+							<Drawer
+								container={container}
+								variant="temporary"
+								anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+								open={mobileOpen}
+								onClose={handleDrawerToggle}
+								classes={{
+									paper: classes.drawerPaper,
+								}}
+								ModalProps={{
+									keepMounted: true, // Better open performance on mobile.
+								}}
+							>
+								{drawer}
+							</Drawer>
+						</Hidden>
+						<Hidden xsDown implementation="css">
+							<Drawer
+								classes={{
+									paper: classes.drawerPaper,
+								}}
+								variant="permanent"
+								open
+							>
+								{drawer}
+								<div style={{height: '100vh', position: 'relative'}}>
+									<img src={constant.APPLICATION_LOGO_GREY} style={{height: '120px', position: 'absolute', bottom: '80px', left: '24%'}} alt="logo" className={classes.logo} />
+									<div style={{position: 'absolute', bottom: '20px', left: '18%', textAlign: 'center', color: '#535355'}}>
+										Brought to you by <br/> Doofenshmirtz Evil, Inc.
+									</div>
 								</div>
-                            </div>
-						</Drawer>
-					</Hidden>
-				</nav>
+							</Drawer>
+						</Hidden>
+					</nav>
+					:
+					null
+        		}
+
 
 				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : (pageType === 'home' ? {padding: '0', overflow: 'hidden'} : {}))} ref={targetRef}>
 

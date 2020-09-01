@@ -248,7 +248,7 @@ class Entities extends React.Component {
 
                <Form.Item>
               
-                 <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                 <Button  className={!request.user.isLoggedIn  ? 'button-explore-dataPage-notLoggedIn' : 'button-explore-dataPage'}  type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
                    Generate Suggestions
                  </Button>
                 
