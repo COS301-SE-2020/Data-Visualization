@@ -64,7 +64,7 @@ let graphSuggesterMaker = (function () {
 			this.mutationRate = 0.3; //the rate at which the population should mutate
 			//should we initialise these?
 
-			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter']);
+			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter' ]);
 			//TODO 'parallel', 'candlestick', 'map', 'funnel', 'custom'
 		}
 
@@ -149,7 +149,7 @@ let graphSuggesterMaker = (function () {
 
 				graphType = this.graphTypes[index]; //select a random graph type
 				fieldType = types[titleIndex]; //obtain the type of the selected field
-				chromosomes[i] = [titleIndex, graphType, fieldType]; //set up the chromosome properties
+				chromosomes[i] = [ titleIndex, graphType, fieldType ]; //set up the chromosome properties
 				//console.log(i+': ', chromosomes[i]);
 			}
 			//console.log('Options: ', options);
@@ -283,35 +283,35 @@ let graphSuggesterMaker = (function () {
 			let temp; //variable used in swapping
 
 			switch (degree) {
-				case 0:
-					temp = parent1[1]; //swap graph types
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					break;
+			case 0:
+				temp = parent1[1]; //swap graph types
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				break;
 
-				case 1:
-					temp = parent1[2]; //swap fields(and therefore their types)
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 1:
+				temp = parent1[2]; //swap fields(and therefore their types)
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				case 2:
-					temp = parent1[1]; //swap all attributes(basically a reproduction)
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					temp = parent1[2];
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 2:
+				temp = parent1[1]; //swap all attributes(basically a reproduction)
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				temp = parent1[2];
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				default:
-					break; //should never reach this, default to reproduction
+			default:
+				break; //should never reach this, default to reproduction
 			}
 
 			//TODO consider decoupling representation from crossover, as suggested in calculateFitness
@@ -443,8 +443,6 @@ let graphSuggesterMaker = (function () {
 		 * @return {boolean} true if the field is in accepted fields, false otherwise
 		 */
 		accepted(name) {
-			//console.log(this.acceptedFields);
-			//console.log(name);
 			if (this.acceptedFields.length === 0) {
 				return true;
 			}
@@ -461,7 +459,8 @@ let graphSuggesterMaker = (function () {
 		 * @return {graphSuggesterAI} the AI that generates suggestions.
 		 */
 		getInstance: function () {
-			if (instance === null) {
+			// eslint-disable-next-line eqeqeq
+			if (instance == null) {
 				instance = new graphSuggesterAI();
 				instance.constructor = null;
 			}
