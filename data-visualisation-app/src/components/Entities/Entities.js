@@ -80,9 +80,11 @@ class Entities extends React.Component {
       tempItem[entityName] = showAll;
       this.formRef.current.setFieldsValue(tempItem);
       if(showAll){
+        document.getElementById('card-'+entityName).style.backgroundColor = '#EAFFF5';
         document.getElementById('card-'+entityName).style.boxShadow = '0 -2.8px 2.2px #3EC195,0 6.7px 5.3px #3EC195,0 -1.5px 1px #3EC195,0 2.3px 1.9px #3EC195,0 -4.8px 3.4px #3EC195,0 10px 8px #3EC195';
       }
       else{
+        document.getElementById('card-'+entityName).style.backgroundColor = '';
         document.getElementById('card-'+entityName).style.boxShadow = '';
       }
      
@@ -278,7 +280,7 @@ class Entities extends React.Component {
                  
                  renderItem={item => (
                    <Fragment>
-                       <Card.Grid hoverable = {false} className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', marginLeft: '50px', width:'28%',  backgroundColor: 'white'}}  onClick={() => {
+                       <Card.Grid hoverable = {false} className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', marginLeft: '50px', width:'28%',  backgroundColor: 'transparent'}}  onClick={() => {
                           var tempItem = {};
                           tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);
@@ -286,8 +288,10 @@ class Entities extends React.Component {
                 
                           if(tempItem[item.entityName]  === false){                       
                             document.getElementById('card-'+item.entityName).style.boxShadow  = '';
+                            document.getElementById('card-'+item.entityName).style.backgroundColor = '';
                            }
                           else{
+                            document.getElementById('card-'+item.entityName).style.backgroundColor = '#EAFFF5';
                             document.getElementById('card-'+item.entityName).style.boxShadow  = '0 -2.8px 2.2px #3EC195,0 6.7px 5.3px #3EC195,0 -1.5px 1px #3EC195,0 2.3px 1.9px #3EC195,0 -4.8px 3.4px #3EC195,0 10px 8px #3EC195';
                           }
                      

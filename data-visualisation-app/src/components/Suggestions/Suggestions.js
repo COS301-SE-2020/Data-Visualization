@@ -458,11 +458,12 @@ function Suggestions(props) {
                                                 form.setFieldsValue(item);
                                               
                                                 if(item[index]  === false){
-                                                    
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '';
+                                                    //document.getElementById('chartDiv-'+index).style.boxShadow = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0 -2.8px 2.2px #1f604b,0 6.7px 5.3px #1f604b,0 -1.5px 1px #1f604b,0 2.3px 1.9px #1f604b,0 -4.8px 3.4px #1f604b,0 10px 8px #1f604b';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#30896B';
+                                                    //document.getElementById('chartDiv-'+index).style.boxShadow = '0 2.8px 2.2px #242424,0 6.7px 5.3px #242424,0 1.5px 1px #242424,0 2.3px 1.9px #242424,0 4.8px 3.4px #242424,0 10px 8px #242424';
                                                 }
  
                                                 }}>

@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex'
 	},
 	suggestions: {
-		background: '#3EC195', //#03befc
+		background: 'white', //#03befc
 		minHeight: '100%',
   		minWidth: '1024px',
 	
@@ -480,7 +480,7 @@ function App(props) {
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 
-		<div className={`box ${pageType === 'home' ? classes.home : exploreStage === 'suggestions' ? classes.suggestions : classes.root}`}>
+		<div className={`box ${pageType === 'home' ? classes.home : exploreStage === 'suggestions' ? classes.root : classes.root}`}>
 				<CssBaseline />
 				
 				<AppBar  position="fixed"style={{ background: '' }}  className={`box ${!request.user.isLoggedIn ? classes.appBarNotLoggedIn : classes.appBar}`} >
