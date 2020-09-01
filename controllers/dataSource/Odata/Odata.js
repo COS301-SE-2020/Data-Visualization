@@ -101,6 +101,9 @@ class Odata {
 		let links; //links to other "tables" associated with this one
 		let associations = {}; //associated tables - used in suggestion generation
 		let types = {}; //the data types of the fields
+		let keyRefs = {};
+		let primsArray = [];
+		let prims = {};
 
 		for (let i = 0; i < entityTypes.length; i++) {
 			//step through each table and find their items
@@ -110,6 +113,12 @@ class Odata {
 
 			associations[index] = []; //initialise array
 			types[index] = []; //initialise array
+
+			keyRefs = entityTypes[i].getElementsByTagName('Key');
+
+			for (let j = 0; j < keyRefs.length; j++) {
+				primsArray.push(keyRefs[j].getElementsByTagName('PropertyRef')[0].attributes.getNamedItem('Name').value);
+			}
 
 			children = entityTypes[i].getElementsByTagName('Property');
 
@@ -131,8 +140,9 @@ class Odata {
 		for (let i = 0; i < entitySets.length; i++) {
 			//not to be confused with 'items', which uses entityTypes. This uses entitySets
 			sets.push(entitySets[i].attributes.getNamedItem('Name').value);
+			prims[sets[i]] = primsArray[i];
 		}
-		return { items, associations, sets, types };
+		return { items, associations, sets, types, prims };
 	}
 
 	/**
