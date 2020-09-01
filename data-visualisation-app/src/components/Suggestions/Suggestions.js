@@ -1,4 +1,3 @@
-
 /**
  *   @file Suggestions.js
  *   Project: Data Visualisation Generator
@@ -31,8 +30,6 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
 import EditChart from '../EditChart';
-
-
 
 const renderChart = {index: -1};
 
@@ -165,7 +162,7 @@ function Suggestions(props) {
     const [dashboardSelection, setDashboardSelection] = useState([]);
     const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
     const editChartParameters = useRef({});
-    const newDashboardSelection = useRef(null);
+    const newDashboardSelection = useRef([]);
     const newCurrentCharts = useRef(null);
     const [getToReload, setGetToReload] = useState(false);
     const [filterState, setFilterState] = useState(false);
@@ -189,7 +186,6 @@ function Suggestions(props) {
     };
 
     const moreLikeThis = values =>{
-
 
         request.user.fittestGraphs = [];
         
@@ -215,115 +211,121 @@ function Suggestions(props) {
         // console.log(selectedFields);
         // console.log(fittestGraphs);
 
+        let newDashbhoardList;
+        let requestCharts = function() {
 
-        if (request.user.isLoggedIn) {
-            request.dashboard.list(function() {
-                let newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
-                    return dashboarditem.name;
-                });
-                setDashboardList(newDashbhoardList);
-            });
-        }
+            let shouldcontinue = true;
 
-        let shouldcontinue = true;
-        
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
 
+                    (async function () {
+                        for (let r = 0; shouldcontinue && r < 4; r++) {
+                            await new Promise(function (resolve) {
+                                request.suggestions.chart( function (result) {
+                                    if (result === constants.RESPONSE_CODES.SUCCESS) {
+                                        // console.log('graph');
+                                        resolve(request.cache.suggestions.graph.current);
+                                    } else {
+                                        // todo: handle network error
+                                        // resolve(request.cache.suggestions.graph.current);
+                                        console.debug('errrr');
+                                    }
+                                });
+                            }).then(function (fetchedGraph) {
+                                request.cache.suggestions.graph.list.push(fetchedGraph);
+                                /**
+                                 *   Add newly an empty list of dashboard owners for the new chart.
+                                 */
 
-                (async function () {
-                    for (let r = 0; shouldcontinue && r < 4; r++) {
-                        await new Promise(function (resolve) {
-                            request.suggestions.chart( function (result) {
-                                if (result === constants.RESPONSE_CODES.SUCCESS) {
-                                    // console.log('graph');
-                                    resolve(request.cache.suggestions.graph.current);
-                                } else {
-                                    // todo: handle network error
-                                    resolve(request.cache.suggestions.graph.current);
-                                }
-                            });
-                        }).then(function (fetchedGraph) {
-                            request.cache.suggestions.graph.list.push(fetchedGraph);
-                            /**
-                             *   Add newly an empty list of dashboard owners for the new chart.
-                             */
-        
-                            if (request.user.isLoggedIn) {
-                                if (dashboardSelection.length === 0) {
-                                    newDashboardSelection.current = [];
-                                    for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
-                                        newDashboardSelection.current.push(dashboardList.map(() => {
+                                if (request.user.isLoggedIn) {
+                                    if (dashboardSelection.length === 0) {
+                                        newDashboardSelection.current = [];
+                                        for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
+                                            newDashboardSelection.current.push(newDashbhoardList.map(() => {
+                                                return false;
+                                            }));
+                                        }
+                                    } else {
+                                        newDashboardSelection.current.push(newDashbhoardList.map(() => {
                                             return false;
                                         }));
                                     }
+                                }
+
+                                setDashboardSelection(newDashboardSelection.current);
+                                /**
+                                 *   Add newly fetched chart to list.
+                                 */
+                                if (newCurrentCharts.current == null) {
+                                    newCurrentCharts.current = request.cache.suggestions.graph.list.map((options, index) => {
+                                        let newchart = {
+                                            options: null
+                                        };
+                                        newchart.options = JSON.parse(JSON.stringify(options));
+                                        if (newchart.options.title && newchart.options.title.text) {
+                                            newchart.title = newchart.options.title.text;
+                                            newchart.options.title.text = '';
+                                        }
+                                        return newchart;
+                                    });
                                 } else {
-                                    newDashboardSelection.current.push(dashboardList.map(() => {
-                                        return false;
-                                    }));
-                                }
-                            }
-        
-                            setDashboardSelection(newDashboardSelection.current);
-                            /**
-                             *   Add newly fetched chart to list.
-                             */
-                            if (newCurrentCharts.current == null) {
-                                newCurrentCharts.current = request.cache.suggestions.graph.list.map((options, index) => {
-                                    let newchart = {
+                                    newCurrentCharts.current.push({
                                         options: null
-                                    };
-                                    newchart.options = JSON.parse(JSON.stringify(options));
-                                    if (newchart.options.title && newchart.options.title.text) {
-                                        newchart.title = newchart.options.title.text;
-                                        newchart.options.title.text = '';
+                                    });
+
+                                    newCurrentCharts.current[newCurrentCharts.current.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
+                                    if (fetchedGraph.title && fetchedGraph.title.text) {
+                                        newCurrentCharts.current[newCurrentCharts.current.length-1].title = fetchedGraph.title.text;
+                                        newCurrentCharts.current[newCurrentCharts.current.length-1].options.title.text = '';
                                     }
-                                    return newchart;
-                                });
-                            } else {
-                                newCurrentCharts.current.push({
-                                    options: null
-                                });
-        
-                                newCurrentCharts.current[newCurrentCharts.current.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
-                                if (fetchedGraph.title && fetchedGraph.title.text) {
-                                    newCurrentCharts.current[newCurrentCharts.current.length-1].title = fetchedGraph.title.text;
-                                    newCurrentCharts.current[newCurrentCharts.current.length-1].options.title.text = '';
                                 }
-                            }
-        
-                            setCurrentCharts(newCurrentCharts.current);
-                            setGetToReload(true);
-                            setGetToReload(false);
-        
-                            if (!loadedFirst)
-                                setLoadedFirst(true);
-        
-                        });
-                    }
-                })().then(function () {
-                    setLoading(false);
-                });
+
+                                setCurrentCharts(newCurrentCharts.current);
+                                setGetToReload(true);
+                                setGetToReload(false);
+
+                                if (!loadedFirst)
+                                    setLoadedFirst(true);
+
+                            });
+                        }
+                    })().then(function () {
+                        setLoading(false);
+                    });
                 } else {
                     // todo: handle network error
                 }
             });
+        };
+
+        if (request.user.isLoggedIn) {
+
+            request.dashboard.list(function() {
+                newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
+                    return dashboarditem.name;
+                });
+
+                setDashboardList(newDashbhoardList);
+
+                requestCharts();
+            });
+        } else {
+            requestCharts();
+        }
 
     
     };
 
-    
-    
-
 
     useEffect(() => {
 
-       if (props.newPage)
-           request.cache.suggestions.graph.list = [];
+        if (props.newPage)
+            request.cache.suggestions.graph.list = [];
+
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
-        
-        
-        
+
+
     }, []);
 
     // if(filterState === false){
@@ -458,11 +460,9 @@ function Suggestions(props) {
                                                 if(item[index]  === false){
                                                     
                                                     document.getElementById('chartDiv-'+index).style.boxShadow = '';
-                                                    document.getElementById('chartDiv-'+index).style.border = '';
                                                 }
                                                 else{
                                                     document.getElementById('chartDiv-'+index).style.boxShadow = '0 2.8px 2.2px #c4ede1 ,0 6.7px 5.3px #c4ede1 ,0 1.5px 1px #c4ede1 ,0 2.3px 1.9px #c4ede1 ,0 4.8px 3.4px #c4ede1 ,0 10px 8px #c4ede1 ';
-                                                    
                                                 }
  
                                                 }}>
@@ -486,7 +486,7 @@ function Suggestions(props) {
                     </Grid>
                     </Form>
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}><span>More Like This </span></Button>
+                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like This</Button>
                     <main>
                         {
                             filterState ?
