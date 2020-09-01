@@ -100,7 +100,11 @@ const globalMaterialUITheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		//background: 'wheat',
+		//background: '',
+		display: 'flex'
+	},
+	home: {
+		//background: '#03befc', //#03befc
 		display: 'flex'
 	},
 	selected: {
@@ -458,7 +462,7 @@ function App(props) {
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 
-			<div className={classes.root}>
+		<div className={`box ${pageType === 'home' ? classes.home : classes.root}`}>
 				<CssBaseline />
 				
 				<AppBar  position="fixed" className={classes.appBar} style={{ background: '' }}>
