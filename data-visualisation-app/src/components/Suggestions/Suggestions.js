@@ -216,92 +216,93 @@ function Suggestions(props) {
                     return dashboarditem.name;
                 });
                 setDashboardList(newDashbhoardList);
+
+                let shouldcontinue = true;
+
+                request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
+                    if (result === constants.RESPONSE_CODES.SUCCESS) {
+
+
+                        (async function () {
+                            for (let r = 0; shouldcontinue && r < 4; r++) {
+                                await new Promise(function (resolve) {
+                                    request.suggestions.chart( function (result) {
+                                        if (result === constants.RESPONSE_CODES.SUCCESS) {
+                                            // console.log('graph');
+                                            resolve(request.cache.suggestions.graph.current);
+                                        } else {
+                                            // todo: handle network error
+                                            resolve(request.cache.suggestions.graph.current);
+                                        }
+                                    });
+                                }).then(function (fetchedGraph) {
+                                    request.cache.suggestions.graph.list.push(fetchedGraph);
+                                    /**
+                                     *   Add newly an empty list of dashboard owners for the new chart.
+                                     */
+
+                                    if (request.user.isLoggedIn) {
+                                        if (dashboardSelection.length === 0) {
+                                            newDashboardSelection.current = [];
+                                            for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
+                                                newDashboardSelection.current.push(dashboardList.map(() => {
+                                                    return false;
+                                                }));
+                                            }
+                                        } else {
+                                            newDashboardSelection.current.push(dashboardList.map(() => {
+                                                return false;
+                                            }));
+                                        }
+                                    }
+
+                                    setDashboardSelection(newDashboardSelection.current);
+                                    /**
+                                     *   Add newly fetched chart to list.
+                                     */
+                                    if (newCurrentCharts.current == null) {
+                                        newCurrentCharts.current = request.cache.suggestions.graph.list.map((options, index) => {
+                                            let newchart = {
+                                                options: null
+                                            };
+                                            newchart.options = JSON.parse(JSON.stringify(options));
+                                            if (newchart.options.title && newchart.options.title.text) {
+                                                newchart.title = newchart.options.title.text;
+                                                newchart.options.title.text = '';
+                                            }
+                                            return newchart;
+                                        });
+                                    } else {
+                                        newCurrentCharts.current.push({
+                                            options: null
+                                        });
+
+                                        newCurrentCharts.current[newCurrentCharts.current.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
+                                        if (fetchedGraph.title && fetchedGraph.title.text) {
+                                            newCurrentCharts.current[newCurrentCharts.current.length-1].title = fetchedGraph.title.text;
+                                            newCurrentCharts.current[newCurrentCharts.current.length-1].options.title.text = '';
+                                        }
+                                    }
+
+                                    setCurrentCharts(newCurrentCharts.current);
+                                    setGetToReload(true);
+                                    setGetToReload(false);
+
+                                    if (!loadedFirst)
+                                        setLoadedFirst(true);
+
+                                });
+                            }
+                        })().then(function () {
+                            setLoading(false);
+                        });
+                    } else {
+                        // todo: handle network error
+                    }
+                });
+
             });
         }
-
-        let shouldcontinue = true;
-        
-            request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
-                if (result === constants.RESPONSE_CODES.SUCCESS) {
-
-
-                (async function () {
-                    for (let r = 0; shouldcontinue && r < 4; r++) {
-                        await new Promise(function (resolve) {
-                            request.suggestions.chart( function (result) {
-                                if (result === constants.RESPONSE_CODES.SUCCESS) {
-                                    // console.log('graph');
-                                    resolve(request.cache.suggestions.graph.current);
-                                } else {
-                                    // todo: handle network error
-                                    resolve(request.cache.suggestions.graph.current);
-                                }
-                            });
-                        }).then(function (fetchedGraph) {
-                            request.cache.suggestions.graph.list.push(fetchedGraph);
-                            /**
-                             *   Add newly an empty list of dashboard owners for the new chart.
-                             */
-        
-                            if (request.user.isLoggedIn) {
-                                if (dashboardSelection.length === 0) {
-                                    newDashboardSelection.current = [];
-                                    for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
-                                        newDashboardSelection.current.push(dashboardList.map(() => {
-                                            return false;
-                                        }));
-                                    }
-                                } else {
-                                    newDashboardSelection.current.push(dashboardList.map(() => {
-                                        return false;
-                                    }));
-                                }
-                            }
-        
-                            setDashboardSelection(newDashboardSelection.current);
-                            /**
-                             *   Add newly fetched chart to list.
-                             */
-                            if (newCurrentCharts.current == null) {
-                                newCurrentCharts.current = request.cache.suggestions.graph.list.map((options, index) => {
-                                    let newchart = {
-                                        options: null
-                                    };
-                                    newchart.options = JSON.parse(JSON.stringify(options));
-                                    if (newchart.options.title && newchart.options.title.text) {
-                                        newchart.title = newchart.options.title.text;
-                                        newchart.options.title.text = '';
-                                    }
-                                    return newchart;
-                                });
-                            } else {
-                                newCurrentCharts.current.push({
-                                    options: null
-                                });
-        
-                                newCurrentCharts.current[newCurrentCharts.current.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
-                                if (fetchedGraph.title && fetchedGraph.title.text) {
-                                    newCurrentCharts.current[newCurrentCharts.current.length-1].title = fetchedGraph.title.text;
-                                    newCurrentCharts.current[newCurrentCharts.current.length-1].options.title.text = '';
-                                }
-                            }
-        
-                            setCurrentCharts(newCurrentCharts.current);
-                            setGetToReload(true);
-                            setGetToReload(false);
-        
-                            if (!loadedFirst)
-                                setLoadedFirst(true);
-        
-                        });
-                    }
-                })().then(function () {
-                    setLoading(false);
-                });
-                } else {
-                    // todo: handle network error
-                }
-            });
 
     
     };
