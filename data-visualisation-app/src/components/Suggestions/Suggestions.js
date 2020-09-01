@@ -162,7 +162,7 @@ function Suggestions(props) {
     const [dashboardSelection, setDashboardSelection] = useState([]);
     const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
     const editChartParameters = useRef({});
-    const newDashboardSelection = useRef(null);
+    const newDashboardSelection = useRef([]);
     const newCurrentCharts = useRef(null);
     const [getToReload, setGetToReload] = useState(false);
     const [filterState, setFilterState] = useState(false);
@@ -209,21 +209,13 @@ function Suggestions(props) {
         // console.log(selectedFields);
         // console.log(fittestGraphs);
 
-
-        if (request.user.isLoggedIn) {
-            request.dashboard.list(function() {
-                let newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
-                    return dashboarditem.name;
-                });
-                setDashboardList(newDashbhoardList);
-
-            });
+        let newDashbhoardList;
+        let requestCharts = function() {
 
             let shouldcontinue = true;
 
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
-
 
                     (async function () {
                         for (let r = 0; shouldcontinue && r < 4; r++) {
@@ -234,7 +226,8 @@ function Suggestions(props) {
                                         resolve(request.cache.suggestions.graph.current);
                                     } else {
                                         // todo: handle network error
-                                        resolve(request.cache.suggestions.graph.current);
+                                        // resolve(request.cache.suggestions.graph.current);
+                                        console.debug('errrr');
                                     }
                                 });
                             }).then(function (fetchedGraph) {
@@ -247,12 +240,12 @@ function Suggestions(props) {
                                     if (dashboardSelection.length === 0) {
                                         newDashboardSelection.current = [];
                                         for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
-                                            newDashboardSelection.current.push(dashboardList.map(() => {
+                                            newDashboardSelection.current.push(newDashbhoardList.map(() => {
                                                 return false;
                                             }));
                                         }
                                     } else {
-                                        newDashboardSelection.current.push(dashboardList.map(() => {
+                                        newDashboardSelection.current.push(newDashbhoardList.map(() => {
                                             return false;
                                         }));
                                     }
@@ -302,23 +295,35 @@ function Suggestions(props) {
                     // todo: handle network error
                 }
             });
+        };
+
+        if (request.user.isLoggedIn) {
+
+            request.dashboard.list(function() {
+                newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
+                    return dashboarditem.name;
+                });
+
+                setDashboardList(newDashbhoardList);
+
+                requestCharts();
+            });
+        } else {
+            requestCharts();
         }
 
     
     };
 
-    
-    
-
 
     useEffect(() => {
 
-       if (props.newPage)
-           request.cache.suggestions.graph.list = [];
+        if (props.newPage)
+            request.cache.suggestions.graph.list = [];
+
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
-        
-        
-        
+
+
     }, []);
 
     // if(filterState === false){
