@@ -462,7 +462,7 @@ function Suggestions(props) {
                                                     document.getElementById('chartDiv-'+index).style.boxShadow = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0 2.8px 2.2px #c4ede1 ,0 6.7px 5.3px #c4ede1 ,0 1.5px 1px #c4ede1 ,0 2.3px 1.9px #c4ede1 ,0 4.8px 3.4px #c4ede1 ,0 10px 8px #c4ede1 ';
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0 -2.8px 2.2px #3EC195,0 6.7px 5.3px #3EC195,0 -1.5px 1px #3EC195,0 2.3px 1.9px #3EC195,0 -4.8px 3.4px #3EC195,0 10px 8px #3EC195';
                                                 }
  
                                                 }}>
