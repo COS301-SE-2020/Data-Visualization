@@ -17,7 +17,7 @@
  * 11/08/2020	Marco Lombaard						 Added the stringsToGraphData function
  * 14/08/2020	Marco Lombaard						 Modified getSuggestion to only need metadata for suggestion generation
  * 18/08/2020	Marco Lombaard						 Modified stringsToGraphData to return a 2D array object
- * 18/08/2020	Marco Lombaard						Added boolsToGraphData and make1DArray functions
+ * 18/08/2020	Marco Lombaard						 Added boolsToGraphData and make1DArray functions
  *
  * Test Cases: none
  *
@@ -194,13 +194,12 @@ class RestController {
 					error && error(err);
 				});
 		} catch (err) {
-			error && error(err);
+			error && error({error: err, status: 500});
 		}
 	}
 
 	/**
 	 * This function gets suggestions based off of the source provided
-	 * @param src the source that is requested to be used to generate a suggestion
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
@@ -223,7 +222,7 @@ class RestController {
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
-				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
+				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' , status: 500});
 			} else if (!suggestion) {
 				done({});
 			} else {
@@ -252,7 +251,7 @@ class RestController {
 					.catch((err) => error & error(err));
 			}
 		} else {
-			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first' });
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first' , status:500});
 		}
 	}
 

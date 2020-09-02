@@ -10,6 +10,7 @@
  * -------------------------------------------------------------------------------
  * 02/07/2020    Phillip Schulze     Original
  * 06/08/2020    Phillip Schulze     DataSource now uses a cache to stored passed requests
+ * 27/08/2020    Elna Pistorius 		 Added error code that is sent back to route endpoints
  *
  * Test Cases: none
  *
@@ -42,7 +43,7 @@ class DataSource {
 					Cache.setMetaData(src, data);
 					resolve();
 				})
-				.catch((err) => reject(err));
+				.catch((err) => reject({error: err, status: 500}));
 		});
 	}
 
@@ -59,7 +60,7 @@ class DataSource {
 					Cache.setEntityData(src, entity, data);
 					resolve();
 				})
-				.catch((err) => reject(err));
+				.catch((err) => reject({error: err, status: 500}));
 		});
 	}
 
@@ -74,7 +75,7 @@ class DataSource {
 			else {
 				DataSource.updateMetaData(src)
 					.then(() => resolve(Cache.getMetaData(src)))
-					.catch((err) => reject(err));
+					.catch((err) => reject({error: err, status: 500}));
 			}
 		}); //Returns a promise
 	}
@@ -94,7 +95,7 @@ class DataSource {
 						const data = Cache.getEntityList(src);
 						resolve(formatList(src, data));
 					})
-					.catch((err) => reject(err));
+					.catch((err) => reject({error: err, status: 500}));
 			}
 		}); //Returns a promise
 	}
@@ -103,6 +104,7 @@ class DataSource {
 	 * This function gets entity data.
 	 * @param src the source where the entity data must be retrieved from
 	 * @param entity the entity that we want data from
+	 * @param field the field that is under consideration for a specific entity
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity, field) {
@@ -116,7 +118,7 @@ class DataSource {
 						const data = Cache.getEntityData(src, entity, field);
 						resolve(formatData(src, entity, field, data));
 					})
-					.catch((err) => reject(err));
+					.catch((err) => reject({error: err, status: 500}));
 			}
 		});
 	}

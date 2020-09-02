@@ -12,6 +12,7 @@
  * 30/06/2020   Elna Pistorius & Phillip Schulze    Added more functionality
  * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
  * 06/08/2020	Elna Pistorius 						Added the deregister endpoint
+ * 27/08/2020   Elna Pistorius 						Added a new error helper to make status code vary for different errors.
  *
  * Test Cases: none
  *
@@ -29,13 +30,13 @@ const router = express.Router();
 
 const { Rest } = require('../controllers');
 const { LogAuthUsers } = require('../helper');
-
+const { error } = require('../helper');
 let loggedUsers = {};
 
 router.post('/login', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (!checkUserEmail(req.body.email))error(res, { error: 'User Email Incorrect' }, 400);
-	else if (!checkUserPasswordLogin(req.body.password)) error(res, { error: 'User Password Incorrect' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (!checkUserEmail(req.body.email))error(res, { error: 'User Email Incorrect', status: 400 });
+	else if (!checkUserPasswordLogin(req.body.password)) error(res, { error: 'User Password Incorrect', status: 400 });
 	else {
 		const users = Object.keys(loggedUsers)
 			.filter((key) => loggedUsers[key].email === req.body.email)
@@ -57,18 +58,18 @@ router.post('/login', (req, res) => {
 						res.status(200).json({ message: 'Successfully Logged In User', ...user });
 					}
 				},
-				(err) => error(res, err, 400)
+				(err) => error(res, err)
 			);
 		}
 	}
 });
 
 router.post('/register', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (!checkName(req.body.name)) error(res, { error: 'User Name Incorrect' }, 400);
-	else if (!checkName(req.body.surname)) error(res, { error: 'User Surname Incorrect' }, 400);
-	else if (!checkUserEmail(req.body.email)) error(res, { error: 'User Email Incorrect' }, 400);
-	else if (!checkUserPasswordRegister(req.body.password, req.body.confirmPassword, req.body.name)) error(res, { error: 'User Password Incorrect' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (!checkName(req.body.name)) error(res, { error: 'User Name Incorrect', status: 400 });
+	else if (!checkName(req.body.surname)) error(res, { error: 'User Surname Incorrect', status: 400 });
+	else if (!checkUserEmail(req.body.email)) error(res, { error: 'User Email Incorrect', status: 400 });
+	else if (!checkUserPasswordRegister(req.body.password, req.body.confirmPassword, req.body.name)) error(res, { error: 'User Password Incorrect' , status: 400 });
 	else {
 		Rest.registerUser(
 			req.body.name,
@@ -89,7 +90,7 @@ router.post('/register', (req, res) => {
 
 				res.status(200).json({ message: 'Successfully Registered User', ...user });
 			},
-			(err) => error(res, err, 400)
+			(err) => error(res, err)
 		);
 	}
 });
@@ -118,28 +119,19 @@ router.post('/logout', (req, res) => {
 });
 
 router.post('/deregister', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (!checkUserEmail(req.body.email)) error(res, { error: 'User Email Incorrect' }, 400);
-	else if (!checkUserPasswordLogin(req.body.password)) error(res, { error: 'User Password Incorrect' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' , status: 400 });
+	else if (!checkUserEmail(req.body.email)) error(res, { error: 'User Email Incorrect' , status: 400 });
+	else if (!checkUserPasswordLogin(req.body.password)) error(res, { error: 'User Password Incorrect', status: 400 });
 	else {
 		Rest.deregisterUser(
 			req.body.email,
 			req.body.password,
 			() => res.status(200).json({ message: 'Successfully Deregistered User' }),
-			(err) => error(res, err, 400)
+			(err) => error(res, err)
 		);
 	}
 });
-/**
- * This function displays the error's message if one occurred in the console.
- * @param res the response message in JSON format
- * @param err the error message
- * @param status the status code
- */
-function error(res, err, status = 400) {
-	console.error(err);
-	res.status(status).json(err);
-}
+
 /**
  * This function validates the client's input, the users username and surname.
  * @param name the name of the user that needs to be tested (username or surname)

@@ -10,6 +10,7 @@
  * -------------------------------------------------------------------------------
  * 16/07/2020   Phillip Schulze     Original
  * 22/07/2020   Phillip Schulze     Final
+ * 27/08/2020 	Elna Pistorius 		Updated unit tests for DBerror
  *
  * Test Cases: none
  *
@@ -77,13 +78,13 @@ describe('Function that formast an error to be displayed.', () => {
 				hint: HINT,
 				detail: DETAIL,
 			})
-		).toMatchObject({
-			origin: DB,
-			table: TABLE,
-			code: CODE,
-			error: ROUTINE,
-			hint: HINT,
-		});
+		).toMatchObject({error: {
+				origin: DB,
+				table: TABLE,
+				code: CODE,
+				error: ROUTINE,
+				hint: HINT,
+			}, status: 500});
 	});
 
 	test('Hint value not given', () => {
@@ -94,13 +95,13 @@ describe('Function that formast an error to be displayed.', () => {
 				routine: ROUTINE,
 				detail: DETAIL,
 			})
-		).toMatchObject({
-			origin: DB,
-			table: TABLE,
-			code: CODE,
-			error: ROUTINE,
-			hint: DETAIL,
-		});
+		).toMatchObject({error: {
+				origin: DB,
+				table: TABLE,
+				code: CODE,
+				error: ROUTINE,
+				hint: DETAIL,
+			}, status: 500});
 	});
 
 	test('Hint value not given', () => {
@@ -111,13 +112,13 @@ describe('Function that formast an error to be displayed.', () => {
 				routine: ROUTINE,
 				detail: DETAIL,
 			})
-		).toMatchObject({
-			origin: DB,
-			table: TABLE,
-			code: EXISTS_CODE,
-			error: EXISTS_ROUTINE,
-			hint: DETAIL,
-		});
+		).toMatchObject({error:{
+				origin: DB,
+				table: TABLE,
+				code: EXISTS_CODE,
+				error: EXISTS_ROUTINE,
+				hint: DETAIL,
+			} , status: 500});
 	});
 });
 
