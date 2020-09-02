@@ -11,6 +11,7 @@
  * 29/06/2020   Phillip Schulze     Original
  * 12/07/2020   Phillip Schulze    	Added more functionality for graph suggestions
  * 15/07/2020   Phillip Schulze	 	Modified all the functions
+ * 27/08/2020   Elna Pistorius 		Added error code that is sent back to route endpoints
  *
  * Test Cases: none
  *
@@ -132,7 +133,7 @@ class Database {
 					} else reject(response);
 				})
 				.catch((err) => {
-					// console.log(err);
+					 console.log(err);
 					reject(DBerror(err));
 				});
 		});
@@ -365,13 +366,13 @@ function fieldUpdates(fields, data, offset) {
 }
 /**
  * This function is used to format an error to be displayed.
- * @returns a javascript object of the error.
+ * @returns {error: {code: DBerror.props.code, origin: string, hint: DBerror.props.hint, error: DBerror.props.routine, table: DBerror.props.table}, status: number} javascript object of the error.
  */
 function DBerror(err) {
 	let { table, code, routine, hint, detail } = err;
 	if (code === '23505' || code === '23503') routine = 'userAlreadyExists';
 	if (typeof hint === 'undefined') hint = detail;
-	return { origin: 'database', table, code, error: routine, hint };
+	return {error: { origin: 'database', table, code, error: routine, hint }, status : 500 };
 }
 /**
  * This function is used to return a error if any custom errors occurs.

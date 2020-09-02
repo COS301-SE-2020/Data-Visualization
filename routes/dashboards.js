@@ -9,7 +9,8 @@
  * Date          Author             				Changes
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
- * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 02/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 27/08/2020   Elna Pistorius 						Added a new error helper to make status code vary for different errors.
  *
  * Test Cases: none
  *
