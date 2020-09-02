@@ -21,6 +21,7 @@
  * 14/08/2020	 Marco Lombaard						Moved chart construction here, added isInitialised function, modified setMetadata
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
  * 17/08/2020	 Marco Lombaard						Added assembleGraph function, selectEntity now returns an object
+ * 02/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
  *
  * Test Cases: none
  *
@@ -313,8 +314,6 @@ class GraphSuggesterController {
 			dataset: {
 				source: src,
 			},
-			xAxis: { type: 'category' }, //TODO change this so the type(s) gets decided by frontend or by the AI
-			yAxis: {},
 			series: [
 				//construct the series of graphs, this could be one or more graphs
 				{
@@ -328,15 +327,68 @@ class GraphSuggesterController {
 		};
 		//the current options array works for line, bar, scatter, effectScatter charts
 		//it is also the default options array
+		if (!graph.includes('pie')) {
+			option.xAxis = {
+				type: 'category',
+				name: xEntries,
+				nameLocation: 'center',
+				nameGap: 30,
+				nameTextStyle: {
+					fontSize: 20,
+				}
+			}; //TODO change this so the type(s) gets decided by frontend or by the AI
 
-		if (graph.includes('pie')) {
-			//for pie charts
+			option.yAxis = {
+				show: !graph.includes('bar'),	//if bar chart, hide y-axis, else show it
+			};
+
+			if (graph.includes('bar')) {
+				option.tooltip = {
+					trigger: 'axis',
+					formatter: '{c}',
+					axisPointer: {
+						type: 'shadow',
+					}
+				};
+			} else {
+				option.tooltip = {
+					trigger: 'axis',
+					formatter: '{c}',
+					axisPointer: {
+						type: 'line',
+					}
+				};
+			}
+		}
+		if (graph.includes('pie')) {//for pie charts
+
+			option.legend = {
+				type: 'scroll',
+				orient: 'vertical',
+				right: 10,
+				top: 20,
+				bottom: 20,
+				selected: [],
+			};
+
+			option.tooltip = {
+				trigger: 'item',
+				formatter: '{c}',
+				axisPointer: {
+					type: 'none',
+				}
+			};
+
 			option.series = [
 				{
 					type: graph,
 					radius: '60%',
+					labelLine: {
+						show: false
+					},
 					label: {
-						formatter: '{b}: {@' + yEntries + '} ({d}%)',
+						show: false,
+						position: 'center'
 					},
 					encode: {
 						itemName: xEntries,
@@ -447,10 +499,18 @@ class GraphSuggesterController {
 			console.log('No suggestion object to add data to');
 			return suggestion;
 		}
+		let selectedFields = [ false ];
 
+		let count = 0;
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
+			selectedFields[i+1] = data[i] !== 0 && count++ < 5;//get the first 5 nonnull values
 		}
+
+		if (suggestion['legend']) {	//if we have defined a legend
+			suggestion['legend']['selected'] = selectedFields;	//set the selection to the first 5 nonnull values
+		}
+
 
 		console.log('suggestion w/ data', suggestion['dataset']);
 
