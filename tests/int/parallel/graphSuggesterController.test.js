@@ -83,8 +83,6 @@ const suggestion = {
 	option: {
 		title: { text: expect.any(String) },
 		dataset: { source: expect.any(Array) },
-		xAxis: { type: 'category' },
-		yAxis: {},
 		series: [{ type: expect.any(String), encode: expect.any(Object) }],
 	},
 };
