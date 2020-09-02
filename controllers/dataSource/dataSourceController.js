@@ -21,7 +21,11 @@
  * Constraints: None
  */
 const Cache = require('./cache');
-const Odata = require('./Odata');
+const Odata = require('./Odata/Odata');
+const GraphQL = require('./GraphQL/GraphQL');
+
+const isGraphQL = false;
+
 /**
  * Purpose: This class is responsible for getting DataSources.
  * Usage Instructions: Use the corresponding getters to retrieve class variables.
@@ -36,7 +40,8 @@ class DataSource {
 	 */
 	static updateMetaData(src) {
 		return new Promise((resolve, reject) => {
-			Odata.getMetaData(src)
+			DataSource.Data()
+				.getMetaData(src)
 				.then((data) => {
 					data = DataSource.parseMetadata(data);
 					// data.items = [1, 2, 3, 4, 5];
@@ -55,7 +60,8 @@ class DataSource {
 	 */
 	static updateEntityData(src, entity) {
 		return new Promise((resolve, reject) => {
-			Odata.getEntityData(src, entity)
+			DataSource.Data()
+				.getEntityData(src, entity)
 				.then((data) => {
 					Cache.setEntityData(src, entity, data);
 					resolve();
@@ -65,7 +71,7 @@ class DataSource {
 	}
 
 	/**
-	 * This function gets Odata.
+	 * This function gets Odata
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
@@ -128,8 +134,12 @@ class DataSource {
 	 * @param xmlData the XML metadata received from an external data source
 	 * @returns a standard JS object
 	 */
-	static parseMetadata(xmlData) {
-		return Odata.parseODataMetadata(xmlData);
+	static parseMetadata(data) {
+		return DataSource.Data().parseMetadata(data);
+	}
+
+	static Data() {
+		return isGraphQL ? GraphQL : Odata;
 	}
 }
 

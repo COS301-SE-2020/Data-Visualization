@@ -31,6 +31,8 @@ const { error } = require('../helper');
 router.post('/list', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
 	else {
+		console.log('route');
+
 		Rest.getDashboardList(
 			req.body.email,
 			(list) => res.status(200).json(list),

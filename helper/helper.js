@@ -15,6 +15,15 @@ const LogAuthUsers = (users) => {
 	console.log('=====================================');
 };
 
+const LogAuthKeys = (keys) => {
+	console.log('=====================================');
+	console.log(
+		'KEYS',
+		Object.keys(keys).map((email) => `${email} : ${keys[email]}`)
+	);
+	console.log('=====================================');
+};
+
 const LogReqParams = (req) => {
 	console.log('=====================================');
 	console.log('METHOD\t', req.method);
@@ -23,4 +32,4 @@ const LogReqParams = (req) => {
 	console.log('=====================================');
 };
 
-module.exports = { LogAuthUsers, LogReqParams, error };
+module.exports = { LogAuthUsers, LogAuthKeys, LogReqParams, error };

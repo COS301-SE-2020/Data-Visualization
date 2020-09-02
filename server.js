@@ -31,6 +31,7 @@ const staticPath = '/data-visualisation-app/build/';
 // const pgStore = require('connect-pg-simple')(session);
 // const { Database } = require('./controllers');
 const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions, loggedUsers, ExportRoute } = require('./routes');
+const Authentication = require('./controllers');
 const { LogReqParams } = require('./helper');
 
 const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
@@ -52,8 +53,8 @@ app.use('/datasource/meta', DataSourceRouteMeta);
 app.use('/export', ExportRoute);
 
 app.use((req, res, next) => {
-	if (req.body.apikey && loggedUsers && Object.prototype.hasOwnProperty.call(loggedUsers, req.body.apikey)) {
-		req.body.email = loggedUsers[req.body.apikey].email;
+	if (Authentication.isAuthenticated(req.body.apikey)) {
+		req.body.email = Authentication.retrieveUser(req.body.apikey).email;
 		console.log('auth-email', req.body.email);
 		next();
 	} else res.status(401).json({ message: 'User is not authenticated' });
