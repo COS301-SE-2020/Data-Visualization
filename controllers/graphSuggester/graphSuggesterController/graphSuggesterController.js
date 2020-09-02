@@ -334,7 +334,7 @@ class GraphSuggesterController {
 				nameLocation: 'center',
 				nameGap: 30,
 				nameTextStyle: {
-					fontSize: 20,
+					fontSize: 15,
 				}
 			}; //TODO change this so the type(s) gets decided by frontend or by the AI
 
@@ -406,7 +406,7 @@ class GraphSuggesterController {
 			//for funnel charts - TODO to be added
 		}
 
-		console.log(option);
+		//console.log(option);
 
 		return option;
 	}
@@ -504,7 +504,12 @@ class GraphSuggesterController {
 		let count = 0;
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
-			selectedFields[i+1] = data[i] !== 0 && count++ < 5;//get the first 5 nonnull values
+			if (count < 5 && data[i] !== 0) {
+				selectedFields[i + 1] = true;//get the first 5 nonnull values
+				count++;
+			} else {
+				selectedFields[i+1] = false;
+			}
 		}
 
 		if (suggestion['legend']) {	//if we have defined a legend
@@ -512,7 +517,7 @@ class GraphSuggesterController {
 		}
 
 
-		console.log('suggestion w/ data', suggestion['dataset']);
+		console.log('suggestion w/ data', suggestion);
 
 		return suggestion;
 	}
