@@ -33,7 +33,7 @@ router.post('/json', (req, res) => {
     else {
         Rest.exportToJson(
             req.body,
-            (list) => res.status(200).json(list),
+            (data) => res.status(200).json(data),
             (err) => error(res, err)
         );
     }
@@ -44,7 +44,7 @@ router.post('/csv', (req, res) => {
     else {
         Rest.exportToCSV(
             req.body,
-            (list) => res.status(200).json(list),
+            (data) => res.status(200).json(data),
             (err) => error(res, err)
         );
     }

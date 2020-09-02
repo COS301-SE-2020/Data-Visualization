@@ -27,5 +27,4 @@ const ExportRoute = require('./export');
 const { DataSourceRouteSrc, DataSourceRouteMeta } = require('./dataSource.js');
 const Suggestions = require('./suggestions.js');
 
-module.exports = { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions, loggedUsers,ExportRoute };
-
+module.exports = { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions , ExportRoute};

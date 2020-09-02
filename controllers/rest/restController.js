@@ -321,8 +321,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static exportToJson(config, done, error) {
-		ExportsController.json(config);
-		done();
+		let data = ExportsController.json(config);
+		done(data)
 	}
 
 	/**
@@ -332,8 +332,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static exportToCSV(config, done, error) {
-		ExportsController.csv(config);
-		done();
+		let data = ExportsController.csv(config);
+		done(data)
 	}
 	/**************** GRAPHS ****************/
 
