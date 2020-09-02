@@ -18,6 +18,7 @@
  * 14/08/2020	Marco Lombaard						 Modified getSuggestion to only need metadata for suggestion generation
  * 18/08/2020	Marco Lombaard						 Modified stringsToGraphData to return a 2D array object
  * 18/08/2020	Marco Lombaard						 Added boolsToGraphData and make1DArray functions
+ * 02/09/2020    Elna Pistorius    					 Added new exports controller
  *
  * Test Cases: none
  *
@@ -30,6 +31,7 @@
  */
 const Database = require('../database');
 const DataSource = require('../dataSource');
+const ExportsController = require('../exports');
 const { GraphSuggesterController } = require('../graphSuggester');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
@@ -311,7 +313,28 @@ class RestController {
 			.then(() => done())
 			.catch((err) => error && error(err));
 	}
+	/**************** EXPORTS ****************/
+	/**
+	 * This function generates exportable json of a chart
+	 * @param config the config of the whole chart
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static exportToJson(config, done, error) {
+		ExportsController.json(config);
+		done();
+	}
 
+	/**
+	 * This function generates exportable csv of a chart
+	 * @param config the types of graphs that needs to be updated
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static exportToCSV(config, done, error) {
+		ExportsController.csv(config);
+		done();
+	}
 	/**************** GRAPHS ****************/
 
 	/**
@@ -517,5 +540,6 @@ function outputSuggestionMeta(src, item, set, field) {
 	console.log('field: ', field);
 	console.log('=====================================');
 }
+
 
 module.exports = RestController;

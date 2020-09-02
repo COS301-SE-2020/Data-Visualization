@@ -30,7 +30,7 @@ const staticPath = '/data-visualisation-app/build/';
 // const session = require('express-session');
 // const pgStore = require('connect-pg-simple')(session);
 // const { Database } = require('./controllers');
-const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions, loggedUsers } = require('./routes');
+const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions, loggedUsers, ExportRoute } = require('./routes');
 const { LogReqParams } = require('./helper');
 
 const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
@@ -49,6 +49,7 @@ app.use((req, res, next) => {
 app.use('/users', UsersRoute);
 app.use('/suggestions', Suggestions);
 app.use('/datasource/meta', DataSourceRouteMeta);
+app.use('/export', ExportRoute);
 
 app.use((req, res, next) => {
 	if (req.body.apikey && loggedUsers && Object.prototype.hasOwnProperty.call(loggedUsers, req.body.apikey)) {
