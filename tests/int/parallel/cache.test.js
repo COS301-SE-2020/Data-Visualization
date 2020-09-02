@@ -24,18 +24,16 @@ const Cache = require('../../../controllers/dataSource/cache');
 const Odata = require('../../../controllers/dataSource/Odata');
 
 const MAX_TIME = 10; //ms
-const DEFAULT_MAX_TIME = Cache.maxTime;
 const SRC_URL = 'https://services.odata.org/V2/Northwind/Northwind.svc';
 const SRC_ENTITY = 'Products';
 const SRC_FIELD = 'UnitPrice';
 const SRC_FIELD_PRIM = 'ProductID';
+let META = null;
 
 describe('Testing Meta Data storage functionality', () => {
-	let META = null;
-
 	beforeAll((done) => {
 		return Odata.getMetaData(SRC_URL)
-			.then((data) => (META = Odata.parseODataMetadata(data)))
+			.then((data) => (META = Odata.parseMetadata(data)))
 			.finally(() => done());
 	});
 
@@ -45,7 +43,7 @@ describe('Testing Meta Data storage functionality', () => {
 	});
 
 	afterEach((done) => {
-		Cache.maxTime = DEFAULT_MAX_TIME;
+		Cache.maxTime = Cache.defaultMaxTime;
 		done();
 	});
 
@@ -103,6 +101,7 @@ describe('Testing Meta Data storage functionality', () => {
 	let TEST_DATA = null;
 
 	beforeAll((done) => {
+		Cache.setMetaData(SRC_URL, META);
 		return Odata.getEntityData(SRC_URL, SRC_ENTITY)
 			.then((data) => {
 				DATA = data;
@@ -117,7 +116,7 @@ describe('Testing Meta Data storage functionality', () => {
 	});
 
 	afterEach((done) => {
-		Cache.maxTime = DEFAULT_MAX_TIME;
+		Cache.maxTime = Cache.defaultMaxTime;
 		done();
 	});
 
@@ -158,7 +157,7 @@ describe('Testing Meta Data storage functionality', () => {
 });
 
 afterAll((done) => {
-	Cache.maxTime = DEFAULT_MAX_TIME;
+	Cache.maxTime = Cache.defaultMaxTime;
 	Cache.removeMetaData(SRC_URL);
 	Cache.removeEntityData(SRC_URL, SRC_ENTITY);
 	done();

@@ -79,6 +79,15 @@ class Database {
 		});
 	}
 
+	static close(done) {
+		console.log('Clossing DB connecion...');
+		return Database.pgPool
+			.end()
+			.then(() => console.log('DB connecion is now closed.'))
+			.catch(() => console.log('DB connection is already closed'))
+			.finally(() => done());
+	}
+
 	/**************** USERS *****************/
 	/**
 	 * This function authenticates a user.
@@ -133,8 +142,8 @@ class Database {
 					} else reject(response);
 				})
 				.catch((err) => {
-					 console.log(err);
-					reject(DBerror(err));
+					// console.log(err);
+					reject(err);
 				});
 		});
 	}
@@ -372,7 +381,7 @@ function DBerror(err) {
 	let { table, code, routine, hint, detail } = err;
 	if (code === '23505' || code === '23503') routine = 'userAlreadyExists';
 	if (typeof hint === 'undefined') hint = detail;
-	return {error: { origin: 'database', table, code, error: routine, hint }, status : 500 };
+	return { error: { origin: 'database', table, code, error: routine, hint }, status: 500 };
 }
 /**
  * This function is used to return a error if any custom errors occurs.
@@ -381,7 +390,7 @@ function DBerror(err) {
 function UndefinedResponseFromDBerror(querySql) {
 	return {
 		table: undefined,
-		code: undefined,
+		code: 99999,
 		routine: 'undefinedResponseFromDatabase',
 		hint: undefined,
 		detail: 'Query Sent: ' + querySql,

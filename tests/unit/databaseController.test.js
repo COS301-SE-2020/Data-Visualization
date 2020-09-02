@@ -73,13 +73,16 @@ describe('Function that formast an error to be displayed.', () => {
 				hint: HINT,
 				detail: DETAIL,
 			})
-		).toMatchObject({error: {
+		).toMatchObject({
+			error: {
 				origin: DB,
 				table: TABLE,
 				code: CODE,
 				error: ROUTINE,
 				hint: HINT,
-			}, status: 500});
+			},
+			status: 500,
+		});
 	});
 
 	test('Hint value not given', () => {
@@ -90,13 +93,16 @@ describe('Function that formast an error to be displayed.', () => {
 				routine: ROUTINE,
 				detail: DETAIL,
 			})
-		).toMatchObject({error: {
+		).toMatchObject({
+			error: {
 				origin: DB,
 				table: TABLE,
 				code: CODE,
 				error: ROUTINE,
 				hint: DETAIL,
-			}, status: 500});
+			},
+			status: 500,
+		});
 	});
 
 	test('Hint value not given', () => {
@@ -107,21 +113,24 @@ describe('Function that formast an error to be displayed.', () => {
 				routine: ROUTINE,
 				detail: DETAIL,
 			})
-		).toMatchObject({error:{
+		).toMatchObject({
+			error: {
 				origin: DB,
 				table: TABLE,
 				code: EXISTS_CODE,
 				error: EXISTS_ROUTINE,
 				hint: DETAIL,
-			} , status: 500});
+			},
+			status: 500,
+		});
 	});
 });
 
-test("Function that returns an error object when the database's response is undefined", () => {
+test('Function that returns an error object when the database response is undefined', () => {
 	const SQL_QUERY = 'SELECT * FROM mytable;';
 	expect(UndefinedResponseFromDBerror(SQL_QUERY)).toMatchObject({
 		table: undefined,
-		code: undefined,
+		code: 99999,
 		routine: 'undefinedResponseFromDatabase',
 		hint: undefined,
 		detail: 'Query Sent: ' + SQL_QUERY,
