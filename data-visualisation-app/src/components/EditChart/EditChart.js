@@ -132,6 +132,12 @@ function EditChart(props) {
     /**
      *   Helper Functions
      */
+
+
+    /** Removes all leading zeros and returns the result
+     *
+     *   @param value String value with leading zeros to be removed
+     */
     function removeLeadingZeros(value) {
         while (value.substring(0, 1) === '0') {
             value = value.substring(1);
@@ -139,6 +145,10 @@ function EditChart(props) {
         return value;
     }
 
+    /** Parses and converts an RGB or RGBA data type into a hexadecimal colour type.
+     *
+     *   @param value String value that is either of type RBH or RGBA
+     */
     function parseRGBToHex(value) {
         if (typeof value === 'undefined' || value === '') {
             return '#c23531';
@@ -174,6 +184,8 @@ function EditChart(props) {
         }
     }
 
+    /** Generates data used by front-end components for chart's data manipulation
+     */
     function generateData() {
 
         function dimensionName(dimension) {
@@ -460,6 +472,12 @@ function EditChart(props) {
         setData(prevGridData.current.grid);
     }
 
+    /**  If property does not exist inside EChart's JSON object. The property is created with the
+     *   appropriate objects.
+     *
+     *   @param object JSON object needing property .
+     *   @param property String value of missing property.
+     */
     function addProperty(object, property) {
         if (!object.hasOwnProperty(property)) {
             // eslint-disable-next-line default-case
@@ -546,6 +564,11 @@ function EditChart(props) {
         }
     }
 
+    /**  Modify a single value inside the current EChart JSON object used.
+     *
+     *   @param key Array indicating the directory required to locate object inside root echart object
+     *   @param value New value of the found key property.
+     */
     function modifyAtomic(key, value) {
         addProperty(optionsBuffer.current[+currentBuffer.current], key[0]);
         let pointer = optionsBuffer.current[+currentBuffer.current][key[0]];
@@ -580,6 +603,12 @@ function EditChart(props) {
         setTimeout(flushChanges, 100);
     }
 
+    /**  Updates any object using above modify function.
+     *
+     *   @param object Object to be modified.
+     *   @param offset Array indicating the directory required to locate object inside root echart object
+     *   @param value New value of the found key property.
+     */
     function update([object, offset, value]) {
         // todo: consider changing object instead of creating new var
         let pointer = object;
@@ -598,6 +627,8 @@ function EditChart(props) {
         }
     }
 
+    /**  Generates required data for editing legend.
+     */
     function getLegendData() {
         let data = [];
         if (optionsBuffer.current[+currentBuffer.current].hasOwnProperty('series')) {
@@ -714,6 +745,13 @@ function EditChart(props) {
         }
     };
 
+
+    /**  Updates table data inside component.
+     *
+     *   @param rowIndex Index of the row with the value to be updated.
+     *   @param columnId ID of the column with the value to be updated.
+     *   @param value New value of the found key property.
+     */
     function updateData(rowIndex, columnId, value) {
 
         setData(old =>
@@ -729,6 +767,12 @@ function EditChart(props) {
         );
     }
 
+    /**  Updates data within axis.
+     *
+     *   @param rowIndex Index of the row with the value to be updated.
+     *   @param columnId ID of the column with the value to be updated.
+     *   @param value New value of the found key property.
+     */
     function updateAxisData(rowIndex, columnId, value) {
 
         setDataAxisCaptions(old =>
@@ -745,6 +789,8 @@ function EditChart(props) {
     }
 
 
+    /**  React component for individual cell values within table component.
+     */
     function EditableCell({value: initialValue, row: { index }, column: { id }, updateMyData}) {
         const [value, setValue] = useState(initialValue);
 
