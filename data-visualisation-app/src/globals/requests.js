@@ -303,8 +303,8 @@ const request = {
 		 */
 		rememberLogin: (isLoggedInMutator) => {
 			request.user.setIsLoggedIn = isLoggedInMutator;
-			if (localStorage.getItem('apikey') == null || localStorage.getItem('apikey') !== '') {
-				console.debug('localStorage.getItem(\'apikey\')', localStorage.getItem('apikey'))
+
+			if (localStorage.getItem('apikey') !== 'null' && localStorage.getItem('apikey') != null && localStorage.getItem('apikey') !== '') {
 				request.user.firstName = localStorage.getItem('firstName');
 				request.user.lastName = localStorage.getItem('lastName');
 				request.user.apikey = localStorage.getItem('apikey');
