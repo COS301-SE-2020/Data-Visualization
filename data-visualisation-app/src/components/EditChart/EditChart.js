@@ -36,9 +36,9 @@ function EditChart(props) {
     const [chartOptions, setChartOptions] = useState(props.options);
     const [renderAxisTable, setRenderAxisTable] = useState(false);
     const [columnsAxisCaptions, setColumnsAxisCaptions] = useState([{
-            Header: 'Axis',
-            accessor: 'axis'
-        }
+        Header: 'Axis',
+        accessor: 'axis'
+    }
     ]);
     const [dataAxisCaptions, setDataAxisCaptions] = useState([]);
     const columns = useRef([{
@@ -266,9 +266,9 @@ function EditChart(props) {
         let tmp, dataLength = determineDataLength();
 
 
-        if (optionsBuffer.current[+currentBuffer.current].series.length > 0 && optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('itemName'))
-            columns.current[1].columns.push({Header: 'Value', accessor: 'value'});
-        else
+        // if (optionsBuffer.current[+currentBuffer.current].series.length > 0 && optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('itemName'))
+        //     columns.current[1].columns.push({Header: 'Value', accessor: 'value'});
+        // else
             for (let d = 1; d <= dataLength; d++)
                 columns.current[1].columns.push({Header: d.toString(), accessor: d.toString()});
 
@@ -323,7 +323,7 @@ function EditChart(props) {
 
             let newSeriesProperty = [];
 
-            if (optionsBuffer.current[+currentBuffer.current].series.length > 0 && optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('x')) {
+            // if (optionsBuffer.current[+currentBuffer.current].series.length > 0 && optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('x')) {
                 let s = 0;
                 for (let dimension = 0; dimension < 2; dimension++) {
                     prevGridData.current.grid.push({});
@@ -334,48 +334,28 @@ function EditChart(props) {
                         seriesProperty.push({name: 'Series 1'});
                         prevGridData.current.grid[tmp]['rowspan'] = 2;
 
-                        optionsBuffer.current[+currentBuffer.current].series[0].color = '#c23531';
+                        if (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('itemName')) {
 
-                        newSeriesProperty.push({
-                            name: optionsBuffer.current[+currentBuffer.current].dataset.source[0][0],
-                            label: {
-                                value: optionsBuffer.current[+currentBuffer.current].series[0].name,
-                                directory: ['series', 0, 'name']
-                            },
-                            color: {
-                                hexvalue: '#c23531',
-                                directory: ['series', 0, 'color']
-                            },
-                            type: {
-                                value: optionsBuffer.current[+currentBuffer.current].series[0].type,
-                                directory: ['series', 0, 'type']
-                            }
-                        });
-                        setSeriesProperty(newSeriesProperty);
-                    }
-                    for (let i = 1; i < dataLength+1; i++) {
+                            let ECHART_DEFAULT_COLOURS = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
 
-                        if (i === 1) {
-                            prevGridData.current.grid[tmp].dimension = dimensionName(dimension);
-                        }
+                            optionsBuffer.current[+currentBuffer.current].series[0].color = optionsBuffer.current[+currentBuffer.current].dataset.source.filter((data, dataIndex) => {return dataIndex > 0;}).map((data, dataIndex) => {return (ECHART_DEFAULT_COLOURS.length > 1 ? ECHART_DEFAULT_COLOURS.pop() : ECHART_DEFAULT_COLOURS[0]);});
+                            optionsBuffer.current[+!currentBuffer.current].series[0].color = optionsBuffer.current[+currentBuffer.current].dataset.source.filter((data, dataIndex) => {return dataIndex > 0;}).map((data, dataIndex) => {return (ECHART_DEFAULT_COLOURS.length > 1 ? ECHART_DEFAULT_COLOURS.pop() : ECHART_DEFAULT_COLOURS[0]);});
 
-                        prevGridData.current.grid[tmp][keyLookup[i+1]] = (optionsBuffer.current[+currentBuffer.current].dataset.source[i][dimension] == null ? '' : optionsBuffer.current[+currentBuffer.current].dataset.source[i][dimension]);
-                        storedPointers.current[tmp + keyLookup[i+1]] = ['dataset', 'source', i, dimension];
-                    }
-                }
-            } else {
-                for (let s = 1; s < optionsBuffer.current[+currentBuffer.current].dataset.source.length; s++) {
-                    for (let dimension = 0; dimension < 2; dimension++) {
-                        prevGridData.current.grid.push({});
-                        tmp = prevGridData.current.grid.length - 1;
-
-                        if (dimension === 0) {
-                            prevGridData.current.grid[tmp][keyLookup[0]] = 'Series ' + s;
-                            seriesProperty.push({name: 'Series ' + s});
-                            prevGridData.current.grid[tmp]['rowspan'] = 2;
+                            newSeriesProperty.push({
+                                name: optionsBuffer.current[+currentBuffer.current].dataset.source[0][0],
+                                label: {
+                                    value: optionsBuffer.current[+currentBuffer.current].series[0].name,
+                                    directory: ['series', 0, 'name']
+                                },
+                                color: optionsBuffer.current[+currentBuffer.current].dataset.source.filter((data, dataIndex) => {return dataIndex > 0;}).map((data, dataIndex) => {return {hexvalue: optionsBuffer.current[+!currentBuffer.current].series[0].color[dataIndex], directory: ['series', 0, 'color', dataIndex]};}),
+                                type: {
+                                    value: optionsBuffer.current[+currentBuffer.current].series[0].type,
+                                    directory: ['series', 0, 'type']
+                                }
+                            });
+                        } else {
 
                             optionsBuffer.current[+currentBuffer.current].series[0].color = '#c23531';
-
                             newSeriesProperty.push({
                                 name: optionsBuffer.current[+currentBuffer.current].dataset.source[0][0],
                                 label: {
@@ -391,15 +371,57 @@ function EditChart(props) {
                                     directory: ['series', 0, 'type']
                                 }
                             });
-                            setSeriesProperty(newSeriesProperty);
+                        }
+                        setSeriesProperty(newSeriesProperty);
+                    }
+                    for (let i = 1; i < dataLength+1; i++) {
+
+                        if (i === 1) {
+                            prevGridData.current.grid[tmp].dimension = dimensionName(dimension);
                         }
 
-                        prevGridData.current.grid[tmp]['dimension'] = (dimension+1).toString();
-                        prevGridData.current.grid[tmp]['value'] = (optionsBuffer.current[+currentBuffer.current].dataset.source[s][dimension] == null ? 'null' : optionsBuffer.current[+currentBuffer.current].dataset.source[s][dimension]);
-                        storedPointers.current[tmp + 'value'] = ['dataset', 'source', s, dimension];
+                        prevGridData.current.grid[tmp][keyLookup[i+1]] = (optionsBuffer.current[+currentBuffer.current].dataset.source[i][dimension] == null ? '' : optionsBuffer.current[+currentBuffer.current].dataset.source[i][dimension]);
+                        storedPointers.current[tmp + keyLookup[i+1]] = ['dataset', 'source', i, dimension];
                     }
                 }
-            }
+            // }
+                // else {
+            //     for (let s = 1; s < optionsBuffer.current[+currentBuffer.current].dataset.source.length; s++) {
+            //         for (let dimension = 0; dimension < 2; dimension++) {
+            //             prevGridData.current.grid.push({});
+            //             tmp = prevGridData.current.grid.length - 1;
+            //
+            //             if (dimension === 0) {
+            //                 prevGridData.current.grid[tmp][keyLookup[0]] = 'Series ' + s;
+            //                 seriesProperty.push({name: 'Series ' + s});
+            //                 prevGridData.current.grid[tmp]['rowspan'] = 2;
+            //
+            //                 optionsBuffer.current[+currentBuffer.current].series[0].color = '#c23531';
+            //
+            //                 newSeriesProperty.push({
+            //                     name: optionsBuffer.current[+currentBuffer.current].dataset.source[0][0],
+            //                     label: {
+            //                         value: optionsBuffer.current[+currentBuffer.current].series[0].name,
+            //                         directory: ['series', 0, 'name']
+            //                     },
+            //                     color: {
+            //                         hexvalue: '#c23531',
+            //                         directory: ['series', 0, 'color']
+            //                     },
+            //                     type: {
+            //                         value: optionsBuffer.current[+currentBuffer.current].series[0].type,
+            //                         directory: ['series', 0, 'type']
+            //                     }
+            //                 });
+            //                 setSeriesProperty(newSeriesProperty);
+            //             }
+            //
+            //             prevGridData.current.grid[tmp]['dimension'] = (dimension+1).toString();
+            //             prevGridData.current.grid[tmp]['value'] = (optionsBuffer.current[+currentBuffer.current].dataset.source[s][dimension] == null ? 'null' : optionsBuffer.current[+currentBuffer.current].dataset.source[s][dimension]);
+            //             storedPointers.current[tmp + 'value'] = ['dataset', 'source', s, dimension];
+            //         }
+            //     }
+            // }
 
             // isValue = optionsBuffer.current[+currentBuffer.current].series[s].data[0].hasOwnProperty('value');
 
@@ -721,17 +743,17 @@ function EditChart(props) {
     const DEFAULT_PROPERTIES = {
         TITLE: {
             HORIZONTAL_ALIGNMENT: [{
-                    value: 'auto',
-                    label: 'Auto'
-                }, {
-                    value: 'left',
-                    label: 'Left'
-                }, {
-                    value: 'center',
-                    label: 'Center'
-                }, {
-                    value: 'right',
-                    label: 'Right'
+                value: 'auto',
+                label: 'Auto'
+            }, {
+                value: 'left',
+                label: 'Left'
+            }, {
+                value: 'center',
+                label: 'Center'
+            }, {
+                value: 'right',
+                label: 'Right'
             }],
             VERTICAL_ALIGNMENT: [{
                 value: 'auto',
@@ -1105,12 +1127,35 @@ function EditChart(props) {
                                                 </td>
                                             </tr>
                                             <tr className='properties'>
-                                                <td className='properties'>Colour</td>
-                                                <td className='properties'>
-                                                    <InputColor initialValue={s.color.hexvalue} onChange={v => {
-                                                        modify(s.color.directory, v.rgba);
-                                                    }} placement="right" />
-                                                </td>
+
+                                               { Array.isArray(s.color) ?
+                                                   <td>
+                                                       {s.color.map((data, dataIndex) => {
+                                                           return <table className='properties' key={dataIndex}>
+                                                               <tbody>
+                                                                   <tr>
+                                                                       <td>
+                                                                           <InputColor initialValue={data.hexvalue} onChange={v => {
+                                                                               modify(data.directory, v.rgba);
+                                                                           }} placement="right" />
+                                                                        </td>
+                                                                   </tr>
+                                                               </tbody>
+                                                           </table>;
+                                                       })}
+                                                   </td>
+                                               :
+                                               <React.Fragment>
+                                                    <td className='properties'>Colour</td>
+                                                    <td className='properties'>
+                                                        <InputColor initialValue={s.color.hexvalue} onChange={v => {
+                                                            modify(s.color.directory, v.rgba);
+                                                        }} placement="right" />
+                                                    </td>
+                                                </React.Fragment>}
+
+
+
                                             </tr>
                                             <tr className='properties'>
                                                 <td className='properties'>Type</td>
