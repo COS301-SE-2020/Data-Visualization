@@ -25,7 +25,14 @@ class Exports{
      * @param config the config of the whole chart
      */
     static json(config){
-        return {"name":"John", "age":30, "car": null};
+        let fs = require('fs');
+        let jsonData = JSON.stringify(config);
+        fs.writeFile("input.json", jsonData, function(err) {
+            if (err) {
+                console.log(err);
+            }
+        });
+        return "input.json"
     }
     /**
      * This function generates exportable csv of a chart

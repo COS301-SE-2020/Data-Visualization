@@ -73,3 +73,20 @@ function getData() {
     })
   );
 }
+function getJSON() {
+  const req = new XMLHttpRequest();
+
+  req.onreadystatechange = () => {
+    if (req.readyState == 4) {
+      console.log(req.status, JSON.parse(req.responseText));
+    }
+  };
+
+  req.open('POST', 'http://localhost:8000/export/json', true);
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.send(
+      JSON.stringify({
+        apikey: KEY,
+      })
+  );
+}

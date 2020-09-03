@@ -324,7 +324,15 @@ class RestController {
 		let data = ExportsController.json(config);
 		done(data)
 	}
+	/**
+	 * This function generates exportable csv of a chart
+	 * @param config the types of graphs that needs to be updated
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static deleteJSON(config, done, error) {
 
+	}
 	/**
 	 * This function generates exportable csv of a chart
 	 * @param config the types of graphs that needs to be updated
@@ -335,6 +343,8 @@ class RestController {
 		let data = ExportsController.csv(config);
 		done(data)
 	}
+
+
 	/**************** GRAPHS ****************/
 
 	/**
