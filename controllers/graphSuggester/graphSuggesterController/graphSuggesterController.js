@@ -300,11 +300,6 @@ class GraphSuggesterController {
 		let src = [];
 		src[0] = params;
 
-		//TODO add the data like this at some point
-		// for (let i = 0; i < data.length; i++) {
-		// 	src[i + 1] = data[i];
-		// }
-
 		//this constructs the options sent to the Apache eCharts API - this will have to be changed if
 		//a different API is used
 		let option = {
@@ -329,14 +324,14 @@ class GraphSuggesterController {
 		//it is also the default options array
 		if (!graph.includes('pie')) {
 			option.xAxis = {
-				type: 'category',
+				type: 'category', //TODO change this so the type(s) get decided by frontend or by the AI
 				name: xEntries,
 				nameLocation: 'center',
 				nameGap: 30,
 				nameTextStyle: {
 					fontSize: 15,
 				}
-			}; //TODO change this so the type(s) gets decided by frontend or by the AI
+			};
 
 			option.yAxis = {
 				show: !graph.includes('bar'),	//if bar chart, hide y-axis, else show it
