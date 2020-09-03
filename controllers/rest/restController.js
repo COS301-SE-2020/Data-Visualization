@@ -18,7 +18,8 @@
  * 14/08/2020	Marco Lombaard						 Modified getSuggestion to only need metadata for suggestion generation
  * 18/08/2020	Marco Lombaard						 Modified stringsToGraphData to return a 2D array object
  * 18/08/2020	Marco Lombaard						 Added boolsToGraphData and make1DArray functions
- * 02/09/2020    Elna Pistorius    					 Added new exports controller
+ * 02/09/2020   Elna Pistorius    					 Added new exports controller
+ * 03/08/2020   Elna Pistorius      				 Updated JSON exporting function
  *
  * Test Cases: none
  *
@@ -316,32 +317,36 @@ class RestController {
 	/**************** EXPORTS ****************/
 	/**
 	 * This function generates exportable json of a chart
+	 * @param fileName the name of the file that needs to be exported to JSON
 	 * @param config the config of the whole chart
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static exportToJson(config, done, error) {
-		let data = ExportsController.json(config);
-		done(data)
+	static exportToJson(fileName, config, done, error) {
+		try{
+			let data = ExportsController.json(fileName, config);
+			done(data)
+		}
+		catch(err) {
+			error && error(err);
+		}
 	}
-	/**
-	 * This function generates exportable csv of a chart
-	 * @param config the types of graphs that needs to be updated
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 */
-	static deleteJSON(config, done, error) {
 
-	}
 	/**
 	 * This function generates exportable csv of a chart
+	 * @param fileName the name of the file that needs to be exported to JSON
 	 * @param config the types of graphs that needs to be updated
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static exportToCSV(config, done, error) {
-		let data = ExportsController.csv(config);
-		done(data)
+	static exportToCSV(fileName, config, done, error) {
+		try{
+			let data = ExportsController.json(fileName, config);
+			done(data)
+		}
+		catch(err) {
+			error && error(err);
+		}
 	}
 
 

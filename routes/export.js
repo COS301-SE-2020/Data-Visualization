@@ -9,6 +9,7 @@
  * Date          Author            Changes
  * -------------------------------------------------------------------------------
  * 02/08/2020    Elna Pistorius      Original
+ * 03/08/2020    Elna Pistorius      Implemented JSON export endpoint
  *
  * Test Cases: none
  *
@@ -32,8 +33,9 @@ router.post('/json', (req, res) => {
     if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
     else {
         Rest.exportToJson(
-            req.body,
-            (file) => res.status(200).download(__dirname,file, null, ()=> Rest.deleteJSON(req.body)),
+            __dirname + "/"+ req.body.fileName,
+            req.body.config,
+            (fileContent) => res.status(200).attachment(req.body.fileName).send(fileContent),
             (err) => error(res, err)
         );
     }
@@ -42,9 +44,10 @@ router.post('/json', (req, res) => {
 router.post('/csv', (req, res) => {
     if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
     else {
-        Rest.exportToCSV(
-            req.body,
-            (file) => res.status(200).download(file),
+        Rest.exportToJson(
+            __dirname + "/"+ req.body.fileName,
+            req.body.config,
+            (fileContent) => res.status(200).attachment(req.body.fileName).send(fileContent),
             (err) => error(res, err)
         );
     }

@@ -9,6 +9,7 @@
  * Date          Author              Changes
  * -------------------------------------------------------------------------------
  * 02/08/2020    Elna Pistorius      Original
+ * 03/08/2020    Elna Pistorius      Updated JSON exporting function
  *
  * Test Cases: none
  *
@@ -18,28 +19,23 @@
  * Assumptions: None
  * Constraints: None
  */
-
+let fs = require('fs');
 class Exports{
     /**
      * This function generates exportable json of a chart
-     * @param config the config of the whole chart
+     * @param fileName the name of the file that needs to be exported to JSON
+     * @param config the config file of the whole chart that needs to be exported
      */
-    static json(config){
-        let fs = require('fs');
-        let jsonData = JSON.stringify(config);
-        fs.writeFile("input.json", jsonData, function(err) {
-            if (err) {
-                console.log(err);
-            }
-        });
-        return "input.json"
+    static json(fileName, config){
+        return JSON.stringify(config);
     }
     /**
      * This function generates exportable csv of a chart
-     * @param config the types of graphs that needs to be updated
+     * @param fileName the name of the file that needs to be exported to JSON
+     * @param config the config file of the whole chart that needs to be exported
      */
-    static csv(config) {
-        return "Bob Smith,bob@example.com,123-456-7890,123 Fake Street";
+    static csv(fileName, config) {
+        return JSON.stringify(config);
     }
 }
 module.exports = Exports;
