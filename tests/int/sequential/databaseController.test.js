@@ -91,7 +91,8 @@ describe('Testing user management', () => {
 
 	test('Test registration when the user already exists', () => {
 		return Database.register(F_NAME, L_NAME, EMAIL, PASSWORD).catch(({ error }) => {
-			expect(error).toBe(USER_ALREADY_EXISTS_ERROR);
+			//{"code": undefined, "error": undefined, "hint": undefined, "origin": "database", "table": undefined}
+			expect(error.error).toBe(USER_ALREADY_EXISTS_ERROR);
 		});
 	});
 
@@ -244,6 +245,6 @@ describe('Testing with an existing user', () => {
 
 afterAll((done) => {
 	return Database.deregister(EMAIL, PASSWORD).finally(() => {
-		Database.pgPool.end().finally(() => done());
+		return Database.close(() => done());
 	});
 });
