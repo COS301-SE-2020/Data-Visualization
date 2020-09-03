@@ -61,14 +61,9 @@ const GRAPH_NEW_META = { w: 150, h: 150, x: 20, y: 50 };
 const GRAPH_FIELDS = ['title', 'options', 'metadata'];
 const GRAPH_DATA = [GRAPH_NEW_TITLE, GRAPH_NEW_OPTIONS, GRAPH_NEW_META];
 
-test('Test registration of a new user', () => {
-	expect(1).toBe(1);
-});
-
-/*beforeAll((done) => {
+beforeAll((done) => {
 	return Database.deregister(EMAIL, PASSWORD).finally(() => done());
 });
-
 
 describe('Testing user management', () => {
 	beforeAll((done) => {
@@ -96,7 +91,8 @@ describe('Testing user management', () => {
 
 	test('Test registration when the user already exists', () => {
 		return Database.register(F_NAME, L_NAME, EMAIL, PASSWORD).catch(({ error }) => {
-			expect(error).toBe(USER_ALREADY_EXISTS_ERROR);
+			//{"code": undefined, "error": undefined, "hint": undefined, "origin": "database", "table": undefined}
+			expect(error.error).toBe(USER_ALREADY_EXISTS_ERROR);
 		});
 	});
 
@@ -249,8 +245,6 @@ describe('Testing with an existing user', () => {
 
 afterAll((done) => {
 	return Database.deregister(EMAIL, PASSWORD).finally(() => {
-		Database.pgPool.end().finally(() => done());
+		return Database.close(() => done());
 	});
 });
-*/
-

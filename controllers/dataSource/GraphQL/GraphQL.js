@@ -53,30 +53,13 @@ class GraphQL {
 	static getEntityData(src, entity, fieldlist) {
 		if (GraphQL.logging) console.log('GraphQL: ', src);
 		return new Promise((resolve, reject) => {
-			const Q = GraphQL.query(GraphQL.entityDataStr(entity, fieldlist));
-			console.log(Q);
-
 			axios
-				.post(src, Q)
+				.post(src, GraphQL.query(GraphQL.entityDataStr(entity, fieldlist)))
 				.then((res) => {
 					resolve(res.data.data[entity]);
 				})
-				.catch((err) => {
-					console.log(err);
-					reject(err);
-				});
-		});
-		/*
-		if (GraphQL.logging) console.log('GraphQL: ', GraphQL.formatEntity(src, entity));
-		return new Promise((resolve, reject) => {
-			axios
-				.get(GraphQL.formatEntity(src, entity))
-				.then((res) => {
-					const { results } = res.data.d;
-					resolve(results);
-				})
 				.catch((err) => reject(err));
-		});*/
+		});
 	}
 
 	/**
