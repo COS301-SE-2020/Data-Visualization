@@ -476,7 +476,7 @@ function App(props) {
 	const container = window !== undefined ? () => window().document.body : undefined;
 
 	return (
-	
+		
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 

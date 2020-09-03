@@ -79,7 +79,7 @@ function Suggestion(props) {
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Typography.Title level={4}>{props.chartData.title}</Typography.Title>
+                        <Typography.Title level={4} style = {{fontSize: '11pt'}}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
 
@@ -137,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     paper: {
-        padding: theme.spacing(2),
+        padding: theme.spacing(1),
         textAlign: 'center',
         color: theme.palette.text.secondary,
     },
@@ -189,7 +189,7 @@ function Suggestions(props) {
 
         request.user.fittestGraphs = [];
         
-        for(var i = 0; i < request.cache.suggestions.graph.list.length-1; i++){
+        for(var i = 0; i < request.cache.suggestions.graph.list.length; i++){
             if(form.getFieldValue(i) === true){
                 document.getElementById('chartDiv-'+i).style.boxShadow = '';
                 document.getElementById('chartDiv-'+i).style.border = '';
@@ -197,7 +197,7 @@ function Suggestions(props) {
             }
         }
 
-
+        console.log(request.user.fittestGraphs);
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
 
@@ -215,7 +215,7 @@ function Suggestions(props) {
         let requestCharts = function() {
 
             let shouldcontinue = true;
-
+            setLoading(true);
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
 
