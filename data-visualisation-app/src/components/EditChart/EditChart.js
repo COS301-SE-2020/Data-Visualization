@@ -321,6 +321,8 @@ function EditChart(props) {
             let isArray = true;
             let isValue = false;
 
+            let newSeriesProperty = [];
+
             if (optionsBuffer.current[+currentBuffer.current].series.length > 0 && optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('x')) {
                 let s = 0;
                 for (let dimension = 0; dimension < 2; dimension++) {
@@ -332,6 +334,24 @@ function EditChart(props) {
                         seriesProperty.push({name: 'Series 1'});
                         prevGridData.current.grid[tmp]['rowspan'] = 2;
 
+                        optionsBuffer.current[+currentBuffer.current].series[0].color = '#c23531';
+
+                        newSeriesProperty.push({
+                            name: optionsBuffer.current[+currentBuffer.current].dataset.source[0][0],
+                            label: {
+                                value: optionsBuffer.current[+currentBuffer.current].series[0].name,
+                                directory: ['series', 0, 'name']
+                            },
+                            color: {
+                                hexvalue: '#c23531',
+                                directory: ['series', 0, 'color']
+                            },
+                            type: {
+                                value: optionsBuffer.current[+currentBuffer.current].series[0].type,
+                                directory: ['series', 0, 'type']
+                            }
+                        });
+                        setSeriesProperty(newSeriesProperty);
                     }
                     for (let i = 1; i < dataLength+1; i++) {
 
@@ -353,6 +373,25 @@ function EditChart(props) {
                             prevGridData.current.grid[tmp][keyLookup[0]] = 'Series ' + s;
                             seriesProperty.push({name: 'Series ' + s});
                             prevGridData.current.grid[tmp]['rowspan'] = 2;
+
+                            optionsBuffer.current[+currentBuffer.current].series[0].color = '#c23531';
+
+                            newSeriesProperty.push({
+                                name: optionsBuffer.current[+currentBuffer.current].dataset.source[0][0],
+                                label: {
+                                    value: optionsBuffer.current[+currentBuffer.current].series[0].name,
+                                    directory: ['series', 0, 'name']
+                                },
+                                color: {
+                                    hexvalue: '#c23531',
+                                    directory: ['series', 0, 'color']
+                                },
+                                type: {
+                                    value: optionsBuffer.current[+currentBuffer.current].series[0].type,
+                                    directory: ['series', 0, 'type']
+                                }
+                            });
+                            setSeriesProperty(newSeriesProperty);
                         }
 
                         prevGridData.current.grid[tmp]['dimension'] = (dimension+1).toString();
@@ -1045,54 +1084,54 @@ function EditChart(props) {
                             </table>
                         </Collapse.Panel>
 
-                        {/*<Collapse.Panel header="Series" key="4">*/}
-                        {/*    <Collapse defaultActiveKey={['1']} ghost>*/}
-                        {/*        {seriesProperty.map((s, seriesIndex) => {*/}
-                        {/*            return <Collapse.Panel header={s.name} key={seriesIndex}>*/}
-                        {/*                <table className='properties'>*/}
-                        {/*                    <tbody>*/}
-                        {/*                    <tr className='properties'>*/}
-                        {/*                        <td className='properties'>Name</td>*/}
-                        {/*                        <td className='properties'>*/}
-                        {/*                            <Input onPressEnter={e => {*/}
-                        {/*                                modifyChain([{key: ['legend', 'data', seriesIndex], value: e.target.value}, {key: s.label.directory, value: e.target.value}]);*/}
-                        {/*                                let tmp = JSON.parse(JSON.stringify(seriesProperty[seriesIndex]));*/}
-                        {/*                                tmp.label.value = e.target.value;*/}
-                        {/*                                setSeriesProperty(seriesProperty.map((newSeries, newSeriesIndex) => {*/}
-                        {/*                                    if (newSeriesIndex === seriesIndex) return tmp;*/}
-                        {/*                                    else return newSeries;*/}
-                        {/*                                }));*/}
-                        {/*                            }} placeholder={s.label.value}/>*/}
-                        {/*                        </td>*/}
-                        {/*                    </tr>*/}
-                        {/*                    <tr className='properties'>*/}
-                        {/*                        <td className='properties'>Colour</td>*/}
-                        {/*                        <td className='properties'>*/}
-                        {/*                            <InputColor initialValue={s.color.hexvalue} onChange={v => {*/}
-                        {/*                                modify(s.color.directory, v.rgba);*/}
-                        {/*                            }} placement="right" />*/}
-                        {/*                        </td>*/}
-                        {/*                    </tr>*/}
-                        {/*                    <tr className='properties'>*/}
-                        {/*                        <td className='properties'>Type</td>*/}
-                        {/*                        <td className='properties'>*/}
-                        {/*                            <Cascader options={DEFAULT_PROPERTIES.LEGEND.TYPE} onChange={v => {*/}
-                        {/*                                if (v.length > 0) {*/}
-                        {/*                                    modify(s.type.directory, v[0]);*/}
-                        {/*                                    let tmp = JSON.parse(JSON.stringify(seriesProperty));*/}
-                        {/*                                    tmp[seriesIndex].type.value = v[0];*/}
-                        {/*                                    setSeriesProperty(tmp);*/}
-                        {/*                                }*/}
-                        {/*                            }} value={[s.type.value]}/>*/}
-                        {/*                        </td>*/}
-                        {/*                    </tr>*/}
+                        <Collapse.Panel header="Series" key="4">
+                            <Collapse defaultActiveKey={['1']} ghost>
+                                {seriesProperty.map((s, seriesIndex) => {
+                                    return <Collapse.Panel header={s.name} key={seriesIndex}>
+                                        <table className='properties'>
+                                            <tbody>
+                                            <tr className='properties'>
+                                                <td className='properties'>Name</td>
+                                                <td className='properties'>
+                                                    <Input onPressEnter={e => {
+                                                        modifyChain([{key: ['legend', 'data', seriesIndex], value: e.target.value}, {key: s.label.directory, value: e.target.value}]);
+                                                        let tmp = JSON.parse(JSON.stringify(seriesProperty[seriesIndex]));
+                                                        tmp.label.value = e.target.value;
+                                                        setSeriesProperty(seriesProperty.map((newSeries, newSeriesIndex) => {
+                                                            if (newSeriesIndex === seriesIndex) return tmp;
+                                                            else return newSeries;
+                                                        }));
+                                                    }} placeholder={s.label.value}/>
+                                                </td>
+                                            </tr>
+                                            <tr className='properties'>
+                                                <td className='properties'>Colour</td>
+                                                <td className='properties'>
+                                                    <InputColor initialValue={s.color.hexvalue} onChange={v => {
+                                                        modify(s.color.directory, v.rgba);
+                                                    }} placement="right" />
+                                                </td>
+                                            </tr>
+                                            <tr className='properties'>
+                                                <td className='properties'>Type</td>
+                                                <td className='properties'>
+                                                    <Cascader options={DEFAULT_PROPERTIES.LEGEND.TYPE} onChange={v => {
+                                                        if (v.length > 0) {
+                                                            modify(s.type.directory, v[0]);
+                                                            let tmp = JSON.parse(JSON.stringify(seriesProperty));
+                                                            tmp[seriesIndex].type.value = v[0];
+                                                            setSeriesProperty(tmp);
+                                                        }
+                                                    }} value={[s.type.value]}/>
+                                                </td>
+                                            </tr>
 
-                        {/*                    </tbody>*/}
-                        {/*                </table>*/}
-                        {/*            </Collapse.Panel>;*/}
-                        {/*        })}*/}
-                        {/*    </Collapse>*/}
-                        {/*</Collapse.Panel>*/}
+                                            </tbody>
+                                        </table>
+                                    </Collapse.Panel>;
+                                })}
+                            </Collapse>
+                        </Collapse.Panel>
 
                     </Collapse>
                 </div>
