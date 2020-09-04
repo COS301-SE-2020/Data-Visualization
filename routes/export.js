@@ -10,6 +10,7 @@
  * -------------------------------------------------------------------------------
  * 02/08/2020    Elna Pistorius      Original
  * 03/08/2020    Elna Pistorius      Implemented JSON export endpoint
+ * 04/08/2020    Elna Pistorius       Updated CSV exporting endpoint
  *
  * Test Cases: none
  *
@@ -44,10 +45,9 @@ router.post('/json', (req, res) => {
 router.post('/csv', (req, res) => {
     if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
     else {
-        Rest.exportToJson(
-            __dirname + "/"+ req.body.fileName,
+        Rest.exportToCSV(
             req.body.config,
-            (fileContent) => res.status(200).attachment(req.body.fileName).send(fileContent),
+            (fileContent) => res.status(200).send(fileContent),
             (err) => error(res, err)
         );
     }

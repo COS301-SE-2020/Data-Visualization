@@ -20,6 +20,7 @@
  * 18/08/2020	Marco Lombaard						 Added boolsToGraphData and make1DArray functions
  * 02/09/2020   Elna Pistorius    					 Added new exports controller
  * 03/08/2020   Elna Pistorius      				 Updated JSON exporting function
+ * 04/08/2020   Elna Pistorius                       Updated CSV exporting function
  *
  * Test Cases: none
  *
@@ -334,14 +335,13 @@ class RestController {
 
 	/**
 	 * This function generates exportable csv of a chart
-	 * @param fileName the name of the file that needs to be exported to JSON
 	 * @param config the types of graphs that needs to be updated
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static exportToCSV(fileName, config, done, error) {
+	static exportToCSV(config, done, error) {
 		try{
-			let data = ExportsController.json(fileName, config);
+			let data = ExportsController.csv(config);
 			done(data)
 		}
 		catch(err) {
