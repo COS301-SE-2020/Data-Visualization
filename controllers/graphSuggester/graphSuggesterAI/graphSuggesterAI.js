@@ -130,7 +130,7 @@ let graphSuggesterMaker = (function () {
 				}
 			}
 
-			// console.log(this.terminals);
+			 //console.log('Terminals: ', this.terminals);
 		}
 
 		/**
@@ -383,10 +383,10 @@ let graphSuggesterMaker = (function () {
 				//those keys are not graph data, just identifiers
 				//TODO change it so some of this data can be processed(like string data)
 				let name = keys[key]; //the key
-
+				let upper = name.toUpperCase();
 				if (
 					!(
-						(name.includes('ID') || name.includes('Name') || name.includes('Picture') || name.includes('Description') || name.includes('Date')) //TODO periodic data - pretty useful
+						(upper.includes('ID') || upper.includes('NAME') || upper.includes('PICTURE') || upper.includes('DESCRIPTION') || upper.includes('DATE')) //TODO periodic data - pretty useful
 					) &&
 					this.accepted(name) //check that field is in accepted fields
 				) {
@@ -394,7 +394,7 @@ let graphSuggesterMaker = (function () {
 					types[count] = this.fieldTypes[entity][key];
 					options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
 					//eslint-disable-next-line eqeqeq
-				} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {
+				} else if ((upper.includes('NAME') || upper.includes('ID')) && nameKey == null) {
 					//store the name key for later access
 					nameKey = name;
 				}
