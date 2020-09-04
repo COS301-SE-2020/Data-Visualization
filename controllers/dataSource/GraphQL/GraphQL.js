@@ -53,10 +53,13 @@ class GraphQL {
 	static getEntityData(src, entity, fieldlist) {
 		if (GraphQL.logging) console.log('GraphQL: ', src);
 		return new Promise((resolve, reject) => {
+			let graphql =  GraphQL.query(GraphQL.entityDataStr(entity.toLowerCase(), fieldlist));
 			axios
-				.post(src, GraphQL.query(GraphQL.entityDataStr(entity, fieldlist)))
+				.post(src, graphql)
 				.then((res) => {
-					resolve(res.data.data[entity]);
+					let data = res.data.data;
+					let key = Object.keys(data)[0];
+					resolve(data[key]);
 				})
 				.catch((err) => reject(err));
 		});
@@ -90,7 +93,8 @@ class GraphQL {
 		let entityMap = {};
 		meta.types.forEach((type) => (entityMap[type.name] = type));
 
-		const pruneNames = ['Query', '__Schema', '__Type', '__Field', '__InputValue', '__EnumValue', '__Directive'];
+		const allowedTypes =  [ 'Int', 'String', 'Float', 'Boolean', 'Date', 'ID' ];
+		const pruneNames = ['Query', '__Schema', '__Type', '__Field', '__InputValue', '__EnumValue', '__Directive' ];
 		let sets = meta.types.filter((type) => type.kind === 'OBJECT' && !pruneNames.includes(type.name)).map((type) => type.name);
 
 		let items = {};
@@ -102,7 +106,7 @@ class GraphQL {
 			// console.log(entityMap[entity].fields.map((field) => field.name + ' : ' + field.kind));
 
 			let IDfound = false;
-			items[entity] = entityMap[entity].fields.map((field) => {
+			items[entity] = entityMap[entity].fields.filter(field => allowedTypes.includes(field.type.name) ).map((field) => {
 				if (!IDfound && field.type.name === 'ID') {
 					IDfound = true;
 					prims[entity] = field.name;
@@ -115,7 +119,7 @@ class GraphQL {
 
 		sets.forEach((entity) => {
 			associations[entity] = entityMap[entity].fields.filter((field) => field.type.kind === 'OBJECT').map((field) => field.name);
-		});
+		 });
 
 		return { items, associations, sets, types, prims };
 	}
@@ -169,7 +173,7 @@ class GraphQL {
 	}
 
 	static queryEntityData(entity, fieldlist) {
-		return `query EntityDataQuery { ${entity} { ${fieldlist.join(' ')} } }`;
+		return `query EntityDataQuery { ${entity}s { ${fieldlist.join(' ')} } }`;
 	}
 }
 GraphQL.logging = false;

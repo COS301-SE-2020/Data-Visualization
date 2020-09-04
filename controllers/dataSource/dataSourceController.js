@@ -48,7 +48,7 @@ class DataSource {
 					Cache.setMetaData(src, data);
 					resolve();
 				})
-				.catch((err) => reject({error: err, status: 500}));
+				.catch((err) => reject({ error: err, status: 500 }));
 		});
 	}
 
@@ -59,14 +59,23 @@ class DataSource {
 	 * @returns a promise of Odata
 	 */
 	static updateEntityData(src, entity) {
-		return new Promise((resolve, reject) => {
+		// eslint-disable-next-line no-async-promise-executor
+		return new Promise(async (resolve, reject) => {
+			let fieldList = [];
+			let meta;
+			if (isGraphQL) {
+				meta = await this.getMetaData(src);
+				//console.log('datasource metadata: ', meta);
+				fieldList = meta.items[entity];
+
+			}
 			DataSource.Data()
-				.getEntityData(src, entity)
+				.getEntityData(src, entity, fieldList)
 				.then((data) => {
 					Cache.setEntityData(src, entity, data);
 					resolve();
 				})
-				.catch((err) => reject({error: err, status: 500}));
+				.catch((err) => reject({ error: err, status: 500 }));
 		});
 	}
 
@@ -81,7 +90,7 @@ class DataSource {
 			else {
 				DataSource.updateMetaData(src)
 					.then(() => resolve(Cache.getMetaData(src)))
-					.catch((err) => reject({error: err, status: 500}));
+					.catch((err) => reject({ error: err, status: 500 }));
 			}
 		}); //Returns a promise
 	}
@@ -101,7 +110,7 @@ class DataSource {
 						const data = Cache.getEntityList(src);
 						resolve(formatList(src, data));
 					})
-					.catch((err) => reject({error: err, status: 500}));
+					.catch((err) => reject({ error: err, status: 500 }));
 			}
 		}); //Returns a promise
 	}
@@ -124,7 +133,7 @@ class DataSource {
 						const data = Cache.getEntityData(src, entity, field);
 						resolve(formatData(src, entity, field, data));
 					})
-					.catch((err) => reject({error: err, status: 500}));
+					.catch((err) => reject({ error: err, status: 500 }));
 			}
 		});
 	}

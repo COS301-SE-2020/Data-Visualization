@@ -42,11 +42,11 @@ describe('Testing functions that retrieve data from an GraphQL source', () => {
 		});
 	});
 
-	test('Function that retrieves entity-data as JSON from a given GraphQL source entity-url', () => {
-		return GraphQL.getEntityData(SRC_URL, SRC_ENTITY, SRC_FIELD_LIST).then((data) => {
-			expect(data).toMatchSnapshot();
-		});
-	});
+	// test('Function that retrieves entity-data as JSON from a given GraphQL source entity-url', () => {
+	// 	return GraphQL.getEntityData(SRC_URL, SRC_ENTITY, SRC_FIELD_LIST).then((data) => {
+	// 		expect(data).toMatchSnapshot();
+	// 	});
+	// });
 
 	test('Function that tests the parsing of the GraphQL Meta Data', () => {
 		return GraphQL.getMetaData(SRC_URL).then((meta) => {
