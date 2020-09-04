@@ -13,15 +13,46 @@
 	<link rel="stylesheet" type="text/css" href="" >
 </head>
 <body>
-	<div id="page">
-		<div id="body">
-			<h1>Get JSON</h1>
-			<div>
-				<button onclick="getJSON()">getJson</button>
-			</div>
+<div id="page">
+	<div id="body">
+
+		<h1>Login</h1>
+		<div>
+			<input id="log_email" type="email" placeholder="email" value="koos@gmail.com">
+			<input id="log_pass"  type="password" placeholder="password" value="KoosKoekemoer@301">
+			<button onclick="login()">login</button>
 		</div>
+		<h1>Register</h1>
+		<div>
+			<input id="reg_email"  type="email" placeholder="email" value="koos@gmail.com">
+			<input id="reg_pass"  type="password" placeholder="password" value="KoosKoekemoer@301">
+			<input id="reg_fname"  type="text" placeholder="firstname" value="Koos">
+			<input id="reg_lname"  type="text" placeholder="lastname" value="Koekemoer">
+			<button onclick="register()">register</button>
 		</div>
 
+		<h1>Logout</h1>
+		<div>
+			<button onclick="logout()">logout</button>
+		</div>
+
+		<h1>Get data</h1>
+		<div>
+			<button onclick="getData()">getData</button>
+		</div>
+
+		<h1>Get JSON</h1>
+		<div>
+			<button onclick="getJSON()">getJson</button>
+		</div>
+		<h1>Get CSV</h1>
+		<div>
+			<button onclick="getCSV()">getCSV</button>
+		</div>
 	</div>
+</div>
+</div>
+
+</div>
 </body>
 </html>

@@ -68,9 +68,9 @@ function getData() {
   req.open('POST', 'http://localhost:8000/datasource/list', true);
   req.setRequestHeader('Content-Type', 'application/json');
   req.send(
-    JSON.stringify({
-      apikey: KEY,
-    })
+      JSON.stringify({
+        apikey: KEY,
+      })
   );
 }
 function getJSON() {
@@ -78,7 +78,10 @@ function getJSON() {
 
   req.onreadystatechange = () => {
     if (req.readyState == 4) {
+      let jsonData = req.responseText;
+      let contentType = req.getResponseHeader("content-type")
       console.log(req.status, JSON.parse(req.responseText));
+      download(jsonData, "test.json", contentType);
     }
   };
 
@@ -86,7 +89,50 @@ function getJSON() {
   req.setRequestHeader('Content-Type', 'application/json');
   req.send(
       JSON.stringify({
-        apikey: KEY,
+        fileName : "test.json",
+        config : { name: "Elna", surname: "Pist"}
       })
   );
 }
+function download(content, fileName, contentType) {
+  var a = document.createElement("a");
+  var file = new Blob([content], {type: contentType});
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+}
+
+function getCSV() {
+  const req = new XMLHttpRequest();
+
+  req.onreadystatechange = () => {
+    if (req.readyState == 4) {
+      let csv = req.responseText;
+      console.log(req.status, csv);
+      download(csv, "test.csv", "text/csv");
+    }
+  };
+
+  req.open('POST', 'http://localhost:8000/export/csv', true);
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.send(
+      JSON.stringify({
+        "config" :
+            [
+              {
+                "location" : "123 Road Dr",
+                "city_state" : "MyCity ST",
+                "phone" : "555-555-5555",
+                "distance" : "1"
+              },
+              {
+                "location" : "456 Avenue Crt",
+                "city_state" : "MyTown AL",
+                "phone" : "555-867-5309",
+                "distance" : "0"
+              }
+            ]
+      })
+  );
+}
+
