@@ -23,7 +23,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
 import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined} from '@ant-design/icons';
-import {Typography, Menu, Dropdown, Button, message, Form, Checkbox} from 'antd';
+import {Typography, Menu, Dropdown, Button, message, Form, Checkbox, Space} from 'antd';
 import FilterDialog from '../FilterDialog';
 import './Suggestions.scss';
 import request from '../../globals/requests';
@@ -79,7 +79,7 @@ function Suggestion(props) {
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Typography.Title level={4} style = {{fontSize: '11pt'}}>{props.chartData.title}</Typography.Title>
+                        <Typography.Title level={4}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
 
@@ -107,21 +107,43 @@ function Suggestion(props) {
             </div>
             {/*<ReactEcharts option={props.chartData.options} style={{height: '300px', width: '100%'}} />*/}
             <ReactEcharts option={props.chartData.options} />
-            <div style={{marginTop: '10px'}}>
-                <Grid container spacing={3}>
-                    <Grid item xs={2}>
-                        <ShareAltOutlined />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <BookOutlined />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <StarOutlined />
-                    </Grid>
-                    <Grid item xs={6}>
+            <div style={{marginTop: '10px', height: '40px'}}>
+                {/*<Grid container spacing={3}>*/}
+                {/*    <Grid item xs={2}>*/}
+                {/*        <ShareAltOutlined />*/}
+                {/*    </Grid>*/}
+                {/*    <Grid item xs={2}>*/}
+                {/*        <BookOutlined />*/}
+                {/*    </Grid>*/}
+                {/*    <Grid item xs={2}>*/}
+                {/*        <StarOutlined />*/}
+                {/*    </Grid>*/}
+                {/*    <Grid item xs={6}>*/}
+                <Space size={9} align="center">
                         <Button style={{float: 'right'}} onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; props.setShowEditChart(true);}}>Customize</Button>
-                    </Grid>
-                </Grid>
+                        <Button style={{float: 'right'}} onClick={() => {
+                            const req = new XMLHttpRequest();
+
+                            req.onreadystatechange = () => {
+                                if (req.readyState == 4) {
+                                    let csv = req.responseText;
+                                    var a = document.createElement('a');
+                                    var file = new Blob([csv], {type: 'text/csv'});
+                                    a.href = URL.createObjectURL(file);
+                                    a.download = 'test.csv';
+                                    a.click();
+                                }
+                            };
+
+                            req.open('POST', 'http://localhost:8000/export/csv', true);
+                            req.setRequestHeader('Content-Type', 'application/json');
+                            req.send(
+                                JSON.stringify(props.chartData.options)
+                            ); 
+                        }}>Export CSV</Button>
+                </Space>
+                {/*    </Grid>*/}
+                {/*</Grid>*/}
             </div>
         </div>
     );
@@ -137,7 +159,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     paper: {
-        padding: theme.spacing(1),
+        padding: theme.spacing(2),
         textAlign: 'center',
         color: theme.palette.text.secondary,
     },
@@ -189,15 +211,13 @@ function Suggestions(props) {
 
         request.user.fittestGraphs = [];
         
-        for(var i = 0; i < request.cache.suggestions.graph.list.length; i++){
+        for(var i = 0; i < request.cache.suggestions.graph.list.length-1; i++){
             if(form.getFieldValue(i) === true){
-                document.getElementById('chartDiv-'+i).style.boxShadow = '';
-                document.getElementById('chartDiv-'+i).style.border = '';
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
             }
         }
 
-        console.log(request.user.fittestGraphs);
+
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
 
@@ -215,7 +235,7 @@ function Suggestions(props) {
         let requestCharts = function() {
 
             let shouldcontinue = true;
-            setLoading(true);
+
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
 
@@ -458,12 +478,13 @@ function Suggestions(props) {
                                                 form.setFieldsValue(item);
                                               
                                                 if(item[index]  === false){
-                                                    document.getElementById('chartDiv-'+index).style.borderColor = '';
-                                                    //document.getElementById('chartDiv-'+index).style.boxShadow = '';
+                                                    
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '';
+                                                    document.getElementById('chartDiv-'+index).style.border = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#30896B';
-                                                    //document.getElementById('chartDiv-'+index).style.boxShadow = '0 2.8px 2.2px #242424,0 6.7px 5.3px #242424,0 1.5px 1px #242424,0 2.3px 1.9px #242424,0 4.8px 3.4px #242424,0 10px 8px #242424';
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
+                                                    document.getElementById('chartDiv-'+index).style.border = '1px solid #292929';
                                                 }
  
                                                 }}>
@@ -520,3 +541,4 @@ export default Suggestions;
     });
  *
  */
+
