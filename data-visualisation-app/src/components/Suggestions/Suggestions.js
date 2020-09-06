@@ -213,6 +213,10 @@ function Suggestions(props) {
         
         for(var i = 0; i < request.cache.suggestions.graph.list.length; i++){
             if(form.getFieldValue(i) === true){
+                var item = {};
+                item[i] = false;               
+                form.setFieldsValue(item);
+
                 document.getElementById('chartDiv-'+i).style.borderColor = '';
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
             }
@@ -230,14 +234,14 @@ function Suggestions(props) {
         // console.log(graphTypes);
         // console.log(selectedEntities);
         // console.log(selectedFields);
-        // console.log(fittestGraphs);
+         console.log(fittestGraphs);
 
         let newDashbhoardList;
         let requestCharts = function() {
 
             let shouldcontinue = true;
             setLoading(true);
-            
+
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
 
@@ -346,7 +350,6 @@ function Suggestions(props) {
             request.cache.suggestions.graph.list = [];
 
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
-
 
     }, []);
 
