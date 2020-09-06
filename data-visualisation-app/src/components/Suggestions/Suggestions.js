@@ -79,7 +79,7 @@ function Suggestion(props) {
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Typography.Title level={4}>{props.chartData.title}</Typography.Title>
+                        <Typography.Title level={4} style = {{fontSize: '11pt'}}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
 
@@ -211,8 +211,9 @@ function Suggestions(props) {
 
         request.user.fittestGraphs = [];
         
-        for(var i = 0; i < request.cache.suggestions.graph.list.length-1; i++){
+        for(var i = 0; i < request.cache.suggestions.graph.list.length; i++){
             if(form.getFieldValue(i) === true){
+                document.getElementById('chartDiv-'+i).style.borderColor = '';
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
             }
         }
@@ -235,7 +236,8 @@ function Suggestions(props) {
         let requestCharts = function() {
 
             let shouldcontinue = true;
-
+            setLoading(true);
+            
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
 
@@ -479,12 +481,10 @@ function Suggestions(props) {
                                               
                                                 if(item[index]  === false){
                                                     
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '';
-                                                    document.getElementById('chartDiv-'+index).style.border = '';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
-                                                    document.getElementById('chartDiv-'+index).style.border = '1px solid #292929';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#329a77';
                                                 }
  
                                                 }}>
