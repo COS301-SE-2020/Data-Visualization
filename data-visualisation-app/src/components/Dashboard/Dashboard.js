@@ -361,10 +361,11 @@ function Dashboard(props) {
 					<Grid item xs={12} md={4} style={{textAlign: 'right', marginBottom: '25px'}}>
 
 						<Space size={9}>
-						{hasCharts &&
+						{/*{hasCharts &&*/}
 						<Button ghost={!editMode} onClick={(editMode ? onSaveDashboardClick : onEditDashboardClick)}>
 							 {(editMode ? 'Save Dashboard' : 'Edit Dashboard')}
-						</Button>}
+						</Button>
+							{/*}*/}
 						{editMode &&
 							<React.Fragment>
 								{request.user.isLoggedIn &&
