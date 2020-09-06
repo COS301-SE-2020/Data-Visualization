@@ -106,7 +106,7 @@ class Entities extends React.Component {
     request.user.selectedFields = [];
     request.user.graphTypes = ['bar','line', 'pie', 'scatter', 'effectScatter'];
 
-    console.log(request.user.dataSources);
+    //console.log(request.user.dataSources);
     if(request.user.dataSources.length === 0){
       this.setState({
         initLoading: false,

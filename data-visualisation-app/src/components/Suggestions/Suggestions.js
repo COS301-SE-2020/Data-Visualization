@@ -234,7 +234,7 @@ function Suggestions(props) {
         // console.log(graphTypes);
         // console.log(selectedEntities);
         // console.log(selectedFields);
-         console.log(fittestGraphs);
+        // console.log(fittestGraphs);
 
         let newDashbhoardList;
         let requestCharts = function() {

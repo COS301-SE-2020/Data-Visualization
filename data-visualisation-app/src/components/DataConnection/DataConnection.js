@@ -69,7 +69,6 @@ class DataConnection extends React.Component {
     * invoked immediately after a component is mounted (inserted into the tree).
   */
   componentDidMount() {
-    console.log(request.user.isLoggedIn);
       this.getData(res => {
         this.setState({
           initLoading: false,
