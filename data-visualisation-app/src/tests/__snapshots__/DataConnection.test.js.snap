@@ -42,7 +42,7 @@ exports[`DataConnection component renders correctly 1`] = `
                   <a
                     href="https://ant.design"
                   >
-                    https://services.odata.org/V2/Northwind/Northwind.svc
+                    https://services.odata.org/V2/Northwind/Northwind.svc1
                   </a>
                 </h4>
                 <div

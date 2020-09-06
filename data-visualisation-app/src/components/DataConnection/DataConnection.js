@@ -142,7 +142,8 @@ class DataConnection extends React.Component {
     * If user is logged in, delete on backend and front end.
     * If user is not logged in, add item only front end.
   */
-  addItem = (values) => {
+  addItem = (uri) => {
+
     var id = generateID();
     let attempt = this;
     console.log(request.user.apikey);
@@ -150,14 +151,14 @@ class DataConnection extends React.Component {
       * If user is logged in, add item on backend and front end.
     */
     if(request.user.isLoggedIn){
-      request.dataSources.add(request.user.apikey, values.uri, function(result) {
+      request.dataSources.add(request.user.apikey, uri, function(result) {
        
         if (result === constants.RESPONSE_CODES.SUCCESS) {
 
           request.user.dataSources.push({
             'id': request.user.addedSourceID,
             'email': request.user.email,
-            'sourceurl': values.uri
+            'sourceurl': uri
           });
 
           attempt.setState(previousState => ({
@@ -176,7 +177,7 @@ class DataConnection extends React.Component {
       request.user.dataSources.push({
         'id': id,
         'email': request.user.email,
-        'sourceurl': values.uri
+        'sourceurl': uri
       });
 
       this.setState(previousState => ({
@@ -251,7 +252,7 @@ class DataConnection extends React.Component {
                   avatar={
                     <Avatar src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png" />
                   }
-                  title={item.sourceurl}
+                  title={item.sourceurl.slice(0, -1)}
                   description={item.id}
                 />
                 <div></div>

@@ -33,7 +33,7 @@ import { Form } from 'antd';
 */
 
 const AddConnectionDialog = (props) => {
-
+    const { Option } = Select;
     const [visible, setVisible] = useState(true);
 
     const layout = {
@@ -48,8 +48,17 @@ const AddConnectionDialog = (props) => {
       * Update props value.
     */ 
     const onFinish = values => {
-        //send url to database
-        props.addItem(values);
+        var ulteredURI;
+
+        if(values.dataSourceItem === 'OData'){
+            ulteredURI = values.uri.concat('1');
+            props.addItem(ulteredURI);
+        }
+        else if(values.dataSourceItem === 'Other'){
+            ulteredURI = values.uri.concat('2');
+            props.addItem(ulteredURI);
+        }
+     
         props.changeState();
         setVisible(false);
     };
@@ -69,17 +78,17 @@ const AddConnectionDialog = (props) => {
         setVisible(false);
     };
 
-    const selectBefore = (
-        <Select defaultValue="http://" className="select-before">
-            <Select.Option value="http://">http://</Select.Option>
-            <Select.Option value="https://">https://</Select.Option>
-        </Select>
-    );
+    // const selectBefore = (
+    //     <Select defaultValue="OData" className="select-before">
+    //         <Select.Option value="OData">OData</Select.Option>
+    //         <Select.Option value="Other">Other</Select.Option>
+    //     </Select>
+    // );
 
     return (
         <div >
             <Modal
-                title="Enter URI"
+                title='Add data source'
                 visible={visible}
                 onCancel={handleCancel}
                 footer={[
@@ -88,20 +97,32 @@ const AddConnectionDialog = (props) => {
             >
                 <Form
                     {...layout}
-                    name="basic"
+                    name='basic'
                     initialValues={{ remember: true }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                 >
                     <Form.Item
-                        name="uri"
+                        name='dataSourceItem'
+                        rules={[{ required: true, message: 'Please select your data source type' }]}
+                    >
+                        <Select 
+                            name='dataSourceType'
+                            placeholder='Please select a data source type'>
+                            <Option value='OData'>OData</Option>
+                            <Option value='Other'>Other</Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        name='uri'
                         rules={[{ required: true, message: 'Please input your a data source URI' }]}
                     >
-                        <Input addonBefore={selectBefore} />
+                        <Input placeholder='Please insert data source uri'/>
                     </Form.Item>
 
                     <Form.Item {...tailLayout}>
-                        <Button type="primary"  htmlType="submit">
+                        <Button type='primary'  htmlType='submit'>
                             Add
                         </Button>
                     </Form.Item>
