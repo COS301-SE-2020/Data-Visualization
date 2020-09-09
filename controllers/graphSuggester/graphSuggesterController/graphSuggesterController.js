@@ -334,6 +334,9 @@ class GraphSuggesterController {
 				nameTextStyle: {
 					fontSize: 15,
 				},
+				axisLabel: {
+					rotate: 330,
+				},
 			};
 
 			option.yAxis = {
