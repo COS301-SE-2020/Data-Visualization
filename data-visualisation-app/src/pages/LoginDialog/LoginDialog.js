@@ -21,14 +21,13 @@
 
 import React from 'react';
 import {useState} from 'react';
-import {Button, Modal, Input, Tooltip, AutoComplete, Select} from 'antd';
+import {Button, Modal, Input, Tooltip, AutoComplete, Select, notification, Menu, Dropdown, message  } from 'antd';
 import {Form, Checkbox, Spin} from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, UserOutlined, PoweroffOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import {useGlobalState} from '../../globals/Store';
 import './LoginDialog.scss';
-import { notification } from 'antd';
 
 
 
@@ -417,13 +416,25 @@ function LoginDialog(props) {
     console.log('Failed:', errorInfo);
   };
 
+
+  const menu = (
+    <Menu >
+      <Menu.Item onClick={handleLogout} key="1" icon={<PoweroffOutlined />}>
+        Logout
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <div id = 'login-div'>
     
         {
             (props.isLoggedIn || state.isLoggedIn) ?
-                <Button ghost className='button__login' id = 'logout' type="dashed" onClick={handleLogout}>Logout</Button>
-            :
+                //<div><Button ghost className='button__login' id = 'logout' type="dashed" onClick={handleLogout}>Logout</Button> <p id = 'loginMessage'>Welcome, {request.user.firstName}</p> </div>
+                <Dropdown.Button className = 'dropdown-btn' overlay={menu} placement="bottomCenter" icon={<UserOutlined />}>
+                  {request.user.firstName}
+                </Dropdown.Button>
+                :
                 <Button ghost className='button__login' id = 'loginButton' type="dashed" onClick={showModal}>Login/Sign Up</Button>
         }
       <Modal

@@ -44,7 +44,7 @@ function Explore(props) {
     exploreHandler = <Entities setStage= {props.setExploreStage}/>;
   }
   if(props.exploreStage === 'suggestions') {
-    exploreHandler = <Suggestions setStage= {props.setExploreStage} newPage={true}/>;
+    exploreHandler = <Suggestions setStage= {props.setExploreStage} newPage={true} showEditChart={props.showEditChart} setShowEditChart={props.setShowEditChart}/>;
   }
  
   return (

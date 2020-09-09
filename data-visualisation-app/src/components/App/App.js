@@ -136,6 +136,7 @@ const useStyles = makeStyles((theme) => ({
 			width: `calc(100% - ${drawerWidth}px)`,
 			marginLeft: drawerWidth,
 		},
+		zIndex: '4'
 	},
 	appBarNotLoggedIn: {
 		[theme.breakpoints.up('sm')]: {
@@ -187,8 +188,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	typographyHeading: {
 		color: '#3EC195',
-		fontSize: '1.5em',
-		marginRight: '100px', 
+		fontSize: '1.5em', 
 	},
 	typographyLocationHeading: {
 		color: '#969698',
@@ -253,6 +253,7 @@ function App(props) {
 	const [dashboardName, setDashboardName] = React.useState('Dashboard1');
 	const [isAddingDashboard, setIsAddingDashboard] = useState(false);
 	const [dashboardIndex, setDashboardIndex] = useState('');
+	const [showEditChart, setShowEditChart] = useState(false);
 
 	const handlePageType = (t) => {
 		if (pageType !== 'dashboards' && t === 'dashboards') {
@@ -274,8 +275,11 @@ function App(props) {
 		if(pageType === 'explore' && exploreStage === 'entities'){
 			setExploreStage('dataConnection');
 		}
-		if(pageType === 'explore' && exploreStage === 'suggestions'){
+		if(pageType === 'explore' && exploreStage === 'suggestions' && !showEditChart){
 			setExploreStage('entities');
+		}
+		if(pageType === 'explore' && exploreStage === 'suggestions' && showEditChart){
+			setShowEditChart(false);
 		}
 		if(pageType === 'dashboards' && dashboardStage === 'dashboardHome'){
 			setPageType('home');
@@ -285,6 +289,7 @@ function App(props) {
 			setDashboardIndex('');
 			setIsAddingDashboard(false);
 		}		
+		
 	};
 
 	/**
@@ -353,7 +358,7 @@ function App(props) {
 		page = <Home pType={pageType} handlePageType={handlePageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />;
 	}
 	if(pageType === 'explore'){
-		page = <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />;
+		page = <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} showEditChart={showEditChart} setShowEditChart={setShowEditChart}/>;
 	}
 	
 	if(pageType === 'trash'){
@@ -509,8 +514,9 @@ function App(props) {
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
 							pageTitle
 						} >
-
 						</Typography>
+						
+
 						<LoginDialog
                             isLoggedIn={loginButton}
 							handlePageType ={handlePageType}

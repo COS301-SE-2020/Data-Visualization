@@ -177,7 +177,7 @@ function IGALoading() {
  */
 function Suggestions(props) {
 
-    const [showEditChart, setShowEditChart] = useState(false);
+    
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
@@ -204,7 +204,7 @@ function Suggestions(props) {
         let newCurrentCharts = JSON.parse(JSON.stringify(currentCharts));
         newCurrentCharts[chartIndex].options = request.cache.suggestions.graph.list[chartIndex];
         setCurrentCharts(newCurrentCharts);
-        setShowEditChart(false);
+        props.setShowEditChart(false);
     };
 
     const moreLikeThis = values =>{
@@ -458,7 +458,7 @@ function Suggestions(props) {
     }
 
 
-    return (showEditChart ? <EditChart options={editChartParameters.current.options} mutablePointer={request.cache.suggestions.graph.list} directory={editChartParameters.current.directory} synchronizeChanges={synchronizeChanges}/>
+    return (props.showEditChart ? <EditChart options={editChartParameters.current.options} mutablePointer={request.cache.suggestions.graph.list} directory={editChartParameters.current.directory} synchronizeChanges={synchronizeChanges} setShowEditChart={props.setShowEditChart}/>
         :
         (
         loadedFirst ?
@@ -495,7 +495,7 @@ function Suggestions(props) {
                                                     <Checkbox className = 'checkboxItem' hidden = {true} style={{visibility: 'hidden'}}></Checkbox>
                                                 </Form.Item>
                                                 {/*<Suggestion id={index} chartData={achart}/>*/}
-                                                <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={setShowEditChart} />
+                                                <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={props.setShowEditChart} />
                                             </div>
                                         </Grid>;
                             })}
