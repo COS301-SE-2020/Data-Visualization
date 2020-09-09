@@ -23,7 +23,8 @@
 const UsersRoute = require('./users.js');
 const DashboardsRoute = require('./dashboards.js');
 const GraphsRoute = require('./graphs.js');
+const ExportRoute = require('./export');
 const { DataSourceRouteSrc, DataSourceRouteMeta } = require('./dataSource.js');
 const Suggestions = require('./suggestions.js');
 
-module.exports = { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions };
+module.exports = { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions , ExportRoute};

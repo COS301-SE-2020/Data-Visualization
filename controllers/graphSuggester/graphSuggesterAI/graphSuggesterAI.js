@@ -22,6 +22,7 @@
  * 14/08/2020	 Marco Lombaard		Suggestions now generate from metadata and do not require sample data
  * 14/08/2020	 Marco Lombaard		Renamed limitFields to setFields, notInExclusions to accepted
  * 14/08/2020	 Marco Lombaard		Moved constructOption to graphSuggesterController.js
+ * 01/09/2020	 Marco Lombaard		Added scaleFitnessTarget and a way to scale fitness for multiple characteristics
  *
  * Test Cases: none
  *
@@ -62,9 +63,13 @@ let graphSuggesterMaker = (function () {
 			this.fittestGraphType = null; //the target graph type(will have the lowest fitness value, i.e. best fitness)
 			this.fittestFieldType = null; //the target field type(will have the lowest fitness value, i.e. best fitness)
 			this.mutationRate = 0.3; //the rate at which the population should mutate
-			//should we initialise these?
 
-			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter']);
+			this.graphTypeWeights = [];	//the weights for each of the graph types
+			this.fieldTypeWeights = [];	//the weights for each of the field types
+
+			this.defaultWeight = 10;
+
+			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter' ]);
 			//TODO 'parallel', 'candlestick', 'map', 'funnel', 'custom'
 		}
 
@@ -75,11 +80,11 @@ let graphSuggesterMaker = (function () {
 		 */
 		setGraphTypes(newTypes) {
 			this.graphTypes = [];
+			this.graphTypeWeights = [];
 			for (let i = 0; i < newTypes.length; i++) {
 				this.graphTypes[i] = newTypes[i];
+				this.graphTypeWeights[newTypes[i]] = this.defaultWeight;
 			}
-
-			//TODO maybe add some way to carry over/reset weights?
 		}
 
 		/**
@@ -118,11 +123,14 @@ let graphSuggesterMaker = (function () {
 					this.fieldTypes[typeKeys[i]] = [];
 					for (let j = 0; j < types[typeKeys[i]].length; j++) {
 						this.fieldTypes[typeKeys[i]][j] = types[typeKeys[i]][j]; //make a deep copy
+						if (!this.fieldTypeWeights[types[typeKeys[i]][j]]) {
+							this.fieldTypeWeights[types[typeKeys[i]][j]] = this.defaultWeight;
+						}
 					}
 				}
 			}
 
-			// console.log(this.terminals);
+			 //console.log('Terminals: ', this.terminals);
 		}
 
 		/**
@@ -149,7 +157,7 @@ let graphSuggesterMaker = (function () {
 
 				graphType = this.graphTypes[index]; //select a random graph type
 				fieldType = types[titleIndex]; //obtain the type of the selected field
-				chromosomes[i] = [titleIndex, graphType, fieldType]; //set up the chromosome properties
+				chromosomes[i] = [ titleIndex, graphType, fieldType ]; //set up the chromosome properties
 				//console.log(i+': ', chromosomes[i]);
 			}
 			//console.log('Options: ', options);
@@ -267,6 +275,18 @@ let graphSuggesterMaker = (function () {
 				fitness += penalty;
 			}
 
+			if (this.fieldTypeWeights[chromosome[2]]) {	//if the field type has a weight
+				fitness+=this.fieldTypeWeights[chromosome[2]]; //add the weight
+			} else {
+				fitness+=this.defaultWeight; //add a default weight
+			}
+
+			if (this.graphTypeWeights[chromosome[1]]) { //if the graph type has a weight
+				fitness+=this.graphTypeWeights[chromosome[1]]; //add the weight
+			} else {
+				fitness+=this.defaultWeight; //add a default weight
+			}
+
 			return fitness;
 
 			//TODO consider decoupling chromosome representation from evaluation(like characteristic arrays being evaluated instead of each individual attribute)
@@ -283,35 +303,35 @@ let graphSuggesterMaker = (function () {
 			let temp; //variable used in swapping
 
 			switch (degree) {
-				case 0:
-					temp = parent1[1]; //swap graph types
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					break;
+			case 0:
+				temp = parent1[1]; //swap graph types
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				break;
 
-				case 1:
-					temp = parent1[2]; //swap fields(and therefore their types)
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 1:
+				temp = parent1[2]; //swap fields(and therefore their types)
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				case 2:
-					temp = parent1[1]; //swap all attributes(basically a reproduction)
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					temp = parent1[2];
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 2:
+				temp = parent1[1]; //swap all attributes(basically a reproduction)
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				temp = parent1[2];
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				default:
-					break; //should never reach this, default to reproduction
+			default:
+				break; //should never reach this, default to reproduction
 			}
 
 			//TODO consider decoupling representation from crossover, as suggested in calculateFitness
@@ -363,10 +383,10 @@ let graphSuggesterMaker = (function () {
 				//those keys are not graph data, just identifiers
 				//TODO change it so some of this data can be processed(like string data)
 				let name = keys[key]; //the key
-
+				let upper = name.toUpperCase();
 				if (
 					!(
-						(name.includes('ID') || name.includes('Name') || name.includes('Picture') || name.includes('Description') || name.includes('Date')) //TODO periodic data - pretty useful
+						(upper.includes('ID') || upper.includes('NAME') || upper.includes('PICTURE') || upper.includes('DESCRIPTION') || upper.includes('DATE')) //TODO periodic data - pretty useful
 					) &&
 					this.accepted(name) //check that field is in accepted fields
 				) {
@@ -374,7 +394,7 @@ let graphSuggesterMaker = (function () {
 					types[count] = this.fieldTypes[entity][key];
 					options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
 					//eslint-disable-next-line eqeqeq
-				} else if ((name.includes('Name') || name.includes('ID')) && nameKey == null) {
+				} else if ((upper.includes('NAME') || upper.includes('ID')) && nameKey == null) {
 					//store the name key for later access
 					nameKey = name;
 				}
@@ -427,6 +447,36 @@ let graphSuggesterMaker = (function () {
 		changeFitnessTarget(graphType, fieldType) {
 			this.fittestGraphType = graphType;
 			this.fittestFieldType = fieldType;
+			this.scaleFitnessTarget(graphType, fieldType);
+		}
+
+		/**
+		 * This function scales the fitness values so that all characteristics have a fitness value
+		 * @param graphType the graphType to make fitter
+		 * @param fieldType the fieldType to make fitter
+		 */
+		scaleFitnessTarget(graphType, fieldType) {
+			this.graphTypeWeights[graphType]--;	//better fitness
+			if (this.graphTypeWeights[graphType] === -1) {//if we go below 0 then everyone has to move up
+				let keys = Object.keys(this.graphTypeWeights);
+
+				for (let i = 0; i < keys.length; i++) {	//everyone else gets worse fitness(if >10 fitness targets are used this is necessary)
+					this.graphTypeWeights[keys[i]]++;	//set to worse fitness(best fitness will be 0, the rest will move down)
+				}
+			}
+
+			if (!this.fieldTypeWeights[fieldType]) { //if we haven't encountered this type yet
+				this.fieldTypeWeights[fieldType] = this.defaultWeight;
+			}
+
+			this.fieldTypeWeights[fieldType]--;//better fitness
+			if (this.fieldTypeWeights[fieldType] === -1) {//if we go below 0 then everyone has to move up
+				let keys = Object.keys(this.fieldTypeWeights);
+
+				for (let i = 0; i < keys.length; i++) { //everyone else gets worse fitness(if >10 fitness targets are used this is necessary)
+					this.fieldTypeWeights[keys[i]]++;	//set to worse fitness(best fitness will be 0, the rest will move down)
+				}
+			}
 		}
 
 		/**
@@ -443,8 +493,6 @@ let graphSuggesterMaker = (function () {
 		 * @return {boolean} true if the field is in accepted fields, false otherwise
 		 */
 		accepted(name) {
-			//console.log(this.acceptedFields);
-			//console.log(name);
 			if (this.acceptedFields.length === 0) {
 				return true;
 			}
@@ -461,7 +509,8 @@ let graphSuggesterMaker = (function () {
 		 * @return {graphSuggesterAI} the AI that generates suggestions.
 		 */
 		getInstance: function () {
-			if (instance === null) {
+			// eslint-disable-next-line eqeqeq
+			if (instance == null) {
 				instance = new graphSuggesterAI();
 				instance.constructor = null;
 			}

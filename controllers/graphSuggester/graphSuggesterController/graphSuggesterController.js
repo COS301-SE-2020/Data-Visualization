@@ -21,6 +21,7 @@
  * 14/08/2020	 Marco Lombaard						Moved chart construction here, added isInitialised function, modified setMetadata
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
  * 17/08/2020	 Marco Lombaard						Added assembleGraph function, selectEntity now returns an object
+ * 02/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
  *
  * Test Cases: none
  *
@@ -73,7 +74,7 @@ class GraphSuggesterController {
 	 */
 	static getSuggestions(entity, source) {
 		if (!this.isInitialised()) {
-			console.log("Metadata isn't initialised, returning null...");
+			console.log('Metadata isn\'t initialised, returning null...');
 			return null;
 		}
 		if (!this.metadata[source]) {
@@ -111,21 +112,23 @@ class GraphSuggesterController {
 
 		if (isAccepted) {
 			let suggestion = graphSuggesterAI.getSuggestions(entity);
+			//console.log('Suggestion: ', suggestion);
 			// eslint-disable-next-line eqeqeq
 			if (suggestion == null) {
 				console.log('Received null suggestion');
 				return null;
 			}
-			let option = this.constructOption(suggestion[1], [suggestion[3], 'value'], suggestion[3], 'value', entity + ': ' + suggestion[0]);
+			let option = this.constructOption(suggestion[1], [ suggestion[3], 'value' ], suggestion[3], 'value', entity + ': ' + suggestion[0]);
 			//console.log(option);
 			let chartSuggestion = {
 				fieldType: suggestion[2],
 				option: option,
 			};
+			//console.log('Chart: ', chartSuggestion);
 			return chartSuggestion;
 		}
 
-		console.log(entity + ' is not among ', entities);
+		console.log(entity + ' is not among ', entities);//if we reach this point then we have an invalid suggestion
 		return null;
 	}
 
@@ -149,13 +152,15 @@ class GraphSuggesterController {
 	}
 
 	/**
+	 * This function sets the entities that can be used in suggestion generation
+	 * @param entities the entities that can be used in suggestion generation
 	 */
 	static limitEntities(entities) {
 		this.acceptedEntities = {};
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-				this.acceptedEntities[entities[i].datasource] = [entities[i].entityName]; //create it and store the entity
+				this.acceptedEntities[entities[i].datasource] = [ entities[i].entityName ]; //create it and store the entity
 			} else {
 				this.acceptedEntities[entities[i].datasource].push(entities[i].entityName); //add the name to the existing array
 			}
@@ -237,7 +242,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log("Check that 'encode' is not empty");
+			console.log('Check that \'encode\' is not empty');
 			return false;
 		}
 
@@ -245,7 +250,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log("check that 'encode' has keys");
+			console.log('check that \'encode\' has keys');
 		}
 
 		let fieldIndex = -1; //the index at which values are found in all entries
@@ -296,11 +301,6 @@ class GraphSuggesterController {
 		let src = [];
 		src[0] = params;
 
-		//TODO add the data like this at some point
-		// for (let i = 0; i < data.length; i++) {
-		// 	src[i + 1] = data[i];
-		// }
-
 		//this constructs the options sent to the Apache eCharts API - this will have to be changed if
 		//a different API is used
 		let option = {
@@ -310,8 +310,6 @@ class GraphSuggesterController {
 			dataset: {
 				source: src,
 			},
-			xAxis: { type: 'category' }, //TODO change this so the type(s) gets decided by frontend or by the AI
-			yAxis: {},
 			series: [
 				//construct the series of graphs, this could be one or more graphs
 				{
@@ -325,15 +323,68 @@ class GraphSuggesterController {
 		};
 		//the current options array works for line, bar, scatter, effectScatter charts
 		//it is also the default options array
+		if (!graph.includes('pie')) {
+			option.xAxis = {
+				type: 'category', //TODO change this so the type(s) get decided by frontend or by the AI
+				name: xEntries,
+				nameLocation: 'center',
+				nameGap: 30,
+				nameTextStyle: {
+					fontSize: 15,
+				}
+			};
 
-		if (graph.includes('pie')) {
-			//for pie charts
+			option.yAxis = {
+				show: !graph.includes('bar'),	//if bar chart, hide y-axis, else show it
+			};
+
+			if (graph.includes('bar')) {
+				option.tooltip = {
+					trigger: 'axis',
+					formatter: '{c}',
+					axisPointer: {
+						type: 'shadow',
+					}
+				};
+			} else {
+				option.tooltip = {
+					trigger: 'axis',
+					formatter: '{c}',
+					axisPointer: {
+						type: 'line',
+					}
+				};
+			}
+		}
+		if (graph.includes('pie')) {//for pie charts
+
+			option.legend = {
+				type: 'scroll',
+				orient: 'vertical',
+				right: 10,
+				top: 20,
+				bottom: 20,
+				selected: [],
+			};
+
+			option.tooltip = {
+				trigger: 'item',
+				formatter: '{c}',
+				axisPointer: {
+					type: 'none',
+				}
+			};
+
 			option.series = [
 				{
 					type: graph,
 					radius: '60%',
+					labelLine: {
+						show: false
+					},
 					label: {
-						formatter: '{b}: {@' + yEntries + '} ({d}%)',
+						show: false,
+						position: 'center'
 					},
 					encode: {
 						itemName: xEntries,
@@ -351,6 +402,8 @@ class GraphSuggesterController {
 			//for funnel charts - TODO to be added
 		}
 
+		//console.log(option);
+
 		return option;
 	}
 
@@ -359,7 +412,7 @@ class GraphSuggesterController {
 			console.log('Not yet initialised');
 			return null;
 		}
-
+		//console.log(this.metadata);
 		let keys = Object.keys(this.acceptedEntities); //list the sources(sources are keys to acceptedEntities)
 
 		let source;
@@ -367,28 +420,56 @@ class GraphSuggesterController {
 
 		if (keys && keys.length > 0) {
 			//if a filter was set
-			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a source index
+			let num = Math.floor(Math.random() * keys.length);
+			let key = keys[num]; //pick a source index
 
+			// eslint-disable-next-line eqeqeq
+			if(key == null || !key) {
+				console.log('Selected source key was undefined/null, key index: ', num);
+				console.log('Source Keys: ', keys);
+				return null;
+			}
+			
 			entity['datasource'] = key;
 
 			source = this.acceptedEntities[key]; //select the source entities
 
-			entity['entityName'] = source[Math.floor(Math.random() * source.length)];
+			entity['entityName'] = source[Math.floor(Math.random() * source.length)];	//select a random entity from the source
 
-			//console.log(this.metadata, ':', entity['datasource']);
+			// eslint-disable-next-line eqeqeq
+			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {
+				console.log('Entity metadata is not defined');
+				console.log(this.metadata, ':', entity['datasource']);
+				return null;
+			}
 
-			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']);
-			entity['entitySet'] = this.metadata[entity['datasource']].sets[index];
+			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']);	//select the index of the entity in metadata
+			entity['entitySet'] = this.metadata[entity['datasource']].sets[index];	//select the set name(different from the entity name) for database querying
 
-			return entity; //select a random entity
+			return entity; //return the random entity
 		} else {
 			//else just pick from all options
 			keys = Object.keys(this.metadata); //list the sources(sources are keys to acceptedEntities)
 
-			let key = keys[Math.floor(Math.random() * keys.length)]; //pick a metadata source index
+			let num = Math.floor(Math.random() * keys.length);
+			let key = keys[num]; //pick a metadata source index
+			// eslint-disable-next-line eqeqeq
+			if (key == null || !key) {
+				console.log('Selected source key was undefined/null, key index: ', num);
+				console.log('Source Keys: ', keys);
+				return null;
+			}
 			entity['datasource'] = key;
 
-			source = this.metadata[key]['items']; //source entities are listed in 'items' - select it
+			let source = this.metadata[key];
+
+			if (source && source['items']) {
+				source = source['items']; //source entities are listed in 'items' - select it
+			} else {
+				console.log('Metadata is empty in selectEntities');
+				return null;
+			}
+
 			keys = Object.keys(source); //select the entity keys
 
 			const index = Math.floor(Math.random() * keys.length);
@@ -406,6 +487,7 @@ class GraphSuggesterController {
 	 * @param data the chart data to populate with
 	 * @return suggestion the full chart with data
 	 */
+
 	static assembleGraph(suggestion, { data }) {
 		//console.log(data);
 		// eslint-disable-next-line eqeqeq
@@ -413,10 +495,25 @@ class GraphSuggesterController {
 			console.log('No suggestion object to add data to');
 			return suggestion;
 		}
+		let selectedFields = [ false ];
 
+		let count = 0;
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
+			if (count < 5 && data[i] !== 0) {
+				selectedFields[i + 1] = true;//get the first 5 nonnull values
+				count++;
+			} else {
+				selectedFields[i+1] = false;
+			}
 		}
+
+		if (suggestion['legend']) {	//if we have defined a legend
+			suggestion['legend']['selected'] = selectedFields;	//set the selection to the first 5 nonnull values
+		}
+
+
+		console.log('suggestion w/ data', suggestion);
 
 		return suggestion;
 	}
