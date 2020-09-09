@@ -519,7 +519,7 @@ class GraphSuggesterController {
 			suggestion['legend']['selected'] = selectedFields; //set the selection to the first 5 nonnull values
 		}
 
-		console.log('suggestion w/ data', suggestion);
+		//console.log('suggestion w/ data', suggestion);
 
 		return suggestion;
 	}
