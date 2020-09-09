@@ -198,7 +198,7 @@ class RestController {
 					error && error(err);
 				});
 		} catch (err) {
-			error && error({error: err, status: 500});
+			error && error({ error: err, status: 500 });
 		}
 	}
 
@@ -212,7 +212,7 @@ class RestController {
 			let randEntity;
 			let suggestion;
 
-			const maxTime = 10;
+			const maxTime = 1; //10;
 			let timer = 0;
 			let timedout = false;
 
@@ -220,13 +220,13 @@ class RestController {
 				if (timer < maxTime) {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
-					//console.log('randEntity:', randEntity);
+					console.log('randEntity:', randEntity);
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
-				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' , status: 500});
+				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined', status: 500 });
 			} else if (!suggestion) {
 				done({});
 			} else {
@@ -255,7 +255,7 @@ class RestController {
 					.catch((err) => error & error(err));
 			}
 		} else {
-			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first' , status:500});
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status: 500 });
 		}
 	}
 
@@ -324,11 +324,10 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static exportToJson(fileName, config, done, error) {
-		try{
+		try {
 			let data = ExportsController.json(fileName, config);
-			done(data)
-		}
-		catch(err) {
+			done(data);
+		} catch (err) {
 			error && error(err);
 		}
 	}
@@ -340,15 +339,13 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static exportToCSV(config, done, error) {
-		try{
+		try {
 			let data = ExportsController.csv(config);
-			done(data)
-		}
-		catch(err) {
+			done(data);
+		} catch (err) {
 			error && error(err);
 		}
 	}
-
 
 	/**************** GRAPHS ****************/
 
@@ -555,6 +552,5 @@ function outputSuggestionMeta(src, item, set, field) {
 	console.log('field: ', field);
 	console.log('=====================================');
 }
-
 
 module.exports = RestController;
