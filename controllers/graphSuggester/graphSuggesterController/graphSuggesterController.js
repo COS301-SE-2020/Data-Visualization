@@ -112,7 +112,7 @@ class GraphSuggesterController {
 
 		if (isAccepted) {
 			let suggestion = graphSuggesterAI.getSuggestions(entity);
-			console.log('Suggestion: ', suggestion);
+			//console.log('Suggestion: ', suggestion);
 			// eslint-disable-next-line eqeqeq
 			if (suggestion == null) {
 				console.log('Received null suggestion');
@@ -124,10 +124,11 @@ class GraphSuggesterController {
 				fieldType: suggestion[2],
 				option: option,
 			};
+			//console.log('Chart: ', chartSuggestion);
 			return chartSuggestion;
 		}
 
-		console.log(entity + ' is not among ', entities);
+		console.log(entity + ' is not among ', entities);//if we reach this point then we have an invalid suggestion
 		return null;
 	}
 
@@ -411,7 +412,7 @@ class GraphSuggesterController {
 			console.log('Not yet initialised');
 			return null;
 		}
-
+		//console.log(this.metadata);
 		let keys = Object.keys(this.acceptedEntities); //list the sources(sources are keys to acceptedEntities)
 
 		let source;

@@ -30,8 +30,10 @@ const staticPath = '/data-visualisation-app/build/';
 // const session = require('express-session');
 // const pgStore = require('connect-pg-simple')(session);
 // const { Database } = require('./controllers');
-const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions } = require('./routes');
-const { Authentication } = require('./controllers');
+
+const { UsersRoute, DashboardsRoute, GraphsRoute, DataSourceRouteSrc, DataSourceRouteMeta, Suggestions , ExportRoute } = require('./routes');
+const {Authentication} = require('./controllers');
+
 const { LogReqParams } = require('./helper');
 
 const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
@@ -49,6 +51,7 @@ app.use((req, res, next) => {
 
 app.use('/users', UsersRoute);
 app.use('/suggestions', Suggestions);
+app.use('/export', ExportRoute);
 app.use('/datasource/meta', DataSourceRouteMeta);
 
 app.use((req, res, next) => {
