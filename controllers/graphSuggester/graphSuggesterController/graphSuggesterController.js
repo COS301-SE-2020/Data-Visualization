@@ -331,6 +331,9 @@ class GraphSuggesterController {
 				nameGap: 30,
 				nameTextStyle: {
 					fontSize: 15,
+				},
+				axisLabel: {
+					rotate: 330,
 				}
 			};
 
