@@ -275,8 +275,6 @@ let graphSuggesterMaker = (function () {
 				//check if field type is the best
 				fitness += penalty;
 			}
-
-<<<<<<< HEAD
 			/*
 			When to use what chart type:
 			Line => Float,Decimal, Date
