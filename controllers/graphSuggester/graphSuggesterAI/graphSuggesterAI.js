@@ -159,6 +159,7 @@ let graphSuggesterMaker = (function () {
 				fieldType = types[titleIndex]; //obtain the type of the selected field
 				chromosomes[i] = [ titleIndex, graphType, fieldType ]; //set up the chromosome properties
 				//console.log(i+': ', chromosomes[i]);
+
 			}
 			//console.log('Options: ', options);
 			//console.log('Types: ', types);
@@ -275,6 +276,41 @@ let graphSuggesterMaker = (function () {
 				fitness += penalty;
 			}
 
+			/*
+			When to use what chart type:
+			Line => Float,Decimal, Date
+			Bar => Float, Int, Decimal, String
+			Pie => Boolean, Float, Int, Decimal, String
+			Scatter => Float, Decimal, Int
+			*/
+			if((chromosome[1].toLowerCase()).includes("line") && !((chromosome[2].toLowerCase()).includes("float") ||
+				(chromosome[2].toLowerCase()).includes("datetime") || (chromosome[2].toLowerCase()).includes("decimal"))){
+				console.log("Line => Float, Decimal, Date");
+				fitness = fitness +2;
+			}
+			if((chromosome[1].toLowerCase()).includes("bar") && !((chromosome[2].toLowerCase()).includes("float") ||
+				(chromosome[2].toLowerCase()).includes("int") || (chromosome[2].toLowerCase()).includes("decimal")||
+				(chromosome[2].toLowerCase()).includes("string"))){
+				console.log("Bar => Float, Int, Decimal, String");
+				fitness = fitness +2
+			}
+			if((chromosome[1].toLowerCase()).includes("pie") && !((chromosome[2].toLowerCase()).includes("float") ||
+				(chromosome[2].toLowerCase()).includes("int") || (chromosome[2].toLowerCase()).includes("string") ||
+				(chromosome[2].toLowerCase()).includes("decimal"))){
+				console.log("Pie => Boolean, Float, Int, Decimal, String");
+				fitness = fitness +2
+			}
+			if((chromosome[1].toLowerCase()).includes("scatter") && !((chromosome[2].toLowerCase()).includes("float") ||
+				!(chromosome[2].toLowerCase()).includes("int") || !(chromosome[2].toLowerCase()).includes("decimal"))){
+				console.log("Scatter => Float, Decimal, Int");
+				fitness = fitness +2
+			}
+			if((chromosome[1].toLowerCase()).includes("effectScatter") && !((chromosome[2].toLowerCase()).includes("float") ||
+				(chromosome[2].toLowerCase()).includes("int") || (chromosome[2].toLowerCase()).includes("decimal"))){
+				console.log("Scatter => Float, Decimal, Int");
+				fitness = fitness +2
+			}
+
 			if (this.fieldTypeWeights[chromosome[2]]) {	//if the field type has a weight
 				fitness+=this.fieldTypeWeights[chromosome[2]]; //add the weight
 			} else {
@@ -345,12 +381,13 @@ let graphSuggesterMaker = (function () {
 		 */
 		mutation(chromosome, options, types) {
 			let titleIndex = Math.trunc(Math.random() * options.length); //select a random title index
-			let graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
+			let graphType = this.graphTypes[Math.trunc(Math.random() * this.graphTypes.length)]; //select a random graph type
 			let fieldType = types[titleIndex]; //obtain the field type
 
 			chromosome[0] = titleIndex;
 			chromosome[1] = graphType;
 			chromosome[2] = fieldType;
+
 		}
 
 		/**
