@@ -385,7 +385,7 @@ class GraphSuggesterController {
 
 			option.tooltip = {
 				trigger: 'item',
-				formatter: '{c}',
+				formatter: '{d}%',
 				axisPointer: {
 					type: 'none',
 				},
