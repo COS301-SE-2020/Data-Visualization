@@ -64,12 +64,12 @@ let graphSuggesterMaker = (function () {
 			this.fittestFieldType = null; //the target field type(will have the lowest fitness value, i.e. best fitness)
 			this.mutationRate = 0.3; //the rate at which the population should mutate
 
-			this.graphTypeWeights = [];	//the weights for each of the graph types
-			this.fieldTypeWeights = [];	//the weights for each of the field types
+			this.graphTypeWeights = []; //the weights for each of the graph types
+			this.fieldTypeWeights = []; //the weights for each of the field types
 
 			this.defaultWeight = 10;
 
-			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter' ]);
+			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter']);
 			//TODO 'parallel', 'candlestick', 'map', 'funnel', 'custom'
 		}
 
@@ -130,7 +130,7 @@ let graphSuggesterMaker = (function () {
 				}
 			}
 
-			 //console.log('Terminals: ', this.terminals);
+			//console.log('Terminals: ', this.terminals);
 		}
 
 		/**
@@ -153,11 +153,11 @@ let graphSuggesterMaker = (function () {
 			//initialise population
 			for (let i = 0; i < populationSize; i++) {
 				titleIndex = Math.floor(Math.random() * options.length); //select a random field title index
-				let index = Math.floor(Math.random() * this.graphTypes.length);//select a random graph type index
+				let index = Math.floor(Math.random() * this.graphTypes.length); //select a random graph type index
 
 				graphType = this.graphTypes[index]; //select a random graph type
 				fieldType = types[titleIndex]; //obtain the type of the selected field
-				chromosomes[i] = [ titleIndex, graphType, fieldType ]; //set up the chromosome properties
+				chromosomes[i] = [titleIndex, graphType, fieldType]; //set up the chromosome properties
 				//console.log(i+': ', chromosomes[i]);
 			}
 			//console.log('Options: ', options);
@@ -275,16 +275,18 @@ let graphSuggesterMaker = (function () {
 				fitness += penalty;
 			}
 
-			if (this.fieldTypeWeights[chromosome[2]]) {	//if the field type has a weight
-				fitness+=this.fieldTypeWeights[chromosome[2]]; //add the weight
+			if (this.fieldTypeWeights[chromosome[2]]) {
+				//if the field type has a weight
+				fitness += this.fieldTypeWeights[chromosome[2]]; //add the weight
 			} else {
-				fitness+=this.defaultWeight; //add a default weight
+				fitness += this.defaultWeight; //add a default weight
 			}
 
-			if (this.graphTypeWeights[chromosome[1]]) { //if the graph type has a weight
-				fitness+=this.graphTypeWeights[chromosome[1]]; //add the weight
+			if (this.graphTypeWeights[chromosome[1]]) {
+				//if the graph type has a weight
+				fitness += this.graphTypeWeights[chromosome[1]]; //add the weight
 			} else {
-				fitness+=this.defaultWeight; //add a default weight
+				fitness += this.defaultWeight; //add a default weight
 			}
 
 			return fitness;
@@ -303,35 +305,35 @@ let graphSuggesterMaker = (function () {
 			let temp; //variable used in swapping
 
 			switch (degree) {
-			case 0:
-				temp = parent1[1]; //swap graph types
-				parent1[1] = parent2[1];
-				parent2[1] = temp;
-				break;
+				case 0:
+					temp = parent1[1]; //swap graph types
+					parent1[1] = parent2[1];
+					parent2[1] = temp;
+					break;
 
-			case 1:
-				temp = parent1[2]; //swap fields(and therefore their types)
-				parent1[2] = parent2[2];
-				parent2[2] = temp;
-				temp = parent1[0];
-				parent1[0] = parent2[0];
-				parent2[0] = temp;
-				break;
+				case 1:
+					temp = parent1[2]; //swap fields(and therefore their types)
+					parent1[2] = parent2[2];
+					parent2[2] = temp;
+					temp = parent1[0];
+					parent1[0] = parent2[0];
+					parent2[0] = temp;
+					break;
 
-			case 2:
-				temp = parent1[1]; //swap all attributes(basically a reproduction)
-				parent1[1] = parent2[1];
-				parent2[1] = temp;
-				temp = parent1[2];
-				parent1[2] = parent2[2];
-				parent2[2] = temp;
-				temp = parent1[0];
-				parent1[0] = parent2[0];
-				parent2[0] = temp;
-				break;
+				case 2:
+					temp = parent1[1]; //swap all attributes(basically a reproduction)
+					parent1[1] = parent2[1];
+					parent2[1] = temp;
+					temp = parent1[2];
+					parent1[2] = parent2[2];
+					parent2[2] = temp;
+					temp = parent1[0];
+					parent1[0] = parent2[0];
+					parent2[0] = temp;
+					break;
 
-			default:
-				break; //should never reach this, default to reproduction
+				default:
+					break; //should never reach this, default to reproduction
 			}
 
 			//TODO consider decoupling representation from crossover, as suggested in calculateFitness
@@ -359,6 +361,8 @@ let graphSuggesterMaker = (function () {
 		 * @param entity the entity to select fields from
 		 */
 		getSuggestions(entity) {
+			// console.log('AI: ', entity, this.terminals);
+
 			//eslint-disable-next-line eqeqeq
 			if (this.terminals == null && this.nonTerminals == null) {
 				console.log('No metadata available, returning...');
@@ -456,25 +460,30 @@ let graphSuggesterMaker = (function () {
 		 * @param fieldType the fieldType to make fitter
 		 */
 		scaleFitnessTarget(graphType, fieldType) {
-			this.graphTypeWeights[graphType]--;	//better fitness
-			if (this.graphTypeWeights[graphType] === -1) {//if we go below 0 then everyone has to move up
+			this.graphTypeWeights[graphType]--; //better fitness
+			if (this.graphTypeWeights[graphType] === -1) {
+				//if we go below 0 then everyone has to move up
 				let keys = Object.keys(this.graphTypeWeights);
 
-				for (let i = 0; i < keys.length; i++) {	//everyone else gets worse fitness(if >10 fitness targets are used this is necessary)
-					this.graphTypeWeights[keys[i]]++;	//set to worse fitness(best fitness will be 0, the rest will move down)
+				for (let i = 0; i < keys.length; i++) {
+					//everyone else gets worse fitness(if >10 fitness targets are used this is necessary)
+					this.graphTypeWeights[keys[i]]++; //set to worse fitness(best fitness will be 0, the rest will move down)
 				}
 			}
 
-			if (!this.fieldTypeWeights[fieldType]) { //if we haven't encountered this type yet
+			if (!this.fieldTypeWeights[fieldType]) {
+				//if we haven't encountered this type yet
 				this.fieldTypeWeights[fieldType] = this.defaultWeight;
 			}
 
-			this.fieldTypeWeights[fieldType]--;//better fitness
-			if (this.fieldTypeWeights[fieldType] === -1) {//if we go below 0 then everyone has to move up
+			this.fieldTypeWeights[fieldType]--; //better fitness
+			if (this.fieldTypeWeights[fieldType] === -1) {
+				//if we go below 0 then everyone has to move up
 				let keys = Object.keys(this.fieldTypeWeights);
 
-				for (let i = 0; i < keys.length; i++) { //everyone else gets worse fitness(if >10 fitness targets are used this is necessary)
-					this.fieldTypeWeights[keys[i]]++;	//set to worse fitness(best fitness will be 0, the rest will move down)
+				for (let i = 0; i < keys.length; i++) {
+					//everyone else gets worse fitness(if >10 fitness targets are used this is necessary)
+					this.fieldTypeWeights[keys[i]]++; //set to worse fitness(best fitness will be 0, the rest will move down)
 				}
 			}
 		}
