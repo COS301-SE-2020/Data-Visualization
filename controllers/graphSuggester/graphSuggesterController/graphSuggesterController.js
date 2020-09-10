@@ -73,8 +73,10 @@ class GraphSuggesterController {
 	 * @param source the data source that the entity belongs to
 	 */
 	static getSuggestions(entity, source) {
+		// console.log(entity, this.metadata[source]);
+
 		if (!this.isInitialised()) {
-			console.log('Metadata isn\'t initialised, returning null...');
+			console.log("Metadata isn't initialised, returning null...");
 			return null;
 		}
 		if (!this.metadata[source]) {
@@ -126,8 +128,7 @@ class GraphSuggesterController {
 			let fieldType = suggestion[2];
 			let option;
 			if (fieldType.toLowerCase().includes('string')) {
-				//primaryKey = field;
-
+				primaryKey = field;
 			}
 			option = this.constructOption(graphType, [ primaryKey, dependentVariable ], primaryKey, dependentVariable, entity + ': ' + field);
 			//console.log(option);
@@ -139,7 +140,7 @@ class GraphSuggesterController {
 			return chartSuggestion;
 		}
 
-		console.log(entity + ' is not among ', entities);//if we reach this point then we have an invalid suggestion
+		console.log(entity + ' is not among ', entities); //if we reach this point then we have an invalid suggestion
 		return null;
 	}
 
@@ -171,7 +172,7 @@ class GraphSuggesterController {
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-				this.acceptedEntities[entities[i].datasource] = [ entities[i].entityName ]; //create it and store the entity
+				this.acceptedEntities[entities[i].datasource] = [entities[i].entityName]; //create it and store the entity
 			} else {
 				this.acceptedEntities[entities[i].datasource].push(entities[i].entityName); //add the name to the existing array
 			}
@@ -253,7 +254,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log('Check that \'encode\' is not empty');
+			console.log("Check that 'encode' is not empty");
 			return false;
 		}
 
@@ -261,7 +262,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log('check that \'encode\' has keys');
+			console.log("check that 'encode' has keys");
 		}
 
 		let fieldIndex = -1; //the index at which values(0 - xAxis, 1 - yAxis) are found in all entries
@@ -342,11 +343,14 @@ class GraphSuggesterController {
 				nameGap: 30,
 				nameTextStyle: {
 					fontSize: 15,
-				}
+				},
+				axisLabel: {
+					rotate: 330,
+				},
 			};
 
 			option.yAxis = {
-				show: !graph.includes('bar'),	//if bar chart, hide y-axis, else show it
+				show: !graph.includes('bar'), //if bar chart, hide y-axis, else show it
 			};
 
 			if (graph.includes('bar')) {
@@ -355,7 +359,7 @@ class GraphSuggesterController {
 					formatter: '{c}',
 					axisPointer: {
 						type: 'shadow',
-					}
+					},
 				};
 			} else {
 				option.tooltip = {
@@ -363,11 +367,12 @@ class GraphSuggesterController {
 					formatter: '{c}',
 					axisPointer: {
 						type: 'line',
-					}
+					},
 				};
 			}
 		}
-		if (graph.includes('pie')) {//for pie charts
+		if (graph.includes('pie')) {
+			//for pie charts
 
 			option.legend = {
 				type: 'scroll',
@@ -380,10 +385,10 @@ class GraphSuggesterController {
 
 			option.tooltip = {
 				trigger: 'item',
-				formatter: '{c}',
+				formatter: '{d}%',
 				axisPointer: {
 					type: 'none',
-				}
+				},
 			};
 
 			option.series = [
@@ -391,11 +396,11 @@ class GraphSuggesterController {
 					type: graph,
 					radius: '60%',
 					labelLine: {
-						show: false
+						show: false,
 					},
 					label: {
 						show: false,
-						position: 'center'
+						position: 'center',
 					},
 					encode: {
 						itemName: xEntries,
@@ -435,17 +440,17 @@ class GraphSuggesterController {
 			let key = keys[num]; //pick a source index
 
 			// eslint-disable-next-line eqeqeq
-			if(key == null || !key) {
+			if (key == null || !key) {
 				console.log('Selected source key was undefined/null, key index: ', num);
 				console.log('Source Keys: ', keys);
 				return null;
 			}
-			
+
 			entity['datasource'] = key;
 
 			source = this.acceptedEntities[key]; //select the source entities
 
-			entity['entityName'] = source[Math.floor(Math.random() * source.length)];	//select a random entity from the source
+			entity['entityName'] = source[Math.floor(Math.random() * source.length)]; //select a random entity from the source
 
 			// eslint-disable-next-line eqeqeq
 			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {
@@ -454,8 +459,8 @@ class GraphSuggesterController {
 				return null;
 			}
 
-			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']);	//select the index of the entity in metadata
-			entity['entitySet'] = this.metadata[entity['datasource']].sets[index];	//select the set name(different from the entity name) for database querying
+			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']); //select the index of the entity in metadata
+			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //select the set name(different from the entity name) for database querying
 
 			return entity; //return the random entity
 		} else {
@@ -506,25 +511,37 @@ class GraphSuggesterController {
 			console.log('No suggestion object to add data to');
 			return suggestion;
 		}
-		let selectedFields = [ false ];
+		let selectedFields = [false];
 
 		let count = 0;
+		let allSameValue = true;	//if everything has the same value, we have a boring graph
+		let sameValue = data[0][1];	//compare everything with first value
+
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
+
+			if (allSameValue && sameValue !== data[i][1]) {	//if not the same value, flag it
+				allSameValue = false;
+			}
+
 			if (count < 5 && data[i] !== 0) {
-				selectedFields[i + 1] = true;//get the first 5 nonnull values
+				selectedFields[i + 1] = true; //get the first 5 nonnull values
 				count++;
 			} else {
-				selectedFields[i+1] = false;
+				selectedFields[i + 1] = false;
 			}
 		}
 
-		if (suggestion['legend']) {	//if we have defined a legend
-			suggestion['legend']['selected'] = selectedFields;	//set the selection to the first 5 nonnull values
+		if (allSameValue) {	//if all the values were the same, the graph is worthlessm return empty suggestion
+			return {};
 		}
 
+		if (suggestion['legend']) {
+			//if we have defined a legend
+			suggestion['legend']['selected'] = selectedFields; //set the selection to the first 5 nonnull values
+		}
 
-		console.log('suggestion w/ data', suggestion);
+		//console.log('suggestion w/ data', suggestion);
 
 		return suggestion;
 	}

@@ -67,7 +67,6 @@ class DataSource {
 				meta = await this.getMetaData(src);
 				//console.log('datasource metadata: ', meta);
 				fieldList = meta.items[entity];
-
 			}
 			DataSource.Data()
 				.getEntityData(src, entity, fieldList)
@@ -123,6 +122,9 @@ class DataSource {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity, field) {
+		// console.log(entity, set);
+
+		// if (isGraphQL) entity = set;
 		return new Promise((resolve, reject) => {
 			if (Cache.validateEntityData(src, entity)) {
 				const data = Cache.getEntityData(src, entity, field);

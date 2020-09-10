@@ -212,7 +212,7 @@ class RestController {
 			let randEntity;
 			let suggestion;
 
-			const maxTime = 10;
+			const maxTime = 1; //10;
 			let timer = 0;
 			let timedout = false;
 
@@ -220,7 +220,7 @@ class RestController {
 				if (timer < maxTime) {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
-					//console.log('randEntity:', randEntity);
+					console.log('randEntity:', randEntity);
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
@@ -324,7 +324,7 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static exportToJson(fileName, config, done, error) {
-		try{
+		try {
 			let data = ExportsController.json(fileName, config);
 			done(data);
 		} catch(err) {
@@ -339,14 +339,13 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static exportToCSV(config, done, error) {
-		try{
+		try {
 			let data = ExportsController.csv(config);
 			done(data);
 		} catch(err) {
 			error && error(err);
 		}
 	}
-
 
 	/**************** GRAPHS ****************/
 
@@ -553,6 +552,5 @@ function outputSuggestionMeta(src, item, set, field) {
 	console.log('field: ', field);
 	console.log('=====================================');
 }
-
 
 module.exports = RestController;

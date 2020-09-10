@@ -51,9 +51,11 @@ class GraphQL {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity, fieldlist) {
+		console.log(fieldlist);
+
 		if (GraphQL.logging) console.log('GraphQL: ', src);
 		return new Promise((resolve, reject) => {
-			let graphql =  GraphQL.query(GraphQL.entityDataStr(entity.toLowerCase(), fieldlist));
+			let graphql = GraphQL.query(GraphQL.entityDataStr(entity, fieldlist));
 			axios
 				.post(src, graphql)
 				.then((res) => {
@@ -93,33 +95,87 @@ class GraphQL {
 		let entityMap = {};
 		meta.types.forEach((type) => (entityMap[type.name] = type));
 
-		const allowedTypes =  [ 'Int', 'String', 'Float', 'Boolean', 'Date', 'ID' ];
-		const pruneNames = ['Query', '__Schema', '__Type', '__Field', '__InputValue', '__EnumValue', '__Directive' ];
-		let sets = meta.types.filter((type) => type.kind === 'OBJECT' && !pruneNames.includes(type.name)).map((type) => type.name);
+		const allowedTypes = ['Int', 'String', 'Float', 'Boolean', 'Date', 'ID'];
+		const pruneNames = ['Query', '__Schema', '__Type', '__Field', '__InputValue', '__EnumValue', '__Directive'];
+
+		let sets = [];
+		let setTypeList = [];
+		let setTypeNames = {};
+		entityMap['Query'].fields.forEach((field) => {
+			sets.push(field.name);
+			setTypeList.push(field.type.name);
+			setTypeNames[field.name] = field.type.name;
+		});
+		setTypeList = [...new Set(setTypeList)];
+
+		let entityNames = meta.types.filter((type) => type.kind === 'OBJECT' && !pruneNames.includes(type.name) /*&& this.contains(type.name, sets)*/);
+		entityNames = entityNames.map((type) => type.name);
 
 		let items = {};
 		let associations = {}; //associated tables - used in suggestion generation
 		let types = {}; //the data types of the fields
 		let prims = {};
 
-		sets.forEach((entity) => {
+		entityNames.forEach((entity) => {
 			// console.log(entityMap[entity].fields.map((field) => field.name + ' : ' + field.kind));
 
 			let IDfound = false;
-			items[entity] = entityMap[entity].fields.filter(field => allowedTypes.includes(field.type.name) ).map((field) => {
-				if (!IDfound && field.type.name === 'ID') {
-					IDfound = true;
-					prims[entity] = field.name;
-				}
-				return field.name;
-			});
+			items[entity] = entityMap[entity].fields
+				.filter((field) => allowedTypes.includes(field.type.name))
+				.map((field) => {
+					if (!IDfound && field.type.name === 'ID') {
+						IDfound = true;
+						prims[entity] = field.name;
+					}
+					return field.name;
+				});
 
 			types[entity] = entityMap[entity].fields.map((field) => field.type.name);
 		});
 
-		sets.forEach((entity) => {
+		entityNames.forEach((entity) => {
 			associations[entity] = entityMap[entity].fields.filter((field) => field.type.kind === 'OBJECT').map((field) => field.name);
-		 });
+		});
+
+		let tempItems = {};
+		let tempAssociations = {};
+		let tempTypes = {};
+		let tempPrims = {};
+
+		Object.keys(items)
+			.sort()
+			.forEach((item, index) => {
+				if (setTypeList.includes(item)) {
+					tempItems[item] = items[item];
+					tempItems[item] = items[item];
+					tempAssociations[item] = associations[item];
+					tempTypes[item] = types[item];
+					tempPrims[item] = prims[item];
+				}
+			});
+		items = tempItems;
+		associations = tempAssociations;
+		types = tempTypes;
+		prims = tempPrims;
+
+		tempItems = {};
+		tempAssociations = {};
+		tempTypes = {};
+		tempPrims = {};
+
+		sets.forEach((set) => {
+			tempItems[set] = items[setTypeNames[set]];
+			tempAssociations[set] = associations[setTypeNames[set]];
+			tempTypes[set] = types[setTypeNames[set]];
+			tempPrims[set] = prims[setTypeNames[set]];
+		});
+		items = tempItems;
+		associations = tempAssociations;
+		types = tempTypes;
+		prims = tempPrims;
+
+		// console.log(sets, setTypeNames, setTypeList, Object.keys(items));
+		// console.log(sets, items);
 
 		return { items, associations, sets, types, prims };
 	}
@@ -173,7 +229,11 @@ class GraphQL {
 	}
 
 	static queryEntityData(entity, fieldlist) {
-		return `query EntityDataQuery { ${entity}s { ${fieldlist.join(' ')} } }`;
+		return `query EntityDataQuery { ${entity} { ${fieldlist.join(' ')} } }`;
+	}
+
+	static contains(value, list) {
+		return list.some((item) => item.toLowerCase() === value.toLowerCase());
 	}
 }
 GraphQL.logging = false;
