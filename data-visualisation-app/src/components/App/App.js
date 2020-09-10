@@ -189,6 +189,7 @@ const useStyles = makeStyles((theme) => ({
 	typographyHeading: {
 		color: '#3EC195',
 		fontSize: '1.5em', 
+		fontWeight: '800',
 	},
 	typographyLocationHeading: {
 		color: '#969698',
