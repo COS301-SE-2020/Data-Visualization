@@ -118,10 +118,21 @@ class GraphSuggesterController {
 				console.log('Received null suggestion');
 				return null;
 			}
-			let option = this.constructOption(suggestion[1], [ suggestion[3], 'value' ], suggestion[3], 'value', entity + ': ' + suggestion[0]);
+			//graph, params, xEntries, yEntries, graphName
+			let graphType = suggestion[1];
+			let primaryKey = suggestion[3];
+			let dependentVariable = 'value';
+			let field = suggestion[0];
+			let fieldType = suggestion[2];
+			let option;
+			if (fieldType.toLowerCase().includes('string')) {
+				//primaryKey = field;
+
+			}
+			option = this.constructOption(graphType, [ primaryKey, dependentVariable ], primaryKey, dependentVariable, entity + ': ' + field);
 			//console.log(option);
 			let chartSuggestion = {
-				fieldType: suggestion[2],
+				fieldType: fieldType,
 				option: option,
 			};
 			//console.log('Chart: ', chartSuggestion);
@@ -253,7 +264,7 @@ class GraphSuggesterController {
 			console.log('check that \'encode\' has keys');
 		}
 
-		let fieldIndex = -1; //the index at which values are found in all entries
+		let fieldIndex = -1; //the index at which values(0 - xAxis, 1 - yAxis) are found in all entries
 
 		//determine which part of the dataset is the 'value' part
 		if (keys.includes('x') && keys.includes('y')) {

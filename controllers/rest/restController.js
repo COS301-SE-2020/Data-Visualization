@@ -184,7 +184,7 @@ class RestController {
 			GraphSuggesterController.setGraphTypes(graphTypes);
 
 			//construct array of sources from entities with no duplicates
-			const datasources = [...new Set(entities.map((entity) => entity.datasource))];
+			const datasources = [ ...new Set(entities.map((entity) => entity.datasource)) ];
 
 			Promise.all(datasources.map((src) => DataSource.getMetaData(src)))
 				.then((metaDataList) => {
@@ -198,7 +198,7 @@ class RestController {
 					error && error(err);
 				});
 		} catch (err) {
-			error && error({error: err, status: 500});
+			error && error({ error: err, status: 500 });
 		}
 	}
 
@@ -226,7 +226,7 @@ class RestController {
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
-				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' , status: 500});
+				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined', status: 500 });
 			} else if (!suggestion) {
 				done({});
 			} else {
@@ -255,7 +255,7 @@ class RestController {
 					.catch((err) => error & error(err));
 			}
 		} else {
-			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first' , status:500});
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status:500 });
 		}
 	}
 
@@ -326,9 +326,8 @@ class RestController {
 	static exportToJson(fileName, config, done, error) {
 		try{
 			let data = ExportsController.json(fileName, config);
-			done(data)
-		}
-		catch(err) {
+			done(data);
+		} catch(err) {
 			error && error(err);
 		}
 	}
@@ -342,9 +341,8 @@ class RestController {
 	static exportToCSV(config, done, error) {
 		try{
 			let data = ExportsController.csv(config);
-			done(data)
-		}
-		catch(err) {
+			done(data);
+		} catch(err) {
 			error && error(err);
 		}
 	}
@@ -443,18 +441,18 @@ class RestController {
 
 		for (let i = 0; i < dataArray.length; i++) {
 			// eslint-disable-next-line eqeqeq
-			if (list[dataArray[i]] != null) {
+			if (list[dataArray[i][1]] != null) {
 				//eslint-disable-line
-				list[dataArray[i]]++; //if this category was already created, increment how often it has occurred
+				list[dataArray[i][1]]++; //if this category was already created, increment how often it has occurred
 			} else {
-				list[dataArray[i]] = 1; //else create the category
+				list[dataArray[i][1]] = 1; //else create the category
 			}
 		}
 
 		let data = [];
 		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
+			data.push([ keys[i], list[keys[i]] ]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -501,7 +499,7 @@ class RestController {
 		let data = [];
 		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
+			data.push([ keys[i], list[keys[i]] ]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -510,7 +508,7 @@ class RestController {
 	static make1DArray(dataArray) {
 		if (dataArray.constructor !== Array) {
 			//if it's just one value
-			return [dataArray];
+			return [ dataArray ];
 		} else if (dataArray[0].constructor !== Array) {
 			//if it's a 1D array
 			return dataArray;
