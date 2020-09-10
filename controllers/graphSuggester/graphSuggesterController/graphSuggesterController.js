@@ -128,8 +128,7 @@ class GraphSuggesterController {
 			let fieldType = suggestion[2];
 			let option;
 			if (fieldType.toLowerCase().includes('string')) {
-				//primaryKey = field;
-
+				primaryKey = field;
 			}
 			option = this.constructOption(graphType, [ primaryKey, dependentVariable ], primaryKey, dependentVariable, entity + ': ' + field);
 			//console.log(option);
@@ -515,14 +514,26 @@ class GraphSuggesterController {
 		let selectedFields = [false];
 
 		let count = 0;
+		let allSameValue = true;	//if everything has the same value, we have a boring graph
+		let sameValue = data[0][1];	//compare everything with first value
+
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
+
+			if (allSameValue && sameValue !== data[i][1]) {	//if not the same value, flag it
+				allSameValue = false;
+			}
+
 			if (count < 5 && data[i] !== 0) {
 				selectedFields[i + 1] = true; //get the first 5 nonnull values
 				count++;
 			} else {
 				selectedFields[i + 1] = false;
 			}
+		}
+
+		if (allSameValue) {	//if all the values were the same, the graph is worthlessm return empty suggestion
+			return {};
 		}
 
 		if (suggestion['legend']) {

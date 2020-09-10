@@ -24,7 +24,7 @@ const Cache = require('./cache');
 const Odata = require('./Odata/Odata');
 const GraphQL = require('./GraphQL/GraphQL');
 
-const isGraphQL = true;
+const isGraphQL = false;
 
 /**
  * Purpose: This class is responsible for getting DataSources.
