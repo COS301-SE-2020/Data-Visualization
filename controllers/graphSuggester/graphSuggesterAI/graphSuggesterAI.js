@@ -409,6 +409,7 @@ let graphSuggesterMaker = (function () {
 			let types = [];
 			let count = 0; //the index for options
 			let nameKey = null; //The item name - TODO can probably be replaced by passing the individual entity names as well
+			let dateKey = null;
 
 			for (let key = 0; key < keys.length; key++) {
 				//go through all the keys and get rid of IDs and such
@@ -429,6 +430,10 @@ let graphSuggesterMaker = (function () {
 				} else if (nameKey == null && (upper.includes('NAME'))) {
 					//store the name key for later access
 					nameKey = name;
+					// eslint-disable-next-line eqeqeq
+				} else if (dateKey == null && upper.includes('DATE')) {
+					//store the date key in case we want periodic data
+					dateKey = name;
 				}
 			}
 
@@ -474,11 +479,18 @@ let graphSuggesterMaker = (function () {
 
 			let suggestion = this.geneticAlgorithm(options, types);
 			let processed = [];
-			processed[0] = options[suggestion[0]];
+			processed[0] = options[suggestion[0]];	//field being used for data
 			for (let i = 1; i < suggestion.length; i++) {
-				processed[i] = suggestion[i];
+				processed[i] = suggestion[i];		//copy over the rest of the characteristics
 			}
-			processed[suggestion.length] = nameKey;
+			// eslint-disable-next-line eqeqeq
+			if (suggestion[1].includes('line') && dateKey != null) {
+				//if we have a line chart then use periodic data if it exists
+				processed[suggestion.length] = dateKey; //set the 'primary key' to be the dates
+			} else {
+				processed[suggestion.length] = nameKey; //set the 'primary key' to be the name/id
+			}
+
 			return processed;
 		}
 
