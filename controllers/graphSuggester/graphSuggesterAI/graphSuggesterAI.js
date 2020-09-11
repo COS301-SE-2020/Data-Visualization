@@ -69,7 +69,7 @@ let graphSuggesterMaker = (function () {
 
 			this.defaultWeight = 10;
 
-			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter']);
+			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter' ]);
 			//TODO 'parallel', 'candlestick', 'map', 'funnel', 'custom'
 		}
 
@@ -157,7 +157,7 @@ let graphSuggesterMaker = (function () {
 
 				graphType = this.graphTypes[index]; //select a random graph type
 				fieldType = types[titleIndex]; //obtain the type of the selected field
-				chromosomes[i] = [titleIndex, graphType, fieldType]; //set up the chromosome properties
+				chromosomes[i] = [ titleIndex, graphType, fieldType ]; //set up the chromosome properties
 				//console.log(i+': ', chromosomes[i]);
 
 			}
@@ -282,32 +282,23 @@ let graphSuggesterMaker = (function () {
 			Pie => Boolean, Float, Int, Decimal, String
 			Scatter => Float, Decimal, Int
 			*/
-			if((chromosome[1].toLowerCase()).includes("line") && !((chromosome[2].toLowerCase()).includes("float") ||
-				(chromosome[2].toLowerCase()).includes("datetime") || (chromosome[2].toLowerCase()).includes("decimal"))){
-				console.log("Line => Float, Decimal, Date");
-				fitness = fitness +2;
+			let regExp;
+			let lower = chromosome[1].toLowerCase();
+			//Set the regexp for types associated with each type of graph(for optimal combinations)
+			if(lower.includes('line')){
+				regExp = /(float|date|decimal)/i;
+			} else if(lower.includes('bar')){
+				regExp = /(float|int|decimal|string)/i;
+			} else if(lower.includes('pie')){
+				regExp = /(float|int|decimal|string)/i;
+			} else if(lower.includes('scatter')) {
+				regExp = /(float|int|decimal)/i;
+			} else {
+				regExp = regExp = /(float|date|int|decimal|string)/i;
 			}
-			if((chromosome[1].toLowerCase()).includes("bar") && !((chromosome[2].toLowerCase()).includes("float") ||
-				(chromosome[2].toLowerCase()).includes("int") || (chromosome[2].toLowerCase()).includes("decimal")||
-				(chromosome[2].toLowerCase()).includes("string"))){
-				console.log("Bar => Float, Int, Decimal, String");
-				fitness = fitness +2
-			}
-			if((chromosome[1].toLowerCase()).includes("pie") && !((chromosome[2].toLowerCase()).includes("float") ||
-				(chromosome[2].toLowerCase()).includes("int") || (chromosome[2].toLowerCase()).includes("string") ||
-				(chromosome[2].toLowerCase()).includes("decimal"))){
-				console.log("Pie => Boolean, Float, Int, Decimal, String");
-				fitness = fitness +2
-			}
-			if((chromosome[1].toLowerCase()).includes("scatter") && !((chromosome[2].toLowerCase()).includes("float") ||
-				!(chromosome[2].toLowerCase()).includes("int") || !(chromosome[2].toLowerCase()).includes("decimal"))){
-				console.log("Scatter => Float, Decimal, Int");
-				fitness = fitness +2
-			}
-			if((chromosome[1].toLowerCase()).includes("effectScatter") && !((chromosome[2].toLowerCase()).includes("float") ||
-				(chromosome[2].toLowerCase()).includes("int") || (chromosome[2].toLowerCase()).includes("decimal"))){
-				console.log("Scatter => Float, Decimal, Int");
-				fitness = fitness +2
+
+			if(!regExp.test(chromosome[2])) {	//if the field type is not part of the regexp
+				fitness = fitness + 2;			//then penalise, because it is not an optimal combination
 			}
 
 			if (this.fieldTypeWeights[chromosome[2]]) {	//if the field type has a weight
@@ -339,35 +330,35 @@ let graphSuggesterMaker = (function () {
 			let temp; //variable used in swapping
 
 			switch (degree) {
-				case 0:
-					temp = parent1[1]; //swap graph types
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					break;
+			case 0:
+				temp = parent1[1]; //swap graph types
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				break;
 
-				case 1:
-					temp = parent1[2]; //swap fields(and therefore their types)
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 1:
+				temp = parent1[2]; //swap fields(and therefore their types)
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				case 2:
-					temp = parent1[1]; //swap all attributes(basically a reproduction)
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					temp = parent1[2];
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 2:
+				temp = parent1[1]; //swap all attributes(basically a reproduction)
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				temp = parent1[2];
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				default:
-					break; //should never reach this, default to reproduction
+			default:
+				break; //should never reach this, default to reproduction
 			}
 
 			//TODO consider decoupling representation from crossover, as suggested in calculateFitness
@@ -433,9 +424,21 @@ let graphSuggesterMaker = (function () {
 					types[count] = this.fieldTypes[entity][key];
 					options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
 					//eslint-disable-next-line eqeqeq
-				} else if ((upper.includes('NAME') || upper.includes('ID')) && nameKey == null) {
+				} else if (nameKey == null && (upper.includes('NAME'))) {
 					//store the name key for later access
 					nameKey = name;
+				}
+			}
+
+			// eslint-disable-next-line eqeqeq
+			if (nameKey == null) {//if no fields with 'Name' were found, start looking for ID's
+				for (let key = 0; key < keys.length; key++) {
+					let name = keys[key]; //the key
+					let upper = name.toUpperCase();
+					if (upper.includes('ID')) {
+						nameKey = name;
+						break;
+					}
 				}
 			}
 
