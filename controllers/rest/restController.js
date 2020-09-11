@@ -157,6 +157,7 @@ class RestController {
 	 * This function gets entity data.
 	 * @param src the source where the entity data must be retrieved from
 	 * @param entity the entity that we want data from
+	 * @param field
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of the entities data
@@ -167,6 +168,19 @@ class RestController {
 			.catch((err) => error && error(err));
 	}
 
+	/**
+	 * This function gets entity data.
+	 * @param src the source where the entity data must be retrieved from
+	 * @param entity the entity that we want data from
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @returns a promise of the entities data
+	 */
+	static getData(src, entity, done, error) {
+		DataSource.getEntityDataAll(src, entity)
+			.then((list) => done(list))
+			.catch((err) => error && error(err));
+	}
 	/**************** Suggestions ****************/
 
 	/**
@@ -220,7 +234,7 @@ class RestController {
 				if (timer < maxTime) {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
-					console.log('randEntity:', randEntity);
+
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
@@ -234,7 +248,9 @@ class RestController {
 				let fieldType = suggestion.fieldType;
 				suggestion = suggestion.option;
 				const { field } = extractTitleData(suggestion.title.text);
-
+				console.log('randEntity.datasource = >', randEntity.datasource);
+				console.log('randEntity.entitySet = >', randEntity.entitySet);
+				console.log('field = >', field);
 				DataSource.getEntityData(randEntity.datasource, randEntity.entitySet, field)
 					.then((data) => {
 						if (fieldType.includes('String')) {

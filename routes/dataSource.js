@@ -81,27 +81,22 @@ DataSourceRouteMeta.post('/entities', (req, res) => {
 	}
 });
 
-
-//TODO: Get data (part of the 20%)
-// DataSourceRouteSrc.post('/data', (req, res) => {
-// 	if (Object.keys(req.body).length === 0) {
-// 		error(res, { error: 'Body Undefined' }, 400);
-// 	} else if (req.body.sourceurl === undefined) {
-// 		error(res, { error: 'Data Source Url Undefined' }, 400);
-// 	} else if (req.body.entity === undefined) {
-// 		error(res, { error: 'Data Entity Undefined' }, 400);
-// 	}else if (req.body.start === undefined) {
-// 		error(res, { error: 'Start Index Is Undefined' }, 400);
-// 	}
-// 	else {
-// 		Rest.getData(
-// 			req.body.sourceurl,
-// 			req.body.entity,
-// 			req.body.start,
-// 			(list) => res.status(200).json(list),
-// 			(err) => error(res, err)
-// 		);
-// 	}
-// });
+DataSourceRouteMeta.post('/data', (req, res) => {
+	if (Object.keys(req.body).length === 0) {
+		error(res, { error: 'Body Undefined' }, 400);
+	} else if (req.body.sourceurl === undefined) {
+		error(res, { error: 'Data Source Url Undefined' }, 400);
+	} else if (req.body.entity === undefined) {
+		error(res, { error: 'Data Entity Undefined' }, 400);
+	}
+	else {
+		Rest.getData(
+			req.body.sourceurl,
+			req.body.entity,
+			(list) => res.status(200).json(list),
+			(err) => error(res, err)
+		);
+	}
+});
 
 module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };

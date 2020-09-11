@@ -47,11 +47,15 @@ const CacheMaker = (function () {
 		getEntityData(src, entity, field) {
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				const data = this.entityData[src][entity].data;
-
 				const prim = this.metaData[src].data.prims[entity];
-				const res = data.map((item, i) => [item[prim], item[field]]);
+				return data.map((item, i) => [item[prim], item[field]]);
+			}
+			return null;
+		}
 
-				return res;
+		getEntityDataAll(src, entity){
+			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
+				return this.entityData[src][entity].data;
 			}
 			return null;
 		}
