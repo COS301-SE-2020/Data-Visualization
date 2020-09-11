@@ -22,6 +22,7 @@
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
  * 17/08/2020	 Marco Lombaard						Added assembleGraph function, selectEntity now returns an object
  * 02/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
+ * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
  *
  * Test Cases: none
  *
@@ -554,7 +555,7 @@ class GraphSuggesterController {
 		// }
 
 		if (suggestion['legend']) {
-			//if we have defined a legend
+			//if we have defined a legend, we have pie chart
 			suggestion['legend']['selected'] = selectedFields; //set the selection to the first 5 nonnull values
 		}
 

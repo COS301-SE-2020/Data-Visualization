@@ -23,6 +23,8 @@
  * 14/08/2020	 Marco Lombaard		Renamed limitFields to setFields, notInExclusions to accepted
  * 14/08/2020	 Marco Lombaard		Moved constructOption to graphSuggesterController.js
  * 01/09/2020	 Marco Lombaard		Added scaleFitnessTarget and a way to scale fitness for multiple characteristics
+ * 10/09/2020	 Elna Pistorius		Added fitness penalty for graph type + field type combinations
+ * 11/09/2020	 Marco Lombaard		Improved GA efficiency
  *
  * Test Cases: none
  *
