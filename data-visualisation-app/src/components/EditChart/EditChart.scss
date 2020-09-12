@@ -172,3 +172,75 @@ table.properties {
 .button__changeColour {
   border: 1px solid red;
 }
+
+.chooseChartModel {
+  position: fixed;
+  left: 50%;
+  top: 200px;
+  border: 1px solid red;
+  width: 50vw;
+  height: 50vh;
+  margin-left: -25vw;
+  z-index: 100;
+}
+
+.chartType {
+  background-color: $color-primary;
+  color: white;
+
+  padding: 10px;
+}
+
+.chooseChartModel__container {
+  display: grid;
+  grid-template-columns: minmax(150px, 25%) 1fr;
+  border-radius: 10%;
+}
+
+.chooseChartModel__background {
+  background-color: black;
+  opacity: 0.4;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+}
+
+.chartItem {
+  width: 200px;
+  height: 200px;
+  //padding: 5px;
+  //border: 1px solid red;
+
+  border-left: 1px solid #d7d7d7;
+  border-top: 1px solid #d7d7d7;
+  border-bottom: 1px solid #d7d7d7;
+
+  margin-left: -1px;
+}
+
+.chartItem:hover {
+  -webkit-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  -moz-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+}
+
+.chartNavigator--desktop {
+  background-color: $color-primary;
+}
+
+.chartBrowser--desktop {
+  background-color: white;
+  //padding: 20px;
+}
+
+.chartItem__echart {
+  padding-top: -30px;
+}
+
+.chartItem__inner--title {
+  margin-top: -30px;
+  text-align: center;
+}
