@@ -303,8 +303,7 @@ const request = {
 		 */
 		rememberLogin: (isLoggedInMutator) => {
 			request.user.setIsLoggedIn = isLoggedInMutator;
-
-			if (localStorage.getItem('apikey') !== 'null' && localStorage.getItem('apikey') != null && localStorage.getItem('apikey') !== '') {
+			if (localStorage.getItem('apikey') !== 'null' && localStorage.getItem('apikey') != null && localStorage.getItem('apikey') !== '' && localStorage.getItem('apikey') !== '' && localStorage.getItem('apikey') === 'true') {
 				request.user.firstName = localStorage.getItem('firstName');
 				request.user.lastName = localStorage.getItem('lastName');
 				request.user.apikey = localStorage.getItem('apikey');
@@ -326,16 +325,15 @@ const request = {
 					console.debug('Response from user.login:', res);
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
-							if (remember)
-
-								localStorage.setItem('firstName', res.data.firstname);
-								request.user.firstName = res.data.firstname;
-								localStorage.setItem('lastName', res.data.lastname);
-								request.user.lastName = res.data.lastname;
-								localStorage.setItem('apikey', res.data.apikey);
-								request.user.apikey = res.data.apikey;
-								request.user.isLoggedIn = true;
-								request.user.setIsLoggedIn(true);
+							localStorage.setItem('remember', remember);
+							localStorage.setItem('firstName', res.data.firstname);
+							request.user.firstName = res.data.firstname;
+							localStorage.setItem('lastName', res.data.lastname);
+							request.user.lastName = res.data.lastname;
+							localStorage.setItem('apikey', res.data.apikey);
+							request.user.apikey = res.data.apikey;
+							request.user.isLoggedIn = true;
+							request.user.setIsLoggedIn(true);
 							
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						} else {
@@ -418,7 +416,7 @@ const request = {
 			{
 				id: 6,
 				email: 'elna@gmail.com',
-				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc', //add 1
+				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 			},
 		],
 		addedSourceID: '',
@@ -568,7 +566,7 @@ const request = {
 				})
 				.catch((err) => console.error(err));
 		},
-		count: 0,
+
 		chart: (callback) => {
 
 			API.suggestion
@@ -576,24 +574,6 @@ const request = {
 				.then((res) => {
 					if (callback !== undefined) {
 						console.debug('Response from suggestion.graph:', res);
-						console.log(res.data);
-						if(res.data.series !== undefined && res.data.series[0].type !== 'pie'){
-
-							if(request.suggestions.count === 0){
-								res.data.series[0].color = 'red';
-							}
-							// else if(request.suggestions.count === 1){
-							// 	res.data.series[0].color = '#3EC195';
-							// }
-						
-							request.suggestions.count++;
-							if(request.suggestions.count === 1){
-								request.suggestions.count = 0;
-							}
-
-
-						}
-						
 						request.cache.suggestions.graph.current = res.data;
 
 						//console.log('get ' + res);
