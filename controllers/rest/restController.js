@@ -136,8 +136,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of Odata
 	 */
-	static getMetaData(src, type, done, error) {
-		DataSource.getMetaData()
+	static getMetaData(src, done, error) {
+		DataSource.getMetaData(src)
 			.then((user) => done(user))
 			.catch((err) => error && error(err));
 	}

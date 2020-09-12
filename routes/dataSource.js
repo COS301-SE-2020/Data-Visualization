@@ -99,4 +99,18 @@ DataSourceRouteMeta.post('/data', (req, res) => {
 	}
 });
 
+DataSourceRouteMeta.post('/metadata', (req, res) => {
+    if (Object.keys(req.body).length === 0) {
+        error(res, { error: 'Body Undefined' }, 400);
+    } else if (req.body.sourceurl === undefined) {
+        error(res, { error: 'Data Source Url Undefined' }, 400);
+    }
+    else {
+        Rest.getMetaData(
+            req.body.sourceurl,
+            (list) => res.status(200).json(list),
+            (err) => error(res, err)
+        );
+    }
+});
 module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };
