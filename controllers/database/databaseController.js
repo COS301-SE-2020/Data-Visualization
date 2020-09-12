@@ -11,6 +11,7 @@
  * 29/06/2020   Phillip Schulze     Original
  * 12/07/2020   Phillip Schulze    	Added more functionality for graph suggestions
  * 15/07/2020   Phillip Schulze	 	Modified all the functions
+ * 27/08/2020   Elna Pistorius 		Added error code that is sent back to route endpoints
  *
  * Test Cases: none
  *
@@ -21,6 +22,7 @@
  * Constraints: None
  */
 require('dotenv').config();
+const Authentication = require('../Authentication');
 // const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 const Pool = require('pg-pool');
@@ -77,6 +79,15 @@ class Database {
 		});
 	}
 
+	static close(done) {
+		console.log('Clossing DB connecion...');
+		return Database.pgPool
+			.end()
+			.then(() => console.log('DB connecion is now closed.'))
+			.catch(() => console.log('DB connection is already closed'))
+			.finally(() => done());
+	}
+
 	/**************** USERS *****************/
 	/**
 	 * This function authenticates a user.
@@ -94,7 +105,7 @@ class Database {
 						if (result.rows.length > 0 && bcrypt.compareSync(password, result.rows[0].password)) {
 							// if (!PRODUCTION) console.log('==> AUTHENTICATION: succesful');
 							delete result.rows[0].password;
-							result.rows[0].apikey = generateApiKey();
+							result.rows[0].apikey = Authentication.generateApiKey();
 							resolve(result.rows[0]);
 						} else {
 							// if (!PRODUCTION) console.log('==> AUTHENTICATION: failed');
@@ -126,13 +137,13 @@ class Database {
 				.then((response) => {
 					// if (!PRODUCTION) console.log('REGISTER RESPONSE');
 					if (response.rows.length > 0) {
-						response.rows[0].apikey = generateApiKey();
+						response.rows[0].apikey = Authentication.generateApiKey();
 						resolve(response.rows[0]);
 					} else reject(response);
 				})
 				.catch((err) => {
 					// console.log(err);
-					reject(DBerror(err));
+					reject(err);
 				});
 		});
 	}
@@ -363,27 +374,14 @@ function fieldUpdates(fields, data, offset) {
 	return output;
 }
 /**
- * This function is used to generate an api key, represented as a random alpha-numeric string of length 20
- * @returns an apikey
- */
-function generateApiKey() {
-	let result = '';
-	let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	let charactersLength = characters.length;
-	for (let i = 0; i < 20; i++) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	}
-	return result;
-}
-/**
  * This function is used to format an error to be displayed.
- * @returns a javascript object of the error.
+ * @returns {error: {code: DBerror.props.code, origin: string, hint: DBerror.props.hint, error: DBerror.props.routine, table: DBerror.props.table}, status: number} javascript object of the error.
  */
 function DBerror(err) {
 	let { table, code, routine, hint, detail } = err;
 	if (code === '23505' || code === '23503') routine = 'userAlreadyExists';
 	if (typeof hint === 'undefined') hint = detail;
-	return { origin: 'database', table, code, error: routine, hint };
+	return { error: { origin: 'database', table, code, error: routine, hint }, status: 500 };
 }
 /**
  * This function is used to return a error if any custom errors occurs.
@@ -392,7 +390,7 @@ function DBerror(err) {
 function UndefinedResponseFromDBerror(querySql) {
 	return {
 		table: undefined,
-		code: undefined,
+		code: 99999,
 		routine: 'undefinedResponseFromDatabase',
 		hint: undefined,
 		detail: 'Query Sent: ' + querySql,

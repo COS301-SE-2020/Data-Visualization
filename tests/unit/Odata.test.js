@@ -22,11 +22,7 @@
  * Constraints: None
  */
 
-const rewire = require('rewire');
-const Odata = rewire('../../controllers/dataSource/Odata.js');
-const format = Odata.__get__('format');
-const formatEntity = Odata.__get__('formatEntity');
-const formatMetaData = Odata.__get__('formatMetaData');
+const Odata = require('../../controllers/dataSource/Odata');
 
 const sourceUrl = 'https://services.odata.org/V2/Northwind/Northwind.svc';
 const entity = 'Products';
@@ -36,14 +32,14 @@ const sourceUrlMetaData = 'https://services.odata.org/V2/Northwind/Northwind.svc
 
 describe('Testing different Odata url formatting functions', () => {
 	test('Converts the Odata url to output JSON instead of XML', () => {
-		expect(format(sourceUrl)).toBe(sourceUrlJson);
+		expect(Odata.format(sourceUrl)).toBe(sourceUrlJson);
 	});
 
 	test('converts the Odata and entity to entity-url that outputs JSON instead of XML', () => {
-		expect(formatEntity(sourceUrl, entity)).toBe(sourceUrlEntity);
+		expect(Odata.formatEntity(sourceUrl, entity)).toBe(sourceUrlEntity);
 	});
 
 	test('converts the Odata url to odata-metada url', () => {
-		expect(formatMetaData(sourceUrl)).toBe(sourceUrlMetaData);
+		expect(Odata.formatMetaData(sourceUrl)).toBe(sourceUrlMetaData);
 	});
 });

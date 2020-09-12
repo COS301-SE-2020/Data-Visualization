@@ -10,6 +10,7 @@
  * -------------------------------------------------------------------------------
  * 02/07/2020    Phillip Schulze     Original
  * 06/08/2020    Phillip Schulze     DataSource now uses a cache to stored passed requests
+ * 27/08/2020    Elna Pistorius 		 Added error code that is sent back to route endpoints
  *
  * Test Cases: none
  *
@@ -20,7 +21,11 @@
  * Constraints: None
  */
 const Cache = require('./cache');
-const Odata = require('./Odata');
+const Odata = require('./Odata/Odata');
+const GraphQL = require('./GraphQL/GraphQL');
+
+const isGraphQL = false; //TODO
+
 /**
  * Purpose: This class is responsible for getting DataSources.
  * Usage Instructions: Use the corresponding getters to retrieve class variables.
@@ -35,14 +40,15 @@ class DataSource {
 	 */
 	static updateMetaData(src) {
 		return new Promise((resolve, reject) => {
-			Odata.getMetaData(src)
+			DataSource.Data()
+				.getMetaData(src)
 				.then((data) => {
 					data = DataSource.parseMetadata(data);
 					// data.items = [1, 2, 3, 4, 5];
 					Cache.setMetaData(src, data);
 					resolve();
 				})
-				.catch((err) => reject(err));
+				.catch((err) => reject({ error: err, status: 500 }));
 		});
 	}
 
@@ -53,18 +59,30 @@ class DataSource {
 	 * @returns a promise of Odata
 	 */
 	static updateEntityData(src, entity) {
-		return new Promise((resolve, reject) => {
-			Odata.getEntityData(src, entity)
+		// eslint-disable-next-line no-async-promise-executor
+		return new Promise( (resolve, reject) => {
+			let fieldList = [];
+			// if (isGraphQL) {
+			// 	fieldList = this.getGraphQLFieldList (src, entity);
+			// }
+			DataSource.Data()
+				.getEntityData(src, entity, fieldList)
 				.then((data) => {
 					Cache.setEntityData(src, entity, data);
 					resolve();
 				})
-				.catch((err) => reject(err));
+				.catch((err) => {
+					reject({ error: err, status: 500 });
+				});
 		});
 	}
-
+	static async getGraphQLFieldList(src, entity){
+		let meta = await this.getMetaData(src);
+		//console.log('datasource metadata: ', meta);
+		return meta.items[entity];
+	}
 	/**
-	 * This function gets Odata.
+	 * This function gets Odata
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
@@ -74,7 +92,7 @@ class DataSource {
 			else {
 				DataSource.updateMetaData(src)
 					.then(() => resolve(Cache.getMetaData(src)))
-					.catch((err) => reject(err));
+					.catch((err) => reject({ error: err, status: 500 }));
 			}
 		}); //Returns a promise
 	}
@@ -94,7 +112,7 @@ class DataSource {
 						const data = Cache.getEntityList(src);
 						resolve(formatList(src, data));
 					})
-					.catch((err) => reject(err));
+					.catch((err) => reject({ error: err, status: 500 }));
 			}
 		}); //Returns a promise
 	}
@@ -103,10 +121,17 @@ class DataSource {
 	 * This function gets entity data.
 	 * @param src the source where the entity data must be retrieved from
 	 * @param entity the entity that we want data from
+	 * @param field the field that is under consideration for a specific entity
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity, field) {
-		return new Promise((resolve, reject) => {
+		// if (isGraphQL) entity = set;
+		return new Promise(async (resolve, reject) => {
+			if(!Cache.validateMetadata(src)){
+				await DataSource.updateMetaData(src)
+					.catch((err) => reject({ error: err, status: 500 }));
+			}
+
 			if (Cache.validateEntityData(src, entity)) {
 				const data = Cache.getEntityData(src, entity, field);
 				resolve(formatData(src, entity, field, data));
@@ -116,18 +141,48 @@ class DataSource {
 						const data = Cache.getEntityData(src, entity, field);
 						resolve(formatData(src, entity, field, data));
 					})
-					.catch((err) => reject(err));
+					.catch((err) => reject({ error: err, status: 500 }));
 			}
 		});
 	}
+	/**
+	 * This function gets entity data.
+	 * @param src the source where the entity data must be retrieved from
+	 * @param entity the entity that we want data from
+	 * @returns a promise of the entities data
+	 */
+	static getEntityDataAll(src, entity) {
+		// if (isGraphQL) entity = set;
+		return new Promise(async (resolve, reject) => {
+			if(!Cache.validateMetadata(src)){
+				await DataSource.updateMetaData(src)
+					.catch((err) => reject({ error: err, status: 500 }));
+			}
 
+			if (Cache.validateEntityData(src, entity)) {
+				const data = Cache.getEntityDataAll(src, entity);
+				resolve(data);
+			} else {
+				DataSource.updateEntityData(src, entity)
+					.then(() => {
+						const data = Cache.getEntityDataAll(src, entity);
+						resolve(data);
+					})
+					.catch((err) => reject({ error: err, status: 500 }));
+			}
+		});
+	}
 	/**
 	 * This function parses XML metadata to a standard JS object.
 	 * @param xmlData the XML metadata received from an external data source
 	 * @returns a standard JS object
 	 */
-	static parseMetadata(xmlData) {
-		return Odata.parseODataMetadata(xmlData);
+	static parseMetadata(data) {
+		return DataSource.Data().parseMetadata(data);
+	}
+
+	static Data() {
+		return isGraphQL ? GraphQL : Odata;
 	}
 }
 
