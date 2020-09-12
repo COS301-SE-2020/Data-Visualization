@@ -80,8 +80,8 @@ class Entities extends React.Component {
       tempItem[entityName] = showAll;
       this.formRef.current.setFieldsValue(tempItem);
       if(showAll){
-        document.getElementById('card-'+entityName).style.backgroundColor = '#46d4a4';
-        //document.getElementById('card-'+entityName).style.boxShadow = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
+        document.getElementById('card-'+entityName).style.backgroundColor = '#EAFFF5';
+        document.getElementById('card-'+entityName).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
       }
       else{
         document.getElementById('card-'+entityName).style.backgroundColor = '';
@@ -291,8 +291,8 @@ class Entities extends React.Component {
                             document.getElementById('card-'+item.entityName).style.backgroundColor = '';
                            }
                           else{
-                            document.getElementById('card-'+item.entityName).style.backgroundColor = '#2edba1';
-                            //document.getElementById('card-'+item.entityName).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
+                            document.getElementById('card-'+item.entityName).style.backgroundColor = '#EAFFF5';
+                            document.getElementById('card-'+item.entityName).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
                           }
                      
                         }} 
