@@ -81,7 +81,7 @@ class Entities extends React.Component {
       this.formRef.current.setFieldsValue(tempItem);
       if(showAll){
         document.getElementById('card-'+entityName).style.backgroundColor = '#EAFFF5';
-        document.getElementById('card-'+entityName).style.boxShadow = '0 -2.8px 2.2px #3EC195,0 6.7px 5.3px #3EC195,0 -1.5px 1px #3EC195,0 2.3px 1.9px #3EC195,0 -4.8px 3.4px #3EC195,0 10px 8px #3EC195';
+        document.getElementById('card-'+entityName).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
       }
       else{
         document.getElementById('card-'+entityName).style.backgroundColor = '';
@@ -250,7 +250,7 @@ class Entities extends React.Component {
 
                <Form.Item>
               
-                <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                <Button id = 'button__generateSuggestions' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
                    Generate Suggestions
                  </Button>
                 
@@ -292,7 +292,7 @@ class Entities extends React.Component {
                            }
                           else{
                             document.getElementById('card-'+item.entityName).style.backgroundColor = '#EAFFF5';
-                            document.getElementById('card-'+item.entityName).style.boxShadow  = '0 -2.8px 2.2px #3EC195,0 6.7px 5.3px #3EC195,0 -1.5px 1px #3EC195,0 2.3px 1.9px #3EC195,0 -4.8px 3.4px #3EC195,0 10px 8px #3EC195';
+                            document.getElementById('card-'+item.entityName).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
                           }
                      
                         }} 
@@ -327,7 +327,10 @@ class Entities extends React.Component {
                </Card>
               
                <Form.Item>
-                  <Button id = 'button-explore-dataPage' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                  <Button id={
+                    request.user.isLoggedIn ? 'button__generateSuggestions_notLoggedIn' : 'button__generateSuggestions'
+                  }
+                   type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
                     Generate Suggestions
                   </Button>
                </Form.Item>
