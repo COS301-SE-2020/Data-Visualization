@@ -157,5 +157,5 @@ export const CHART_TYPES = {
 
 export const ECHARTS_MODES = {
 	EDIT: 1,
-	CREATE: 2
+	CREATE: 2 
 };
