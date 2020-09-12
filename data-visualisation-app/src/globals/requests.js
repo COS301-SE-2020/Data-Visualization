@@ -572,6 +572,7 @@ const request = {
 			API.suggestion
 				.chart()
 				.then((res) => {
+					
 					if (callback !== undefined) {
 						console.debug('Response from suggestion.graph:', res);
 						request.cache.suggestions.graph.current = res.data;

@@ -455,7 +455,7 @@ function Dashboard(props) {
 												</Grid>
 											</Grid>
 										</div>
-										<ReactEcharts option={request.cache.graph.list[v].options} style={{height: '300px', width: '100%'}} />
+										<ReactEcharts option={request.cache.graph.list[v].options} style={{height: '90%', width: '100%'}} />
 									</div>;
 								});
 							})()}

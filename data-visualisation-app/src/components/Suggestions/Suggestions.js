@@ -255,6 +255,7 @@ function Suggestions(props) {
                                     } else {
                                         // todo: handle network error
                                         // resolve(request.cache.suggestions.graph.current);
+                                        setLoading(false);
                                         console.debug('errrr');
                                     }
                                 });
@@ -321,6 +322,7 @@ function Suggestions(props) {
                     });
                 } else {
                     // todo: handle network error
+                    setLoading(false);
                 }
             });
         };
