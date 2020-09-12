@@ -23,7 +23,7 @@
 const Rest = require('./rest');
 const DataSource = require('./dataSource');
 const Database = require('./database');
-
 const { GraphSuggesterController } = require('./graphSuggester');
+const Authentication = require('./Authentication');
 
-module.exports = { Rest, DataSource, Database, GraphSuggesterController };
+module.exports = { Rest, DataSource, Database, GraphSuggesterController, Authentication };

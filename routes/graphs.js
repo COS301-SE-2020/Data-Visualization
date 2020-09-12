@@ -12,6 +12,7 @@
  * 02/07/2020   Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
  * 06/08/2020   Elna Pistorius						Added graph type filter endpoint
  * 11/08/2020   Elna Pistorius                      Updated the graph type endpoint
+ * 27/08/2020   Elna Pistorius 						Added a new error helper to make status code vary for different errors.
  *
  * Test Cases: none
  *
@@ -28,11 +29,11 @@ const express = require('express');
 const router = express.Router();
 
 const { Rest } = require('../controllers');
-
+const { error } = require('../helper');
 router.post('/list', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
-	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Is Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined', status: 400 });
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Is Undefined', status: 400 });
 	else {
 		Rest.getGraphList(
 			req.body.email,
@@ -44,12 +45,12 @@ router.post('/list', (req, res) => {
 });
 
 router.post('/add', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
-	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
-	else if (req.body.title === undefined) error(res, { error: 'Title Is Undefined' }, 400);
-	else if (req.body.options === undefined) error(res, { error: 'Options Is Undefined' }, 400);
-	else if (req.body.metadata === undefined) error(res, { error: 'MetData Is Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined', status: 400 });
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined', status: 400 });
+	else if (req.body.title === undefined) error(res, { error: 'Title Is Undefined', status: 400 });
+	else if (req.body.options === undefined) error(res, { error: 'Options Is Undefined', status: 400 });
+	else if (req.body.metadata === undefined) error(res, { error: 'MetData Is Undefined', status: 400 });
 	else {
 		Rest.addGraph(
 			req.body.email,
@@ -64,12 +65,12 @@ router.post('/add', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
-	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Is Undefined' }, 400);
-	else if (req.body.graphID === undefined) error(res, { error: 'Graph Id Undefined' }, 400);
-	else if (req.body.fields === undefined) error(res, { error: 'Fields Undefined' }, 400);
-	else if (req.body.data === undefined) error(res, { error: 'Data Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined', status: 400 });
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Is Undefined', status: 400 });
+	else if (req.body.graphID === undefined) error(res, { error: 'Graph Id Undefined', status: 400 });
+	else if (req.body.fields === undefined) error(res, { error: 'Fields Undefined', status: 400 });
+	else if (req.body.data === undefined) error(res, { error: 'Data Undefined', status: 400 });
 	else {
 		Rest.updateGraph(
 			req.body.email,
@@ -84,10 +85,10 @@ router.post('/update', (req, res) => {
 });
 
 router.post('/remove', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined' }, 400);
-	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Is Undefined' }, 400);
-	else if (req.body.graphID === undefined) error(res, { error: 'Graph Id Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.email === undefined) error(res, { error: 'Email Is Undefined', status: 400 });
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Is Undefined', status: 400 });
+	else if (req.body.graphID === undefined) error(res, { error: 'Graph Id Undefined', status: 400 });
 	else {
 		Rest.removeGraph(
 			req.body.email,
@@ -100,8 +101,8 @@ router.post('/remove', (req, res) => {
 });
 
 router.post('/types', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.graphTypes === undefined) error(res, { error: 'Graphs Is Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.graphTypes === undefined) error(res, { error: 'Graphs Is Undefined', status: 400 });
 	else {
 		Rest.updateGraphTypes(
 			req.body.graphTypes,
@@ -110,10 +111,5 @@ router.post('/types', (req, res) => {
 		);
 	}
 });
-
-function error(res, err, status = 400) {
-	console.error(err);
-	res.status(status).json(err);
-}
 
 module.exports = router;

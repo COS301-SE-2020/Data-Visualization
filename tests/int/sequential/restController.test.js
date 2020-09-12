@@ -104,7 +104,7 @@ describe('Testing user management', () => {
 					EMAIL,
 					PASSWORD,
 					(user) => {},
-					({ error }) => expect(error).toBe(USER_ALREADY_EXISTS_ERROR)
+					({ error }) => expect(error.error).toBe(USER_ALREADY_EXISTS_ERROR)
 				);
 			},
 			() => {}
@@ -350,7 +350,7 @@ afterAll((done) => {
 	return Rest.deregisterUser(
 		EMAIL,
 		PASSWORD,
-		() => Database.pgPool.end().finally(() => done()),
-		() => Database.pgPool.end().finally(() => done())
+		() => Database.close(() => done()),
+		() => Database.close(() => done())
 	);
 });

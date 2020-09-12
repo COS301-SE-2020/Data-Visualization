@@ -1,8 +1,25 @@
+function error(res, err) {
+	const status = err.status || 400;
+	const message = err.error || 'Unkown Error';
+
+	console.error(err);
+	res.status(status).json({ error: message });
+}
+
 const LogAuthUsers = (users) => {
 	console.log('=====================================');
 	console.log(
 		'USERS',
 		Object.keys(users).map((key) => `${key} : ${users[key].email}`)
+	);
+	console.log('=====================================');
+};
+
+const LogAuthKeys = (keys) => {
+	console.log('=====================================');
+	console.log(
+		'KEYS',
+		Object.keys(keys).map((email) => `${email} : ${keys[email]}`)
 	);
 	console.log('=====================================');
 };
@@ -15,4 +32,4 @@ const LogReqParams = (req) => {
 	console.log('=====================================');
 };
 
-module.exports = { LogAuthUsers, LogReqParams };
+module.exports = { LogAuthUsers, LogAuthKeys, LogReqParams, error };
