@@ -79,7 +79,7 @@ function Suggestion(props) {
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Typography.Title level={4} style = {{fontSize: '11pt'}}>{props.chartData.title}</Typography.Title>
+                        <Typography.Title level={4} style = {{fontSize: '10pt'}}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
 
@@ -218,6 +218,8 @@ function Suggestions(props) {
                 form.setFieldsValue(item);
 
                 document.getElementById('chartDiv-'+i).style.borderColor = '';
+                document.getElementById('chartDiv-'+i).style.boxShadow = '';
+                
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
             }
         }
@@ -486,10 +488,12 @@ function Suggestions(props) {
                                               
                                                 if(item[index]  === false){
                                                     
+                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '';
                                                     document.getElementById('chartDiv-'+index).style.borderColor = '';
                                                 }
-                                                else{
-                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#329a77';
+                                                else{//329a77
+                                                    //document.getElementById('chartDiv-'+index).style.boxShadow = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#46d4a4';
                                                 }
  
                                                 }}>

@@ -566,7 +566,7 @@ const request = {
 				})
 				.catch((err) => console.error(err));
 		},
-
+		count: 0,
 		chart: (callback) => {
 
 			API.suggestion
@@ -575,9 +575,30 @@ const request = {
 					
 					if (callback !== undefined) {
 						console.debug('Response from suggestion.graph:', res);
-						request.cache.suggestions.graph.current = res.data;
+						
 
 						//console.log('get ' + res);
+
+
+						if(res.data.series !== undefined && res.data.series[0].type !== 'pie'){
+
+							if(request.suggestions.count === 0){
+								res.data.series[0].color = '#BD4032';
+							}
+							// else if(request.suggestions.count === 1){
+							// 	res.data.series[0].color = '#3EC195';
+							// }
+						
+							request.suggestions.count++;
+							if(request.suggestions.count === 1){
+								request.suggestions.count = 0;
+							}
+
+
+						}
+
+						request.cache.suggestions.graph.current = res.data;
+
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
 				})

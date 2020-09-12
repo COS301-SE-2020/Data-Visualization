@@ -1,7 +1,7 @@
 @import '../../globals/globals.scss';
 
 @mixin button__explore--backgroundColor {
-  background: #3EC195;
+  background: #BD4032;
 }
 
 @mixin button__dashboards--backgroundColor {
@@ -52,52 +52,30 @@
 }
 
 .exploreIllustration {
-    //height: 100px;
-  //height: 30vh;
-    width: 13vw;
-  //width: 10vh;
-    //margin-top: 50px;
-    //margin-bottom: 100px;
-    //margin-left: 30px;
-    //margin-right: auto;
-    //position: relative;
-    //display: inline-block
-
+  width: 13vw;
   margin-top: -180px;
-  //margin-left: 3vw;
 }
 .dashboardIllustration{
-    //height: 30vh;
-    width: 13vw;
-    //margin-top: 100px;
-    //margin-bottom: 100px;
-    //margin-left: 30px;
-    //margin-right: auto;
-    //position: relative;
-
-
+  width: 13vw;
   margin-top: -350px;
   margin-left: 30px;
-  //margin-left: 3vw;
 }
 
 .outterDiv{
     width: 90%;
     height: 95%;
     text-align: center;
-  //overflow: hidden;
 }
 
 #welcomeTitle{
   color: white;
   font-size: 9vh;
   font-family: 'Futura Md BT';
-  //text-shadow: 4px 4px 14px rgba(0,0,0,0.18);
+
 }
 #welcomeText{
   color: white;
   font-size: 2.5vh;
- // text-shadow: 4px 4px 14px rgba(0,0,0,0.11);
 }
 
 .getStarted{
@@ -110,7 +88,6 @@
   margin-left: -2px;
   margin-top: 170px;
   margin-bottom: 100px;
- //text-shadow: 4px 4px 14px rgba(0,0,0,0.23);
 }
 
 #explainExplore{
@@ -121,13 +98,9 @@
 #explainDashboards{
   font-size: 22px;
   color: $color-primary;
-  //margin-left: -100px;
 }
 
 #illustrationExploreDiv{
-    //float: left;
-    //margin-top: -70px;
-    //margin-right: 100px;
   width: 200px;
 }
 
@@ -139,7 +112,7 @@
 
 #explainExploreDiv{
     text-align: center;
-  grid-row-start: span 2;
+  
 }
 #explainDashboardsDiv {
     text-align: center;
@@ -165,20 +138,12 @@
 }
 
 .home__pageSection--title {
-  //margin-top: 150px;
   font-size: 30px;
-  //width: 40vw;
-
   padding-bottom: 100px;
 }
 
 .section__container {
-  //width: 40vw;
-  //display: inline;
-
-  //flex: 1 1 45vw;
   flex: 0 1 45rem;
-  //border: 1px solid red;
   grid-template-columns: 100px 100px;
   grid-template-rows: 100px 100px;
   grid-gap: 10px;
@@ -187,7 +152,6 @@
 #guideDivExplain{
     display: flex;
     justify-content: center;
-    //width: 100%;
     text-align: center;
     margin-top: 170px;
 }
@@ -208,18 +172,12 @@
 #explore-button{
     display: inline-block;
     text-align: center;
-    //padding: 10px;
-    //font-size: 5.5vw;
     width: 6vw;
     height: 2vw
 }
 
 #dashboard-button{
     display: inline-block;
-    //text-align: center;
-    //font-size: 5.5vw;
-    //width: 35vw;
-    //height: 10vw
     width: 6vw;
     height: 2vw
 }
@@ -270,17 +228,14 @@
     
     @include button--layout;
     @include button__explore--backgroundColor;
-    //-webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-    //-moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
-    //box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+
   -webkit-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
   -moz-box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
   box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
 
   font-size: 18px;
+  font-weight: bold;
 
-  //width: vw;
-  //height: 3vw;
 }
 
 #button__dashboard {
@@ -292,10 +247,8 @@
     box-shadow: 0px 17px 18px -12px rgba(126,141,128,1);
 
   font-size: 18px;
+  font-weight: bold;
 
-    //font-size: 20px;
-    //width: 20vw;
-    //height: 7vw;
 }
 
 #button__explore:hover {
@@ -323,6 +276,7 @@
     -moz-box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
     box-shadow: 0px 13px 18px -12px rgba(126,141,128,1);
     color: #f0f0f0;
+
 }
 
 #button__dashboard:active {
@@ -345,29 +299,17 @@
 }
 
 
-//#home__visualizeDataSection {
-//  margin-top: 600px;
-//}
 
 @media only screen and (max-width: 1700px) {
   #header__graphic {
-    //float: none;
-    //width: 400px;
-    //float: right;
-    //margin-top: -300px;
-    //margin-left: 30px;
+
     margin-right: -200px;
   }
 }
 
 @media only screen and (max-width: 1500px) {
   #header__graphic {
-    //float: none;
     width: 400px;
-    //float: right;
-    //margin-top: -300px;
-    //margin-left: 30px;
-    //margin-right: -200px;
   }
   .home__getStartedSections {
     height: 1800px;
@@ -379,13 +321,8 @@
         left: 60%;
     }
   #header__graphic {
-    //float: none;
-    //width: 400px;
-    //float: right;
     margin-top: 0;
     width: 600px;
-    //margin-left: 30px;
-    //margin-right: -200px;
     float: none;
   }
 

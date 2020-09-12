@@ -1,6 +1,6 @@
 @import '../../globals/globals.scss';
 
-@mixin button__explore--backgroundColor {
+@mixin button__generateSuggestions--backgroundColor {
     background-color: #FF3408;
     background: rgb(117,48,154);
     background: -moz-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
@@ -28,17 +28,10 @@
     width: 80%;
 }
 
-.ant-card-body{
-   
-}
-
-.button-explore-dataPage-notLoggedIn{
-    background-color: white;
-}
 
 
-#button-explore-dataPage{
-    @include button__explore--backgroundColor;
+#button__generateSuggestions{
+    @include button__generateSuggestions--backgroundColor;
     
     color: white;
     border: none;
@@ -56,7 +49,33 @@
 
 }
 
-#button-explore-dataPage:hover{
+#button__generateSuggestions:hover{
+    opacity: 1;
+    -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+    -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+    box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
+}
+
+#button__generateSuggestions_notLoggedIn{
+    @include button__generateSuggestions--backgroundColor;
+    
+    color: white;
+    border: none;
+    width: 400px;
+    height: 10vh;
+    font-size: 2em;
+    margin: 0;
+    top: 90%;
+    left: 57%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    position: fixed;
+   
+    transition: 0.3s;
+
+}
+
+#button__generateSuggestions_notLoggedIn:hover{
     opacity: 1;
     -webkit-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
     -moz-box-shadow: 0px 17px 18px -12px rgba(101,112,192,1);
@@ -64,12 +83,19 @@
 }
 
 @media only screen and (max-width: 600px) {
-    #button-explore-dataPage{
+    #button__generateSuggestions{
         left: 50%;
         width: 80%;
         height: 10vh;
         font-size: 1.5em;
     }
+    #button__generateSuggestions_notLoggedIn{
+        left: 50%;
+        width: 80%;
+        height: 10vh;
+        font-size: 1.5em;
+    }
+    
 }
 
 .entities__entity {

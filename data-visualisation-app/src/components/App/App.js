@@ -136,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
 			width: `calc(100% - ${drawerWidth}px)`,
 			marginLeft: drawerWidth,
 		},
-		zIndex: '4'
+		zIndex: '50'
 	},
 	appBarNotLoggedIn: {
 		[theme.breakpoints.up('sm')]: {
@@ -189,7 +189,7 @@ const useStyles = makeStyles((theme) => ({
 	typographyHeading: {
 		color: '#3EC195',
 		fontSize: '1.5em', 
-		fontWeight: '800',
+		fontWeight: '500',
 	},
 	typographyLocationHeading: {
 		color: '#969698',
@@ -394,28 +394,28 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('home')} selected={pageType === 'home'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<HomeIcon size='25' style={(pageType === 'home' ? {color: 'white'} : {})} />
+						<HomeIcon size='25' style={(pageType === 'home' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Home" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('explore')} selected={pageType === 'explore'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: 'white'} : {})} />
+						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Explore" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
+						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Dashboards" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<PlusSquare size='25' style={(pageType === 'about' ? {color: 'white'} : {})} />
+						<PlusSquare size='25' style={(pageType === 'about' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Create chart" />
 				</MenuItem>
@@ -457,7 +457,7 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<TrashIcon size='25' style={(pageType === 'trash' ? {color: 'white'} : {})} />
+						<TrashIcon size='25' style={(pageType === 'trash' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Trash" />
 				</MenuItem>
