@@ -194,3 +194,54 @@
 .ant-input-number-handler:hover .ant-input-number-handler-down-inner {
   color: $color-primary;
 }
+
+
+
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active,
+.ant-tabs-card > div > .ant-tabs-nav .ant-tabs-tab-active {
+  color: $color-primary;
+}
+
+
+.ant-tabs > .ant-tabs-nav .ant-tabs-nav-add:hover,
+.ant-tabs > div > .ant-tabs-nav .ant-tabs-nav-add:hover {
+  color: $color-primary;
+}
+
+
+.ant-tabs > .ant-tabs-nav .ant-tabs-nav-add:active,
+.ant-tabs > div > .ant-tabs-nav .ant-tabs-nav-add:active,
+.ant-tabs > .ant-tabs-nav .ant-tabs-nav-add:focus,
+.ant-tabs > div > .ant-tabs-nav .ant-tabs-nav-add:focus {
+  color: $color-primary;
+}
+
+.ant-tabs-ink-bar {
+  background: $color-primary;
+}
+
+.ant-tabs-tab-btn:focus,
+.ant-tabs-tab-remove:focus,
+.ant-tabs-tab-btn:active,
+.ant-tabs-tab-remove:active {
+  color: $color-primary;
+}
+
+.ant-tabs-tab:hover {
+  color: $color-primary;
+}
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: $color-primary;
+}
+
+
+
+
+.ant-tabs-tab.ant-tabs-tab-disabled {
+  color: red;
+}
+
+.ant-tabs-dropdown-menu-item-disabled,
+.ant-tabs-dropdown-menu-item-disabled:hover {
+  color: red;
+}

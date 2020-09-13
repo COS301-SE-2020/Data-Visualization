@@ -177,11 +177,13 @@ table.properties {
   position: fixed;
   left: 50%;
   top: 200px;
-  border: 1px solid red;
+  //border: 1px solid red;
+  border-radius: 5px;
   width: 50vw;
   height: 50vh;
   margin-left: -25vw;
   z-index: 100;
+  background-color: white;
 }
 
 .chartType {
@@ -214,17 +216,15 @@ table.properties {
   //padding: 5px;
   //border: 1px solid red;
 
-  border-left: 1px solid #d7d7d7;
-  border-top: 1px solid #d7d7d7;
-  border-bottom: 1px solid #d7d7d7;
+  padding: 10px;
 
   margin-left: -1px;
 }
 
 .chartItem:hover {
-  -webkit-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
-  -moz-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
-  box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  //-webkit-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  //-moz-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  //box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
 }
 
 .chartNavigator--desktop {
@@ -240,7 +240,26 @@ table.properties {
   padding-top: -30px;
 }
 
+.chartItem__inner {
+  border: 1px solid #ebebeb;
+}
+.chartItem__inner:hover {
+  -webkit-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  -moz-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+}
+
 .chartItem__inner--title {
   margin-top: -30px;
   text-align: center;
+}
+
+.chartTabTitle {
+  font-size: 14px;
+}
+
+.chartTabTitle__icon {
+  font-size: 5px;
+  height: 20px;
+  margin-right: 10px;
 }

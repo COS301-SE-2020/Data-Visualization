@@ -28,7 +28,7 @@ import {
     Menu,
     Cascader,
     Divider,
-    Form
+    Form, Tabs
 } from 'antd';
 import './EditChart.scss';
 import ReactEcharts from 'echarts-for-react';
@@ -43,6 +43,11 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import useUndo from 'use-undo';
 import {EDITCHART_MODES} from '../../globals/constants';
 import { Wizard, useWizardStep } from 'react-wizard-primitive';
+import {PieChart} from '@styled-icons/feather/PieChart';
+import {BarChart} from '@styled-icons/feather/BarChart';
+import {ScatterPlot} from '@styled-icons/material-rounded/ScatterPlot';
+import {LineChart} from '@styled-icons/boxicons-regular/LineChart';
+
 
 /**
  *   @brief Component to edit charts data and metadata.
@@ -76,7 +81,7 @@ function EditChart(props) {
     const [data, setData] = useState([]);
     const [seriesProperty, setSeriesProperty] = useState([]);
     const [haveChosenChart, setHaveChosenChart] = useState(false);
-    const [presetIndex, setPresetIndex] = useState(0);
+    const [presetIndex, setPresetIndex] = useState(1);
     const [presetDataReady, setPresetDataReady] = useState(false);
 
 
@@ -92,186 +97,184 @@ function EditChart(props) {
     const storedPointers = useRef({});
     const presetData = useRef([
         /** Line Charts */
-        [
-            {
-                semanticTitle: 'Basic Line Chart',
-                xAxis: {
-                    type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                },
-                yAxis: {
-                    show: false,
-                    type: 'value',
-                    splitLine: {
-                        show: false
-                    }
-                },
-                series: [{
-                    data: [820, 932, 901, 934, 1290, 1330, 1320],
-                    type: 'line'
-                }]
-            },
-            {
-                semanticTitle: 'Area Line Chart',
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [{
-                    data: [820, 932, 901, 934, 1290, 1330, 1320],
-                    type: 'line',
-                    areaStyle: {}
-                }]
-            }
-        ],
-        /** Bar Charts */
-        [
-            {
-                semanticTitle: 'Basic Bar Chart',
-                xAxis: {
-                    type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [{
-                    data: [120, 200, 150, 80, 70, 110, 130],
-                    type: 'bar'
-                }]
-            },
-            {
-                semanticTitle: 'Basic Line Chart2',
-                title: {
-                    text: '世界人口总量',
-                    subtext: '数据来自网络'
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow'
-                    }
-                },
-                legend: {
-                    data: ['2011年', '2012年']
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'value',
-                    boundaryGap: [0, 0.01]
-                },
-                yAxis: {
-                    type: 'category',
-                    data: ['巴西', '印尼', '美国', '印度', '中国', '世界人口(万)']
-                },
-                series: [
-                    {
-                        name: '2011年',
-                        type: 'bar',
-                        data: [18203, 23489, 29034, 104970, 131744, 630230]
+        {
+            tabTitle: <span className='chartTabTitle'><LineChart className='chartTabTitle__icon'/> Line</span>,
+            charts: [
+                {
+                    semanticTitle: 'Basic Line Chart',
+                    xAxis: {
+                        type: 'category',
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
                     },
-                    {
-                        name: '2012年',
-                        type: 'bar',
-                        data: [19325, 23438, 31000, 121594, 134141, 681807]
-                    }
-                ]
-            }
-        ],
+                    yAxis: {
+                        show: false,
+                        type: 'value',
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    series: [{
+                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        type: 'line'
+                    }]
+                },
+                {
+                    semanticTitle: 'Area Line Chart',
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        type: 'line',
+                        areaStyle: {}
+                    }]
+                }
+            ]
+        },
         /** Bar Charts */
-        [
-            {
-                semanticTitle: 'Basic Line Chart3',
-                title: {
-                    text: '某站点用户访问来源',
-                    subtext: '纯属虚构',
-                    left: 'center'
+        {
+            tabTitle: <span className='chartTabTitle'><BarChart className='chartTabTitle__icon'/> Bar</span>,
+            charts: [
+                {
+                    semanticTitle: 'Basic Bar Chart',
+                    xAxis: {
+                        type: 'category',
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        data: [120, 200, 150, 80, 70, 110, 130],
+                        type: 'bar'
+                    }]
                 },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b} : {c} ({d}%)'
-                },
-                legend: {
-                    orient: 'vertical',
-                    left: 'left',
-                    data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
-                },
-                series: [
-                    {
-                        name: '访问来源',
-                        type: 'pie',
-                        radius: '55%',
-                        center: ['50%', '60%'],
-                        data: [
-                            {value: 335, name: '直接访问'},
-                            {value: 310, name: '邮件营销'},
-                            {value: 234, name: '联盟广告'},
-                            {value: 135, name: '视频广告'},
-                            {value: 1548, name: '搜索引擎'}
-                        ],
-                        emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                {
+                    semanticTitle: 'Basic Line Chart2',
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: ['巴西', '印尼', '美国', '印度', '中国', '世界人口(万)']
+                    },
+                    series: [
+                        {
+                            name: '2011年',
+                            type: 'bar',
+                            data: [18203, 23489, 29034, 104970, 131744, 630230]
+                        },
+                        {
+                            name: '2012年',
+                            type: 'bar',
+                            data: [19325, 23438, 31000, 121594, 134141, 681807]
+                        }
+                    ]
+                }
+            ]
+        },
+        /** Bar Charts */
+        {
+            tabTitle: <span className='chartTabTitle'><ScatterPlot className='chartTabTitle__icon'/> Scatter</span>,
+            charts: [
+                {
+                    semanticTitle: 'Basic Line Chart3',
+                    title: {
+                        text: '某站点用户访问来源',
+                        subtext: '纯属虚构',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                    },
+                    series: [
+                        {
+                            name: '访问来源',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: [
+                                {value: 335, name: '直接访问'},
+                                {value: 310, name: '邮件营销'},
+                                {value: 234, name: '联盟广告'},
+                                {value: 135, name: '视频广告'},
+                                {value: 1548, name: '搜索引擎'}
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
                             }
                         }
-                    }
-                ]
-            },
-            {
-                semanticTitle: 'Basic Line Chart4',
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                    ]
                 },
-                legend: {
-                    orient: 'vertical',
-                    left: 10,
-                    data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
-                },
-                series: [
-                    {
-                        name: '访问来源',
-                        type: 'pie',
-                        radius: ['50%', '70%'],
-                        avoidLabelOverlap: false,
-                        label: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
+                {
+                    semanticTitle: 'Basic Line Chart4',
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b}: {c} ({d}%)'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 10,
+                        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                    },
+                    series: [
+                        {
+                            name: '访问来源',
+                            type: 'pie',
+                            radius: ['50%', '70%'],
+                            avoidLabelOverlap: false,
                             label: {
-                                show: true,
-                                fontSize: '30',
-                                fontWeight: 'bold'
-                            }
-                        },
-                        labelLine: {
-                            show: false
-                        },
-                        data: [
-                            {value: 335, name: '直接访问'},
-                            {value: 310, name: '邮件营销'},
-                            {value: 234, name: '联盟广告'},
-                            {value: 135, name: '视频广告'},
-                            {value: 1548, name: '搜索引擎'}
-                        ]
-                    }
-                ]
-            }
-        ],
+                                show: false,
+                                position: 'center'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: '30',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            labelLine: {
+                                show: false
+                            },
+                            data: [
+                                {value: 335, name: '直接访问'},
+                                {value: 310, name: '邮件营销'},
+                                {value: 234, name: '联盟广告'},
+                                {value: 135, name: '视频广告'},
+                                {value: 1548, name: '搜索引擎'}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
         /** Scatter Plot Charts */
-        [
+        {
+            tabTitle: <span className='chartTabTitle'><PieChart className='chartTabTitle__icon'/> Pie</span>,
+            charts: [
             {
                 semanticTitle: 'Basic Line Chart5',
                 xAxis: {},
@@ -366,7 +369,7 @@ function EditChart(props) {
                     ],
                 }]
             }
-        ]
+        ]}
     ]);
 
     const [
@@ -837,12 +840,12 @@ function EditChart(props) {
     function processPresetData() {
         const AXIS_TYPES = ['xAxis', 'yAxis'];
         for (let t = 0; t < presetData.current.length; t++) {
-            for (let c = 0; c < presetData.current[t].length; c++) {
+            for (let c = 0; c < presetData.current[t].charts.length; c++) {
 
                 for (let axis = 0; axis < AXIS_TYPES.length; axis++) {
-                    if (presetData.current[t][c].hasOwnProperty(AXIS_TYPES[axis])) {
-                        presetData.current[t][c][AXIS_TYPES[axis]].show = false;
-                        presetData.current[t][c][AXIS_TYPES[axis]].splitLine = {show: false};
+                    if (presetData.current[t].charts[c].hasOwnProperty(AXIS_TYPES[axis])) {
+                        presetData.current[t].charts[c][AXIS_TYPES[axis]].show = false;
+                        presetData.current[t].charts[c][AXIS_TYPES[axis]].splitLine = {show: false};
                     }
                 }
             }
@@ -1397,28 +1400,75 @@ function EditChart(props) {
                                 :
                                 <>
                                     <div className='chooseChartModel'>
-                                        <div className='chooseChartModel__container'>
-                                            <div  className='chartNavigator--desktop'>
-                                                <ChartTypeNavigation />
-                                            </div>
-                                            <div className='chartBrowser--desktop'>
-                                                {/*<div> {`what is: ${presetDataReady}`}</div>*/}
-                                                {presetDataReady &&
+
+                                        {presetDataReady &&
+                                        <Tabs defaultActiveKey="0" tabPosition='left' style={{ height: 220 }}>
+
+                                            {presetData.current.map((presetCharts, presetChartsIndex) => {
+                                                return <Tabs.TabPane tab={presetCharts.tabTitle} key={presetChartsIndex}>
                                                     <Grid container>
-                                                        {presetData.current[presetIndex].map((dataOptions, index) => {
-                                                            if (index === 0)
-                                                                console.debug('dataOptions of 0', dataOptions);
-                                                            return <Grid item xs={12} md={6} lg={3} key={index} className='chartItem'>
-                                                                {/*<div className='chartItem__inner'>*/}
-                                                                    <ReactEcharts style={{height: '200px'}} className='chartItem__echart' option={dataOptions}/>
-                                                                    <div className='chartItem__inner--title'>{`${dataOptions.semanticTitle}`}</div>
-                                                                {/*</div>*/}
+                                                        {presetCharts.charts.map((presetChart, presetChartIndex) => {
+                                                            return <Grid item xs={12} md={6} lg={3} key={presetChartIndex} className='chartItem' key={presetChartIndex}>
+                                                                <div className='chartItem__inner'>
+                                                                    <ReactEcharts  style={{height: '200px'}} className='chartItem__echart' option={presetChart}/>
+                                                                    <div className='chartItem__inner--title'>{`${presetChart.semanticTitle}`}</div>
+                                                                </div>
                                                             </Grid>;
                                                         })}
                                                     </Grid>
-                                                }
-                                            </div>
-                                        </div>
+                                                </Tabs.TabPane>;
+                                            })}
+
+                                            {/*<Tabs.TabPane tab={<><PieChart/> Pie</>} key={1}>*/}
+                                            {/*    {}*/}
+                                            {/*</Tabs.TabPane>*/}
+                                            {/*<Tabs.TabPane tab={'Tab-1'} key={2}>*/}
+                                            {/*    asdfasf*/}
+                                            {/*</Tabs.TabPane>*/}
+                                            {/*<Tabs.TabPane tab={'Tab-2'} key={3}>*/}
+                                            {/*    Cqweqwe*/}
+                                            {/*</Tabs.TabPane>*/}
+                                        </Tabs>}
+
+
+                                        {/*<div className='chooseChartModel__container'>*/}
+                                        {/*    <div  className='chartNavigator--desktop'>*/}
+                                        {/*        <ChartTypeNavigation />*/}
+                                        {/*    </div>*/}
+                                        {/*    <div className='chartBrowser--desktop'>*/}
+
+
+
+                                        {/*        /!*<div> {`what is: ${presetDataReady}`}</div>*!/*/}
+                                        {/*        {presetDataReady &&*/}
+                                        {/*            <Grid container>*/}
+                                        {/*                {presetData.current[presetIndex].map((dataOptions, index) => {*/}
+                                        {/*                    // if (index === 1 && presetIndex === 1) {*/}
+                                        {/*                    //     console.debug('dataOptions of 0', dataOptions);*/}
+                                        {/*                    //     return <div>whasssuppp</div>;*/}
+                                        {/*                    //*/}
+                                        {/*                    // } else*/}
+
+                                        {/*                    console.debug('rendering dataOptions index of ', index, ' with ', dataOptions);*/}
+
+                                        {/*                    let resultPointer;*/}
+                                        {/*                    let result = <Grid item xs={12} md={6} lg={3} key={index} className='chartItem'>*/}
+                                        {/*                        /!*<div className='chartItem__inner'>*!/*/}
+                                        {/*                        <ReactEcharts ref={(e) => {resultPointer = e;}} style={{height: '200px'}} className='chartItem__echart' option={dataOptions}/>*/}
+                                        {/*                        <div className='chartItem__inner--title'>{`${dataOptions.semanticTitle}`}</div>*/}
+                                        {/*                        /!*</div>*!/*/}
+                                        {/*                    </Grid>;*/}
+
+                                        {/*                    console.debug('resultPointer', resultPointer)*/}
+                                        {/*                    // resultPointer = resultPointer.getEchartsInstance();*/}
+                                        {/*                    // resultPointer.refresh();*/}
+
+                                        {/*                    return result;*/}
+                                        {/*                })}*/}
+                                        {/*            </Grid>*/}
+                                        {/*        }*/}
+                                        {/*    </div>*/}
+                                        {/*</div>*/}
                                     </div>
                                     <div className='chooseChartModel__background'></div>
                                 </>
