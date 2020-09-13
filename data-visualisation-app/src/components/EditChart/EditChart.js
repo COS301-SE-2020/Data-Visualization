@@ -153,7 +153,7 @@ function EditChart(props) {
                     series: [{
                         encode: {x: 'days', y: 'values'},
                         type: 'line',
-                        areaStyle: {}
+                        areaStyle: {opacity: 1}
                     }]
                 }
             ]
@@ -721,6 +721,12 @@ function EditChart(props) {
                                 }
                             });
                         }
+                        if (optionsBuffer.current[+currentBuffer.current].series[0].type === 'line') {
+                            newSeriesProperty[newSeriesProperty.length-1].areaOption = {
+                                directory: ['series', 0, 'areaStyle', 'opacity'],
+                                value: optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('areaStyle')
+                            };
+                        }
                         setSeriesProperty(newSeriesProperty);
                     }
                     for (let i = 1; i < dataLength+1; i++) {
@@ -999,6 +1005,9 @@ function EditChart(props) {
                     break;
                 case 'orient':
                     object[property] = 'horizontal';
+                    break;
+                case 'areaStyle':
+                    object[property] = {opacity: 1};
                     break;
             }
         }
@@ -1653,64 +1662,74 @@ function EditChart(props) {
                                     return <Collapse.Panel header={s.name} key={seriesIndex}>
                                         <table className='properties'>
                                             <tbody>
-                                            <tr className='properties'>
-                                                <td className='properties'>Name</td>
-                                                <td className='properties'>
-                                                    <Input onPressEnter={e => {
-                                                        modifyChain([{key: ['legend', 'data', seriesIndex], value: e.target.value}, {key: s.label.directory, value: e.target.value}]);
-                                                        let tmp = JSON.parse(JSON.stringify(seriesProperty[seriesIndex]));
-                                                        tmp.label.value = e.target.value;
-                                                        setSeriesProperty(seriesProperty.map((newSeries, newSeriesIndex) => {
-                                                            if (newSeriesIndex === seriesIndex) return tmp;
-                                                            else return newSeries;
-                                                        }));
-                                                    }} placeholder={s.label.value}/>
-                                                </td>
-                                            </tr>
-                                            <tr className='properties'>
-
-                                               { Array.isArray(s.color) ?
-                                                   <td>
-                                                       {s.color.map((data, dataIndex) => {
-                                                           return <table className='properties' key={dataIndex}>
-                                                               <tbody>
-                                                                   <tr>
-                                                                       <td>
-                                                                           <InputColor initialValue={data.hexvalue} onChange={v => {
-                                                                               modify(data.directory, v.rgba);
-                                                                           }} placement="right" />
-                                                                        </td>
-                                                                   </tr>
-                                                               </tbody>
-                                                           </table>;
-                                                       })}
-                                                   </td>
-                                               :
-                                               <React.Fragment>
-                                                    <td className='properties'>Colour</td>
+                                                <tr className='properties'>
+                                                    <td className='properties'>Name</td>
                                                     <td className='properties'>
-                                                        <InputColor initialValue={s.color.hexvalue} onChange={v => {
-                                                            modify(s.color.directory, v.rgba);
-                                                        }} placement="right" />
+                                                        <Input onPressEnter={e => {
+                                                            modifyChain([{key: ['legend', 'data', seriesIndex], value: e.target.value}, {key: s.label.directory, value: e.target.value}]);
+                                                            let tmp = JSON.parse(JSON.stringify(seriesProperty[seriesIndex]));
+                                                            tmp.label.value = e.target.value;
+                                                            setSeriesProperty(seriesProperty.map((newSeries, newSeriesIndex) => {
+                                                                if (newSeriesIndex === seriesIndex) return tmp;
+                                                                else return newSeries;
+                                                            }));
+                                                        }} placeholder={s.label.value}/>
                                                     </td>
-                                                </React.Fragment>}
+                                                </tr>
+                                                <tr className='properties'>
+
+                                                   { Array.isArray(s.color) ?
+                                                       <td>
+                                                           {s.color.map((data, dataIndex) => {
+                                                               return <table className='properties' key={dataIndex}>
+                                                                   <tbody>
+                                                                       <tr>
+                                                                           <td>
+                                                                               <InputColor initialValue={data.hexvalue} onChange={v => {
+                                                                                   modify(data.directory, v.rgba);
+                                                                               }} placement="right" />
+                                                                            </td>
+                                                                       </tr>
+                                                                   </tbody>
+                                                               </table>;
+                                                           })}
+                                                       </td>
+                                                   :
+                                                   <React.Fragment>
+                                                        <td className='properties'>Colour</td>
+                                                        <td className='properties'>
+                                                            <InputColor initialValue={s.color.hexvalue} onChange={v => {
+                                                                modify(s.color.directory, v.rgba);
+                                                            }} placement="right" />
+                                                        </td>
+                                                    </React.Fragment>}
 
 
 
-                                            </tr>
-                                            <tr className='properties'>
-                                                <td className='properties'>Type</td>
-                                                <td className='properties'>
-                                                    <Cascader options={DEFAULT_PROPERTIES.LEGEND.TYPE} onChange={v => {
-                                                        if (v.length > 0) {
-                                                            modify(s.type.directory, v[0]);
-                                                            let tmp = JSON.parse(JSON.stringify(seriesProperty));
-                                                            tmp[seriesIndex].type.value = v[0];
-                                                            setSeriesProperty(tmp);
-                                                        }
-                                                    }} value={[s.type.value]}/>
-                                                </td>
-                                            </tr>
+                                                </tr>
+                                                <tr className='properties'>
+                                                    <td className='properties'>Type</td>
+                                                    <td className='properties'>
+                                                        <Cascader options={DEFAULT_PROPERTIES.LEGEND.TYPE} onChange={v => {
+                                                            if (v.length > 0) {
+                                                                modify(s.type.directory, v[0]);
+                                                                let tmp = JSON.parse(JSON.stringify(seriesProperty));
+                                                                tmp[seriesIndex].type.value = v[0];
+                                                                setSeriesProperty(tmp);
+                                                            }
+                                                        }} value={[s.type.value]}/>
+                                                    </td>
+                                                </tr>
+
+                                                {s.hasOwnProperty('areaOption') &&
+
+                                                <tr className='properties'>
+                                                    <td className='properties'>Area Chart</td>
+                                                    <td className='properties'>
+                                                        <Checkbox defaultChecked={s.areaOption.value} onClick={e => {modify(s.areaOption.directory, (e.target.checked ? 1 : 0));}} />
+                                                    </td>
+                                                </tr>
+                                                }
 
                                             </tbody>
                                         </table>
