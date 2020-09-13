@@ -123,24 +123,61 @@ function Suggestion(props) {
                 <Space size={9} align="center">
                         <Button style={{float: 'right'}} onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; props.setShowEditChart(true);}}>Customize</Button>
                         <Button style={{float: 'right'}} onClick={() => {
-                            const req = new XMLHttpRequest();
+                            
+                            let rawCSV = 'data:text/csv;charset=utf-8,Series,Dimension,';
 
-                            req.onreadystatechange = () => {
-                                if (req.readyState == 4) {
-                                    let csv = req.responseText;
-                                    var a = document.createElement('a');
-                                    var file = new Blob([csv], {type: 'text/csv'});
-                                    a.href = URL.createObjectURL(file);
-                                    a.download = 'test.csv';
-                                    a.click();
+                            let dataLength;
+                            if (props.chartData.options.hasOwnProperty('series')) {
+                                for (let s = 0; s < props.chartData.options.series.length; s++) {
+                                    if (props.chartData.options.series[s].hasOwnProperty('data')) {
+                                        dataLength = props.chartData.options.series[s].data.length;
+                                    } else if (props.chartData.options.series[s].hasOwnProperty('encode')) {
+                                        if (props.chartData.options.dataset.hasOwnProperty('source')) {
+                                            dataLength = props.chartData.options.dataset.source.length-1;
+                                        }
+                                    }
                                 }
-                            };
+                            }
 
-                            req.open('POST', 'http://localhost:8000/export/csv', true);
-                            req.setRequestHeader('Content-Type', 'application/json');
-                            req.send(
-                                JSON.stringify(props.chartData.options)
-                            ); 
+                            for (let i = 1; i < dataLength+1; i++) {
+                                rawCSV += 'Data Value ' + i.toString();
+                                if (i === dataLength)
+                                    rawCSV += '\r\n';
+                                else
+                                    rawCSV += ',';
+
+                            }
+
+                            if (props.chartData.options.hasOwnProperty('dataset')) {
+
+                                const dimensionNames = ['X-Axis', 'Y-Axis'];
+
+                                for (let dimension = 0; dimension < 2; dimension++) {
+                                    rawCSV += 'Series 1,';
+
+                                    for (let i = 1; i < dataLength+1; i++) {
+
+                                        if (i === 1) {
+                                            rawCSV += dimensionNames[dimension] + ',';
+                                        }
+
+                                        rawCSV += (props.chartData.options.dataset.source[i][dimension] == null ? '' : props.chartData.options.dataset.source[i][dimension]);
+                                        if (i === dataLength)
+                                            rawCSV += '\r\n';
+                                        else
+                                            rawCSV += ',';
+                                    }
+                                }
+                            }
+
+                            let csvEncodedURI = encodeURI(rawCSV);
+                            let a = document.createElement('a');
+                            a.setAttribute('href', csvEncodedURI);
+                            a.setAttribute('download', props.chartData.title + '.csv');
+                            document.body.appendChild(a);
+
+                            a.click();
+
                         }}>Export CSV</Button>
                 </Space>
                 {/*    </Grid>*/}
