@@ -155,7 +155,7 @@ export const CHART_TYPES = {
 	SCATTER: 'scatter'
 };
 
-export const ECHARTS_MODES = {
+export const EDITCHART_MODES = {
 	EDIT: 1,
-	CREATE: 2 
+	CREATE: 2
 };
