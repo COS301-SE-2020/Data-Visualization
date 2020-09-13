@@ -155,6 +155,32 @@ function EditChart(props) {
                         type: 'line',
                         areaStyle: {opacity: 1}
                     }]
+                },
+                {
+                    semanticTitle: 'Smooth Line Chart',
+                    dataset: {
+                        source: [
+                            ['days', 'values'],
+                            ['Mon', 820],
+                            ['Tue', 932],
+                            ['Wed', 901],
+                            ['Thu', 934],
+                            ['Fri', 1290],
+                            ['Sat', 1330],
+                            ['Sun', 1320]
+                        ]
+                    },
+                    xAxis: {
+                        type: 'category'
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        encode: {x: 'days', y: 'values'},
+                        type: 'line',
+                        smooth: true
+                    }]
                 }
             ]
         },
@@ -726,6 +752,10 @@ function EditChart(props) {
                                 directory: ['series', 0, 'areaStyle', 'opacity'],
                                 value: optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('areaStyle')
                             };
+                            newSeriesProperty[newSeriesProperty.length-1].smooth = {
+                                directory: ['series', 0, 'smooth'],
+                                value: (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('smooth') ? optionsBuffer.current[+currentBuffer.current].series[0].smooth : false)
+                            };
                         }
                         setSeriesProperty(newSeriesProperty);
                     }
@@ -1009,6 +1039,10 @@ function EditChart(props) {
                 case 'areaStyle':
                     object[property] = {opacity: 1};
                     break;
+                case 'smooth':
+                    object[property] = false;
+                    break;
+
             }
         }
     }
@@ -1727,6 +1761,15 @@ function EditChart(props) {
                                                     <td className='properties'>Area Chart</td>
                                                     <td className='properties'>
                                                         <Checkbox defaultChecked={s.areaOption.value} onClick={e => {modify(s.areaOption.directory, (e.target.checked ? 1 : 0));}} />
+                                                    </td>
+                                                </tr>
+                                                }
+                                                {s.hasOwnProperty('smooth') &&
+
+                                                <tr className='properties'>
+                                                    <td className='properties'>Smooth</td>
+                                                    <td className='properties'>
+                                                        <Checkbox defaultChecked={s.smooth.value} onClick={e => {modify(s.smooth.directory, (e.target.checked ? 1 : 0));}} />
                                                     </td>
                                                 </tr>
                                                 }
