@@ -102,9 +102,20 @@ function EditChart(props) {
             charts: [
                 {
                     semanticTitle: 'Basic Line Chart',
+                    dataset: {
+                        source: [
+                            ['days', 'values'],
+                            ['Mon', 820],
+                            ['Tue', 932],
+                            ['Wed', 901],
+                            ['Thu', 934],
+                            ['Fri', 1290],
+                            ['Sat', 1330],
+                            ['Sun', 1320]
+                        ]
+                    },
                     xAxis: {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        type: 'category'
                     },
                     yAxis: {
                         show: false,
@@ -114,22 +125,33 @@ function EditChart(props) {
                         }
                     },
                     series: [{
-                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        encode: {x: 'days', y: 'values'},
                         type: 'line'
                     }]
                 },
                 {
                     semanticTitle: 'Area Line Chart',
+                    dataset: {
+                        source: [
+                            ['days', 'values'],
+                            ['Mon', 820],
+                            ['Tue', 932],
+                            ['Wed', 901],
+                            ['Thu', 934],
+                            ['Fri', 1290],
+                            ['Sat', 1330],
+                            ['Sun', 1320]
+                        ]
+                    },
                     xAxis: {
                         type: 'category',
                         boundaryGap: false,
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
                     },
                     yAxis: {
                         type: 'value'
                     },
                     series: [{
-                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        encode: {x: 'days', y: 'values'},
                         type: 'line',
                         areaStyle: {}
                     }]
@@ -142,20 +164,43 @@ function EditChart(props) {
             charts: [
                 {
                     semanticTitle: 'Basic Bar Chart',
+                    dataset: {
+                        source: [
+                            ['days', 'values'],
+                            ['Mon', 120],
+                            ['Tue', 200],
+                            ['Wed', 150],
+                            ['Thu', 80],
+                            ['Fri', 70],
+                            ['Sat', 110],
+                            ['Sun', 130]
+                        ]
+                    },
                     xAxis: {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        type: 'category'
                     },
                     yAxis: {
                         type: 'value'
                     },
                     series: [{
-                        data: [120, 200, 150, 80, 70, 110, 130],
+                        encode: {x: 'days', y: 'values'},
                         type: 'bar'
                     }]
                 },
                 {
                     semanticTitle: 'Basic Line Chart2',
+                    dataset: {
+                        source: [
+                            ['days', 'values'],
+                            ['Mon', 18203],
+                            ['Tue', 23489],
+                            ['Wed', 29034],
+                            ['Thu', 29034],
+                            ['Fri', 104970],
+                            ['Sat', 110],
+                            ['Sun', 630230]
+                        ]
+                    },
                     grid: {
                         left: '3%',
                         right: '4%',
@@ -854,8 +899,17 @@ function EditChart(props) {
         setPresetDataReady(true);
     }
 
-    function stripChartProperties() {
+    function stripChartAxisHideProperties(EChartJSON) {
+        let result = JSON.parse(JSON.stringify(EChartJSON));
+        const AXIS_TYPES = ['xAxis', 'yAxis'];
+        for (let axis = 0; axis < AXIS_TYPES.length; axis++) {
+            if (EChartJSON.hasOwnProperty(AXIS_TYPES[axis])) {
+                delete EChartJSON[AXIS_TYPES[axis]].show;
+                delete EChartJSON[AXIS_TYPES[axis]].splitLine;
+            }
+        }
 
+        return result;
     }
 
     /**  If property does not exist inside EChart's JSON object. The property is created with the
@@ -1386,7 +1440,7 @@ function EditChart(props) {
     }
 
     return (<div id='editCharts'>
-            {props.mode === EDITCHART_MODES.CREATE &&
+            {(props.mode === EDITCHART_MODES.CREATE && !haveChosenChart) &&
                 <>
                     {
                         (matches ?
@@ -1409,7 +1463,19 @@ function EditChart(props) {
                                                     <Grid container>
                                                         {presetCharts.charts.map((presetChart, presetChartIndex) => {
                                                             return <Grid item xs={12} md={6} lg={3} key={presetChartIndex} className='chartItem' key={presetChartIndex}>
-                                                                <div className='chartItem__inner'>
+                                                                <div className='chartItem__inner' onClick={() => {
+                                                                    optionsBuffer.current[+currentBuffer.current] = stripChartAxisHideProperties(presetChart);
+                                                                    currentBuffer.current = !currentBuffer.current;
+                                                                    optionsBuffer.current[+currentBuffer.current] = stripChartAxisHideProperties(presetChart);
+
+                                                                    // setChartOptions(optionsBuffer.current[+currentBuffer.current]);
+                                                                    resetCurrentOptions(JSON.parse(JSON.stringify(optionsBuffer.current[+currentBuffer.current])));
+                                                                    currentBuffer.current = !currentBuffer.current;
+
+                                                                    generateData();
+
+                                                                    setHaveChosenChart(true);
+                                                                }}>
                                                                     <ReactEcharts  style={{height: '200px'}} className='chartItem__echart' option={presetChart}/>
                                                                     <div className='chartItem__inner--title'>{`${presetChart.semanticTitle}`}</div>
                                                                 </div>
@@ -1663,11 +1729,11 @@ function EditChart(props) {
                 <div className='box__title'>
                     Chart
                 </div>
-                {/*<div className='box__content'>*/}
-                {/*    {(props.mode === EDITCHART_MODES.CREATE && !haveChosenChart) &&*/}
-                {/*        <ReactEcharts option={presentCurrentOptions}/>*/}
-                {/*    }*/}
-                {/*</div>*/}
+                <div className='box__content'>
+                    {(props.mode === EDITCHART_MODES.EDIT || (props.mode === EDITCHART_MODES.CREATE && haveChosenChart)) &&
+                        <ReactEcharts option={presentCurrentOptions}/>
+                    }
+                </div>
 
                 <div className='box__title'>
                     Data
@@ -1677,7 +1743,7 @@ function EditChart(props) {
                     <div style={{overflow: 'scroll'}}>
                         {/*<Table columns={columns} dataSource={data} />*/}
                         {renderAxisTable && <AxisTable columns={columnsAxisCaptions} data={dataAxisCaptions} updateMyData={updateAxisData}/>}
-                        {(props.mode === EDITCHART_MODES.CREATE && !haveChosenChart) &&
+                        {(props.mode === EDITCHART_MODES.EDIT || (props.mode === EDITCHART_MODES.CREATE && haveChosenChart)) &&
                             <Table columns={columns.current} data={data} updateMyData={updateData}/>
                         }
 
