@@ -23,6 +23,8 @@
  * 14/08/2020	 Marco Lombaard		Renamed limitFields to setFields, notInExclusions to accepted
  * 14/08/2020	 Marco Lombaard		Moved constructOption to graphSuggesterController.js
  * 01/09/2020	 Marco Lombaard		Added scaleFitnessTarget and a way to scale fitness for multiple characteristics
+ * 10/09/2020	 Elna Pistorius		Added fitness penalty for graph type + field type combinations
+ * 11/09/2020	 Marco Lombaard		Improved GA efficiency
  *
  * Test Cases: none
  *
@@ -69,7 +71,7 @@ let graphSuggesterMaker = (function () {
 
 			this.defaultWeight = 10;
 
-			this.setGraphTypes(['line', 'bar', 'pie', 'scatter', 'effectScatter']);
+			this.setGraphTypes([ 'line', 'bar', 'pie', 'scatter', 'effectScatter' ]);
 			//TODO 'parallel', 'candlestick', 'map', 'funnel', 'custom'
 		}
 
@@ -157,8 +159,9 @@ let graphSuggesterMaker = (function () {
 
 				graphType = this.graphTypes[index]; //select a random graph type
 				fieldType = types[titleIndex]; //obtain the type of the selected field
-				chromosomes[i] = [titleIndex, graphType, fieldType]; //set up the chromosome properties
+				chromosomes[i] = [ titleIndex, graphType, fieldType ]; //set up the chromosome properties
 				//console.log(i+': ', chromosomes[i]);
+
 			}
 			//console.log('Options: ', options);
 			//console.log('Types: ', types);
@@ -274,10 +277,34 @@ let graphSuggesterMaker = (function () {
 				//check if field type is the best
 				fitness += penalty;
 			}
+			/*
+			When to use what chart type:
+			Line => Float,Decimal, Date
+			Bar => Float, Int, Decimal, String
+			Pie => Boolean, Float, Int, Decimal, String
+			Scatter => Float, Decimal, Int
+			*/
+			let regExp;
+			let lower = chromosome[1].toLowerCase();
+			//Set the regexp for types associated with each type of graph(for optimal combinations)
+			if(lower.includes('line')){
+				regExp = /(float|date|decimal)/i;
+			} else if(lower.includes('bar')){
+				regExp = /(float|int|decimal|string)/i;
+			} else if(lower.includes('pie')){
+				regExp = /(float|int|decimal|string)/i;
+			} else if(lower.includes('scatter')) {
+				regExp = /(float|int|decimal)/i;
+			} else {
+				regExp = regExp = /(float|date|int|decimal|string)/i;
+			}
 
-			if (this.fieldTypeWeights[chromosome[2]]) {
-				//if the field type has a weight
-				fitness += this.fieldTypeWeights[chromosome[2]]; //add the weight
+			if(!regExp.test(chromosome[2])) {	//if the field type is not part of the regexp
+				fitness = fitness + 2;			//then penalise, because it is not an optimal combination
+			}
+
+			if (this.fieldTypeWeights[chromosome[2]]) {	//if the field type has a weight
+				fitness+=this.fieldTypeWeights[chromosome[2]]; //add the weight
 			} else {
 				fitness += this.defaultWeight; //add a default weight
 			}
@@ -305,35 +332,35 @@ let graphSuggesterMaker = (function () {
 			let temp; //variable used in swapping
 
 			switch (degree) {
-				case 0:
-					temp = parent1[1]; //swap graph types
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					break;
+			case 0:
+				temp = parent1[1]; //swap graph types
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				break;
 
-				case 1:
-					temp = parent1[2]; //swap fields(and therefore their types)
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 1:
+				temp = parent1[2]; //swap fields(and therefore their types)
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				case 2:
-					temp = parent1[1]; //swap all attributes(basically a reproduction)
-					parent1[1] = parent2[1];
-					parent2[1] = temp;
-					temp = parent1[2];
-					parent1[2] = parent2[2];
-					parent2[2] = temp;
-					temp = parent1[0];
-					parent1[0] = parent2[0];
-					parent2[0] = temp;
-					break;
+			case 2:
+				temp = parent1[1]; //swap all attributes(basically a reproduction)
+				parent1[1] = parent2[1];
+				parent2[1] = temp;
+				temp = parent1[2];
+				parent1[2] = parent2[2];
+				parent2[2] = temp;
+				temp = parent1[0];
+				parent1[0] = parent2[0];
+				parent2[0] = temp;
+				break;
 
-				default:
-					break; //should never reach this, default to reproduction
+			default:
+				break; //should never reach this, default to reproduction
 			}
 
 			//TODO consider decoupling representation from crossover, as suggested in calculateFitness
@@ -347,12 +374,13 @@ let graphSuggesterMaker = (function () {
 		 */
 		mutation(chromosome, options, types) {
 			let titleIndex = Math.trunc(Math.random() * options.length); //select a random title index
-			let graphType = this.graphTypes[Math.trunc(Math.random() * 5)]; //select a random graph type
+			let graphType = this.graphTypes[Math.trunc(Math.random() * this.graphTypes.length)]; //select a random graph type
 			let fieldType = types[titleIndex]; //obtain the field type
 
 			chromosome[0] = titleIndex;
 			chromosome[1] = graphType;
 			chromosome[2] = fieldType;
+
 		}
 
 		/**
@@ -381,6 +409,7 @@ let graphSuggesterMaker = (function () {
 			let types = [];
 			let count = 0; //the index for options
 			let nameKey = null; //The item name - TODO can probably be replaced by passing the individual entity names as well
+			let dateKey = null;
 
 			for (let key = 0; key < keys.length; key++) {
 				//go through all the keys and get rid of IDs and such
@@ -398,9 +427,25 @@ let graphSuggesterMaker = (function () {
 					types[count] = this.fieldTypes[entity][key];
 					options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
 					//eslint-disable-next-line eqeqeq
-				} else if ((upper.includes('NAME') || upper.includes('ID')) && nameKey == null) {
+				} else if (nameKey == null && (upper.includes('NAME'))) {
 					//store the name key for later access
 					nameKey = name;
+					// eslint-disable-next-line eqeqeq
+				} else if (dateKey == null && upper.includes('DATE')) {
+					//store the date key in case we want periodic data
+					dateKey = name;
+				}
+			}
+
+			// eslint-disable-next-line eqeqeq
+			if (nameKey == null) {//if no fields with 'Name' were found, start looking for ID's
+				for (let key = 0; key < keys.length; key++) {
+					let name = keys[key]; //the key
+					let upper = name.toUpperCase();
+					if (upper.includes('ID')) {
+						nameKey = name;
+						break;
+					}
 				}
 			}
 
@@ -434,11 +479,18 @@ let graphSuggesterMaker = (function () {
 
 			let suggestion = this.geneticAlgorithm(options, types);
 			let processed = [];
-			processed[0] = options[suggestion[0]];
+			processed[0] = options[suggestion[0]];	//field being used for data
 			for (let i = 1; i < suggestion.length; i++) {
-				processed[i] = suggestion[i];
+				processed[i] = suggestion[i];		//copy over the rest of the characteristics
 			}
-			processed[suggestion.length] = nameKey;
+			// eslint-disable-next-line eqeqeq
+			if (suggestion[1].includes('line') && dateKey != null) {
+				//if we have a line chart then use periodic data if it exists
+				processed[suggestion.length] = dateKey; //set the 'primary key' to be the dates
+			} else {
+				processed[suggestion.length] = nameKey; //set the 'primary key' to be the name/id
+			}
+
 			return processed;
 		}
 
