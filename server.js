@@ -45,7 +45,7 @@ const localOrigins1 = ['http://127.0.0.1:3000', 'http://127.0.0.1:8000', 'https:
 const localOrigins2 = ['http://localhost:3000', 'http://localhost:8000', 'https://localhost:3000', 'https://localhost:8000'];
 const localOrigins = localOrigins1.concat(localOrigins2);
 
-const remoteOrigins = ['https://data-visualisation-dev.herokuapp.com/', 'https://data-visualisation-prod.herokuapp.com/'];
+const remoteOrigins = ['https://data-visualisation-dev.herokuapp.com', 'https://data-visualisation-prod.herokuapp.com'];
 
 app.use(
 	cors({
