@@ -33,8 +33,10 @@ const DataSourceRouteMeta = express.Router();
 const { Rest } = require('../controllers');
 const { error } = require('../helper');
 
+//=============	Authenticated Endpoints ================
+
 DataSourceRouteSrc.post('/list', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400});
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
 	else {
 		Rest.getDataSourceList(
 			req.body.email,
@@ -45,12 +47,14 @@ DataSourceRouteSrc.post('/list', (req, res) => {
 });
 
 DataSourceRouteSrc.post('/add', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' , status: 400});
-	else if (req.body.dataSourceUrl === undefined) error(res, { error: 'Data Source url Undefined', status: 400});
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.dataSourceUrl === undefined) error(res, { error: 'Data Source URL Undefined', status: 400 });
+	else if (req.body.dataSourceType === undefined) error(res, { error: 'Data Source Type Undefined', status: 400 });
 	else {
 		Rest.addDataSource(
 			req.body.email,
 			req.body.dataSourceUrl,
+			req.body.dataSourceType,
 			(data) => res.status(200).json({ message: 'Successfully Added Data Source', ...data }),
 			(err) => error(res, err)
 		);
@@ -58,7 +62,7 @@ DataSourceRouteSrc.post('/add', (req, res) => {
 });
 
 DataSourceRouteSrc.post('/remove', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400});
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
 	else {
 		Rest.removeDataSource(
 			req.body.email,
@@ -69,39 +73,49 @@ DataSourceRouteSrc.post('/remove', (req, res) => {
 	}
 });
 
+//=============	Unauthenticated Endpoints ================
+
 DataSourceRouteMeta.post('/entities', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400});
-	else if (req.body.sourceurl === undefined) error(res, { error: 'Source Url is Undefined', status: 400});
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.sourceurl === undefined) error(res, { error: 'Source URL is Undefined', status: 400 });
+	else if (req.body.sourcetype === undefined) error(res, { error: 'Source Type is Undefined', status: 400 });
 	else {
 		Rest.getEntityList(
 			req.body.sourceurl,
+			req.body.sourcetype,
 			(data) => res.status(200).json(data),
 			(err) => error(res, err)
 		);
 	}
 });
 
+DataSourceRouteMeta.post('/data', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.sourceurl === undefined) error(res, { error: 'Data Source URL Undefined' }, 400);
+	else if (req.body.sourcetype === undefined) error(res, { error: 'Data Source Type Undefined' }, 400);
+	else if (req.body.entity === undefined) error(res, { error: 'Data Entity Undefined' }, 400);
+	else {
+		Rest.getData(
+			req.body.sourceurl,
+			req.body.sourcetype,
+			req.body.entity,
+			(list) => res.status(200).json(list),
+			(err) => error(res, err)
+		);
+	}
+});
 
-//TODO: Get data (part of the 20%)
-// DataSourceRouteSrc.post('/data', (req, res) => {
-// 	if (Object.keys(req.body).length === 0) {
-// 		error(res, { error: 'Body Undefined' }, 400);
-// 	} else if (req.body.sourceurl === undefined) {
-// 		error(res, { error: 'Data Source Url Undefined' }, 400);
-// 	} else if (req.body.entity === undefined) {
-// 		error(res, { error: 'Data Entity Undefined' }, 400);
-// 	}else if (req.body.start === undefined) {
-// 		error(res, { error: 'Start Index Is Undefined' }, 400);
-// 	}
-// 	else {
-// 		Rest.getData(
-// 			req.body.sourceurl,
-// 			req.body.entity,
-// 			req.body.start,
-// 			(list) => res.status(200).json(list),
-// 			(err) => error(res, err)
-// 		);
-// 	}
-// });
-
+DataSourceRouteMeta.post('/metadata', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.sourceurl === undefined) error(res, { error: 'Data Source Url Undefined' }, 400);
+	else if (req.body.sourcetype === undefined) error(res, { error: 'Data Source Type Undefined' }, 400);
+	else {
+		Rest.getMetaData(
+			req.body.sourceurl,
+			req.body.sourcetype,
+			(list) => res.status(200).json(list),
+			(err) => error(res, err)
+		);
+	}
+});
 module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };

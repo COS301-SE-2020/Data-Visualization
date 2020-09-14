@@ -51,12 +51,13 @@ class GraphSuggesterController {
 	 * @param types the data types of each field, organised by entity
 	 * @param sets the names of the entities in a way that can be requested from the datasource(not necessarily the same as in items)
 	 */
-	static setMetadata(source, { items, associations, types, sets }) {
+	static setMetadata(source, type, { items, associations, types, sets }) {
 		if (!this.metadata) {
 			this.metadata = [];
 			graphSuggesterAI.setMetadata(items, associations, types); //not yet initialised, initialise it
 		}
-		this.metadata[source] = { items, associations, types, sets };
+		console.log(type);
+		this.metadata[source] = { type, items, associations, types, sets };
 	}
 
 	/**
@@ -469,6 +470,7 @@ class GraphSuggesterController {
 
 			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']); //select the index of the entity in metadata
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //select the set name(different from the entity name) for database querying
+			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
 			return entity; //return the random entity
 		} else {
@@ -500,6 +502,7 @@ class GraphSuggesterController {
 
 			entity['entityName'] = keys[index]; //select a random entity key
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //store the set item name for database querying
+			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
 			return entity;
 		}

@@ -183,9 +183,9 @@ class Database {
 	 * @param sourceURL the data source url to add
 	 * @returns a promise
 	 */
-	static async addDataSource(email, sourceURL) {
+	static async addDataSource(email, sourceURL, sourceType) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('INSERT INTO datasource (email, sourceurl) VALUES ($1,$2) RETURNING *;', [email, sourceURL])
+			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType) VALUES ($1,$2,$3) RETURNING *;', [email, sourceURL, sourceType])
 				.then((result) => {
 					if (result.rows.length > 0) resolve(result.rows[0]);
 					else reject(result);
