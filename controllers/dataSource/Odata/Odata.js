@@ -33,10 +33,10 @@ class Odata {
 	 * @returns a promise of Odata
 	 */
 	static getMetaData(src) {
-		// if (!PRODUCTION) console.log('Odata: ', formatMetaData(src));
+		if (Odata.logging) console.log('Odata: ', Odata.formatMetaData(src));
 		return new Promise((resolve, reject) => {
 			axios
-				.get(formatMetaData(src))
+				.get(Odata.formatMetaData(src))
 				.then((res) => {
 					const { data } = res;
 					resolve(data);
@@ -50,10 +50,10 @@ class Odata {
 	 * @returns a promise of the entity list
 	 */
 	static getEntityList(src) {
-		// if (!PRODUCTION) console.log('Odata: ', format(src));
+		if (Odata.logging) console.log('Odata: ', Odata.format(src));
 		return new Promise((resolve, reject) => {
 			axios
-				.get(format(src))
+				.get(Odata.format(src))
 				.then((res) => {
 					const { EntitySets } = res.data.d;
 					resolve(EntitySets);
@@ -68,10 +68,10 @@ class Odata {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity) {
-		// if (!PRODUCTION) console.log('Odata: ', formatEntity(src, entity));
+		if (Odata.logging) console.log('Odata: ', Odata.formatEntity(src, entity));
 		return new Promise((resolve, reject) => {
 			axios
-				.get(formatEntity(src, entity))
+				.get(Odata.formatEntity(src, entity))
 				.then((res) => {
 					const { results } = res.data.d;
 					resolve(results);
@@ -87,7 +87,7 @@ class Odata {
 	 * @param xmlData the metadata in XML format.
 	 * @returns an object containing the parsed items and associated tables as well as the item sets and data-types in each "table"
 	 */
-	static parseODataMetadata(xmlData) {
+	static parseMetadata(xmlData) {
 		if (!xmlData || xmlData == null) return null; //eslint-disable-line
 
 		let parser = new DOMParser();
@@ -101,6 +101,9 @@ class Odata {
 		let links; //links to other "tables" associated with this one
 		let associations = {}; //associated tables - used in suggestion generation
 		let types = {}; //the data types of the fields
+		let keyRefs = {};
+		let primsArray = [];
+		let prims = {};
 
 		for (let i = 0; i < entityTypes.length; i++) {
 			//step through each table and find their items
@@ -110,6 +113,12 @@ class Odata {
 
 			associations[index] = []; //initialise array
 			types[index] = []; //initialise array
+
+			keyRefs = entityTypes[i].getElementsByTagName('Key');
+
+			for (let j = 0; j < keyRefs.length; j++) {
+				primsArray.push(keyRefs[j].getElementsByTagName('PropertyRef')[0].attributes.getNamedItem('Name').value);
+			}
 
 			children = entityTypes[i].getElementsByTagName('Property');
 
@@ -131,43 +140,48 @@ class Odata {
 		for (let i = 0; i < entitySets.length; i++) {
 			//not to be confused with 'items', which uses entityTypes. This uses entitySets
 			sets.push(entitySets[i].attributes.getNamedItem('Name').value);
+			prims[sets[i]] = primsArray[i];
 		}
-		return { items, associations, sets, types };
+		return { items, associations, sets, types, prims };
+	}
+
+	/**
+	 * This function formats data in to json.
+	 * @param src the source that needs to be formatted
+	 * @returns string of json format
+	 */
+	static format(src) {
+		return `${src}/?$format=json`;
+	}
+
+	/**
+	 * This function formats an entity in to json.
+	 * @param src the source that needs to be formatted
+	 * @param entity the entity that needs to be formatted
+	 * @returns string of json format
+	 */
+	static formatEntity(src, entity) {
+		return `${src}/${entity}/?$format=json`;
+	}
+
+	/**
+	 * This function formats an entity in to json and removes the metadata.
+	 * @param obj the json object to be formatted
+	 * @returns string of json format
+	 */
+	// function removeMeta(obj) {
+	// 	console.log(delete obj['__metadata']);
+	// 	return obj;
+	// }
+	/**
+	 * This function formats an metadata in to json.
+	 * @param src the source that needs to be formatted
+	 * @returns string of json format
+	 */
+	static formatMetaData(src) {
+		return `${src}/$metadata`;
 	}
 }
-/**
- * This function formats data in to json.
- * @param src the source that needs to be formatted
- * @returns string of json format
- */
-function format(src) {
-	return `${src}/?$format=json`;
-}
-/**
- * This function formats an entity in to json.
- * @param src the source that needs to be formatted
- * @param entity the entity that needs to be formatted
- * @returns string of json format
- */
-function formatEntity(src, entity) {
-	return `${src}/${entity}/?$format=json`;
-}
-/**
- * This function formats an entity in to json and removes the metadata.
- * @param obj the json object to be formatted
- * @returns string of json format
- */
-// function removeMeta(obj) {
-// 	console.log(delete obj['__metadata']);
-// 	return obj;
-// }
-/**
- * This function formats an metadata in to json.
- * @param src the source that needs to be formatted
- * @returns string of json format
- */
-function formatMetaData(src) {
-	return `${src}/$metadata`;
-}
+Odata.logging = false;
 
 module.exports = Odata;

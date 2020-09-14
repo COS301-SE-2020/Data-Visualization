@@ -9,7 +9,8 @@
  * Date          Author             				Changes
  * -------------------------------------------------------------------------------
  * 29/06/2020   Elna Pistorius & Phillip Schulze    Original
- * 2/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 02/07/2020    Elna Pistorius & Phillip Schulze    Changed endpoint names and request methods to POST
+ * 27/08/2020   Elna Pistorius 						Added a new error helper to make status code vary for different errors.
  *
  * Test Cases: none
  *
@@ -25,23 +26,26 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const { Rest } = require('../controllers');
+const { error } = require('../helper');
 
 router.post('/list', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
 	else {
+		console.log('route');
+
 		Rest.getDashboardList(
 			req.body.email,
 			(list) => res.status(200).json(list),
-			(err) => error(res, err, 400)
+			(err) => error(res, err)
 		);
 	}
 });
 
 router.post('/add', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.description === undefined) error(res, { error: 'Dashboard Description Undefined' }, 400);
-	else if (req.body.name === undefined) error(res, { error: 'Dashboard Name Undefined' }, 400);
-	else if (req.body.metadata === undefined) error(res, { error: 'Dashboard MetData Is Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.description === undefined) error(res, { error: 'Dashboard Description Undefined', status: 400 });
+	else if (req.body.name === undefined) error(res, { error: 'Dashboard Name Undefined', status: 400 });
+	else if (req.body.metadata === undefined) error(res, { error: 'Dashboard MetData Is Undefined', status: 400 });
 	else {
 		Rest.addDashboard(
 			req.body.email,
@@ -49,16 +53,16 @@ router.post('/add', (req, res) => {
 			req.body.description,
 			req.body.metadata,
 			(data) => res.status(200).json({ message: 'Successfully Added Dashboard', ...data }),
-			(err) => error(res, err, 400)
+			(err) => error(res, err)
 		);
 	}
 });
 
 router.post('/update', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
-	else if (req.body.fields === undefined) error(res, { error: 'Fields Undefined' }, 400);
-	else if (req.body.data === undefined) error(res, { error: 'Data Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined', status: 400 });
+	else if (req.body.fields === undefined) error(res, { error: 'Fields Undefined', status: 400 });
+	else if (req.body.data === undefined) error(res, { error: 'Data Undefined', status: 400 });
 	else {
 		Rest.updateDashboard(
 			req.body.email,
@@ -68,14 +72,14 @@ router.post('/update', (req, res) => {
 			(data) => {
 				res.status(200).json({ message: 'Successfully Updated Dashboard', ...data });
 			},
-			(err) => error(res, err, 400)
+			(err) => error(res, err)
 		);
 	}
 });
 
 router.post('/remove', (req, res) => {
-	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
-	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined' }, 400);
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.dashboardID === undefined) error(res, { error: 'Dashboard Id Undefined', status: 400 });
 	else {
 		Rest.removeDashboard(
 			req.body.email,
@@ -83,14 +87,9 @@ router.post('/remove', (req, res) => {
 			() => {
 				res.status(200).json({ message: 'Successfully Removed Dashboard' });
 			},
-			(err) => error(res, err, 400)
+			(err) => error(res, err)
 		);
 	}
 });
-
-function error(res, err, status = 400) {
-	console.error(err);
-	res.status(status).json(err);
-}
 
 module.exports = router;
