@@ -93,7 +93,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 	});
 
 	test('Returns a suggestion on call to getSuggestion', () => {
-		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
+		graphSuggesterController.setMetadata('url', 0, { items, associations, types, sets });
 		expect(graphSuggesterController.getSuggestions('Product', 'url')).toMatchObject(suggestion);
 	});
 
@@ -106,7 +106,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 	});
 
 	test('Successfully limits entities', () => {
-		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
+		graphSuggesterController.setMetadata('url', 0, { items, associations, types, sets });
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
 		graphSuggesterController.limitEntities([{ entityName: 'Product', datasource: 'url' }]);
 		expect(graphSuggesterController.getSuggestions('Red', 'url')).toBeNull();
@@ -114,7 +114,7 @@ describe('Testing functions in the graphSuggesterController class that call func
 	});
 
 	test('Successfully selects an entity from filtered entities', () => {
-		graphSuggesterController.setMetadata('url', { items, associations, types, sets });
+		graphSuggesterController.setMetadata('url', 0, { items, associations, types, sets });
 
 		let choice = graphSuggesterController.selectEntity();
 		let object = { datasource: 'url', entityName: 'Product', entitySet: 'Products' };
