@@ -128,10 +128,11 @@ class GraphSuggesterController {
 			let field = suggestion[0];
 			let fieldType = suggestion[2];
 			let option;
-			if (fieldType.toLowerCase().includes('string')) {
-				primaryKey = field;
+			if (fieldType.toLowerCase().includes('string')) {	//this data gets changed later, then the field becomes the key
+				option = this.constructOption(graphType, [field, dependentVariable], field, dependentVariable, entity + ': ' + field);
+			} else {
+				option = this.constructOption(graphType, [primaryKey, dependentVariable], primaryKey, dependentVariable, entity + ': ' + field);
 			}
-			option = this.constructOption(graphType, [ primaryKey, dependentVariable ], primaryKey, dependentVariable, entity + ': ' + field);
 			//console.log(option);
 			let chartSuggestion = {
 				fieldType: fieldType,
