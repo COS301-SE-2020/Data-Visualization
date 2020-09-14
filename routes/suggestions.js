@@ -46,7 +46,11 @@ router.post('/params', (req, res) => {
 		// } else if (req.body.fittestGraph.length <= 0) {
 		// 	error(res, { error: 'Fittest Graph has to have at least 1 element' }, 400);
 	} else if (!validateEntityStructure(req.body.selectedEntities)) {
-		error(res, { error: 'The structure of the selected entities are invalid.', hint: 'the structure should have the format of [ { datasource:string, entityName:string }:object ]:array', status: 400 });
+		error(res, {
+			error: 'The structure of the selected entities are invalid.',
+			hint: 'the structure should have the format of [ { datasource:string, datasourcetype:int, entityName:string }:object ]:array',
+			status: 400,
+		});
 	} else {
 		Rest.setSuggestionParams(
 			// req.body.fittestGraph[0],
@@ -69,7 +73,7 @@ router.post('/graphs', (req, res) => {
 
 function validateEntityStructure(entities) {
 	function validateEntity(entity) {
-		return !!(entity && entity.datasource && entity.entityName);
+		return !!(entity && entity.datasource && !isNaN(entity.datasourcetype) && entity.entityName);
 	}
 	return entities.every((entity) => validateEntity(entity));
 }

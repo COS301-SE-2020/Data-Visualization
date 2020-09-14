@@ -50,12 +50,13 @@ class GraphSuggesterController {
 	 * @param types the data types of each field, organised by entity
 	 * @param sets the names of the entities in a way that can be requested from the datasource(not necessarily the same as in items)
 	 */
-	static setMetadata(source, { items, associations, types, sets }) {
+	static setMetadata(source, type, { items, associations, types, sets }) {
 		if (!this.metadata) {
 			this.metadata = [];
 			graphSuggesterAI.setMetadata(items, associations, types); //not yet initialised, initialise it
 		}
-		this.metadata[source] = { items, associations, types, sets };
+		console.log(type);
+		this.metadata[source] = { type, items, associations, types, sets };
 	}
 
 	/**
@@ -129,9 +130,8 @@ class GraphSuggesterController {
 			let option;
 			if (fieldType.toLowerCase().includes('string')) {
 				//primaryKey = field;
-
 			}
-			option = this.constructOption(graphType, [ primaryKey, dependentVariable ], primaryKey, dependentVariable, entity + ': ' + field);
+			option = this.constructOption(graphType, [primaryKey, dependentVariable], primaryKey, dependentVariable, entity + ': ' + field);
 			//console.log(option);
 			let chartSuggestion = {
 				fieldType: fieldType,
@@ -338,16 +338,7 @@ class GraphSuggesterController {
 		//it is also the default options array
 		if (!graph.includes('pie')) {
 			option.xAxis = {
-				type: 'category', //TODO change this so the type(s) get decided by frontend or by the AI
-				name: xEntries,
-				nameLocation: 'center',
-				nameGap: 30,
-				nameTextStyle: {
-					fontSize: 15,
-				},
-				axisLabel: {
-					rotate: 330,
-				},
+				type: 'category', //TODO change this so the t1
 			};
 
 			option.yAxis = {
@@ -462,6 +453,7 @@ class GraphSuggesterController {
 
 			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']); //select the index of the entity in metadata
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //select the set name(different from the entity name) for database querying
+			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
 			return entity; //return the random entity
 		} else {
@@ -493,6 +485,7 @@ class GraphSuggesterController {
 
 			entity['entityName'] = keys[index]; //select a random entity key
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //store the set item name for database querying
+			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
 			return entity;
 		}

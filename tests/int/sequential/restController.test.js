@@ -35,6 +35,7 @@ const USER_ALREADY_EXISTS_ERROR = 'userAlreadyExists';
 const ITEM_ALREADY_EXISTS_ERROR = 'userAlreadyExists';
 
 const DATA_SOURCE_URL = 'http://data.source.url/mock/mock.cvs';
+const DATA_SOURCE_TYPE = 999;
 
 const DASHBOARD_NAME = 'Dashboard Name';
 const DASHBOARD_DESC = 'Dashboard Description';
@@ -171,10 +172,12 @@ describe('Testing with an existing user', () => {
 			return Rest.addDataSource(
 				EMAIL,
 				DATA_SOURCE_URL,
+				DATA_SOURCE_TYPE,
 				(response) => {
 					DATA_SOURCE_ID = response.id;
 					expect(response.email).toBe(EMAIL);
 					expect(response.sourceurl).toBe(DATA_SOURCE_URL);
+					expect(response.sourcetype).toBe(DATA_SOURCE_TYPE);
 				},
 				() => {}
 			);
