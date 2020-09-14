@@ -21,7 +21,6 @@
  * Check the API manual for more detail.
  * Constraints: The API manual must be followed when making requests otherwise no requests will work properly.
  */
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');

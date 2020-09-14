@@ -20,7 +20,10 @@
  * Assumptions: None
  * Constraints: None
  */
+
 const Cache = require('./cache');
+const Forecaster = require('./Forecast/forecaster');
+
 const Odata = require('./Odata/Odata');
 const GraphQL = require('./GraphQL/GraphQL');
 
@@ -195,6 +198,62 @@ class DataSource {
 	static sourceTypeName(type) {
 		return DataSource.sourceNames[type];
 	}
+
+	static predictTimeSeries(dataset, count = 4) {
+		dataset = dataset.filter((data, i) => i > 0);
+		return new Promise((resolve, reject) => {
+			Forecaster.predict(DataSource.toSeries(dataset), count)
+				.then((forecast) => resolve(DataSource.toDataset(forecast)))
+				.catch((err) => reject(err));
+		});
+	}
+
+	static toSeries(dataset) {
+		const series = {};
+		dataset.forEach((set, i) => {
+			const time = new Date(set[0]);
+			const value = set[1];
+			if (i > 1) {
+				const prevTime = new Date(dataset[i - 1][0]);
+				const prevValue = dataset[i - 1][1];
+				const diff = Math.ceil(Math.abs(time - prevTime) / (1000 * 60 * 60 * 24));
+				if (diff > 1) {
+					const newDays = DataSource.inbetween(prevTime, diff, prevValue, value, time);
+					Object.keys(newDays).forEach((day) => (series[formatDate(day)] = newDays[day]));
+				}
+			}
+			series[formatDate(time)] = value;
+		});
+		return series;
+	}
+
+	static toDataset(series) {
+		const dataset = Object.keys(series).map((key) => {
+			const date = new Date(key).toDateString();
+			return [date, series[key]];
+		});
+		return dataset;
+	}
+
+	static inbetween(fTime, diff, fValue, lValue) {
+		let days = {};
+
+		const n = diff;
+
+		for (let i = 0; i < n; ++i) {
+			let newDate = new Date(fTime);
+			newDate.setDate(fTime.getDate() + i);
+
+			let newValue = fValue * (1 - i / (n + 1)) + lValue * (i / (n + 1));
+
+			days[newDate] = newValue;
+		}
+
+		// console.log(n, formatDate(fTime), formatDate(lTime));
+		// console.log(days);
+
+		return days;
+	}
 }
 DataSource.sources = [Odata, GraphQL];
 DataSource.sourceNames = ['Odata', 'GraphQL'];
@@ -227,6 +286,18 @@ function formatData(src, entity, field, entityData) {
 		field: field,
 		data: entityData,
 	};
+}
+
+function formatDate(date) {
+	let d = new Date(date);
+	let month = '' + (d.getMonth() + 1);
+	let day = '' + d.getDate();
+	let year = d.getFullYear();
+
+	if (month.length < 2) month = '0' + month;
+	if (day.length < 2) day = '0' + day;
+
+	return [year, month, day].join('-');
 }
 
 module.exports = DataSource;
