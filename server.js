@@ -24,7 +24,7 @@
 
 require('dotenv').config();
 const express = require('express');
-// const cors = require('cors');
+const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const staticPath = '/data-visualisation-app/build/';
@@ -37,11 +37,11 @@ const { Authentication } = require('./controllers');
 
 const { LogReqParams } = require('./helper');
 
-const { PORT = 8000, HOST = '127.0.0.1' } = process.env;
+const { PORT = 8000 } = process.env;
 const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 const app = express();
-// app.use(cors());
-app.use(helmet());
+app.use(cors());
+app.use(helmet.hsts());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(__dirname + staticPath));
