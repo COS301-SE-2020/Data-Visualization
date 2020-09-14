@@ -9,6 +9,7 @@
  * Date          Author             Changes
  * -------------------------------------------------------------------------------
  * 06/08/2020   Phillip Schulze     Original
+ * 14/09/2020	Marco Lombaard		Added primaryKey field to getEntityData
  *
  * Test Cases: none
  *
