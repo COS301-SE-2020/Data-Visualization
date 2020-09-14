@@ -135,6 +135,8 @@ class GraphSuggesterController {
 			//console.log(option);
 			let chartSuggestion = {
 				fieldType: fieldType,
+				primaryKey: primaryKey,
+				field: field,
 				option: option,
 			};
 			//console.log('Chart: ', chartSuggestion);
