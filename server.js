@@ -40,8 +40,32 @@ const { LogReqParams } = require('./helper');
 const { PORT = 8000 } = process.env;
 const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 const app = express();
-app.use(cors());
+
+const localOrigins1 = ['http://127.0.0.1:3000', 'http://127.0.0.1:8000', 'https://127.0.0.1:3000', 'https://127.0.0.1:8000'];
+const localOrigins2 = ['http://localhost:3000', 'http://localhost:8000', 'https://localhost:3000', 'https://localhost:8000'];
+const localOrigins = localOrigins1.concat(localOrigins2);
+
+const remoteOrigins = ['https://data-visualisation-dev.herokuapp.com/', 'https://data-visualisation-prod.herokuapp.com/'];
+
+app.use(
+	cors({
+		origin: function (origin, callback) {
+			// allow requests with no origin
+			if (!origin) return callback(null, true);
+
+			if (remoteOrigins.indexOf(origin) !== -1 || (!PRODUCTION && localOrigins.indexOf(origin) !== -1)) {
+				return callback(null, true);
+			} else {
+				let message = 'The CORS policy for this origin does not allow access from the particular origin: ' + origin;
+				return callback(new Error(message), false);
+			}
+		},
+	})
+);
+
 app.use(helmet.hsts());
+app.use(helmet.frameguard({ action: 'deny' }));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(__dirname + staticPath));
