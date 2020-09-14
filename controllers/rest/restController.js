@@ -17,7 +17,10 @@
  * 11/08/2020	Marco Lombaard						 Added the stringsToGraphData function
  * 14/08/2020	Marco Lombaard						 Modified getSuggestion to only need metadata for suggestion generation
  * 18/08/2020	Marco Lombaard						 Modified stringsToGraphData to return a 2D array object
- * 18/08/2020	Marco Lombaard						Added boolsToGraphData and make1DArray functions
+ * 18/08/2020	Marco Lombaard						 Added boolsToGraphData and make1DArray functions
+ * 02/09/2020   Elna Pistorius    					 Added new exports controller
+ * 03/08/2020   Elna Pistorius      				 Updated JSON exporting function
+ * 04/08/2020   Elna Pistorius                       Updated CSV exporting function
  *
  * Test Cases: none
  *
@@ -30,6 +33,7 @@
  */
 const Database = require('../database');
 const DataSource = require('../dataSource');
+const ExportsController = require('../exports');
 const { GraphSuggesterController } = require('../graphSuggester');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
@@ -105,8 +109,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDataSource(email, dataSourceURL, done, error) {
-		Database.addDataSource(email, dataSourceURL)
+	static addDataSource(email, dataSourceURL, dataSourceType, done, error) {
+		Database.addDataSource(email, dataSourceURL, dataSourceType)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
@@ -133,7 +137,7 @@ class RestController {
 	 * @returns a promise of Odata
 	 */
 	static getMetaData(src, type, done, error) {
-		DataSource.getMetaData()
+		DataSource.getMetaData(src, type)
 			.then((user) => done(user))
 			.catch((err) => error && error(err));
 	}
@@ -144,11 +148,26 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful.
 	 * @returns a promise of the entity list.
 	 */
-	static getEntityList(src, done, error) {
-		DataSource.getEntityList(src)
+	static getEntityList(src, type, done, error) {
+		DataSource.getEntityList(src, type)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
+	// /**
+	//  * This function gets entity data.
+	//  * @param src the source where the entity data must be retrieved from
+	//  * @param entity the entity that we want data from
+	//  * @param field
+	//  * @param done a promise that is returned if the request was successful
+	//  * @param error a promise that is returned if the request was unsuccessful
+	//  * @returns a promise of the entities data
+	//  */
+	// static getEntityData(src, type, entity, field, done, error) {
+	// 	DataSource.getEntityData(src, entity, field)
+	// 		.then((list) => done(list))
+	// 		.catch((err) => error && error(err));
+	// }
+
 	/**
 	 * This function gets entity data.
 	 * @param src the source where the entity data must be retrieved from
@@ -157,12 +176,11 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of the entities data
 	 */
-	static getEntityData(src, entity, field, done, error) {
-		DataSource.getEntityData(src, entity, field)
+	static getData(src, type, entity, done, error) {
+		DataSource.getEntityDataAll(src, type, entity)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
-
 	/**************** Suggestions ****************/
 
 	/**
@@ -180,11 +198,18 @@ class RestController {
 			GraphSuggesterController.setGraphTypes(graphTypes);
 
 			//construct array of sources from entities with no duplicates
-			const datasources = [...new Set(entities.map((entity) => entity.datasource))];
+			let index = 0;
+			let datasourceTypes = [];
+			const datasources = entities.map((entity) => {
+				datasourceTypes[index++] = entity.datasourcetype;
+				return entity.datasource;
+			});
 
-			Promise.all(datasources.map((src) => DataSource.getMetaData(src)))
+			console.log(datasourceTypes, datasources);
+
+			Promise.all(datasources.map((src, i) => DataSource.getMetaData(src, datasourceTypes[i])))
 				.then((metaDataList) => {
-					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], Meta));
+					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], datasourceTypes[i], Meta));
 					console.log('Meta Data retrieved for sources:');
 					console.log(datasources);
 
@@ -194,13 +219,12 @@ class RestController {
 					error && error(err);
 				});
 		} catch (err) {
-			error && error(err);
+			error && error({ error: err, status: 500 });
 		}
 	}
 
 	/**
 	 * This function gets suggestions based off of the source provided
-	 * @param src the source that is requested to be used to generate a suggestion
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
@@ -209,7 +233,7 @@ class RestController {
 			let randEntity;
 			let suggestion;
 
-			const maxTime = 10;
+			const maxTime = 1; //10;
 			let timer = 0;
 			let timedout = false;
 
@@ -217,13 +241,15 @@ class RestController {
 				if (timer < maxTime) {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
-					//console.log('randEntity:', randEntity);
+
+					console.log('RandEntity:', randEntity);
+
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
-				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined' });
+				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined', status: 500 });
 			} else if (!suggestion) {
 				done({});
 			} else {
@@ -231,8 +257,13 @@ class RestController {
 				let fieldType = suggestion.fieldType;
 				suggestion = suggestion.option;
 				const { field } = extractTitleData(suggestion.title.text);
-
-				DataSource.getEntityData(randEntity.datasource, randEntity.entitySet, field)
+				// console.log('randEntity.datasource = >', randEntity.datasource);
+				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
+				// console.log('randEntity.entityName = >', randEntity.entityName);
+				// console.log('randEntity.entitySet = >', randEntity.entitySet);
+				// console.log('field = >', field);
+				// console.log('fieldtype = >', fieldType);
+				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field)
 					.then((data) => {
 						if (fieldType.includes('String')) {
 							//string data requires additional processing
@@ -240,7 +271,7 @@ class RestController {
 						} else if (fieldType.includes('Bool')) {
 							data = this.boolsToGraphData(data);
 						}
-						outputSuggestionMeta(randEntity.datasource, randEntity.entityName, randEntity.entitySet, field);
+						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType);
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
@@ -252,7 +283,7 @@ class RestController {
 					.catch((err) => error & error(err));
 			}
 		} else {
-			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first' });
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status: 500 });
 		}
 	}
 
@@ -311,6 +342,37 @@ class RestController {
 		Database.removeDashboard(email, id)
 			.then(() => done())
 			.catch((err) => error && error(err));
+	}
+	/**************** EXPORTS ****************/
+	/**
+	 * This function generates exportable json of a chart
+	 * @param fileName the name of the file that needs to be exported to JSON
+	 * @param config the config of the whole chart
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static exportToJson(fileName, config, done, error) {
+		try {
+			let data = ExportsController.json(fileName, config);
+			done(data);
+		} catch (err) {
+			error && error(err);
+		}
+	}
+
+	/**
+	 * This function generates exportable csv of a chart
+	 * @param config the types of graphs that needs to be updated
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static exportToCSV(config, done, error) {
+		try {
+			let data = ExportsController.csv(config);
+			done(data);
+		} catch (err) {
+			error && error(err);
+		}
 	}
 
 	/**************** GRAPHS ****************/
@@ -406,11 +468,11 @@ class RestController {
 
 		for (let i = 0; i < dataArray.length; i++) {
 			// eslint-disable-next-line eqeqeq
-			if (list[dataArray[i]] != null) {
+			if (list[dataArray[i][1]] != null) {
 				//eslint-disable-line
-				list[dataArray[i]]++; //if this category was already created, increment how often it has occurred
+				list[dataArray[i][1]]++; //if this category was already created, increment how often it has occurred
 			} else {
-				list[dataArray[i]] = 1; //else create the category
+				list[dataArray[i][1]] = 1; //else create the category
 			}
 		}
 
@@ -509,13 +571,15 @@ function extractTitleData(title) {
 	} else return title;
 }
 
-function outputSuggestionMeta(src, item, set, field) {
+function outputSuggestionMeta(src, srctype, item, set, field, fieldtype) {
 	console.log('=====================================');
 	console.log('GENERATED SUGGESTION');
-	console.log('src:   ', src);
-	console.log('item:  ', item);
-	console.log('set:   ', set);
-	console.log('field: ', field);
+	console.log('SRC:        ', src);
+	console.log('SRC-type:   ', srctype, '(' + DataSource.sourceTypeName(srctype) + ')');
+	console.log('item:       ', item);
+	console.log('set:        ', set);
+	console.log('field:      ', field);
+	console.log('field type: ', fieldtype);
 	console.log('=====================================');
 }
 

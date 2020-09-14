@@ -10,6 +10,7 @@
  * -------------------------------------------------------------------------------
  * 16/07/2020   Phillip Schulze     Original
  * 22/07/2020   Phillip Schulze     Final
+ * 27/08/2020 	Elna Pistorius 		Updated unit tests for DBerror
  *
  * Test Cases: none
  *
@@ -24,14 +25,13 @@
 const rewire = require('rewire');
 const database = rewire('../../controllers/database/databaseController');
 const fieldUpdates = database.__get__('fieldUpdates');
-const generateApiKey = database.__get__('generateApiKey');
 const DBerror = database.__get__('DBerror');
 const UndefinedResponseFromDBerror = database.__get__('UndefinedResponseFromDBerror');
 
 describe('Function that converts lists of fields and data into comma seperated field=data pairs', () => {
 	test('fields and data lists both have the same length', () => {
-		const fields = [ 'field1', 'field2', 'field3' ];
-		const data = [ 'value1', 2, true ];
+		const fields = ['field1', 'field2', 'field3'];
+		const data = ['value1', 2, true];
 		const offset = 3;
 
 		console.log();
@@ -40,22 +40,18 @@ describe('Function that converts lists of fields and data into comma seperated f
 	});
 
 	test('fields list has more items that data list', () => {
-		const fields = [ 'field1', 'field2', 'field3' ];
-		const data = [ 'value1', 2 ];
+		const fields = ['field1', 'field2', 'field3'];
+		const data = ['value1', 2];
 		const offset = 3;
 		expect(fieldUpdates(fields, data, offset)).toBe(' field1 = $4,  field2 = $5');
 	});
 
 	test('fields list has less items that data list', () => {
-		const fields = [ 'field1', 'field2' ];
-		const data = [ 'value1', 2, true ];
+		const fields = ['field1', 'field2'];
+		const data = ['value1', 2, true];
 		const offset = 1;
 		expect(fieldUpdates(fields, data, offset)).toBe(' field1 = $2,  field2 = $3');
 	});
-});
-
-test('Function that generates an api key, represented as a random alpha-numeric string of length 20', () => {
-	expect(generateApiKey()).toEqual(expect.stringMatching(/^([a-zA-Z0-9_-]){20}$/));
 });
 
 describe('Function that formast an error to be displayed.', () => {
@@ -78,11 +74,14 @@ describe('Function that formast an error to be displayed.', () => {
 				detail: DETAIL,
 			})
 		).toMatchObject({
-			origin: DB,
-			table: TABLE,
-			code: CODE,
-			error: ROUTINE,
-			hint: HINT,
+			error: {
+				origin: DB,
+				table: TABLE,
+				code: CODE,
+				error: ROUTINE,
+				hint: HINT,
+			},
+			status: 500,
 		});
 	});
 
@@ -95,11 +94,14 @@ describe('Function that formast an error to be displayed.', () => {
 				detail: DETAIL,
 			})
 		).toMatchObject({
-			origin: DB,
-			table: TABLE,
-			code: CODE,
-			error: ROUTINE,
-			hint: DETAIL,
+			error: {
+				origin: DB,
+				table: TABLE,
+				code: CODE,
+				error: ROUTINE,
+				hint: DETAIL,
+			},
+			status: 500,
 		});
 	});
 
@@ -112,20 +114,23 @@ describe('Function that formast an error to be displayed.', () => {
 				detail: DETAIL,
 			})
 		).toMatchObject({
-			origin: DB,
-			table: TABLE,
-			code: EXISTS_CODE,
-			error: EXISTS_ROUTINE,
-			hint: DETAIL,
+			error: {
+				origin: DB,
+				table: TABLE,
+				code: EXISTS_CODE,
+				error: EXISTS_ROUTINE,
+				hint: DETAIL,
+			},
+			status: 500,
 		});
 	});
 });
 
-test('Function that returns an error object when the database\'s response is undefined', () => {
+test('Function that returns an error object when the database response is undefined', () => {
 	const SQL_QUERY = 'SELECT * FROM mytable;';
 	expect(UndefinedResponseFromDBerror(SQL_QUERY)).toMatchObject({
 		table: undefined,
-		code: undefined,
+		code: 99999,
 		routine: 'undefinedResponseFromDatabase',
 		hint: undefined,
 		detail: 'Query Sent: ' + SQL_QUERY,

@@ -29,33 +29,30 @@
 /**
  * @jest-environment node
  */
-const Odata = require('../../../controllers/dataSource/Odata.js');
+const Odata = require('../../../controllers/dataSource/Odata');
 
 const SRC_URL = 'https://services.odata.org/V2/Northwind/Northwind.svc';
 const SRC_ENTITY = 'Products';
 
 describe('Testing functions that retrieve data from an Odata source', () => {
-	test('Function that retrieves the entity list as JSON from a given Odata source', () => {
-		return Odata.getEntityList(SRC_URL).then((list) => {
-			expect(list).toMatchSnapshot();
-		});
-	});
-
 	test('Function that retrieves the metadata XML file for a given Odata source', () => {
 		return Odata.getMetaData(SRC_URL).then((xmlString) => {
 			expect(xmlString).toMatchSnapshot();
 		});
 	});
-
 	test('Function that retrieves entity-data as JSON from a given Odata source entity-url', () => {
 		return Odata.getEntityData(SRC_URL, SRC_ENTITY).then((data) => {
 			expect(data).toMatchSnapshot();
 		});
 	});
-
 	test('Function that tests the parsing of the XML Meta Data', () => {
 		return Odata.getMetaData(SRC_URL).then((meta) => {
-			const data = Odata.parseODataMetadata(meta);
+			const data = Odata.parseMetadata(meta);
+			expect(data).toHaveProperty('items');
+			expect(data).toHaveProperty('sets');
+			expect(data).toHaveProperty('associations');
+			expect(data).toHaveProperty('types');
+			expect(data).toHaveProperty('prims');
 			expect(data).toMatchSnapshot();
 		});
 	});

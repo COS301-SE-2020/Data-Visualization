@@ -35,6 +35,7 @@ const USER_ALREADY_EXISTS_ERROR = 'userAlreadyExists';
 const ITEM_ALREADY_EXISTS_ERROR = 'userAlreadyExists'; //eslint-disable-line
 
 const DATA_SOURCE_URL = 'http://data.source.url/mock/mock.cvs';
+const DATA_SOURCE_TYPE = 999;
 
 const DASHBOARD_NAME = 'Dashboard Name';
 const DASHBOARD_DESC = 'Dashboard Description';
@@ -91,7 +92,8 @@ describe('Testing user management', () => {
 
 	test('Test registration when the user already exists', () => {
 		return Database.register(F_NAME, L_NAME, EMAIL, PASSWORD).catch(({ error }) => {
-			expect(error).toBe(USER_ALREADY_EXISTS_ERROR);
+			//{"code": undefined, "error": undefined, "hint": undefined, "origin": "database", "table": undefined}
+			expect(error.error).toBe(USER_ALREADY_EXISTS_ERROR);
 		});
 	});
 
@@ -126,10 +128,11 @@ describe('Testing with an existing user', () => {
 		});
 
 		test('Adding a data source', () => {
-			return Database.addDataSource(EMAIL, DATA_SOURCE_URL).then((response) => {
+			return Database.addDataSource(EMAIL, DATA_SOURCE_URL, DATA_SOURCE_TYPE).then((response) => {
 				DATA_SOURCE_ID = response.id;
 				expect(response.email).toBe(EMAIL);
 				expect(response.sourceurl).toBe(DATA_SOURCE_URL);
+				expect(response.sourcetype).toBe(DATA_SOURCE_TYPE);
 			});
 		});
 
@@ -244,6 +247,6 @@ describe('Testing with an existing user', () => {
 
 afterAll((done) => {
 	return Database.deregister(EMAIL, PASSWORD).finally(() => {
-		Database.pgPool.end().finally(() => done());
+		return Database.close(() => done());
 	});
 });
