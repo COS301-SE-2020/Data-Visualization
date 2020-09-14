@@ -56,7 +56,7 @@ class GraphSuggesterController {
 			this.metadata = [];
 			graphSuggesterAI.setMetadata(items, associations, types); //not yet initialised, initialise it
 		}
-		console.log(type);
+		// console.log(type);
 		this.metadata[source] = { type, items, associations, types, sets };
 	}
 
@@ -464,7 +464,7 @@ class GraphSuggesterController {
 			// eslint-disable-next-line eqeqeq
 			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {
 				console.log('Entity metadata is not defined');
-				console.log(this.metadata, ':', entity['datasource']);
+				console.log('Metadata: ', this.metadata, ' - Entity: ', entity['datasource']);
 				return null;
 			}
 
@@ -552,6 +552,7 @@ class GraphSuggesterController {
 		let keys = Object.keys(sameValues);
 		for (let i = 0; i < keys.length; i++) {
 			if (sameValues[keys[i]]/data.length > 0.8) { //if more than 80% of the same value exists, boring graph
+				console.log('Too many items in graph have the same value - invalidating graph');
 				return {};
 			}
 		}
