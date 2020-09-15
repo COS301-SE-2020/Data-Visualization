@@ -109,8 +109,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDataSource(email, dataSourceURL, done, error) {
-		Database.addDataSource(email, dataSourceURL)
+	static addDataSource(email, dataSourceURL, dataSourceType, done, error) {
+		Database.addDataSource(email, dataSourceURL, dataSourceType)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
@@ -136,8 +136,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of Odata
 	 */
-	static getMetaData(src, done, error) {
-		DataSource.getMetaData(src)
+	static getMetaData(src, type, done, error) {
+		DataSource.getMetaData(src, type)
 			.then((user) => done(user))
 			.catch((err) => error && error(err));
 	}
@@ -148,25 +148,25 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful.
 	 * @returns a promise of the entity list.
 	 */
-	static getEntityList(src, done, error) {
-		DataSource.getEntityList(src)
+	static getEntityList(src, type, done, error) {
+		DataSource.getEntityList(src, type)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
-	/**
-	 * This function gets entity data.
-	 * @param src the source where the entity data must be retrieved from
-	 * @param entity the entity that we want data from
-	 * @param field
-	 * @param done a promise that is returned if the request was successful
-	 * @param error a promise that is returned if the request was unsuccessful
-	 * @returns a promise of the entities data
-	 */
-	static getEntityData(src, entity, field, done, error) {
-		DataSource.getEntityData(src, entity, field)
-			.then((list) => done(list))
-			.catch((err) => error && error(err));
-	}
+	// /**
+	//  * This function gets entity data.
+	//  * @param src the source where the entity data must be retrieved from
+	//  * @param entity the entity that we want data from
+	//  * @param field
+	//  * @param done a promise that is returned if the request was successful
+	//  * @param error a promise that is returned if the request was unsuccessful
+	//  * @returns a promise of the entities data
+	//  */
+	// static getEntityData(src, type, entity, field, done, error) {
+	// 	DataSource.getEntityData(src, entity, field)
+	// 		.then((list) => done(list))
+	// 		.catch((err) => error && error(err));
+	// }
 
 	/**
 	 * This function gets entity data.
@@ -176,8 +176,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of the entities data
 	 */
-	static getData(src, entity, done, error) {
-		DataSource.getEntityDataAll(src, entity)
+	static getData(src, type, entity, done, error) {
+		DataSource.getEntityDataAll(src, type, entity)
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
@@ -198,11 +198,18 @@ class RestController {
 			GraphSuggesterController.setGraphTypes(graphTypes);
 
 			//construct array of sources from entities with no duplicates
-			const datasources = [ ...new Set(entities.map((entity) => entity.datasource)) ];
+			let index = 0;
+			let datasourceTypes = [];
+			const datasources = entities.map((entity) => {
+				datasourceTypes[index++] = entity.datasourcetype;
+				return entity.datasource;
+			});
 
-			Promise.all(datasources.map((src) => DataSource.getMetaData(src)))
+			console.log(datasourceTypes, datasources);
+
+			Promise.all(datasources.map((src, i) => DataSource.getMetaData(src, datasourceTypes[i])))
 				.then((metaDataList) => {
-					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], Meta));
+					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], datasourceTypes[i], Meta));
 					console.log('Meta Data retrieved for sources:');
 					console.log(datasources);
 
@@ -235,6 +242,8 @@ class RestController {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
 
+					console.log('RandEntity:', randEntity);
+
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
@@ -248,10 +257,13 @@ class RestController {
 				let fieldType = suggestion.fieldType;
 				suggestion = suggestion.option;
 				const { field } = extractTitleData(suggestion.title.text);
-				console.log('randEntity.datasource = >', randEntity.datasource);
-				console.log('randEntity.entitySet = >', randEntity.entitySet);
-				console.log('field = >', field);
-				DataSource.getEntityData(randEntity.datasource, randEntity.entitySet, field)
+				// console.log('randEntity.datasource = >', randEntity.datasource);
+				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
+				// console.log('randEntity.entityName = >', randEntity.entityName);
+				// console.log('randEntity.entitySet = >', randEntity.entitySet);
+				// console.log('field = >', field);
+				// console.log('fieldtype = >', fieldType);
+				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field)
 					.then((data) => {
 						if (fieldType.includes('String')) {
 							//string data requires additional processing
@@ -259,7 +271,7 @@ class RestController {
 						} else if (fieldType.includes('Bool')) {
 							data = this.boolsToGraphData(data);
 						}
-						outputSuggestionMeta(randEntity.datasource, randEntity.entityName, randEntity.entitySet, field);
+						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType);
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
@@ -271,7 +283,7 @@ class RestController {
 					.catch((err) => error & error(err));
 			}
 		} else {
-			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status:500 });
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status: 500 });
 		}
 	}
 
@@ -343,7 +355,7 @@ class RestController {
 		try {
 			let data = ExportsController.json(fileName, config);
 			done(data);
-		} catch(err) {
+		} catch (err) {
 			error && error(err);
 		}
 	}
@@ -358,7 +370,7 @@ class RestController {
 		try {
 			let data = ExportsController.csv(config);
 			done(data);
-		} catch(err) {
+		} catch (err) {
 			error && error(err);
 		}
 	}
@@ -467,7 +479,7 @@ class RestController {
 		let data = [];
 		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([ keys[i], list[keys[i]] ]); //push a label-value pair, label is the key and value is that 'list' item
+			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -514,7 +526,7 @@ class RestController {
 		let data = [];
 		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([ keys[i], list[keys[i]] ]); //push a label-value pair, label is the key and value is that 'list' item
+			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -523,7 +535,7 @@ class RestController {
 	static make1DArray(dataArray) {
 		if (dataArray.constructor !== Array) {
 			//if it's just one value
-			return [ dataArray ];
+			return [dataArray];
 		} else if (dataArray[0].constructor !== Array) {
 			//if it's a 1D array
 			return dataArray;
@@ -559,13 +571,15 @@ function extractTitleData(title) {
 	} else return title;
 }
 
-function outputSuggestionMeta(src, item, set, field) {
+function outputSuggestionMeta(src, srctype, item, set, field, fieldtype) {
 	console.log('=====================================');
 	console.log('GENERATED SUGGESTION');
-	console.log('src:   ', src);
-	console.log('item:  ', item);
-	console.log('set:   ', set);
-	console.log('field: ', field);
+	console.log('SRC:        ', src);
+	console.log('SRC-type:   ', srctype, '(' + DataSource.sourceTypeName(srctype) + ')');
+	console.log('item:       ', item);
+	console.log('set:        ', set);
+	console.log('field:      ', field);
+	console.log('field type: ', fieldtype);
 	console.log('=====================================');
 }
 

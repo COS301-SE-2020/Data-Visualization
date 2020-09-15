@@ -22,6 +22,7 @@
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
  * 17/08/2020	 Marco Lombaard						Added assembleGraph function, selectEntity now returns an object
  * 02/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
+ * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
  *
  * Test Cases: none
  *
@@ -50,12 +51,13 @@ class GraphSuggesterController {
 	 * @param types the data types of each field, organised by entity
 	 * @param sets the names of the entities in a way that can be requested from the datasource(not necessarily the same as in items)
 	 */
-	static setMetadata(source, { items, associations, types, sets }) {
+	static setMetadata(source, type, { items, associations, types, sets }) {
 		if (!this.metadata) {
 			this.metadata = [];
 			graphSuggesterAI.setMetadata(items, associations, types); //not yet initialised, initialise it
 		}
-		this.metadata[source] = { items, associations, types, sets };
+		console.log(type);
+		this.metadata[source] = { type, items, associations, types, sets };
 	}
 
 	/**
@@ -76,7 +78,7 @@ class GraphSuggesterController {
 		// console.log(entity, this.metadata[source]);
 
 		if (!this.isInitialised()) {
-			console.log("Metadata isn't initialised, returning null...");
+			console.log('Metadata isn\'t initialised, returning null...');
 			return null;
 		}
 		if (!this.metadata[source]) {
@@ -127,14 +129,16 @@ class GraphSuggesterController {
 			let field = suggestion[0];
 			let fieldType = suggestion[2];
 			let option;
-			if (fieldType.toLowerCase().includes('string')) {
-				//primaryKey = field;
-
+			if (fieldType.toLowerCase().includes('string')) {	//this data gets changed later, then the field becomes the key
+				option = this.constructOption(graphType, [field, dependentVariable], field, dependentVariable, entity + ': ' + field);
+			} else {
+				option = this.constructOption(graphType, [primaryKey, dependentVariable], primaryKey, dependentVariable, entity + ': ' + field);
 			}
-			option = this.constructOption(graphType, [ primaryKey, dependentVariable ], primaryKey, dependentVariable, entity + ': ' + field);
 			//console.log(option);
 			let chartSuggestion = {
 				fieldType: fieldType,
+				primaryKey: primaryKey,
+				field: field,
 				option: option,
 			};
 			//console.log('Chart: ', chartSuggestion);
@@ -173,7 +177,7 @@ class GraphSuggesterController {
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-				this.acceptedEntities[entities[i].datasource] = [entities[i].entityName]; //create it and store the entity
+				this.acceptedEntities[entities[i].datasource] = [ entities[i].entityName ]; //create it and store the entity
 			} else {
 				this.acceptedEntities[entities[i].datasource].push(entities[i].entityName); //add the name to the existing array
 			}
@@ -255,7 +259,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log("Check that 'encode' is not empty");
+			console.log('Check that \'encode\' is not empty');
 			return false;
 		}
 
@@ -263,7 +267,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log("check that 'encode' has keys");
+			console.log('check that \'encode\' has keys');
 		}
 
 		let fieldIndex = -1; //the index at which values(0 - xAxis, 1 - yAxis) are found in all entries
@@ -341,12 +345,16 @@ class GraphSuggesterController {
 				type: 'category', //TODO change this so the type(s) get decided by frontend or by the AI
 				name: xEntries,
 				nameLocation: 'center',
-				nameGap: 30,
+				nameGap: 90,
 				nameTextStyle: {
 					fontSize: 15,
 				},
 				axisLabel: {
 					rotate: 330,
+					padding: [ 20, 0, 0, -20 ],
+				},
+				grid: {
+					bottom: 110,
 				},
 			};
 
@@ -386,7 +394,7 @@ class GraphSuggesterController {
 
 			option.tooltip = {
 				trigger: 'item',
-				formatter: '{c}',
+				formatter: '{d}%',
 				axisPointer: {
 					type: 'none',
 				},
@@ -462,6 +470,7 @@ class GraphSuggesterController {
 
 			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']); //select the index of the entity in metadata
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //select the set name(different from the entity name) for database querying
+			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
 			return entity; //return the random entity
 		} else {
@@ -493,6 +502,7 @@ class GraphSuggesterController {
 
 			entity['entityName'] = keys[index]; //select a random entity key
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //store the set item name for database querying
+			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
 			return entity;
 		}
@@ -512,11 +522,25 @@ class GraphSuggesterController {
 			console.log('No suggestion object to add data to');
 			return suggestion;
 		}
-		let selectedFields = [false];
+		let selectedFields = [ false ];
 
 		let count = 0;
+		let sameValues = [];
+		// let allSameValue = true;	//if everything has the same value, we have a boring graph
+		// let sameValue = data[0][1];	//compare everything with first value
+
 		for (let i = 0; i < data.length; i++) {
 			suggestion['dataset']['source'][i + 1] = data[i];
+
+			// if (allSameValue && sameValue !== data[i][1]) {	//if not the same value, flag it
+			// 	allSameValue = false;
+			// }
+			if (sameValues[data[i][1]]) {	//if this value has been encountered before
+				sameValues[data[i][1]]++;	//increment how many have been encountered
+			} else {	//otherwise create new index
+				sameValues[data[i][1]] = 1;
+			}
+
 			if (count < 5 && data[i] !== 0) {
 				selectedFields[i + 1] = true; //get the first 5 nonnull values
 				count++;
@@ -525,8 +549,19 @@ class GraphSuggesterController {
 			}
 		}
 
+		let keys = Object.keys(sameValues);
+		for (let i = 0; i < keys.length; i++) {
+			if (sameValues[keys[i]]/data.length > 0.8) { //if more than 80% of the same value exists, boring graph
+				return {};
+			}
+		}
+
+		// if (allSameValue) {	//if all the values were the same, the graph is worthless return empty suggestion
+		// 	return {};
+		// }
+
 		if (suggestion['legend']) {
-			//if we have defined a legend
+			//if we have defined a legend, we have pie chart
 			suggestion['legend']['selected'] = selectedFields; //set the selection to the first 5 nonnull values
 		}
 
