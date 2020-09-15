@@ -235,7 +235,7 @@ describe('Testing functions in the graphSuggesterController class', function () 
 	test('Successfully adds a series to an existing suggestion', () => {
 		let compared = chart;
 		let suggestion = graphSuggesterController.addSeriesData(compared, { data });
-		console.log(compared);
+
 		chart.series.push({
 			type: 'line',
 			data: data,
