@@ -125,60 +125,60 @@ function Suggestion(props) {
                 <Space size={9} align="center">
                         <Button style={{float: 'right'}} onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; props.setShowEditChart(true);}}>Customize</Button>
                         <Button style={{float: 'right'}} onClick={() => {
-                            
-                            let rawCSV = 'data:text/csv;charset=utf-8,Series,Dimension,';
+                            console.debug(JSON.stringify(props.chartData.options));
+                            // let rawCSV = 'data:text/csv;charset=utf-8,Series,Dimension,';
 
-                            let dataLength;
-                            if (props.chartData.options.hasOwnProperty('series')) {
-                                for (let s = 0; s < props.chartData.options.series.length; s++) {
-                                    if (props.chartData.options.series[s].hasOwnProperty('data')) {
-                                        dataLength = props.chartData.options.series[s].data.length;
-                                    } else if (props.chartData.options.series[s].hasOwnProperty('encode')) {
-                                        if (props.chartData.options.dataset.hasOwnProperty('source')) {
-                                            dataLength = props.chartData.options.dataset.source.length-1;
-                                        }
-                                    }
-                                }
-                            }
+                            // let dataLength;
+                            // if (props.chartData.options.hasOwnProperty('series')) {
+                            //     for (let s = 0; s < props.chartData.options.series.length; s++) {
+                            //         if (props.chartData.options.series[s].hasOwnProperty('data')) {
+                            //             dataLength = props.chartData.options.series[s].data.length;
+                            //         } else if (props.chartData.options.series[s].hasOwnProperty('encode')) {
+                            //             if (props.chartData.options.dataset.hasOwnProperty('source')) {
+                            //                 dataLength = props.chartData.options.dataset.source.length-1;
+                            //             }
+                            //         }
+                            //     }
+                            // }
 
-                            for (let i = 1; i < dataLength+1; i++) {
-                                rawCSV += 'Data Value ' + i.toString();
-                                if (i === dataLength)
-                                    rawCSV += '\r\n';
-                                else
-                                    rawCSV += ',';
+                            // for (let i = 1; i < dataLength+1; i++) {
+                            //     rawCSV += 'Data Value ' + i.toString();
+                            //     if (i === dataLength)
+                            //         rawCSV += '\r\n';
+                            //     else
+                            //         rawCSV += ',';
 
-                            }
+                            // }
 
-                            if (props.chartData.options.hasOwnProperty('dataset')) {
+                            // if (props.chartData.options.hasOwnProperty('dataset')) {
 
-                                const dimensionNames = ['X-Axis', 'Y-Axis'];
+                            //     const dimensionNames = ['X-Axis', 'Y-Axis'];
 
-                                for (let dimension = 0; dimension < 2; dimension++) {
-                                    rawCSV += 'Series 1,';
+                            //     for (let dimension = 0; dimension < 2; dimension++) {
+                            //         rawCSV += 'Series 1,';
 
-                                    for (let i = 1; i < dataLength+1; i++) {
+                            //         for (let i = 1; i < dataLength+1; i++) {
 
-                                        if (i === 1) {
-                                            rawCSV += dimensionNames[dimension] + ',';
-                                        }
+                            //             if (i === 1) {
+                            //                 rawCSV += dimensionNames[dimension] + ',';
+                            //             }
 
-                                        rawCSV += (props.chartData.options.dataset.source[i][dimension] == null ? '' : props.chartData.options.dataset.source[i][dimension]);
-                                        if (i === dataLength)
-                                            rawCSV += '\r\n';
-                                        else
-                                            rawCSV += ',';
-                                    }
-                                }
-                            }
+                            //             rawCSV += (props.chartData.options.dataset.source[i][dimension] == null ? '' : props.chartData.options.dataset.source[i][dimension]);
+                            //             if (i === dataLength)
+                            //                 rawCSV += '\r\n';
+                            //             else
+                            //                 rawCSV += ',';
+                            //         }
+                            //     }
+                            // }
 
-                            let csvEncodedURI = encodeURI(rawCSV);
-                            let a = document.createElement('a');
-                            a.setAttribute('href', csvEncodedURI);
-                            a.setAttribute('download', props.chartData.title + '.csv');
-                            document.body.appendChild(a);
+                            // let csvEncodedURI = encodeURI(rawCSV);
+                            // let a = document.createElement('a');
+                            // a.setAttribute('href', csvEncodedURI);
+                            // a.setAttribute('download', props.chartData.title + '.csv');
+                            // document.body.appendChild(a);
 
-                            a.click();
+                            // a.click();
 
                         }}>Export CSV</Button>
                 </Space>
@@ -529,7 +529,7 @@ function Suggestions(props) {
 
                         
                             {(currentCharts !== null ? currentCharts.map((achart, index) => {
-                                return <Grid item xs={12} md={6} lg={3} key={index}>
+                                return <Grid item xs={12} md={6} lg={4} key={index}>
                                             <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={() => {
                                                 
                                                 var item = {};
@@ -557,7 +557,7 @@ function Suggestions(props) {
                             
                             }
 
-                            {loading && <Grid item xs={12} md={6} lg={3}>
+                            {loading && <Grid item xs={12} md={6} lg={4}>
                                 <div id='suggestion__loading--container'>
                                     <div id='suggestion__loading--loader'>
                                         {constants.LOADER}
