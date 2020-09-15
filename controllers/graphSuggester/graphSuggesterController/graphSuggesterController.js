@@ -625,11 +625,12 @@ class GraphSuggesterController {
 			data: forecast,
 			name: 'Forecast data',
 		};
-		suggestion['series'].push(series1);
 		suggestion['series'].push(series2);
+		suggestion['series'].push(series1);
 
 		suggestion.legend = {
 			data: [original.name, series1.name, series2.name],
+
 		};
 		return suggestion;
 	}
