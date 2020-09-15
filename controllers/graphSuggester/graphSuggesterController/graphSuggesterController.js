@@ -79,7 +79,7 @@ class GraphSuggesterController {
 		// console.log(entity, this.metadata[source]);
 
 		if (!this.isInitialised()) {
-			console.log('Metadata isn\'t initialised, returning null...');
+			console.log("Metadata isn't initialised, returning null...");
 			return null;
 		}
 		if (!this.metadata[source]) {
@@ -130,7 +130,8 @@ class GraphSuggesterController {
 			let field = suggestion[0];
 			let fieldType = suggestion[2];
 			let option;
-			if (fieldType.toLowerCase().includes('string')) {	//this data gets changed later, then the field becomes the key
+			if (fieldType.toLowerCase().includes('string')) {
+				//this data gets changed later, then the field becomes the key
 				option = this.constructOption(graphType, [field, dependentVariable], field, dependentVariable, entity + ': ' + field);
 			} else {
 				option = this.constructOption(graphType, [primaryKey, dependentVariable], primaryKey, dependentVariable, entity + ': ' + field);
@@ -178,7 +179,7 @@ class GraphSuggesterController {
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-				this.acceptedEntities[entities[i].datasource] = [ entities[i].entityName ]; //create it and store the entity
+				this.acceptedEntities[entities[i].datasource] = [entities[i].entityName]; //create it and store the entity
 			} else {
 				this.acceptedEntities[entities[i].datasource].push(entities[i].entityName); //add the name to the existing array
 			}
@@ -260,7 +261,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log('Check that \'encode\' is not empty');
+			console.log("Check that 'encode' is not empty");
 			return false;
 		}
 
@@ -268,7 +269,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log('check that \'encode\' has keys');
+			console.log("check that 'encode' has keys");
 		}
 
 		let fieldIndex = -1; //the index at which values(0 - xAxis, 1 - yAxis) are found in all entries
@@ -352,7 +353,7 @@ class GraphSuggesterController {
 				},
 				axisLabel: {
 					rotate: 330,
-					padding: [ 20, 0, 0, -20 ],
+					padding: [20, 0, 0, -20],
 				},
 				grid: {
 					bottom: 110,
@@ -526,7 +527,7 @@ class GraphSuggesterController {
 			console.log('No suggestion object to add data to');
 			return suggestion;
 		}
-		let selectedFields = [ false ];
+		let selectedFields = [false];
 
 		let count = 0;
 		let sameValues = [];
@@ -539,9 +540,11 @@ class GraphSuggesterController {
 			// if (allSameValue && sameValue !== data[i][1]) {	//if not the same value, flag it
 			// 	allSameValue = false;
 			// }
-			if (sameValues[data[i][1]]) {	//if this value has been encountered before
-				sameValues[data[i][1]]++;	//increment how many have been encountered
-			} else {	//otherwise create new index
+			if (sameValues[data[i][1]]) {
+				//if this value has been encountered before
+				sameValues[data[i][1]]++; //increment how many have been encountered
+			} else {
+				//otherwise create new index
 				sameValues[data[i][1]] = 1;
 			}
 
@@ -555,7 +558,8 @@ class GraphSuggesterController {
 
 		let keys = Object.keys(sameValues);
 		for (let i = 0; i < keys.length; i++) {
-			if (sameValues[keys[i]]/data.length > 0.8) { //if more than 80% of the same value exists, boring graph
+			if (sameValues[keys[i]] / data.length > 0.8) {
+				//if more than 80% of the same value exists, boring graph
 				console.log('Too many items in graph have the same value - invalidating graph');
 				return {};
 			}
@@ -581,7 +585,7 @@ class GraphSuggesterController {
 	 * @param data the data belonging to the series
 	 * @return suggestion the new suggestion
 	 */
-	static addSeriesData(suggestion, { data }){
+	static addSeriesData(suggestion, { data }) {
 		if (!suggestion || !suggestion['series'] || !suggestion['series'][0]) {
 			console.log('Invalid series in given suggestion');
 		}
