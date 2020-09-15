@@ -271,6 +271,7 @@ class RestController {
 					.then(async (data) => {
 						let isForecasting = false;
 						let forecast = null;
+						let trimmedSet = null;
 
 						if (fieldType.toLowerCase().includes('string')) {
 							//string data requires additional processing
@@ -280,15 +281,20 @@ class RestController {
 						} else if (primaryKey.toLowerCase().includes('date')) {
 							data = this.dateConversion(data);
 
-							// console.log(data.data);
-
 							const count = Math.ceil(data.length * 0.2);
 							isForecasting = true;
 
-							forecast = await DataSource.predictTimeSeries(data.data, count).catch((err) => {
+							let forecastResults = await DataSource.predictTimeSeries(data.data, count).catch((err) => {
 								isForecasting = false;
 								console.log('Time Series Forecast failed...');
 							});
+
+							console.log(forecastResults);
+							if (forecastResults && isForecasting) {
+								forecast = forecastResults.forecast;
+								trimmedSet = forecastResults.trimmedSet;
+							} else isForecasting = false;
+
 						} else { //get rid of duplicate keys(previous checks did that automatically, it should do it for others too)
 							data = this.removeDuplicateKeys(data);
 						}
@@ -303,10 +309,10 @@ class RestController {
 
 							// console.log('BEFORE:', chart);
 
-							if (isForecasting && forecast) {
+							if (isForecasting && forecast && trimmedSet) {
 								console.log('Forecast:', forecast);
 
-								chart = GraphSuggesterController.addSeriesData(chart, { data: forecast });
+								chart = GraphSuggesterController.addSeriesData(chart, { forecast, trimmedSet });
 							}
 							console.log('AFTER:', chart.series);
 

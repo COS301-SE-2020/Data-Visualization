@@ -204,11 +204,49 @@ class DataSource {
 
 	static predictTimeSeries(dataset, count = 4) {
 		dataset = dataset.filter((data, i) => i > 0);
+		dataset = DataSource.trimDataset(dataset);
+
 		return new Promise((resolve, reject) => {
 			Forecaster.predict(DataSource.toSeries(dataset), count)
-				.then((forecast) => resolve(DataSource.toDataset(forecast)))
+				.then((forecast) => {
+					forecast = DataSource.toDataset(forecast);
+					forecast.unshift(dataset[dataset.length - 1]);
+					resolve({ forecast, trimmedSet: dataset });
+				})
 				.catch((err) => reject(err));
 		});
+	}
+
+	static trimDataset(dataset) {
+		const data = dataset.map((set) => set[1]);
+		const avg = data.reduce((total, num) => total + num) / data.length;
+		const sumSquares = data.reduce((total, num, i) => {
+			if (i === 1) total = Math.pow(total - avg, 2);
+			total += Math.pow(num - avg, 2);
+			return total;
+		});
+		const n1 = data.length - 1;
+		const standardDeviation = Math.sqrt(sumSquares / n1);
+		const numDevs = standardDeviation > avg / 2 ? 1 : 2;
+
+		const devUp = avg + numDevs * standardDeviation;
+		const devDown = avg - numDevs * standardDeviation;
+
+		console.log('numDevs:', numDevs);
+		console.log('mean:', avg);
+		console.log('stdDiv:', standardDeviation);
+		console.log('devUp:', devUp);
+		console.log('devDown:', devDown);
+
+		const withinDeviations = (num) => {
+			// console.log(Math.abs(num));
+
+			return num <= devUp && num >= devDown;
+		};
+
+		let trimmedSet = dataset.filter((set) => withinDeviations(set[1]));
+
+		return trimmedSet;
 	}
 
 	static toSeries(dataset) {

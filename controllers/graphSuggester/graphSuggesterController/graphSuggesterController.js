@@ -608,16 +608,22 @@ class GraphSuggesterController {
 	 * @param data the data belonging to the series
 	 * @return suggestion the new suggestion
 	 */
-	static addSeriesData(suggestion, { data }) {
+	static addSeriesData(suggestion, { forecast, trimmedSet }) {
 		if (!suggestion || !suggestion['series'] || !suggestion['series'][0]) {
 			console.log('Invalid series in given suggestion');
 		}
 		let original = suggestion['series'][0];
-		let series = {
+
+		let series1 = {
 			type: original.type,
-			data: data,
+			data: trimmedSet,
 		};
-		suggestion['series'].push(series);
+		let series2 = {
+			type: original.type,
+			data: forecast,
+		};
+		suggestion['series'].push(series1);
+		suggestion['series'].push(series2);
 		return suggestion;
 	}
 }
