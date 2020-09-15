@@ -112,7 +112,6 @@
 
 #explainExploreDiv{
     text-align: center;
-  
 }
 #explainDashboardsDiv {
     text-align: center;
@@ -429,6 +428,13 @@
 }
 
 
+@media only screen and (max-width: 600px) {
+  #explainExplore{
+  
+    display:inline-block;
+    width: 90%;
+  }
+}
 
 
 
