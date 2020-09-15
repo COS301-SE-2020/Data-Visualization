@@ -553,7 +553,7 @@ function Suggestions(props) {
                                                 <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={props.setShowEditChart} />
                                             </div>
                                         </Grid>;
-                            }) : <p id = 'noSuggestionMessage'>Sorry, could not display any suggestions for the selected entity</p> )
+                            }) : <p id = 'noSuggestionMessage'>We could not display any suggestions for the selected entity.</p> )
                             
                             }
 

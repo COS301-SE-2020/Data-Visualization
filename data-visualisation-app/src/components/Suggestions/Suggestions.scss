@@ -26,8 +26,8 @@
 #moreLikeThisButton{
   //@include button__moreLikeThis--backgroundColor;
   background-color: #242424;
-    border: 1px solid #d8f3eb;
-    color: white;
+  border: 1px solid #d8f3eb;
+  color: #60dbb2;
   
   margin: 0;
   top: 96%;
@@ -42,7 +42,12 @@
 }
 
 #noSuggestionMessage{
-  
+  margin: 0;
+   position: absolute;   
+   top: 10%;           
+ 
+                      
+ 
 }
 
 
@@ -123,9 +128,9 @@
   margin-bottom: 15px;
   margin-right: 15px;
   
-  background-color: #FAFFFD;
-  border: 1px solid #3EC195;
-  color: #3EC195;
+  background-color: white;
+  border: 1px solid #60dbb2;
+  color: #60dbb2;
 }
 
 #igaloading {
