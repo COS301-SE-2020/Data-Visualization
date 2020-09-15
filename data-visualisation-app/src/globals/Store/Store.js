@@ -7,7 +7,8 @@ const defaultGlobalState = {
 			{
 				'id': 6,
 				'email': 'elna@gmail.com',
-				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc1'
+				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc',
+				'sourcetype': 0,
 			}
 		],
 	num: 2,

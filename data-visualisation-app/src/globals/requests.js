@@ -416,9 +416,8 @@ const request = {
 			{
 				id: 6,
 				email: 'elna@gmail.com',
-				sourcetype: 0,
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
-				
+				sourcetype: 0,
 			},
 		],
 		addedSourceID: '',

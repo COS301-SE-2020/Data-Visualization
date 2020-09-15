@@ -138,8 +138,8 @@ class Entities extends React.Component {
     request.user.entitiesToDisplay = [];
 
     request.user.dataSources.map((source) => {
-        console.log(source.sourceurl);
-        console.log(source.sourcetype);
+        console.log(source);
+     
       request.entities.list(source.sourceurl, source.sourcetype, function(result) {
 
           if (result === constants.RESPONSE_CODES.SUCCESS) {
