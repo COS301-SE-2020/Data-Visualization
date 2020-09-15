@@ -21,6 +21,8 @@
  * 02/09/2020   Elna Pistorius    					 Added new exports controller
  * 03/08/2020   Elna Pistorius      				 Updated JSON exporting function
  * 04/08/2020   Elna Pistorius                       Updated CSV exporting function
+ * 14/09/2020	Marco Lombaard						 Added mergeSort and dateConversion functions
+ * 15/09/2020	Marco Lombaard						 added removeDuplicateKeys function
  *
  * Test Cases: none
  *
@@ -35,6 +37,7 @@ const Database = require('../database');
 const DataSource = require('../dataSource');
 const ExportsController = require('../exports');
 const { GraphSuggesterController } = require('../graphSuggester');
+const { addSeriesData } = require('../graphSuggester/graphSuggesterController/graphSuggesterController');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
  * handles these requests appropriately by getting or setting the requested data from or to the models.
@@ -242,42 +245,78 @@ class RestController {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
 
-					console.log('RandEntity:', randEntity);
+					// console.log('RandEntity:', randEntity);
 
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
-				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined', status: 500 });
+				done({});
+				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
 			} else if (!suggestion) {
 				done({});
 			} else {
-				//TODO: refactor field extraction
 				let fieldType = suggestion.fieldType;
-				suggestion = suggestion.option;
-				const { field } = extractTitleData(suggestion.title.text);
+				let field = suggestion.field;
+				let primaryKey = suggestion.primaryKey;
+				let option = suggestion.option;
 				// console.log('randEntity.datasource = >', randEntity.datasource);
 				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
 				// console.log('randEntity.entityName = >', randEntity.entityName);
 				// console.log('randEntity.entitySet = >', randEntity.entitySet);
 				// console.log('field = >', field);
 				// console.log('fieldtype = >', fieldType);
-				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field)
-					.then((data) => {
-						if (fieldType.includes('String')) {
+				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field, primaryKey)
+					.then(async (data) => {
+						let isForecasting = false;
+						let forecast = null;
+						let trimmedSet = null;
+
+						if (fieldType.toLowerCase().includes('string')) {
 							//string data requires additional processing
 							data = this.stringsToGraphData(data); //process the data
-						} else if (fieldType.includes('Bool')) {
+						} else if (fieldType.toLowerCase().includes('bool')) {
 							data = this.boolsToGraphData(data);
+						} else if (primaryKey.toLowerCase().includes('date')) {
+							data = this.dateConversion(data);
+
+							const count = Math.ceil(data.length * 0.2);
+							isForecasting = true;
+
+							let forecastResults = await DataSource.predictTimeSeries(data.data, count).catch((err) => {
+								isForecasting = false;
+								console.log('Time Series Forecast failed...');
+							});
+
+							console.log(forecastResults);
+							if (forecastResults && isForecasting) {
+								forecast = forecastResults.forecast;
+								trimmedSet = forecastResults.trimmedSet;
+							} else isForecasting = false;
+
+						} else { //get rid of duplicate keys(previous checks did that automatically, it should do it for others too)
+							data = this.removeDuplicateKeys(data);
 						}
+
 						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType);
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
 							done({});
 						} else {
-							done(GraphSuggesterController.assembleGraph(suggestion, data));
+							let chart = GraphSuggesterController.assembleGraph(option, data);
+
+							// console.log('BEFORE:', chart);
+
+							if (isForecasting && forecast && trimmedSet) {
+								console.log('Forecast:', forecast);
+
+								chart = GraphSuggesterController.addSeriesData(chart, { forecast, trimmedSet });
+							}
+							console.log('AFTER:', chart.series);
+
+							done(chart);
 						}
 					})
 					.catch((err) => error & error(err));
@@ -532,6 +571,78 @@ class RestController {
 		return { data };
 	}
 
+	/**
+	 * This function is meant to convert unix dates into string dates
+	 * @param dataArray contains the 2D data array as an attribute
+	 * @returns {*} the object containing the converted data
+	 */
+	static dateConversion(dataArray) {
+		let data = dataArray.data;
+		let rawDate;
+
+		let temp = [];
+
+		for (let i = 0; i < data.length; i++) {
+			rawDate = data[i][0]; //the key is a date
+			let index = rawDate.indexOf('(') + 1; //trim all up until the first integer
+			rawDate = rawDate.substr(index, rawDate.indexOf(')') - index); //trim everything after the last integer
+			rawDate = parseInt(rawDate); //convert from string to int
+			temp[i] = rawDate;
+			// console.log(date.toDateString());
+		}
+
+		temp = mergeSort(temp, 0, temp.length - 1);
+		let tempMap = [];
+
+		for (let i = 0; i < temp.length; i++) {
+			if (!tempMap[temp[i]]) {
+				tempMap[temp[i]] = parseFloat(data[i][1]);
+			} else {
+				tempMap[temp[i]] += parseFloat(data[i][1]);
+			}
+		}
+
+		data = [];
+		let keys = Object.keys(tempMap);
+
+		for (let i = 0; i < keys.length; i++) {
+			data[i] = [];
+			data[i][0] = new Date(parseInt(keys[i])).toDateString();
+			data[i][1] = tempMap[keys[i]];
+		}
+
+		dataArray.data = data;
+		return dataArray;
+	}
+
+	/**
+	 * This function gets rid of duplicate keys. Important to note the string, bools and dates parsing functions
+	 * automatically do this, this is for all other data.
+	 * @param dataArray the object containing the 2D data array as an attribute.
+	 * @returns {*} the object containing the new data array.
+	 */
+	static removeDuplicateKeys(dataArray) {
+		let uniques = [];
+		let data = dataArray.data;
+		for (let i = 0; i < data.length; i++) {
+			if (!uniques[data[i][0]]) {
+				uniques[data[i][0]] = parseFloat(data[i][1]);
+			} else {
+				uniques[data[i][0]] += parseFloat(data[i][1]);
+			}
+		}
+
+		data = [];
+		let keys = Object.keys(uniques);
+
+		for (let i = 0; i < keys.length; i++) {
+			data[i] = [ keys[i], uniques[keys[i]] ];	//store the key-value pair in array format for echarts
+		}
+
+		dataArray.data = data;
+		return dataArray;
+	}
+
 	static make1DArray(dataArray) {
 		if (dataArray.constructor !== Array) {
 			//if it's just one value
@@ -552,6 +663,48 @@ class RestController {
 		} else {
 			console.log('Arrays with dimensions larger than 2 are not supported');
 		}
+	}
+}
+
+function mergeSort(dataArray, first, last) {
+	if (first > last) {
+		return [];
+	} else if (first === last) {
+		return dataArray.slice(first, last + 1);
+	} else {
+		let middle = Math.trunc((last + first) / 2);
+		let left = mergeSort(dataArray, first, middle);
+		let right = mergeSort(dataArray, middle + 1, last);
+		let combined = [];
+
+		let i = 0;
+		let j = 0;
+		let k = 0;
+
+		while (i < left.length && j < right.length) {
+			if (left[i] <= right[j]) {
+				combined[k] = left[i];
+				k++;
+				i++;
+			} else {
+				combined[k] = right[j];
+				k++;
+				j++;
+			}
+		}
+
+		while (i < left.length) {
+			combined[k] = left[i];
+			k++;
+			i++;
+		}
+
+		while (j < right.length) {
+			combined[k] = right[j];
+			k++;
+			j++;
+		}
+		return combined;
 	}
 }
 

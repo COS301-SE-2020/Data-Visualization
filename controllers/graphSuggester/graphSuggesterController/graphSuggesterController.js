@@ -22,7 +22,8 @@
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
  * 17/08/2020	 Marco Lombaard						Added assembleGraph function, selectEntity now returns an object
  * 02/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
- * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
+ * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display even better graphs
+ * 11/09/2020	 Marco Lombaard						Added function to add a series to a suggestion
  *
  * Test Cases: none
  *
@@ -46,6 +47,7 @@ class GraphSuggesterController {
 	/**
 	 * This function sets the metadata used in graph suggestion generation
 	 * @param source the source of the metadata - used to track entity origin
+	 * @param type the type of datasource(Odata, GraphQL etc.)
 	 * @param items	the entities('tables') and their related attributes/fields
 	 * @param associations the other entities associated with this entity(containing related data)
 	 * @param types the data types of each field, organised by entity
@@ -56,7 +58,7 @@ class GraphSuggesterController {
 			this.metadata = [];
 			graphSuggesterAI.setMetadata(items, associations, types); //not yet initialised, initialise it
 		}
-		console.log(type);
+		// console.log(type);
 		this.metadata[source] = { type, items, associations, types, sets };
 	}
 
@@ -129,7 +131,8 @@ class GraphSuggesterController {
 			let field = suggestion[0];
 			let fieldType = suggestion[2];
 			let option;
-			if (fieldType.toLowerCase().includes('string')) {	//this data gets changed later, then the field becomes the key
+			if (fieldType.toLowerCase().includes('string')) {
+				//this data gets changed later, then the field becomes the key
 				option = this.constructOption(graphType, [field, dependentVariable], field, dependentVariable, entity + ': ' + field);
 			} else {
 				option = this.constructOption(graphType, [primaryKey, dependentVariable], primaryKey, dependentVariable, entity + ': ' + field);
@@ -177,7 +180,7 @@ class GraphSuggesterController {
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-				this.acceptedEntities[entities[i].datasource] = [ entities[i].entityName ]; //create it and store the entity
+				this.acceptedEntities[entities[i].datasource] = [entities[i].entityName]; //create it and store the entity
 			} else {
 				this.acceptedEntities[entities[i].datasource].push(entities[i].entityName); //add the name to the existing array
 			}
@@ -207,7 +210,7 @@ class GraphSuggesterController {
 	static setFittestEChart(graph) {
 		//if the graph is null, then we are resetting preferences for the fitness target
 		// eslint-disable-next-line eqeqeq
-		if (graph || graph === {} || graph == null) {
+		if (!graph || graph === {} || graph == null) {
 			//eslint-disable-line
 			console.log('setFittestEChart received null, resetting fitness target...');
 			graphSuggesterAI.changeFitnessTarget(null, null);
@@ -259,7 +262,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log('Check that \'encode\' is not empty');
+			console.log("Check that 'encode' is not empty");
 			return false;
 		}
 
@@ -267,7 +270,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log('check that \'encode\' has keys');
+			console.log("check that 'encode' has keys");
 		}
 
 		let fieldIndex = -1; //the index at which values(0 - xAxis, 1 - yAxis) are found in all entries
@@ -351,7 +354,7 @@ class GraphSuggesterController {
 				},
 				axisLabel: {
 					rotate: 330,
-					padding: [ 20, 0, 0, -20 ],
+					padding: [20, 0, 0, -20],
 				},
 				grid: {
 					bottom: 110,
@@ -432,6 +435,10 @@ class GraphSuggesterController {
 		return option;
 	}
 
+	/**
+	 * This function selects and returns an entity for suggestion generation
+	 * @returns {{}|null} An object containing the datasource, entity name, entityset name and datasource type(e.g. Odata or GraphQL)
+	 */
 	static selectEntity() {
 		if (!this.isInitialised()) {
 			console.log('Not yet initialised');
@@ -464,13 +471,15 @@ class GraphSuggesterController {
 			// eslint-disable-next-line eqeqeq
 			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {
 				console.log('Entity metadata is not defined');
-				console.log(this.metadata, ':', entity['datasource']);
+				console.log('Metadata: ', this.metadata, ' - Entity: ', entity['datasource']);
 				return null;
 			}
 
 			const index = Object.keys(this.metadata[entity['datasource']].items).indexOf(entity['entityName']); //select the index of the entity in metadata
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //select the set name(different from the entity name) for database querying
 			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
+
+			console.log('Entity selected: ', entity);
 
 			return entity; //return the random entity
 		} else {
@@ -514,18 +523,20 @@ class GraphSuggesterController {
 	 * @param data the chart data to populate with
 	 * @return suggestion the full chart with data
 	 */
-
 	static assembleGraph(suggestion, { data }) {
 		//console.log(data);
 		// eslint-disable-next-line eqeqeq
-		if (suggestion == null) {
+		if (!suggestion || !suggestion['dataset'] || !suggestion['dataset']['source']) {
 			console.log('No suggestion object to add data to');
 			return suggestion;
 		}
-		let selectedFields = [ false ];
+
+		let selectedFields = {};
 
 		let count = 0;
 		let sameValues = [];
+		let hasValues = [];
+		let index = 0;
 		// let allSameValue = true;	//if everything has the same value, we have a boring graph
 		// let sameValue = data[0][1];	//compare everything with first value
 
@@ -535,23 +546,44 @@ class GraphSuggesterController {
 			// if (allSameValue && sameValue !== data[i][1]) {	//if not the same value, flag it
 			// 	allSameValue = false;
 			// }
-			if (sameValues[data[i][1]]) {	//if this value has been encountered before
-				sameValues[data[i][1]]++;	//increment how many have been encountered
-			} else {	//otherwise create new index
+			if (sameValues[data[i][1]]) {
+				//if this value has been encountered before
+				sameValues[data[i][1]]++; //increment how many have been encountered
+			} else {
+				//otherwise create new index
 				sameValues[data[i][1]] = 1;
 			}
 
-			if (count < 5 && data[i] !== 0) {
-				selectedFields[i + 1] = true; //get the first 5 nonnull values
+			if (data[i][1] !== 0) {
+				hasValues[index++] = data[i];
+			}
+
+			if (count < 5 && data[i][1] !== 0) {
+				selectedFields[data[i][0]] = true; //get the first 5 nonnull values
 				count++;
 			} else {
-				selectedFields[i + 1] = false;
+				selectedFields[data[i][0]] = false;
 			}
 		}
-
+		
 		let keys = Object.keys(sameValues);
+		let proportion;
 		for (let i = 0; i < keys.length; i++) {
-			if (sameValues[keys[i]]/data.length > 0.8) { //if more than 80% of the same value exists, boring graph
+			proportion = sameValues[keys[i]] / data.length;
+			if (proportion > 0.8) {
+				//if more than 80% of the same value exists, boring graph
+				if (hasValues.length <= 5 && hasValues.length >= 2) {
+					//if we have less or equal to 5 non-zero values, return a pie chart of the values
+					let params = suggestion['dataset']['source'][0];
+					let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']);//new chart
+					for (let i = 0; i < hasValues.length; i++) {
+						replacement['dataset']['source'].push(hasValues[i]); //add the values to the data field
+					}
+					return replacement;	//return the new chart
+				}
+				//else we can't make it less boring
+				console.log('Too many items in graph have the same value - invalidating graph');
+				console.log('data: ', data);
 				return {};
 			}
 		}
@@ -567,6 +599,31 @@ class GraphSuggesterController {
 
 		//console.log('suggestion w/ data', suggestion);
 
+		return suggestion;
+	}
+
+	/**
+	 * This adds an extra data series to the graph, so it will also display as a separate colour
+	 * @param suggestion the chart suggestion to add the series to
+	 * @param data the data belonging to the series
+	 * @return suggestion the new suggestion
+	 */
+	static addSeriesData(suggestion, { forecast, trimmedSet }) {
+		if (!suggestion || !suggestion['series'] || !suggestion['series'][0]) {
+			console.log('Invalid series in given suggestion');
+		}
+		let original = suggestion['series'][0];
+
+		let series1 = {
+			type: original.type,
+			data: trimmedSet,
+		};
+		let series2 = {
+			type: original.type,
+			data: forecast,
+		};
+		suggestion['series'].push(series1);
+		suggestion['series'].push(series2);
 		return suggestion;
 	}
 }
