@@ -209,7 +209,7 @@ class GraphSuggesterController {
 	static setFittestEChart(graph) {
 		//if the graph is null, then we are resetting preferences for the fitness target
 		// eslint-disable-next-line eqeqeq
-		if (graph || graph === {} || graph == null) {
+		if (!graph || graph === {} || graph == null) {
 			//eslint-disable-line
 			console.log('setFittestEChart received null, resetting fitness target...');
 			graphSuggesterAI.changeFitnessTarget(null, null);
@@ -532,6 +532,8 @@ class GraphSuggesterController {
 
 		let count = 0;
 		let sameValues = [];
+		let hasValues = [];
+		let index = 0;
 		// let allSameValue = true;	//if everything has the same value, we have a boring graph
 		// let sameValue = data[0][1];	//compare everything with first value
 
@@ -549,6 +551,10 @@ class GraphSuggesterController {
 				sameValues[data[i][1]] = 1;
 			}
 
+			if (data[i][1] !== 0) {
+				hasValues[index++] = data[i];
+			}
+
 			if (count < 5 && data[i][1] !== 0) {
 				selectedFields[data[i][0]] = true; //get the first 5 nonnull values
 				count++;
@@ -556,11 +562,23 @@ class GraphSuggesterController {
 				selectedFields[data[i][0]] = false;
 			}
 		}
-
+		
 		let keys = Object.keys(sameValues);
+		let proportion;
 		for (let i = 0; i < keys.length; i++) {
-			if (sameValues[keys[i]] / data.length > 0.8) {
+			proportion = sameValues[keys[i]] / data.length;
+			if (proportion > 0.8) {
 				//if more than 80% of the same value exists, boring graph
+				if (hasValues.length <= 5 && hasValues.length >= 2 && graphSuggesterAI.fittestGraphType && graphSuggesterAI.fittestGraphType.includes('pie')) {
+					//if we have less or equal to 5 non-zero values, and the preferred chart type is pie, return a pie chart of the values
+					let params = suggestion['dataset']['source'][0];
+					let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']);//new chart
+					for (let i = 0; i < hasValues.length; i++) {
+						replacement['dataset']['source'].push(hasValues[i]); //add the values to the data field
+					}
+					return replacement;	//return the new chart
+				}
+				//else we can't make it less boring
 				console.log('Too many items in graph have the same value - invalidating graph');
 				console.log('data: ', data);
 				return {};
