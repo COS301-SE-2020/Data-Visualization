@@ -112,7 +112,7 @@ function Home(props) {
 							<div><DashboardIllustration className='dashboardIllustration' /></div>
 							<div className='home__section--description'>
 								<div id='home__section--innerDescription'>
-									<Text id='explainDashboards'>Create a dashboard for all suggested charts or manually crafted visualizations.</Text>
+									<Text id='explainDashboards'>Login to create a dashboard for all suggested charts or manually crafted visualizations.</Text>
 								</div>
 							</div>
 						</div>
