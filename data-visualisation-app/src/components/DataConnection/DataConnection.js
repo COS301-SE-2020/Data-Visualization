@@ -142,23 +142,24 @@ class DataConnection extends React.Component {
     * If user is logged in, delete on backend and front end.
     * If user is not logged in, add item only front end.
   */
-  addItem = (uri) => {
+  addItem = (uri, sourcetype) => {
 
     var id = generateID();
     let attempt = this;
-    console.log(request.user.apikey);
+    console.log(sourcetype);
     /**
       * If user is logged in, add item on backend and front end.
     */
     if(request.user.isLoggedIn){
-      request.dataSources.add(request.user.apikey, uri, function(result) {
+      request.dataSources.add(request.user.apikey, uri, sourcetype, function(result) {
        
         if (result === constants.RESPONSE_CODES.SUCCESS) {
 
           request.user.dataSources.push({
             'id': request.user.addedSourceID,
             'email': request.user.email,
-            'sourceurl': uri
+            'sourceurl': uri,
+            'sourcetype': sourcetype,
           });
 
           attempt.setState(previousState => ({
@@ -177,7 +178,8 @@ class DataConnection extends React.Component {
       request.user.dataSources.push({
         'id': id,
         'email': request.user.email,
-        'sourceurl': uri
+        'sourceurl': uri,
+        'sourcetype' : sourcetype,
       });
 
       this.setState(previousState => ({

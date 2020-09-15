@@ -51,14 +51,12 @@ const AddConnectionDialog = (props) => {
         var ulteredURI;
 
         if(values.dataSourceItem === 'OData'){
-            //ulteredURI = values.uri.concat('1');
             ulteredURI = values.uri;
-            props.addItem(ulteredURI);
+            props.addItem(ulteredURI, 0);
         }
         else if(values.dataSourceItem === 'Other'){
-            //ulteredURI = values.uri.concat('2');
             ulteredURI = values.uri;
-            props.addItem(ulteredURI);
+            props.addItem(ulteredURI, 1);
         }
      
         props.changeState();

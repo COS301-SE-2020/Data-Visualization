@@ -65,11 +65,11 @@ const API = {
 	},
 	dataSources: {
 		list: (apikey) => axios.post(constants.URL.DATASOURCE.LIST, { apikey }),
-		add: (apikey, dataSourceUrl) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceUrl }),
+		add: (apikey, dataSourceUrl, dataSourceType) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceUrl, dataSourceType }),
 		delete: (dataSourceID, apikey) => axios.post(constants.URL.DATASOURCE.REMOVE, { dataSourceID, apikey }),
 	},
 	entities: {
-		list: (sourceurl) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl }),
+		list: (sourceurl, sourcetype) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl, sourcetype }),
 	},
 	suggestion: {
 	
@@ -416,7 +416,9 @@ const request = {
 			{
 				id: 6,
 				email: 'elna@gmail.com',
+				sourcetype: 0,
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
+				
 			},
 		],
 		addedSourceID: '',
@@ -445,7 +447,7 @@ const request = {
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 								console.debug(res);
-
+								console.log(res);
 								request.user.dataSources = res.data;
 
 								callback(constants.RESPONSE_CODES.SUCCESS);
@@ -466,10 +468,10 @@ const request = {
 		 *  @param dataSourceUrl Fully qualified url of the new data source.
 		 *  @param callback Function called at end of execution.
 		 */
-		add: (apikey, dataSourceUrl, callback) => {
+		add: (apikey, dataSourceUrl, sourcetype, callback) => {
 			if (request.user.isLoggedIn) {
 				API.dataSources
-					.add(apikey, dataSourceUrl)
+					.add(apikey, dataSourceUrl, sourcetype)
 					.then((res) => {
 						console.debug('Response from dataSources.add:', res);
 						if (callback !== undefined) {
@@ -528,9 +530,9 @@ const request = {
 		 *
 		 *  @param callback Function called at end of execution.
 		 */
-		list: (sourceurl, callback) => {
+		list: (sourceurl, sourcetype, callback) => {
 			API.entities
-				.list(sourceurl)
+				.list(sourceurl, sourcetype)
 					.then((res) => {
 						console.debug('Response from suggestion.list:', res);
 						if (callback !== undefined) {

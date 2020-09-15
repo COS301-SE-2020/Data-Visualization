@@ -138,8 +138,9 @@ class Entities extends React.Component {
     request.user.entitiesToDisplay = [];
 
     request.user.dataSources.map((source) => {
-
-      request.entities.list(source.sourceurl, function(result) {
+        console.log(source.sourceurl);
+        console.log(source.sourcetype);
+      request.entities.list(source.sourceurl, source.sourcetype, function(result) {
 
           if (result === constants.RESPONSE_CODES.SUCCESS) {
   
@@ -151,6 +152,7 @@ class Entities extends React.Component {
               Obj['entityName'] = entityName;
               Obj['datasource'] = source.sourceurl;
               Obj['fields'] = request.user.dataSourceInfo.entityList[entityName];
+              Obj['datasourcetype'] = source.sourcetype;
               
               request.user.entitiesToDisplay.push(Obj);
             });
