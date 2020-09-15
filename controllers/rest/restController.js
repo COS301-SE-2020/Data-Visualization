@@ -36,6 +36,7 @@ const Database = require('../database');
 const DataSource = require('../dataSource');
 const ExportsController = require('../exports');
 const { GraphSuggesterController } = require('../graphSuggester');
+const { addSeriesData } = require('../graphSuggester/graphSuggesterController/graphSuggesterController');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
  * handles these requests appropriately by getting or setting the requested data from or to the models.
@@ -265,7 +266,10 @@ class RestController {
 				// console.log('field = >', field);
 				// console.log('fieldtype = >', fieldType);
 				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field, primaryKey)
-					.then((data) => {
+					.then(async (data) => {
+						let isForecasting = false;
+						let forecast = null;
+
 						if (fieldType.toLowerCase().includes('string')) {
 							//string data requires additional processing
 							data = this.stringsToGraphData(data); //process the data
@@ -273,14 +277,36 @@ class RestController {
 							data = this.boolsToGraphData(data);
 						} else if (primaryKey.toLowerCase().includes('date')) {
 							data = this.dateConversion(data);
+
+							// console.log(data.data);
+
+							const count = Math.ceil(data.length * 0.2);
+							isForecasting = true;
+
+							forecast = await DataSource.predictTimeSeries(data.data, count).catch((err) => {
+								isForecasting = false;
+								console.log('Time Series Forecast failed...');
+							});
 						}
+
 						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType);
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
 							done({});
 						} else {
-							done(GraphSuggesterController.assembleGraph(option, data));
+							let chart = GraphSuggesterController.assembleGraph(option, data);
+
+							// console.log('BEFORE:', chart);
+
+							if (isForecasting && forecast) {
+								console.log('Forecast:', forecast);
+
+								chart = GraphSuggesterController.addSeriesData(chart, { data: forecast });
+							}
+							console.log('AFTER:', chart.series);
+
+							done(chart);
 						}
 					})
 					.catch((err) => error & error(err));
@@ -542,15 +568,15 @@ class RestController {
 		let temp = [];
 
 		for (let i = 0; i < data.length; i++) {
-			rawDate = data[i][0];	//the key is a date
-			let index = rawDate.indexOf('(')+1;	//trim all up until the first integer
-			rawDate = rawDate.substr(index, rawDate.indexOf(')')-index);	//trim everything after the last integer
-			rawDate = parseInt(rawDate);	//convert from string to int
+			rawDate = data[i][0]; //the key is a date
+			let index = rawDate.indexOf('(') + 1; //trim all up until the first integer
+			rawDate = rawDate.substr(index, rawDate.indexOf(')') - index); //trim everything after the last integer
+			rawDate = parseInt(rawDate); //convert from string to int
 			temp[i] = rawDate;
 			// console.log(date.toDateString());
 		}
 
-		temp = mergeSort(temp, 0, temp.length-1);
+		temp = mergeSort(temp, 0, temp.length - 1);
 		let tempMap = [];
 
 		for (let i = 0; i < temp.length; i++) {
@@ -597,22 +623,22 @@ class RestController {
 	}
 }
 
-function mergeSort(dataArray, first, last){
+function mergeSort(dataArray, first, last) {
 	if (first > last) {
 		return [];
 	} else if (first === last) {
-		return dataArray.slice(first, last+1);
+		return dataArray.slice(first, last + 1);
 	} else {
-		let middle = Math.trunc((last + first)/2);
+		let middle = Math.trunc((last + first) / 2);
 		let left = mergeSort(dataArray, first, middle);
-		let right = mergeSort(dataArray, middle+1, last);
+		let right = mergeSort(dataArray, middle + 1, last);
 		let combined = [];
 
 		let i = 0;
 		let j = 0;
 		let k = 0;
 
-		while (i < left.length &&  j < right.length) {
+		while (i < left.length && j < right.length) {
 			if (left[i] <= right[j]) {
 				combined[k] = left[i];
 				k++;
