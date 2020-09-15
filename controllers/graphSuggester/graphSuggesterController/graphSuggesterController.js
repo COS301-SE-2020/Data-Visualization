@@ -22,7 +22,8 @@
  * 14/08/2020	 Marco Lombaard + Phillip Schulze	Added selectEntity function
  * 17/08/2020	 Marco Lombaard						Added assembleGraph function, selectEntity now returns an object
  * 02/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
- * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
+ * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display even better graphs
+ * 11/09/2020	 Marco Lombaard						Added function to add a series to a suggestion
  *
  * Test Cases: none
  *
@@ -56,7 +57,7 @@ class GraphSuggesterController {
 			this.metadata = [];
 			graphSuggesterAI.setMetadata(items, associations, types); //not yet initialised, initialise it
 		}
-		console.log(type);
+		// console.log(type);
 		this.metadata[source] = { type, items, associations, types, sets };
 	}
 
@@ -432,6 +433,10 @@ class GraphSuggesterController {
 		return option;
 	}
 
+	/**
+	 * This function selects and returns an entity for suggestion generation
+	 * @returns {{}|null} An object containing the datasource, entity name, entityset name and datasource type(e.g. Odata or GraphQL)
+	 */
 	static selectEntity() {
 		if (!this.isInitialised()) {
 			console.log('Not yet initialised');
@@ -464,7 +469,7 @@ class GraphSuggesterController {
 			// eslint-disable-next-line eqeqeq
 			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {
 				console.log('Entity metadata is not defined');
-				console.log(this.metadata, ':', entity['datasource']);
+				console.log('Metadata: ', this.metadata, ' - Entity: ', entity['datasource']);
 				return null;
 			}
 
@@ -514,7 +519,6 @@ class GraphSuggesterController {
 	 * @param data the chart data to populate with
 	 * @return suggestion the full chart with data
 	 */
-
 	static assembleGraph(suggestion, { data }) {
 		//console.log(data);
 		// eslint-disable-next-line eqeqeq
@@ -552,6 +556,7 @@ class GraphSuggesterController {
 		let keys = Object.keys(sameValues);
 		for (let i = 0; i < keys.length; i++) {
 			if (sameValues[keys[i]]/data.length > 0.8) { //if more than 80% of the same value exists, boring graph
+				console.log('Too many items in graph have the same value - invalidating graph');
 				return {};
 			}
 		}
@@ -567,6 +572,25 @@ class GraphSuggesterController {
 
 		//console.log('suggestion w/ data', suggestion);
 
+		return suggestion;
+	}
+
+	/**
+	 * This adds an extra data series to the graph, so it will also display as a separate colour
+	 * @param suggestion the chart suggestion to add the series to
+	 * @param data the data belonging to the series
+	 * @return suggestion the new suggestion
+	 */
+	static addSeriesData(suggestion, { data }){
+		if (!suggestion || !suggestion['series'] || !suggestion['series'][0]) {
+			console.log('Invalid series in given suggestion');
+		}
+		let original = suggestion['series'][0];
+		let series = {
+			type: original.type,
+			data: data,
+		};
+		suggestion['series'].push(series);
 		return suggestion;
 	}
 }

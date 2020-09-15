@@ -9,6 +9,7 @@
  * Date          Author             Changes
  * -------------------------------------------------------------------------------
  * 06/08/2020   Phillip Schulze     Original
+ * 14/09/2020	Marco Lombaard		Added primaryKey field to getEntityData
  *
  * Test Cases: none
  *
@@ -44,10 +45,16 @@ const CacheMaker = (function () {
 			return null;
 		}
 
-		getEntityData(src, entity, field) {
+		getEntityData(src, entity, field, primaryKey = null) {
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				const data = this.entityData[src][entity].data;
-				const prim = this.metaData[src].data.prims[entity];
+				let prim;
+				// eslint-disable-next-line eqeqeq
+				if (primaryKey == null) {
+					prim = this.metaData[src].data.prims[entity];
+				} else {
+					prim = primaryKey;
+				}
 				return data.map((item, i) => [item[prim], item[field]]);
 			}
 			return null;

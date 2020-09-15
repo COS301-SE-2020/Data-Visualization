@@ -21,6 +21,7 @@
  * 02/09/2020   Elna Pistorius    					 Added new exports controller
  * 03/08/2020   Elna Pistorius      				 Updated JSON exporting function
  * 04/08/2020   Elna Pistorius                       Updated CSV exporting function
+ * 14/09/2020	Marco Lombaard						 Added mergeSort and dateConversion functions
  *
  * Test Cases: none
  *
@@ -242,7 +243,7 @@ class RestController {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
 
-					console.log('RandEntity:', randEntity);
+					// console.log('RandEntity:', randEntity);
 
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
@@ -253,23 +254,25 @@ class RestController {
 			} else if (!suggestion) {
 				done({});
 			} else {
-				//TODO: refactor field extraction
 				let fieldType = suggestion.fieldType;
-				suggestion = suggestion.option;
-				const { field } = extractTitleData(suggestion.title.text);
+				let field = suggestion.field;
+				let primaryKey = suggestion.primaryKey;
+				let option = suggestion.option;
 				// console.log('randEntity.datasource = >', randEntity.datasource);
 				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
 				// console.log('randEntity.entityName = >', randEntity.entityName);
 				// console.log('randEntity.entitySet = >', randEntity.entitySet);
 				// console.log('field = >', field);
 				// console.log('fieldtype = >', fieldType);
-				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field)
+				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field, primaryKey)
 					.then((data) => {
-						if (fieldType.includes('String')) {
+						if (fieldType.toLowerCase().includes('string')) {
 							//string data requires additional processing
 							data = this.stringsToGraphData(data); //process the data
-						} else if (fieldType.includes('Bool')) {
+						} else if (fieldType.toLowerCase().includes('bool')) {
 							data = this.boolsToGraphData(data);
+						} else if (primaryKey.toLowerCase().includes('date')) {
+							data = this.dateConversion(data);
 						}
 						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType);
 						// eslint-disable-next-line eqeqeq
@@ -277,7 +280,7 @@ class RestController {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
 							done({});
 						} else {
-							done(GraphSuggesterController.assembleGraph(suggestion, data));
+							done(GraphSuggesterController.assembleGraph(option, data));
 						}
 					})
 					.catch((err) => error & error(err));
@@ -532,6 +535,45 @@ class RestController {
 		return { data };
 	}
 
+	static dateConversion(dataArray) {
+		let data = dataArray.data;
+		let rawDate;
+
+		let temp = [];
+
+		for (let i = 0; i < data.length; i++) {
+			rawDate = data[i][0];	//the key is a date
+			let index = rawDate.indexOf('(')+1;	//trim all up until the first integer
+			rawDate = rawDate.substr(index, rawDate.indexOf(')')-index);	//trim everything after the last integer
+			rawDate = parseInt(rawDate);	//convert from string to int
+			temp[i] = rawDate;
+			// console.log(date.toDateString());
+		}
+
+		temp = mergeSort(temp, 0, temp.length-1);
+		let tempMap = [];
+
+		for (let i = 0; i < temp.length; i++) {
+			if (!tempMap[temp[i]]) {
+				tempMap[temp[i]] = parseFloat(data[i][1]);
+			} else {
+				tempMap[temp[i]] += parseFloat(data[i][1]);
+			}
+		}
+
+		data = [];
+		let keys = Object.keys(tempMap);
+
+		for (let i = 0; i < keys.length; i++) {
+			data[i] = [];
+			data[i][0] = new Date(parseInt(keys[i])).toDateString();
+			data[i][1] = tempMap[keys[i]];
+		}
+
+		dataArray.data = data;
+		return dataArray;
+	}
+
 	static make1DArray(dataArray) {
 		if (dataArray.constructor !== Array) {
 			//if it's just one value
@@ -552,6 +594,48 @@ class RestController {
 		} else {
 			console.log('Arrays with dimensions larger than 2 are not supported');
 		}
+	}
+}
+
+function mergeSort(dataArray, first, last){
+	if (first > last) {
+		return [];
+	} else if (first === last) {
+		return dataArray.slice(first, last+1);
+	} else {
+		let middle = Math.trunc((last + first)/2);
+		let left = mergeSort(dataArray, first, middle);
+		let right = mergeSort(dataArray, middle+1, last);
+		let combined = [];
+
+		let i = 0;
+		let j = 0;
+		let k = 0;
+
+		while (i < left.length &&  j < right.length) {
+			if (left[i] <= right[j]) {
+				combined[k] = left[i];
+				k++;
+				i++;
+			} else {
+				combined[k] = right[j];
+				k++;
+				j++;
+			}
+		}
+
+		while (i < left.length) {
+			combined[k] = left[i];
+			k++;
+			i++;
+		}
+
+		while (j < right.length) {
+			combined[k] = right[j];
+			k++;
+			j++;
+		}
+		return combined;
 	}
 }
 
