@@ -301,11 +301,9 @@ function Suggestions(props) {
                                     }
                                 });
                             }).then(function (fetchedGraph) {
-                                console.log(fetchedGraph);
+                    
                                 if(fetchedGraph && JSON.stringify(fetchedGraph) !== '{}' && fetchedGraph != null){
-                                    console.log('push');
                                     request.cache.suggestions.graph.list.push(fetchedGraph);
-                                
                                 
                                 
                                 /**

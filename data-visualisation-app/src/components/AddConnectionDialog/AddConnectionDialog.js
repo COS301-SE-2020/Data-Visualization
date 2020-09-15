@@ -54,7 +54,7 @@ const AddConnectionDialog = (props) => {
             ulteredURI = values.uri;
             props.addItem(ulteredURI, 0);
         }
-        else if(values.dataSourceItem === 'Other'){
+        else if(values.dataSourceItem === 'GraphQL'){
             ulteredURI = values.uri;
             props.addItem(ulteredURI, 1);
         }
@@ -110,7 +110,7 @@ const AddConnectionDialog = (props) => {
                             name='dataSourceType'
                             placeholder='Please select a data source type'>
                             <Option value='OData'>OData</Option>
-                            <Option value='Other'>Other</Option>
+                            <Option value='GraphQL'>GraphQL</Option>
                         </Select>
                     </Form.Item>
 

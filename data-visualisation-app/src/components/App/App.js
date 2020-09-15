@@ -413,15 +413,6 @@ function App(props) {
 					<ListItemText primary="Dashboards" />
 				</MenuItem>
 
-				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
-					<ListItemIcon className={classes.icon} >
-						<PlusSquare size='25' style={(pageType === 'about' ? {color: '#3EC195'} : {})} />
-					</ListItemIcon>
-					<ListItemText primary="Create chart" />
-				</MenuItem>
-
-
-
 				{/* <MenuItem button onClick={handleOpenIcon} selected={pageType === 'connections'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
 						<Database size='25' style={(pageType === 'connections' ? {color: 'white'} : {})} />
