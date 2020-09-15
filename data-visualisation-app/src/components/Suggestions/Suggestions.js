@@ -34,6 +34,8 @@ import {EDITCHART_MODES} from '../../globals/constants';
 
 const renderChart = {index: -1};
 
+
+
 function Suggestion(props) {
     const [isAdded, setIsAdded] = useState(false);
 
@@ -397,7 +399,6 @@ function Suggestions(props) {
     //     generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
     //     request.user.fittestGraphs = [];
     // }
-
    
     
     const classes = useStyles();
