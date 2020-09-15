@@ -523,11 +523,12 @@ class GraphSuggesterController {
 	static assembleGraph(suggestion, { data }) {
 		//console.log(data);
 		// eslint-disable-next-line eqeqeq
-		if (suggestion == null) {
+		if (!suggestion || !suggestion['dataset'] || !suggestion['dataset']['source']) {
 			console.log('No suggestion object to add data to');
 			return suggestion;
 		}
-		let selectedFields = [false];
+
+		let selectedFields = {};
 
 		let count = 0;
 		let sameValues = [];
@@ -548,11 +549,11 @@ class GraphSuggesterController {
 				sameValues[data[i][1]] = 1;
 			}
 
-			if (count < 5 && data[i] !== 0) {
-				selectedFields[i + 1] = true; //get the first 5 nonnull values
+			if (count < 5 && data[i][1] !== 0) {
+				selectedFields[data[i][0]] = true; //get the first 5 nonnull values
 				count++;
 			} else {
-				selectedFields[i + 1] = false;
+				selectedFields[data[i][0]] = false;
 			}
 		}
 
@@ -561,6 +562,7 @@ class GraphSuggesterController {
 			if (sameValues[keys[i]] / data.length > 0.8) {
 				//if more than 80% of the same value exists, boring graph
 				console.log('Too many items in graph have the same value - invalidating graph');
+				console.log('data: ', data);
 				return {};
 			}
 		}
