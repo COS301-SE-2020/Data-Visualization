@@ -22,6 +22,7 @@
  * 03/08/2020   Elna Pistorius      				 Updated JSON exporting function
  * 04/08/2020   Elna Pistorius                       Updated CSV exporting function
  * 14/09/2020	Marco Lombaard						 Added mergeSort and dateConversion functions
+ * 15/09/2020	Marco Lombaard						 added removeDuplicateKeys function
  *
  * Test Cases: none
  *
@@ -287,6 +288,8 @@ class RestController {
 								isForecasting = false;
 								console.log('Time Series Forecast failed...');
 							});
+						} else { //get rid of duplicate keys(previous checks did that automatically, it should do it for others too)
+							data = this.removeDuplicateKeys(data);
 						}
 
 						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType);
@@ -561,6 +564,11 @@ class RestController {
 		return { data };
 	}
 
+	/**
+	 * This function is meant to convert unix dates into string dates
+	 * @param dataArray contains the 2D data array as an attribute
+	 * @returns {*} the object containing the converted data
+	 */
 	static dateConversion(dataArray) {
 		let data = dataArray.data;
 		let rawDate;
@@ -594,6 +602,34 @@ class RestController {
 			data[i] = [];
 			data[i][0] = new Date(parseInt(keys[i])).toDateString();
 			data[i][1] = tempMap[keys[i]];
+		}
+
+		dataArray.data = data;
+		return dataArray;
+	}
+
+	/**
+	 * This function gets rid of duplicate keys. Important to note the string, bools and dates parsing functions
+	 * automatically do this, this is for all other data.
+	 * @param dataArray the object containing the 2D data array as an attribute.
+	 * @returns {*} the object containing the new data array.
+	 */
+	static removeDuplicateKeys(dataArray) {
+		let uniques = [];
+		let data = dataArray.data;
+		for (let i = 0; i < data.length; i++) {
+			if (!uniques[data[i][0]]) {
+				uniques[data[i][0]] = data[i][1];
+			} else {
+				uniques[data[i][0]] += data[i][1];
+			}
+		}
+
+		data = [];
+		let keys = Object.keys(uniques);
+
+		for (let i = 0; i < keys.length; i++) {
+			data[i] = [ keys[i], uniques[keys[i]] ];	//store the key-value pair in array format for echarts
 		}
 
 		dataArray.data = data;

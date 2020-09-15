@@ -25,6 +25,7 @@
  * 01/09/2020	 Marco Lombaard		Added scaleFitnessTarget and a way to scale fitness for multiple characteristics
  * 10/09/2020	 Elna Pistorius		Added fitness penalty for graph type + field type combinations
  * 11/09/2020	 Marco Lombaard		Improved GA efficiency
+ * 15/09/2020	 Marco Lombaard		Added random key selection for multiple keys
  *
  * Test Cases: none
  *
@@ -426,10 +427,17 @@ let graphSuggesterMaker = (function () {
 					//trim out the "useless" keys
 					types[count] = this.fieldTypes[entity][key];
 					options[count++] = keys[key]; //add the key if it is meaningful data and is not an excluded field
+				} else if (upper.includes('NAME')) {
 					//eslint-disable-next-line eqeqeq
-				} else if (nameKey == null && (upper.includes('NAME'))) {
-					//store the name key for later access
-					nameKey = name;
+					if (nameKey == null) {
+						//store the name key for later access
+						nameKey = name;
+					} else {
+						let check = Math.random();
+						if (check >= 0.5) {	//randomly select one of the two keys
+							nameKey = name;
+						}
+					}
 					// eslint-disable-next-line eqeqeq
 				} else if (dateKey == null && upper.includes('DATE')) {
 					//store the date key in case we want periodic data
