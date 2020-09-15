@@ -252,7 +252,8 @@ class RestController {
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
-				error & error({ error: 'Request Timed out', hint: 'No metadata for undefined', status: 500 });
+				done({});
+				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
 			} else if (!suggestion) {
 				done({});
 			} else {
@@ -619,9 +620,9 @@ class RestController {
 		let data = dataArray.data;
 		for (let i = 0; i < data.length; i++) {
 			if (!uniques[data[i][0]]) {
-				uniques[data[i][0]] = data[i][1];
+				uniques[data[i][0]] = parseFloat(data[i][1]);
 			} else {
-				uniques[data[i][0]] += data[i][1];
+				uniques[data[i][0]] += parseFloat(data[i][1]);
 			}
 		}
 

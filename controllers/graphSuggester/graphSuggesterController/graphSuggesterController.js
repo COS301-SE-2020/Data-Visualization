@@ -479,6 +479,8 @@ class GraphSuggesterController {
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //select the set name(different from the entity name) for database querying
 			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
+			console.log('Entity selected: ', entity);
+
 			return entity; //return the random entity
 		} else {
 			//else just pick from all options
@@ -611,11 +613,6 @@ class GraphSuggesterController {
 			console.log('Invalid series in given suggestion');
 		}
 		let original = suggestion['series'][0];
-		let lastData = suggestion['dataset']['source'];
-
-		lastData = lastData[lastData.length-1];
-
-		data.unshift(lastData);
 		let series = {
 			type: original.type,
 			data: data,
