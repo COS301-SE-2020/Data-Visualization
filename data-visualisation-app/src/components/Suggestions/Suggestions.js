@@ -270,7 +270,7 @@ function Suggestions(props) {
 
 
     const generateCharts = (graphTypes, selectedEntities, selectedFields, fittestGraphs)  =>{
-
+       
         // console.log(graphTypes);
         // console.log(selectedEntities);
         // console.log(selectedFields);
@@ -291,6 +291,7 @@ function Suggestions(props) {
                                 request.suggestions.chart( function (result) {
                                     if (result === constants.RESPONSE_CODES.SUCCESS) {
                                         // console.log('graph');
+                                       
                                         resolve(request.cache.suggestions.graph.current);
                                     } else {
                                         // todo: handle network error
@@ -300,7 +301,13 @@ function Suggestions(props) {
                                     }
                                 });
                             }).then(function (fetchedGraph) {
-                                request.cache.suggestions.graph.list.push(fetchedGraph);
+                                console.log(fetchedGraph);
+                                if(fetchedGraph && JSON.stringify(fetchedGraph) !== '{}' && fetchedGraph != null){
+                                    console.log('push');
+                                    request.cache.suggestions.graph.list.push(fetchedGraph);
+                                
+                                
+                                
                                 /**
                                  *   Add newly an empty list of dashboard owners for the new chart.
                                  */
@@ -355,7 +362,16 @@ function Suggestions(props) {
                                 if (!loadedFirst)
                                     setLoadedFirst(true);
 
-                            });
+                            }else{
+                                console.log('false');
+                                setLoadedFirst(true);
+                            
+
+
+                            }
+                        
+                        
+                        });
                         }
                     })().then(function () {
                         setLoading(false);
@@ -382,7 +398,7 @@ function Suggestions(props) {
             requestCharts();
         }
 
-    
+        console.log(request.cache.suggestions.graph.list.length);
     };
 
 
@@ -514,7 +530,7 @@ function Suggestions(props) {
                     <Grid container spacing={3}>
 
                         
-                            {currentCharts.map((achart, index) => {
+                            {(currentCharts !== null ? currentCharts.map((achart, index) => {
                                 return <Grid item xs={12} md={6} lg={3} key={index}>
                                             <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={() => {
                                                 
@@ -539,7 +555,9 @@ function Suggestions(props) {
                                                 <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={props.setShowEditChart} />
                                             </div>
                                         </Grid>;
-                            })}
+                            }) : <p id = 'noSuggestionMessage'>Sorry, could not display any suggestions for the selected entity</p> )
+                            
+                            }
 
                             {loading && <Grid item xs={12} md={6} lg={3}>
                                 <div id='suggestion__loading--container'>

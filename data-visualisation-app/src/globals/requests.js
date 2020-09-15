@@ -597,9 +597,8 @@ const request = {
 
 
 						}
-
+						console.log(res.data);
 						request.cache.suggestions.graph.current = res.data;
-
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
 				})
