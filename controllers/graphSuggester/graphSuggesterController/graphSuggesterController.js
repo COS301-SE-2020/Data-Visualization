@@ -572,8 +572,8 @@ class GraphSuggesterController {
 			proportion = sameValues[keys[i]] / data.length;
 			if (proportion > 0.8) {
 				//if more than 80% of the same value exists, boring graph
-				if (hasValues.length <= 5 && hasValues.length >= 2 && graphSuggesterAI.fittestGraphType && graphSuggesterAI.fittestGraphType.includes('pie')) {
-					//if we have less or equal to 5 non-zero values, and the preferred chart type is pie, return a pie chart of the values
+				if (hasValues.length <= 5 && hasValues.length >= 2) {
+					//if we have less or equal to 5 non-zero values, return a pie chart of the values
 					let params = suggestion['dataset']['source'][0];
 					let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']);//new chart
 					for (let i = 0; i < hasValues.length; i++) {
