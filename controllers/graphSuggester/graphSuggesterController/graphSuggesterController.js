@@ -407,6 +407,7 @@ class GraphSuggesterController {
 				{
 					type: graph,
 					radius: '60%',
+					center: ['30%', '50%'],
 					labelLine: {
 						show: false,
 					},
