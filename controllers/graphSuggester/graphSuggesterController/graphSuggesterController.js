@@ -47,6 +47,7 @@ class GraphSuggesterController {
 	/**
 	 * This function sets the metadata used in graph suggestion generation
 	 * @param source the source of the metadata - used to track entity origin
+	 * @param type the type of datasource(Odata, GraphQL etc.)
 	 * @param items	the entities('tables') and their related attributes/fields
 	 * @param associations the other entities associated with this entity(containing related data)
 	 * @param types the data types of each field, organised by entity
@@ -79,7 +80,7 @@ class GraphSuggesterController {
 		// console.log(entity, this.metadata[source]);
 
 		if (!this.isInitialised()) {
-			console.log("Metadata isn't initialised, returning null...");
+			console.log('Metadata isn\'t initialised, returning null...');
 			return null;
 		}
 		if (!this.metadata[source]) {
