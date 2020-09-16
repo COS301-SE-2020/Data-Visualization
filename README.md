@@ -75,6 +75,28 @@ This repository represents the visualisation of Big Data. However, the catch com
 
 </details>
 
+<details> 
+<summary><b>Demo 4</b></summary>
+
+##### Video Demo
+
+* [Demo 3 Video Link](https://drive.google.com/file/d/1RMqz7AFnv58JTfPBNzPGliMMUQ3tLyl3/view?usp=sharing)
+
+##### Documentation
+
+* SRS Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo4_SRS.pdf).
+
+* Coding Standards Document can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo4_CodingStandard.pdf).
+
+* User Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo4_UserManual.pdf).
+
+* API Manual can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo4_API_Manual.pdf).
+
+* Technical Installation can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo4_TechnicalInstallation.pdf).
+
+* Testing Policy can be found [here](https://github.com/COS301-SE-2020/Data-Visualization/blob/admin/documentation/Demo4_TestingPolicy.pdf).
+</details>
+
 ## Collaborators
 
 ### Phillip Shulze
