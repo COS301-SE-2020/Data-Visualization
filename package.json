@@ -26,6 +26,10 @@
 		"heroku-prebuild": "npm run install:front",
 		"heroku-postbuild": "npm run build:front"
 	},
+	"cacheDirectories": [
+		"node_modules",
+		"data-visualisation-app/node_modules"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/COS301-SE-2020/Data-Visualisation.git"
