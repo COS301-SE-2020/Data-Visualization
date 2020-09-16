@@ -96,6 +96,7 @@ function EditChart(props) {
     const currentBuffer = useRef(true);
     const optionsChanges = useRef([]);
     const storedPointers = useRef({});
+    const initializedData = useRef(false);
     const presetData = useRef([
         /** Line Charts */
         {
@@ -695,6 +696,7 @@ function EditChart(props) {
         // if (optionsBuffer.current[+currentBuffer.current].series.length > 0 && optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('itemName'))
         //     columns.current[1].columns.push({Header: 'Value', accessor: 'value'});
         // else
+        if (!initializedData.current)
             for (let d = 1; d <= dataLength; d++)
                 columns.current[1].columns.push({Header: d.toString(), accessor: d.toString()});
 
@@ -980,18 +982,14 @@ function EditChart(props) {
                 }
             }
         }
-
+        initializedData.current = true;
         setData(prevGridData.current.grid);
     }
 
     const CHECKED_PROPERTIES = [
-        {property: 'xAxis', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}]},
-        {property: 'yAxis', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}]},
-        {property: 'series', changes: [{directory: ['itemStyle'], value: {normal: {label: {show: false}, labelLine: {show : false}}}}]}
-    ];
-    const UNCHECKED_PROPERTIES = [
-        {property: 'xAxis', changes: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]},
-        {property: 'yAxis', changes: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]}
+        {property: 'xAxis', unchangeMethod: 'delete', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}], unchanges: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]},
+        {property: 'yAxis', unchangeMethod: 'delete', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}], unchanges: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]},
+        {property: 'legend', unchangeMethod: 'delete', changes: [{directory: ['show'], value: false}], unchanges: [{directory: ['show'], value: true}]}
     ];
 
     function processPresetData() {
@@ -1004,8 +1002,8 @@ function EditChart(props) {
                 for (let p = 0; p < CHECKED_PROPERTIES.length; p++) {
                     if (presetData.current[t].charts[c].hasOwnProperty(CHECKED_PROPERTIES[p].property)) {
 
-                        let stepPointer = (step) => {return (prefIsArray ? presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property][step] : presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property])};
-                        let prefIsArray = Array.isArray(presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property]);
+                        let prefixIsArray = Array.isArray(presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property]);
+                        let stepPointer = (step) => {return (prefixIsArray ? presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property][step] : presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property])};
 
                         let mutateFlatObject = (stepValue) => {
 
@@ -1013,17 +1011,19 @@ function EditChart(props) {
                                 tmpPointer = stepPointer(stepValue);
                                 if (CHECKED_PROPERTIES[p].changes[change].directory.length > 1) {
                                     for (let dir = 0; dir < CHECKED_PROPERTIES[p].changes.length-1; dir++) {
+
                                         tmpPointer = stepPointer(stepValue)[CHECKED_PROPERTIES[p].changes[change].directory[dir]];
                                         tmpPointer = {};
                                         tmpPointer[CHECKED_PROPERTIES[p].changes[change].directory[dir]] = {};
                                         tmpPointer[CHECKED_PROPERTIES[p].changes[change].directory[dir]][CHECKED_PROPERTIES[p].changes[change].directory[dir+1]] = null;
+
                                     }
                                 }
                                 tmpPointer[CHECKED_PROPERTIES[p].changes[change].directory[CHECKED_PROPERTIES[p].changes[change].directory.length-1]] = CHECKED_PROPERTIES[p].changes[change].value;
                             }
                         };
 
-                        if (prefIsArray) {
+                        if (prefixIsArray) {
                             for (let seriesIndex = 0; seriesIndex < presetData.current[t].charts[c].series.length; seriesIndex++) {
                                 mutateFlatObject(seriesIndex);
                             }
@@ -1042,13 +1042,56 @@ function EditChart(props) {
     function stripChartAxisHideProperties(EChartJSON) {
         let result = JSON.parse(JSON.stringify(EChartJSON));
 
-        const AXIS_TYPES = ['xAxis', 'yAxis'];
-        for (let axis = 0; axis < AXIS_TYPES.length; axis++) {
-            if (result.hasOwnProperty(AXIS_TYPES[axis])) {
-                delete result[AXIS_TYPES[axis]].show;
-                delete result[AXIS_TYPES[axis]].splitLine;
+        let tmpPointer = null;
+
+        for (let p = 0; p < CHECKED_PROPERTIES.length; p++) {
+            if (result.hasOwnProperty(CHECKED_PROPERTIES[p].property)) {
+
+                let prefixIsArray = Array.isArray(result[CHECKED_PROPERTIES[p].property]);
+                let stepPointer = (step) => {return (prefixIsArray ? result[CHECKED_PROPERTIES[p].property][step] : result[CHECKED_PROPERTIES[p].property])};
+
+                let mutateFlatObject = (stepValue) => {
+
+                    let functionString = 'unchanges';
+
+                    for (let change = 0; change < CHECKED_PROPERTIES[p][functionString].length; change++) {
+                        tmpPointer = stepPointer(stepValue);
+                        if (CHECKED_PROPERTIES[p][functionString][change].directory.length > 1 && CHECKED_PROPERTIES[p].unchangeMethod === 'change') {
+                            for (let dir = 0; dir < CHECKED_PROPERTIES[p][functionString].length-1; dir++) {
+                                tmpPointer = stepPointer(stepValue)[CHECKED_PROPERTIES[p][functionString][change].directory[dir]];
+                                tmpPointer = {};
+                                tmpPointer[CHECKED_PROPERTIES[p][functionString][change].directory[dir]] = {};
+                                tmpPointer[CHECKED_PROPERTIES[p][functionString][change].directory[dir]][CHECKED_PROPERTIES[p][functionString][change].directory[dir+1]] = null;
+                            }
+                        }
+                        if (CHECKED_PROPERTIES[p].unchangeMethod === 'delete') {
+                            delete tmpPointer[CHECKED_PROPERTIES[p][functionString][change].directory[CHECKED_PROPERTIES[p][functionString][change].directory.length-1]];
+                        } else {
+                            tmpPointer[CHECKED_PROPERTIES[p][functionString][change].directory[CHECKED_PROPERTIES[p][functionString][change].directory.length-1]] = CHECKED_PROPERTIES[p][functionString][change].value;
+                        }
+
+                    }
+                };
+
+                if (prefixIsArray) {
+                    for (let seriesIndex = 0; seriesIndex < result.series.length; seriesIndex++) {
+                        mutateFlatObject(seriesIndex);
+                    }
+                } else {
+                    mutateFlatObject(0);
+                }
+
             }
         }
+
+
+        // const AXIS_TYPES = ['xAxis', 'yAxis'];
+        // for (let axis = 0; axis < AXIS_TYPES.length; axis++) {
+        //     if (result.hasOwnProperty(AXIS_TYPES[axis])) {
+        //         delete result[AXIS_TYPES[axis]].show;
+        //         delete result[AXIS_TYPES[axis]].splitLine;
+        //     }
+        // }
         return result;
     }
 
