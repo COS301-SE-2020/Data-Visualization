@@ -656,6 +656,10 @@ class RestController {
 		}
 		let uniques = [];
 		let data = dataArray.data;
+		if (!data) {
+			console.log('No data received for this entity and field');
+			return null;
+		}
 		for (let i = 0; i < data.length; i++) {
 			if (!uniques[data[i][0]]) {
 				uniques[data[i][0]] = parseFloat(data[i][1]);
