@@ -57,25 +57,6 @@ const CacheMaker = (function () {
 					prim = primaryKey;
 				}
 
-				if (typeof data.map !== 'function') {
-					console.log('===================== DATA.MAP is not a FUNCTION =====================');
-
-					console.log('SRC:', src);
-					console.log('ENTITY:', entity);
-					console.log('FIELD:', field);
-					console.log('PRIMARY_KEY:', primaryKey);
-					console.log('PRIM:', prim);
-
-					console.log('typeof data', typeof data);
-					console.log('typeof data.map', typeof data.map);
-
-					console.log('DATA', data);
-
-					console.log('======================================================================');
-
-					return null;
-				}
-
 				return data.map((item, i) => [item[prim], item[field]]);
 			}
 			return null;
@@ -124,6 +105,16 @@ const CacheMaker = (function () {
 		setEntityData(src, entity, data) {
 			if (!this.entityData) this.entityData = {};
 			if (!this.entityData[src]) this.entityData[src] = {};
+
+			if (!Array.isArray(data)) {
+				if (typeof data === 'object') {
+					if (Object.keys(data) === 0) return;
+					if (Object.keys(data) === 1) data = [data];
+					else {
+						data = Object.keys(data).map((key) => data[key]);
+					}
+				} else return;
+			}
 
 			this.entityData[src][entity] = {
 				timestamp: Date.now(),
