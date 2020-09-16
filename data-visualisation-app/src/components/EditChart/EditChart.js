@@ -330,14 +330,8 @@ function EditChart(props) {
                             name: '访问来源',
                             type: 'pie',
                             radius: '55%',
-                            center: ['50%', '60%'],
-                            // data: [
-                            //     {value: 335, name: '直接访问'},
-                            //     {value: 310, name: '邮件营销'},
-                            //     {value: 234, name: '联盟广告'},
-                            //     {value: 135, name: '视频广告'},
-                            //     {value: 1548, name: '搜索引擎'}
-                            // ],
+                            center: ['50%', '40%'],
+                            itemStyle: {normal: {label: {show: true}, labelLine: {show : false}}},
                             emphasis: {
                                 show: true,
                                 itemStyle: {
@@ -350,43 +344,53 @@ function EditChart(props) {
                     ]
                 },
                 {
-                    semanticTitle: 'Basic Line Chart4',
+                    semanticTitle: 'Donut Pie Chart',
+                    dataset: {
+                        source: [
+                            ['Animals', 'values'],
+                            ['Dolphins', 335],
+                            ['Dogs', 310],
+                            ['Cats', 234],
+                            ['Bats', 135],
+                            ['Mouses', 1548],
+                            ['Mammals', 110]
+                        ]
+                    },
+                    title: {
+                        show: false,
+                        text: 'Animals',
+                        left: 'center'
+                    },
                     tooltip: {
+                        show: false,
                         trigger: 'item',
-                        formatter: '{a} <br/>{b}: {c} ({d}%)'
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
                     },
                     legend: {
+                        show: false,
                         orient: 'vertical',
-                        left: 10,
+                        left: 'left',
                         data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
                     },
                     series: [
                         {
+                            encode: {
+                                itemName: 'Animals',
+                                value : 'values'
+                            },
                             name: '访问来源',
                             type: 'pie',
-                            radius: ['50%', '70%'],
-                            avoidLabelOverlap: false,
-                            label: {
-                                show: false,
-                                position: 'center'
-                            },
+                            radius: ['40%', '50%'],
+                            center: ['50%', '40%'],
+                            itemStyle: {normal: {label: {show: true}, labelLine: {show : false}}},
                             emphasis: {
-                                label: {
-                                    show: true,
-                                    fontSize: '30',
-                                    fontWeight: 'bold'
+                                show: true,
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
                                 }
-                            },
-                            labelLine: {
-                                show: false
-                            },
-                            data: [
-                                {value: 335, name: '直接访问'},
-                                {value: 310, name: '邮件营销'},
-                                {value: 234, name: '联盟广告'},
-                                {value: 135, name: '视频广告'},
-                                {value: 1548, name: '搜索引擎'}
-                            ]
+                            }
                         }
                     ]
                 }
@@ -397,12 +401,10 @@ function EditChart(props) {
             tabTitle: <span className='chartTabTitle'><ScatterPlot className='chartTabTitle__icon'/> Scatter</span>,
             charts: [
                 {
-                    semanticTitle: 'Basic Line Chart5',
-                    xAxis: {},
-                    yAxis: {},
-                    series: [{
-                        symbolSize: 20,
-                        data: [
+                    semanticTitle: 'Basic Scatter Chart',
+                    dataset: {
+                        source: [
+                            ['Height', 'Diameter'],
                             [10.0, 8.04],
                             [8.0, 6.95],
                             [13.0, 7.58],
@@ -414,7 +416,13 @@ function EditChart(props) {
                             [12.0, 10.84],
                             [7.0, 4.82],
                             [5.0, 5.68]
-                        ],
+                        ]
+                    },
+                    xAxis: {},
+                    yAxis: {},
+                    series: [{
+                        encode: {x: 'Height', y: 'Diameter'},
+                        symbolSize: 20,
                         type: 'scatter'
                     }]
                 },
@@ -809,6 +817,26 @@ function EditChart(props) {
                                 directory: ['series', 0, 'smooth'],
                                 value: (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('smooth') ? optionsBuffer.current[+currentBuffer.current].series[0].smooth : false)
                             };
+                        } else if (optionsBuffer.current[+currentBuffer.current].series[0].type === 'pie') {
+
+                            console.debug('it isi pie itemStyle')
+                            console.debug('optionsBuffer.current[+currentBuffer.current].series[0]', optionsBuffer.current[+currentBuffer.current].series[0])
+                            if (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('itemStyle')) {
+                                console.debug('fouunnddd itemStyle')
+                                if (!optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.hasOwnProperty('normal')) {
+                                    optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.normal = {label: {show: false}};
+                                } else if (!optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.normal.hasOwnProperty('label')) {
+                                    optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.normal.label = {show: false};
+                                } else if (!optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.normal.label.hasOwnProperty('show')) {
+                                    optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.normal.label.show = false;
+                                }
+                                newSeriesProperty[newSeriesProperty.length-1].itemStyle = {
+                                    show: {
+                                        directory: ['series', 0, 'itemStyle', 'normal', 'label', 'show'],
+                                        value: optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.normal.label.show
+                                    }
+                                };
+                            }
                         }
 
                         addProperty(optionsBuffer.current[+currentBuffer.current], 'showBackground');
@@ -825,6 +853,7 @@ function EditChart(props) {
                             directory: ['series', 0, 'backgroundStyle', 'color'],
                             hexvalue: (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('backgroundStyle') && optionsBuffer.current[+currentBuffer.current].series[0].backgroundStyle.hasOwnProperty('color') ? parseRGBToHex(optionsBuffer.current[+currentBuffer.current].series[0].backgroundStyle.color) : ECHART_DEFAULT_COLOURS[0])
                         };
+                        console.debug('newSeriesProperty is', newSeriesProperty)
                         setSeriesProperty(newSeriesProperty);
                     }
                     for (let i = 1; i < dataLength+1; i++) {
@@ -987,9 +1016,10 @@ function EditChart(props) {
     }
 
     const CHECKED_PROPERTIES = [
-        {property: 'xAxis', unchangeMethod: 'delete', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}], unchanges: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]},
-        {property: 'yAxis', unchangeMethod: 'delete', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}], unchanges: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]},
-        {property: 'legend', unchangeMethod: 'delete', changes: [{directory: ['show'], value: false}], unchanges: [{directory: ['show'], value: true}]}
+        {property: 'xAxis', unchangeMethod: 'change', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}], unchanges: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]},
+        {property: 'yAxis', unchangeMethod: 'change', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}], unchanges: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]},
+        {property: 'legend', unchangeMethod: 'change', changes: [{directory: ['show'], value: false}], unchanges: [{directory: ['show'], value: false}]},
+        {property: 'series', unchangeMethod: 'change', changes: [{directory: ['itemStyle'], value: {normal: {label: {show: false}, labelLine: {show : false}}}}], unchanges: [{directory: ['itemStyle', 'normal', 'label', 'show'], value: true}]}
     ];
 
     function processPresetData() {
@@ -1040,6 +1070,7 @@ function EditChart(props) {
     }
 
     function stripChartAxisHideProperties(EChartJSON) {
+
         let result = JSON.parse(JSON.stringify(EChartJSON));
 
         let tmpPointer = null;
@@ -1057,11 +1088,14 @@ function EditChart(props) {
                     for (let change = 0; change < CHECKED_PROPERTIES[p][functionString].length; change++) {
                         tmpPointer = stepPointer(stepValue);
                         if (CHECKED_PROPERTIES[p][functionString][change].directory.length > 1 && CHECKED_PROPERTIES[p].unchangeMethod === 'change') {
-                            for (let dir = 0; dir < CHECKED_PROPERTIES[p][functionString].length-1; dir++) {
-                                tmpPointer = stepPointer(stepValue)[CHECKED_PROPERTIES[p][functionString][change].directory[dir]];
-                                tmpPointer = {};
-                                tmpPointer[CHECKED_PROPERTIES[p][functionString][change].directory[dir]] = {};
-                                tmpPointer[CHECKED_PROPERTIES[p][functionString][change].directory[dir]][CHECKED_PROPERTIES[p][functionString][change].directory[dir+1]] = null;
+                            for (let dir = 0; dir < CHECKED_PROPERTIES[p][functionString][change].directory.length-1; dir++) {
+                                if (dir === 0)
+                                    tmpPointer = stepPointer(stepValue)[CHECKED_PROPERTIES[p][functionString][change].directory[dir]];
+                                if (!tmpPointer.hasOwnProperty(CHECKED_PROPERTIES[p][functionString][change].directory[dir+1])) {
+                                    tmpPointer[CHECKED_PROPERTIES[p][functionString][change].directory[dir+1]] = {};
+                                }
+                                if (dir < CHECKED_PROPERTIES[p][functionString][change].directory.length-2)
+                                    tmpPointer = tmpPointer[CHECKED_PROPERTIES[p][functionString][change].directory[dir+1]];
                             }
                         }
                         if (CHECKED_PROPERTIES[p].unchangeMethod === 'delete') {
@@ -1960,6 +1994,28 @@ function EditChart(props) {
                                                         </Collapse>
                                                     </td>
                                                 </tr>
+
+                                                {s.hasOwnProperty('itemStyle') &&
+                                                <tr>
+                                                    <td>
+                                                        <Collapse defaultActiveKey={['1']} ghost>
+                                                            <Collapse.Panel header={'Item Style'} key={seriesIndex}>
+
+                                                                <table className='properties'>
+                                                                    <tbody>
+                                                                    <tr className='properties'>
+                                                                        <td className='properties'>Show</td>
+                                                                        <td>
+                                                                            <Checkbox defaultChecked={s.itemStyle.show.value} onClick={e => {modify(s.itemStyle.show.directory, (e.target.checked ? 1 : 0));}} />
+                                                                        </td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </Collapse.Panel>
+                                                        </Collapse>
+                                                    </td>
+                                                </tr>
+                                                }
 
                                             </tbody>
                                         </table>
