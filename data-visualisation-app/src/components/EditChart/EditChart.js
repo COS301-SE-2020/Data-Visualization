@@ -42,7 +42,7 @@ import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import useUndo from 'use-undo';
 import {EDITCHART_MODES} from '../../globals/constants';
-import { Wizard, useWizardStep } from 'react-wizard-primitive';
+import {Wizard, useWizardStep, WizardStep} from 'react-wizard-primitive';
 import {PieChart} from '@styled-icons/feather/PieChart';
 import {BarChart} from '@styled-icons/feather/BarChart';
 import {ScatterPlot} from '@styled-icons/material-rounded/ScatterPlot';
@@ -828,7 +828,7 @@ function EditChart(props) {
                         addProperty(optionsBuffer.current[+!currentBuffer.current], 'showBackground');
                         addProperty(optionsBuffer.current[+!currentBuffer.current], 'backgroundStyle');
 
-                        setPropertyHook([true].concat(propertyHook.filter((a, index) => {return index > 0})));
+                        setPropertyHook([true].concat(propertyHook.filter((a, index) => {return index > 0;})));
                         newSeriesProperty[newSeriesProperty.length-1].background = {
                             have: {
                                 directory: ['series', 0, 'showBackground'],
@@ -1638,25 +1638,6 @@ function EditChart(props) {
         );
     }
 
-    function SelectChartType(props) {
-
-        const { isActive, nextStep } = useWizardStep();
-
-        return (isActive ?
-                <div>
-                    <div className='chartType' onClick={nextStep}>Line</div>
-                    <div onClick={nextStep}>Bar</div>
-                    <div onClick={nextStep}>Pie</div>
-                    <div onClick={nextStep}>Scatter</div>
-                </div>
-            : null
-        );
-    }
-
-    function SelectChart() {
-        const { isActive, nextStep } = useWizardStep();
-        return isActive ? <div onClick={nextStep}>Second Step</div> : null;
-    }
 
     return (
         <div id='editCharts'>
@@ -1665,11 +1646,55 @@ function EditChart(props) {
                     {
                         (matches ?
                                 <Wizard>
-                                    <SelectChartType />
-                                    {/* a step doesn't need to be a direct child of the wizard. It can be nested inside of html or react components, too!*/}
-                                    <div>
-                                        <SelectChart />
-                                    </div>
+                                    {({ activeStepIndex, nextStep, previousStep }) => (
+                                        <div className="App">
+                                            <div>
+
+                                                <WizardStep >
+                                                    {({ isActive, index }) =>
+                                                        isActive &&
+                                                        <div className='chartType--mobile'>
+                                                            <div className='chartSelection--mobile chartSelection__topBottom--mobile' onClick={() => {setPresetIndex(0); nextStep();}} ><span className='chartTabTitle--mobile'><LineChart className='chartTabTitle__icon--mobile'/> Line</span></div>
+                                                            <div className='chartSelection--mobile chartSelection__topBottom--mobile' onClick={() => {setPresetIndex(1); nextStep();}} ><span className='chartTabTitle--mobile'><BarChart className='chartTabTitle__icon--mobile'/> Bar</span></div>
+                                                            <div className='chartSelection--mobile chartSelection__topBottom--mobile' onClick={() => {setPresetIndex(2); nextStep();}} ><span className='chartTabTitle--mobile'><PieChart className='chartTabTitle__icon--mobile'/> Pie</span></div>
+                                                            <div className='chartSelection--mobile' onClick={() => {setPresetIndex(3); nextStep();}} ><span className='chartTabTitle--mobile'><ScatterPlot className='chartTabTitle__icon--mobile '/> Scatter</span></div>
+                                                        </div>
+                                                    }
+                                                </WizardStep>
+                                                <WizardStep >
+                                                    {({ isActive, index }) =>
+                                                        isActive &&
+                                                        <div className='chartBroweser--mobile' onClick={nextStep}>
+                                                            <Grid container>
+                                                                {presetData.current[presetIndex].charts.map((presetCharts, presetChartsIndex) => {
+                                                                    return <Grid item xs={12} md={6} lg={3} key={presetChartsIndex} className='chartItem' >
+                                                                        <div className='chartItem__inner' onClick={() => {
+                                                                            optionsBuffer.current[+currentBuffer.current] = stripChartAxisHideProperties(presetCharts);
+                                                                            currentBuffer.current = !currentBuffer.current;
+                                                                            optionsBuffer.current[+currentBuffer.current] = stripChartAxisHideProperties(presetCharts);
+
+                                                                            // setChartOptions(optionsBuffer.current[+currentBuffer.current]);
+                                                                            resetCurrentOptions(JSON.parse(JSON.stringify(optionsBuffer.current[+currentBuffer.current])));
+                                                                            currentBuffer.current = !currentBuffer.current;
+
+                                                                            generateData();
+
+                                                                            setHaveChosenChart(true);
+                                                                        }}>
+                                                                            <ReactEcharts  style={{height: '200px'}} className='chartItem__echart' option={presetCharts}/>
+                                                                            <div className='chartItem__inner--title'>{`${presetCharts.semanticTitle}`}</div>
+                                                                        </div>
+                                                                    </Grid>;
+                                                                })}
+                                                            </Grid>
+                                                        </div>
+                                                    }
+                                                </WizardStep>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {/*<SelectChartType />*/}
+                                    {/*<SelectChart />*/}
                                 </Wizard>
                                 :
                                 <>
@@ -1775,6 +1800,17 @@ function EditChart(props) {
                             request.cache.suggestions.graph[props.directory[0]] = optionsBuffer.current[0];
                             props.mutablePointer[props.directory[0]] = optionsBuffer.current[+currentBuffer.current];
                             props.synchronizeChanges(props.directory[0]);
+                        } else {
+                            let akey = 123;
+                            message.loading({ content: 'Saving new chart to dashboard....', akey});
+                            request.graph.add(props.dashboardID, (presentCurrentOptions.title != null && presentCurrentOptions.title.text === '' ? presentCurrentOptions.title.text : 'Custom Chart'), presentCurrentOptions, {}, function(response) {
+                                if (response === constants.RESPONSE_CODES.SUCCESS) {
+                                    message.success({ content: 'Chart was successfully saved!', akey, duration: 2 });
+
+                                    props.synchronizeChanges();
+                                }
+
+                            });
                         }
                     }}>Save</Button>
                     <Button ghost onClick={() => {setHaveChosenChart(false);}} >
