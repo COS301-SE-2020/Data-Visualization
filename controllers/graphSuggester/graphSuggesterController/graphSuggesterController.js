@@ -693,14 +693,18 @@ class GraphSuggesterController {
 			console.log('Invalid series in given suggestion');
 		}
 		let original = suggestion['series'][0];
+		original.name = 'Original Data';
 
 		let series1 = {
 			type: original.type,
 			data: trimmedSet,
+			name: 'Estimated Data',
 		};
+
 		let series2 = {
 			type: original.type,
 			data: forecast,
+			name: 'Forecast Data',
 		};
 		suggestion['series'].push(series1);
 		suggestion['series'].push(series2);

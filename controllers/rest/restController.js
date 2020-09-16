@@ -286,16 +286,20 @@ class RestController {
 
 							let forecastResults = await DataSource.predictTimeSeries(data.data, count).catch((err) => {
 								isForecasting = false;
-								console.log('Time Series Forecast failed...');
+								console.log('Time Series Forecast failed...', err.data.error);
 							});
 
 							console.log(forecastResults);
 							if (forecastResults && isForecasting) {
 								forecast = forecastResults.forecast;
 								trimmedSet = forecastResults.trimmedSet;
-							} else isForecasting = false;
 
-						} else { //get rid of duplicate keys(previous checks did that automatically, it should do it for others too)
+								if (data) {
+									forecast.unshift(data.data[data.data.length - 1]);
+								}
+							} else isForecasting = false;
+						} else {
+							//get rid of duplicate keys(previous checks did that automatically, it should do it for others too)
 							data = this.removeDuplicateKeys(data);
 						}
 
@@ -311,7 +315,6 @@ class RestController {
 
 							if (isForecasting && forecast && trimmedSet) {
 								console.log('Forecast:', forecast);
-
 								chart = GraphSuggesterController.addSeriesData(chart, { forecast, trimmedSet });
 							}
 							console.log('AFTER:', chart.series);
@@ -636,7 +639,7 @@ class RestController {
 		let keys = Object.keys(uniques);
 
 		for (let i = 0; i < keys.length; i++) {
-			data[i] = [ keys[i], uniques[keys[i]] ];	//store the key-value pair in array format for echarts
+			data[i] = [keys[i], uniques[keys[i]]]; //store the key-value pair in array format for echarts
 		}
 
 		dataArray.data = data;

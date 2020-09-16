@@ -210,7 +210,7 @@ class DataSource {
 			Forecaster.predict(DataSource.toSeries(dataset), count)
 				.then((forecast) => {
 					forecast = DataSource.toDataset(forecast);
-					forecast.unshift(dataset[dataset.length - 1]);
+					dataset.push(forecast[0]);
 					resolve({ forecast, trimmedSet: dataset });
 				})
 				.catch((err) => reject(err));
@@ -265,6 +265,27 @@ class DataSource {
 			}
 			series[formatDate(time)] = value;
 		});
+
+		const length = Object.keys(series).length;
+
+		console.log(length);
+
+		if (length > 1000) {
+			let short = {};
+
+			Object.keys(series)
+				.sort()
+				.forEach((value, i) => {
+					if (i > length - 1000) {
+						short[value] = series[value];
+					}
+				});
+
+			console.log(Object.keys(short).length);
+
+			return short;
+		}
+
 		return series;
 	}
 
