@@ -595,70 +595,10 @@ class GraphSuggesterController {
 		let chartType = suggestion['series'][0]['type'];
 
 		//do chart conversions between pie and bar charts
-		if (graphSuggesterAI.graphTypes.includes('bar') && (chartType.includes('pie') || chartType.includes('bar'))) {
+		if (graphSuggesterAI.graphTypes.includes('bar') && chartType.includes('pie')) {
 			//if we are allowed to have bar charts, consider limiting data
 
-			if (data.length > 20) {
-				//we should preferably not display too much data on a chart, split into series
-				selectedFields = [];
-				let params = suggestion['dataset']['source'][0];
-				suggestion['series'].shift();
-				//suggestion['dataset']['source'] = [];
-				//construct the series of graphs, this could be one or more graphs
-
-				let seriesnum = 1;
-				let name = 'Fragment' + seriesnum++;
-				let series = {
-					type: 'bar',
-					name: name,
-					encode: {
-						x: params[0],
-						y: params[1],
-					},
-					data: [],
-				};
-
-				let seriesNames = [name];
-
-				for (let i = 0; i < data.length; i++) {
-					//only display the first 20
-					if ((i % 20 === 0 && i !== 0) || i === data.length - 1) {
-						//20 values per series
-						name = 'Fragment' + seriesnum++;
-						suggestion['series'].push(series);
-						series = {
-							type: 'bar',
-							name: name,
-							encode: {
-								x: params[0],
-								y: params[1],
-							},
-							data: [],
-						};
-
-						seriesNames.push(name);
-					}
-					series['data'].push(data[i]);
-				}
-
-				selectedFields = {};
-				selectedFields[seriesNames[0]] = true;
-				for (let i = 1; i < seriesNames.length; i++) {
-					selectedFields[seriesNames[i]] = false;
-				}
-
-				suggestion['legend'] = {
-					type: 'scroll',
-					orient: 'vertical',
-					right: 10,
-					top: 20,
-					bottom: 20,
-					selected: selectedFields,
-					data: seriesNames,
-				};
-				return suggestion;
-				//otherwise if we don't have more than the max value, check if it is a valid pie chart
-			} else if (hasValues.length > 10 && chartType.includes('pie')) {
+			if (hasValues.length > 10) {
 				//pie charts shouldn't have too many values, use a bar chart instead
 				let params = suggestion['dataset']['source'][0];
 				//create a new bar chart
