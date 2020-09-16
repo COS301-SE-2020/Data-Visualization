@@ -573,6 +573,14 @@ function EditChart(props) {
         }
     }
 
+    function percentageStringToInt(percent) {
+        if (percent.substring(percent.length-1, percent.length) === '%') {
+            return Number(percent.substring(0, percent.length-1));
+        } else {
+            return Number(percent);
+        }
+    }
+
     /** Generates data used by front-end components for chart's data manipulation
      */
     function generateData() {
@@ -774,10 +782,7 @@ function EditChart(props) {
                             };
                         } else if (optionsBuffer.current[+currentBuffer.current].series[0].type === 'pie') {
 
-                            console.debug('it isi pie itemStyle')
-                            console.debug('optionsBuffer.current[+currentBuffer.current].series[0]', optionsBuffer.current[+currentBuffer.current].series[0])
                             if (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('itemStyle')) {
-                                console.debug('fouunnddd itemStyle')
                                 if (!optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.hasOwnProperty('normal')) {
                                     optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.normal = {label: {show: false}};
                                 } else if (!optionsBuffer.current[+currentBuffer.current].series[0].itemStyle.normal.hasOwnProperty('label')) {
@@ -792,8 +797,24 @@ function EditChart(props) {
                                     }
                                 };
                             }
+
+                            if (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('radius')) {
+
+                                newSeriesProperty[newSeriesProperty.length-1].innerRadius = {
+                                    directory: ['series', 0, 'radius', 0],
+                                    value: percentageStringToInt(optionsBuffer.current[+currentBuffer.current].series[0].radius[0])
+                                };
+                                newSeriesProperty[newSeriesProperty.length-1].outerRadius = {
+                                    directory: ['series', 0, 'radius', 1],
+                                    value: percentageStringToInt(optionsBuffer.current[+currentBuffer.current].series[0].radius[1])
+                                };
+
+                            } else {
+                                // addProperty(optionsBuffer.current[+currentBuffer.current], 'radius');
+                                // addProperty(optionsBuffer.current[+!currentBuffer.current], 'radius');
+                            }
+
                         } else if (optionsBuffer.current[+currentBuffer.current].series[0].type === 'effectScatter') {
-                            console.debug('iiiiiIIIIIII ISSSS WSS effectScatter');
                             if (!optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('symbolSize'))
                                 optionsBuffer.current[+currentBuffer.current].series[0].symbolSize = 5;
                             newSeriesProperty[newSeriesProperty.length-1].symbolSize = {
@@ -816,7 +837,6 @@ function EditChart(props) {
                             directory: ['series', 0, 'backgroundStyle', 'color'],
                             hexvalue: (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('backgroundStyle') && optionsBuffer.current[+currentBuffer.current].series[0].backgroundStyle.hasOwnProperty('color') ? parseRGBToHex(optionsBuffer.current[+currentBuffer.current].series[0].backgroundStyle.color) : ECHART_DEFAULT_COLOURS[0])
                         };
-                        console.debug('newSeriesProperty is', newSeriesProperty)
                         setSeriesProperty(newSeriesProperty);
                     }
                     for (let i = 1; i < dataLength+1; i++) {
@@ -1659,7 +1679,6 @@ function EditChart(props) {
                                         <Tabs defaultActiveKey="0" tabPosition='left' style={{ height: 220 }}>
 
                                             {presetData.current.map((presetCharts, presetChartsIndex) => {
-                                                console.debug('finalfianlresult  presetData', presetData.current)
                                                 return <Tabs.TabPane tab={presetCharts.tabTitle} key={presetChartsIndex}>
                                                     <Grid container>
                                                         {presetCharts.charts.map((presetChart, presetChartIndex) => {
@@ -1948,6 +1967,27 @@ function EditChart(props) {
                                                     <td className='properties'>Symbol Size</td>
                                                     <td className='properties'>
                                                         <Slider defaultValue={s.symbolSize.value} onChange={v => {modify(s.symbolSize.directory, v);}}/>
+                                                        {/*<Checkbox defaultChecked={s.smooth.value} onChange={e => {modify(s.smooth.directory, (e.target.checked ? 1 : 0));}} />*/}
+                                                    </td>
+                                                </tr>
+                                                }
+
+                                                {s.hasOwnProperty('innerRadius') &&
+
+                                                <tr className='properties'>
+                                                    <td className='properties'>Inner Radius</td>
+                                                    <td className='properties'>
+                                                        <Slider defaultValue={s.innerRadius.value} onChange={v => {modify(s.innerRadius.directory, v);}}/>
+                                                        {/*<Checkbox defaultChecked={s.smooth.value} onChange={e => {modify(s.smooth.directory, (e.target.checked ? 1 : 0));}} />*/}
+                                                    </td>
+                                                </tr>
+                                                }
+                                                {s.hasOwnProperty('outerRadius') &&
+
+                                                <tr className='properties'>
+                                                    <td className='properties'>Outer Radius</td>
+                                                    <td className='properties'>
+                                                        <Slider defaultValue={s.outerRadius.value} onChange={v => {modify(s.outerRadius.directory, v);}}/>
                                                         {/*<Checkbox defaultChecked={s.smooth.value} onChange={e => {modify(s.smooth.directory, (e.target.checked ? 1 : 0));}} />*/}
                                                     </td>
                                                 </tr>
