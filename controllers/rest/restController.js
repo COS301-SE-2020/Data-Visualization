@@ -208,14 +208,15 @@ class RestController {
 				return entity.datasource;
 			});
 
-			console.log(datasourceTypes, datasources);
+			// console.log(datasourceTypes, datasources);
 
 			Promise.all(datasources.map((src, i) => DataSource.getMetaData(src, datasourceTypes[i])))
 				.then((metaDataList) => {
 					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], datasourceTypes[i], Meta));
+					console.log('================================================');
 					console.log('Meta Data retrieved for sources:');
-					console.log(datasources);
-
+					console.log([...new Set(datasources)]);
+					console.log('================================================');
 					done();
 				})
 				.catch((err) => {
