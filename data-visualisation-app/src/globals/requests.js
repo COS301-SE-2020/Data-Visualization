@@ -533,11 +533,11 @@ const request = {
 			API.entities
 				.list(sourceurl, sourcetype)
 					.then((res) => {
-						console.debug('Response from suggestion.list:', res);
+						//console.debug('Response from suggestion.list:', res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 
-								console.log(res.data);
+								//console.log(res.data);
 								request.user.dataSourceInfo = res.data;
 
 								callback(constants.RESPONSE_CODES.SUCCESS);
@@ -559,9 +559,9 @@ const request = {
 				.set(graphTypes, selectedEntities, selectedFields, fittestGraph)
 				.then((res) => {
 					if (callback !== undefined) {
-						console.debug('Response from suggestion.graph:', res);
+						//console.debug('Response from suggestion.graph:', res);
 
-						console.log(res);
+						//console.log(res);
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
 				})
@@ -575,9 +575,8 @@ const request = {
 				.then((res) => {
 					
 					if (callback !== undefined) {
-						console.debug('Response from suggestion.graph:', res);
-						
 
+						//console.debug('Response from suggestion.graph:', res);
 						//console.log('get ' + res);
 
 
@@ -597,7 +596,7 @@ const request = {
 
 
 						}
-						console.log(res.data);
+						//console.log(res.data);
 						request.cache.suggestions.graph.current = res.data;
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}

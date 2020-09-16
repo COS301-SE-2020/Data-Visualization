@@ -16,6 +16,7 @@
 }
 
 @mixin button__moreLikeThis--backgroundColor {
+  background-color: #FF3408;
   background: rgb(117,48,154);
   background: -moz-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
   background: -webkit-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
@@ -26,8 +27,8 @@
 #moreLikeThisButton{
   //@include button__moreLikeThis--backgroundColor;
   background-color: #242424;
-  border: 1px solid #d8f3eb;
-  color: #60dbb2;
+  border: none;
+  color: #3EC195;
   
   margin: 0;
   top: 96%;
@@ -35,7 +36,7 @@
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   position: fixed;
-  border: none;
+
   transition: 0.3s;
   font-weight: bold;
 
