@@ -41,7 +41,7 @@ function Home(props) {
 			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
 				<div id='header__title'>
 					<p id='welcomeTitle'>Visualize Data</p>
-					<p id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData link and visualize away!</p>
+					<p id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData or GraphQL link and visualize away!</p>
 
 				</div>
 		
