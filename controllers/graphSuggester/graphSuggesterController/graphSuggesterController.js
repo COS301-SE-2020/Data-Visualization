@@ -24,6 +24,7 @@
  * 02/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
  * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display even better graphs
  * 11/09/2020	 Marco Lombaard						Added function to add a series to a suggestion
+ * 16/09/2020	 Marco Lombaard						Pie charts convert to bar charts if they have too much data
  *
  * Test Cases: none
  *
@@ -133,9 +134,9 @@ class GraphSuggesterController {
 			let option;
 			if (fieldType.toLowerCase().includes('string')) {
 				//this data gets changed later, then the field becomes the key
-				option = this.constructOption(graphType, [field, dependentVariable], field, dependentVariable, entity + ': ' + field);
+				option = this.constructOption(graphType, [ field, dependentVariable ], field, dependentVariable, entity + ': ' + field);
 			} else {
-				option = this.constructOption(graphType, [primaryKey, dependentVariable], primaryKey, dependentVariable, entity + ': ' + field);
+				option = this.constructOption(graphType, [ primaryKey, dependentVariable ], primaryKey, dependentVariable, entity + ': ' + field);
 			}
 			//console.log(option);
 			let chartSuggestion = {
@@ -180,7 +181,7 @@ class GraphSuggesterController {
 		for (let i = 0; i < entities.length; i++) {
 			if (!this.acceptedEntities[entities[i].datasource]) {
 				//if this source isn't listed yet
-				this.acceptedEntities[entities[i].datasource] = [entities[i].entityName]; //create it and store the entity
+				this.acceptedEntities[entities[i].datasource] = [ entities[i].entityName ]; //create it and store the entity
 			} else {
 				this.acceptedEntities[entities[i].datasource].push(entities[i].entityName); //add the name to the existing array
 			}
@@ -262,7 +263,7 @@ class GraphSuggesterController {
 		// eslint-disable-next-line eqeqeq
 		if (encoding == null || encoding.isEmpty) {
 			//eslint-disable-line
-			console.log("Check that 'encode' is not empty");
+			console.log('Check that \'encode\' is not empty');
 			return false;
 		}
 
@@ -270,7 +271,7 @@ class GraphSuggesterController {
 
 		//check if there are keys
 		if (keys.length === 0) {
-			console.log("check that 'encode' has keys");
+			console.log('check that \'encode\' has keys');
 		}
 
 		let fieldIndex = -1; //the index at which values(0 - xAxis, 1 - yAxis) are found in all entries
@@ -354,7 +355,7 @@ class GraphSuggesterController {
 				},
 				axisLabel: {
 					rotate: 330,
-					padding: [20, 0, 0, -20],
+					padding: [ 20, 0, 0, -20 ],
 				},
 				grid: {
 					bottom: 110,
@@ -407,7 +408,9 @@ class GraphSuggesterController {
 				{
 					type: graph,
 					radius: '60%',
-					center: ['30%', '50%'],
+
+					center: [ '30%', '50%' ],
+
 					labelLine: {
 						show: false,
 					},
@@ -573,8 +576,8 @@ class GraphSuggesterController {
 			proportion = sameValues[keys[i]] / data.length;
 			if (proportion > 0.8) {
 				//if more than 80% of the same value exists, boring graph
-				if (hasValues.length <= 5 && hasValues.length >= 2) {
-					//if we have less or equal to 5 non-zero values, return a pie chart of the values
+				if (hasValues.length <= 5 && hasValues.length >= 2 && keys.length > 1 && graphSuggesterAI.graphTypes.includes('pie')) {
+					//if we have less or equal to 5 non-zero values, with some variance, return a pie chart of the values
 					let params = suggestion['dataset']['source'][0];
 					let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']);//new chart
 					for (let i = 0; i < hasValues.length; i++) {
@@ -586,6 +589,79 @@ class GraphSuggesterController {
 				console.log('Too many items in graph have the same value - invalidating graph');
 				console.log('data: ', data);
 				return {};
+			}
+		}
+
+		let chartType = suggestion['series'][0]['type'];
+
+		//do chart conversions between pie and bar charts
+		if (graphSuggesterAI.graphTypes.includes('bar') && (chartType.includes('pie') || chartType.includes('bar'))) {
+			//if we are allowed to have bar charts, consider limiting data
+
+			if (data.length > 20) { //we should preferably not display too much data on a chart, split into series
+				selectedFields = [];
+				let params = suggestion['dataset']['source'][0];
+				suggestion['series'].shift();
+				//suggestion['dataset']['source'] = [];
+				//construct the series of graphs, this could be one or more graphs
+
+				let seriesnum = 1;
+				let name = 'Fragment' + seriesnum++;
+				let series = {
+					type: 'bar',
+					name: name,
+					encode: {
+						x: params[0],
+						y: params[1],
+					},
+					data: [],
+				};
+
+				let seriesNames = [name];
+
+				for (let i = 0; i < data.length; i++) {	//only display the first 20
+					if ((i % 20 === 0 && i !== 0) || i === data.length - 1) {	//20 values per series
+						name = 'Fragment' + seriesnum++;
+						suggestion['series'].push(series);
+						series = {
+							type: 'bar',
+							name: name,
+							encode: {
+								x: params[0],
+								y: params[1],
+							},
+							data: [],
+						};
+
+						seriesNames.push(name);
+					}
+					series['data'].push(data[i]);
+				}
+
+				selectedFields = {};
+				selectedFields[seriesNames[0]] = true;
+				for (let i = 1; i < seriesNames.length; i++) {
+					selectedFields[seriesNames[i]] = false;
+				}
+
+				suggestion['legend'] = {
+					type: 'scroll',
+					orient: 'vertical',
+					right: 10,
+					top: 20,
+					bottom: 20,
+					selected: selectedFields,
+					data: seriesNames,
+				};
+				return suggestion;
+				//otherwise if we don't have more than the max value, check if it is a valid pie chart
+			} else if (hasValues.length > 10 && chartType.includes('pie')) {
+				//pie charts shouldn't have too many values, use a bar chart instead
+				let params = suggestion['dataset']['source'][0];
+				//create a new bar chart
+				let replacement = this.constructOption('bar', params, params[0], params[1], suggestion['title']['text']);
+				replacement['dataset']['source'] = suggestion['dataset']['source'];
+				return replacement;
 			}
 		}
 
@@ -614,23 +690,20 @@ class GraphSuggesterController {
 			console.log('Invalid series in given suggestion');
 		}
 		let original = suggestion['series'][0];
-		original.name = 'Original data';
 
 		let series1 = {
 			type: original.type,
 			data: trimmedSet,
-			name: 'Approximated data',
 		};
 		let series2 = {
 			type: original.type,
 			data: forecast,
-			name: 'Forecast data',
 		};
-		suggestion['series'].push(series2);
 		suggestion['series'].push(series1);
+		suggestion['series'].push(series2);
 
 		suggestion.legend = {
-			data: [original.name, series1.name, series2.name],
+			data: [ original.name, series1.name, series2.name ],
 
 		};
 		return suggestion;
