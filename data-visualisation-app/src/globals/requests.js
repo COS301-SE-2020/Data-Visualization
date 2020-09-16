@@ -427,7 +427,7 @@ const request = {
 		selectedEntities : [],
 		fields: [],
 		selectedFields : [],
-		graphTypes: ['bar','line', 'pie', 'scatter', 'effectScatter'],
+		graphTypes: ['bar','line', 'pie', 'scatter'],
 		fittestGraphs: [],
 	},
 
