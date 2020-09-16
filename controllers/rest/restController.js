@@ -328,7 +328,10 @@ class RestController {
 							done(chart);
 						}
 					})
-					.catch((err) => error & error(err));
+					.catch((err) => {
+						console.log(err);
+						done({});
+					});
 			}
 		} else {
 			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status: 500 });
