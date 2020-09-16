@@ -78,12 +78,6 @@ const AddConnectionDialog = (props) => {
         setVisible(false);
     };
 
-    // const selectBefore = (
-    //     <Select defaultValue="OData" className="select-before">
-    //         <Select.Option value="OData">OData</Select.Option>
-    //         <Select.Option value="Other">Other</Select.Option>
-    //     </Select>
-    // );
 
     return (
         <div >
