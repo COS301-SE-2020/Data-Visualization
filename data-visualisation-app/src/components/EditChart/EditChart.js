@@ -330,7 +330,7 @@ function EditChart(props) {
                             name: '访问来源',
                             type: 'pie',
                             radius: '55%',
-                            center: ['50%', '60%'],
+                            center: ['50%', '40%'],
                             itemStyle: {normal: {label: {show: true}, labelLine: {show : false}}},
                             emphasis: {
                                 show: true,
@@ -344,43 +344,53 @@ function EditChart(props) {
                     ]
                 },
                 {
-                    semanticTitle: 'Basic Line Chart4',
+                    semanticTitle: 'Donut Pie Chart',
+                    dataset: {
+                        source: [
+                            ['Animals', 'values'],
+                            ['Dolphins', 335],
+                            ['Dogs', 310],
+                            ['Cats', 234],
+                            ['Bats', 135],
+                            ['Mouses', 1548],
+                            ['Mammals', 110]
+                        ]
+                    },
+                    title: {
+                        show: false,
+                        text: 'Animals',
+                        left: 'center'
+                    },
                     tooltip: {
+                        show: false,
                         trigger: 'item',
-                        formatter: '{a} <br/>{b}: {c} ({d}%)'
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
                     },
                     legend: {
+                        show: false,
                         orient: 'vertical',
-                        left: 10,
+                        left: 'left',
                         data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
                     },
                     series: [
                         {
+                            encode: {
+                                itemName: 'Animals',
+                                value : 'values'
+                            },
                             name: '访问来源',
                             type: 'pie',
-                            radius: ['50%', '70%'],
-                            avoidLabelOverlap: false,
-                            label: {
-                                show: false,
-                                position: 'center'
-                            },
+                            radius: ['40%', '50%'],
+                            center: ['50%', '40%'],
+                            itemStyle: {normal: {label: {show: true}, labelLine: {show : false}}},
                             emphasis: {
-                                label: {
-                                    show: true,
-                                    fontSize: '30',
-                                    fontWeight: 'bold'
+                                show: true,
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
                                 }
-                            },
-                            labelLine: {
-                                show: false
-                            },
-                            data: [
-                                {value: 335, name: '直接访问'},
-                                {value: 310, name: '邮件营销'},
-                                {value: 234, name: '联盟广告'},
-                                {value: 135, name: '视频广告'},
-                                {value: 1548, name: '搜索引擎'}
-                            ]
+                            }
                         }
                     ]
                 }
