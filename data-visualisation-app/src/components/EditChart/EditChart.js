@@ -828,7 +828,7 @@ function EditChart(props) {
                         addProperty(optionsBuffer.current[+!currentBuffer.current], 'showBackground');
                         addProperty(optionsBuffer.current[+!currentBuffer.current], 'backgroundStyle');
 
-                        setPropertyHook([true].concat(propertyHook.filter((a, index) => {return index > 0})));
+                        setPropertyHook([true].concat(propertyHook.filter((a, index) => {return index > 0;})));
                         newSeriesProperty[newSeriesProperty.length-1].background = {
                             have: {
                                 directory: ['series', 0, 'showBackground'],
@@ -1775,6 +1775,17 @@ function EditChart(props) {
                             request.cache.suggestions.graph[props.directory[0]] = optionsBuffer.current[0];
                             props.mutablePointer[props.directory[0]] = optionsBuffer.current[+currentBuffer.current];
                             props.synchronizeChanges(props.directory[0]);
+                        } else {
+                            let akey = 123;
+                            message.loading({ content: 'Saving new chart to dashboard....', akey});
+                            request.graph.add(props.dashboardID, (presentCurrentOptions.title != null && presentCurrentOptions.title.text === '' ? presentCurrentOptions.title.text : 'Custom Chart'), presentCurrentOptions, {}, function(response) {
+                                if (response === constants.RESPONSE_CODES.SUCCESS) {
+                                    message.success({ content: 'Chart was successfully saved!', akey, duration: 2 });
+
+                                    props.synchronizeChanges();
+                                }
+
+                            });
                         }
                     }}>Save</Button>
                     <Button ghost onClick={() => {setHaveChosenChart(false);}} >
