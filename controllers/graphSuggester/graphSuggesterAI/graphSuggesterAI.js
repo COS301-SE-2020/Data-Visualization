@@ -486,6 +486,9 @@ let graphSuggesterMaker = (function () {
 			}
 
 			let suggestion = this.geneticAlgorithm(options, types);
+			if (!suggestion) {
+				return null;
+			}
 			let processed = [];
 			processed[0] = options[suggestion[0]];	//field being used for data
 			for (let i = 1; i < suggestion.length; i++) {
