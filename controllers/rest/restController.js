@@ -317,7 +317,6 @@ class RestController {
 								console.log('Forecast:', forecast);
 								chart = GraphSuggesterController.addSeriesData(chart, { forecast, trimmedSet });
 							}
-							console.log('AFTER:', chart.series);
 
 							done(chart);
 						}
