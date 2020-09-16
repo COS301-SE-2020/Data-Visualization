@@ -338,7 +338,7 @@ function EditChart(props) {
                             //     {value: 1548, name: '搜索引擎'}
                             // ],
                             emphasis: {
-                                
+                                show: true,
                                 itemStyle: {
                                     shadowBlur: 10,
                                     shadowOffsetX: 0,
@@ -984,15 +984,53 @@ function EditChart(props) {
         setData(prevGridData.current.grid);
     }
 
+    const CHECKED_PROPERTIES = [
+        {property: 'xAxis', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}]},
+        {property: 'yAxis', changes: [{directory: ['show'], value: false}, {directory: ['splitLine'], value: {show: false}}]},
+        {property: 'series', changes: [{directory: ['itemStyle'], value: {normal: {label: {show: false}, labelLine: {show : false}}}}]}
+    ];
+    const UNCHECKED_PROPERTIES = [
+        {property: 'xAxis', changes: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]},
+        {property: 'yAxis', changes: [{directory: ['show'], value: true}, {directory: ['splitLine'], value: {show: true}}]}
+    ];
+
     function processPresetData() {
-        const AXIS_TYPES = ['xAxis', 'yAxis'];
+
+        let tmpPointer = null;
+
         for (let t = 0; t < presetData.current.length; t++) {
             for (let c = 0; c < presetData.current[t].charts.length; c++) {
 
-                for (let axis = 0; axis < AXIS_TYPES.length; axis++) {
-                    if (presetData.current[t].charts[c].hasOwnProperty(AXIS_TYPES[axis])) {
-                        presetData.current[t].charts[c][AXIS_TYPES[axis]].show = false;
-                        presetData.current[t].charts[c][AXIS_TYPES[axis]].splitLine = {show: false};
+                for (let p = 0; p < CHECKED_PROPERTIES.length; p++) {
+                    if (presetData.current[t].charts[c].hasOwnProperty(CHECKED_PROPERTIES[p].property)) {
+
+                        let stepPointer = (step) => {return (prefIsArray ? presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property][step] : presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property])};
+                        let prefIsArray = Array.isArray(presetData.current[t].charts[c][CHECKED_PROPERTIES[p].property]);
+
+                        let mutateFlatObject = (stepValue) => {
+
+                            for (let change = 0; change < CHECKED_PROPERTIES[p].changes.length; change++) {
+                                tmpPointer = stepPointer(stepValue);
+                                if (CHECKED_PROPERTIES[p].changes[change].directory.length > 1) {
+                                    for (let dir = 0; dir < CHECKED_PROPERTIES[p].changes.length-1; dir++) {
+                                        tmpPointer = stepPointer(stepValue)[CHECKED_PROPERTIES[p].changes[change].directory[dir]];
+                                        tmpPointer = {};
+                                        tmpPointer[CHECKED_PROPERTIES[p].changes[change].directory[dir]] = {};
+                                        tmpPointer[CHECKED_PROPERTIES[p].changes[change].directory[dir]][CHECKED_PROPERTIES[p].changes[change].directory[dir+1]] = null;
+                                    }
+                                }
+                                tmpPointer[CHECKED_PROPERTIES[p].changes[change].directory[CHECKED_PROPERTIES[p].changes[change].directory.length-1]] = CHECKED_PROPERTIES[p].changes[change].value;
+                            }
+                        };
+
+                        if (prefIsArray) {
+                            for (let seriesIndex = 0; seriesIndex < presetData.current[t].charts[c].series.length; seriesIndex++) {
+                                mutateFlatObject(seriesIndex);
+                            }
+                        } else {
+                            mutateFlatObject(0);
+                        }
+
                     }
                 }
             }
@@ -1554,7 +1592,8 @@ function EditChart(props) {
         return isActive ? <div onClick={nextStep}>Second Step</div> : null;
     }
 
-    return (<div id='editCharts'>
+    return (
+        <div id='editCharts'>
             {(props.mode === EDITCHART_MODES.CREATE && !haveChosenChart) &&
                 <>
                     {
@@ -1574,6 +1613,7 @@ function EditChart(props) {
                                         <Tabs defaultActiveKey="0" tabPosition='left' style={{ height: 220 }}>
 
                                             {presetData.current.map((presetCharts, presetChartsIndex) => {
+                                                console.debug('finalfianlresult  presetData', presetData.current)
                                                 return <Tabs.TabPane tab={presetCharts.tabTitle} key={presetChartsIndex}>
                                                     <Grid container>
                                                         {presetCharts.charts.map((presetChart, presetChartIndex) => {
