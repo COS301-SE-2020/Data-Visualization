@@ -496,13 +496,17 @@ class RestController {
 	 * @return {data} an object containing a 2D array of label-value pairs
 	 */
 	static stringsToGraphData(stringDataArray) {
+		// eslint-disable-next-line eqeqeq
+		if (!stringDataArray) {
+			console.log('No data received');
+			return null;
+		}
 		//TODO could move this to IGA for generation on best way to represent strings
 		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
 		let dataArray = stringDataArray.data;
 
-		// eslint-disable-next-line eqeqeq
-		if (dataArray == null) {
+		if (!dataArray) {
 			console.log('No data received for this entity and field');
 			return null;
 		}
@@ -535,6 +539,10 @@ class RestController {
 	static boolsToGraphData(boolDataArray) {
 		//TODO could move this to IGA for generation on best way to represent strings
 
+		if (!boolDataArray) {
+			console.log('No data received');
+			return null;
+		}
 		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
 		let dataArray = boolDataArray.data;
@@ -579,7 +587,18 @@ class RestController {
 	 * @returns {*} the object containing the converted data
 	 */
 	static dateConversion(dataArray) {
+		if (!dataArray) {
+			console.log('No data received');
+			return null;
+		}
+
 		let data = dataArray.data;
+
+		if (!data) {
+			console.log('No data received for this entity and field');
+			return null;
+		}
+
 		let rawDate;
 
 		let temp = [];
@@ -624,6 +643,10 @@ class RestController {
 	 * @returns {*} the object containing the new data array.
 	 */
 	static removeDuplicateKeys(dataArray) {
+		if (!dataArray) {
+			console.log('No data received');
+			return null;
+		}
 		let uniques = [];
 		let data = dataArray.data;
 		for (let i = 0; i < data.length; i++) {
@@ -646,6 +669,10 @@ class RestController {
 	}
 
 	static make1DArray(dataArray) {
+		if (!dataArray) {
+			console.log('No data received');
+			return null;
+		}
 		if (dataArray.constructor !== Array) {
 			//if it's just one value
 			return [dataArray];
