@@ -401,12 +401,10 @@ function EditChart(props) {
             tabTitle: <span className='chartTabTitle'><ScatterPlot className='chartTabTitle__icon'/> Scatter</span>,
             charts: [
                 {
-                    semanticTitle: 'Basic Line Chart5',
-                    xAxis: {},
-                    yAxis: {},
-                    series: [{
-                        symbolSize: 20,
-                        data: [
+                    semanticTitle: 'Basic Scatter Chart',
+                    dataset: {
+                        source: [
+                            ['Height', 'Diameter'],
                             [10.0, 8.04],
                             [8.0, 6.95],
                             [13.0, 7.58],
@@ -418,7 +416,13 @@ function EditChart(props) {
                             [12.0, 10.84],
                             [7.0, 4.82],
                             [5.0, 5.68]
-                        ],
+                        ]
+                    },
+                    xAxis: {},
+                    yAxis: {},
+                    series: [{
+                        encode: {x: 'Height', y: 'Diameter'},
+                        symbolSize: 20,
                         type: 'scatter'
                     }]
                 },
