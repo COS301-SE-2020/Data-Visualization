@@ -245,3 +245,34 @@
 .ant-tabs-dropdown-menu-item-disabled:hover {
   color: red;
 }
+
+
+
+.ant-slider-track {
+  background-color: $color-border-hover;
+}
+
+.ant-slider-handle {
+  border: solid 2px #707070;
+}
+
+.ant-slider-handle-dragging.ant-slider-handle-dragging.ant-slider-handle-dragging {
+  border-color: $color-primary;
+  -webkit-box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.12);
+}
+.ant-slider-handle:focus {
+  border-color: $color-primary;
+  outline: none;
+  -webkit-box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.12);
+}
+.ant-slider-handle.ant-tooltip-open {
+  border-color: $color-primary;
+}
+.ant-slider:hover .ant-slider-track {
+  background-color: $color-primary;
+}
+.ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
+  border-color: #3c3c40;
+}
