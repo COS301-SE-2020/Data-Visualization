@@ -76,14 +76,6 @@ table.properties {
   width: 100%;
 }
 
-#editCharts {
-  //margin-top: 60px;
-
-  display: grid;
-  height: 90vh;
-  grid-template: auto 1fr auto / auto 1fr auto
-}
-
 #editCharts__header {
   //position: fixed;
   //top: $HEIGHT_TOOLBAR;
@@ -267,4 +259,62 @@ table.properties {
 
 .ant-slider-handle {
   border: solid 2px #bec3ca;
+}
+
+@media only screen and (min-width: 700px) {
+
+
+  #editCharts {
+    //margin-top: 60px;
+
+    display: grid;
+    height: 90vh;
+    grid-template: auto 1fr auto / auto 1fr auto
+  }
+}
+
+.chartType--mobile {
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  z-index: 100;
+  background-color: $color-primary;
+  padding: 5%;
+  color: white;
+
+}
+
+.chartSelection--mobile {
+  padding: 1px;
+}
+
+.chartTabTitle__icon--mobile {
+  font-size: 5rem;
+  height: 20px;
+  margin-right: 10px;
+}
+
+
+.chartTabTitle--mobile {
+  font-size: 1rem;
+}
+
+.chartSelection--mobile {
+  padding: 20px;
+}
+
+.chartSelection__topBottom--mobile {
+  border-bottom: 1px solid #777777;
+}
+
+.chartBroweser--mobile {
+  position: fixed;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  z-index: 100;
+  background-color: white;
 }
