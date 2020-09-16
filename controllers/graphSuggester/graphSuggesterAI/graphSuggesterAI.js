@@ -514,13 +514,14 @@ let graphSuggesterMaker = (function () {
 			this.scaleFitnessTarget(graphType, fieldType);
 			
 			// eslint-disable-next-line eqeqeq
-			if(this.fittestFieldType == null) {
-				this.fieldTypeWeights = [];
-			}
+			// TODO add way to reset weights
+			// if(this.fittestFieldType == null) {
+			// 	this.fieldTypeWeights = [];
+			// }
 			// eslint-disable-next-line eqeqeq
-			if (this.fittestGraphType == null) {
-				this.graphTypeWeights = [];
-			}
+			// if (this.fittestGraphType == null) {
+			// 	this.graphTypeWeights = [];
+			// }
 		}
 
 		/**
