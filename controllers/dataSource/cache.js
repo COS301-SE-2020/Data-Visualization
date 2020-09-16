@@ -48,6 +48,7 @@ const CacheMaker = (function () {
 		getEntityData(src, entity, field, primaryKey = null) {
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				const data = this.entityData[src][entity].data;
+
 				let prim;
 				// eslint-disable-next-line eqeqeq
 				if (primaryKey == null) {
@@ -55,12 +56,32 @@ const CacheMaker = (function () {
 				} else {
 					prim = primaryKey;
 				}
+
+				if (typeof data.map !== 'function') {
+					console.log('===================== DATA.MAP is not a FUNCTION =====================');
+
+					console.log('SRC:', src);
+					console.log('ENTITY:', entity);
+					console.log('FIELD:', field);
+					console.log('PRIMARY_KEY:', primaryKey);
+					console.log('PRIM:', prim);
+
+					console.log('typeof data', typeof data);
+					console.log('typeof data.map', typeof data.map);
+
+					console.log('DATA', data);
+
+					console.log('======================================================================');
+
+					return null;
+				}
+
 				return data.map((item, i) => [item[prim], item[field]]);
 			}
 			return null;
 		}
 
-		getEntityDataAll(src, entity){
+		getEntityDataAll(src, entity) {
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				return this.entityData[src][entity].data;
 			}
