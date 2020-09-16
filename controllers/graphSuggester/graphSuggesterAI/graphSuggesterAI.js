@@ -512,6 +512,16 @@ let graphSuggesterMaker = (function () {
 			this.fittestGraphType = graphType;
 			this.fittestFieldType = fieldType;
 			this.scaleFitnessTarget(graphType, fieldType);
+			
+			// eslint-disable-next-line eqeqeq
+			// TODO add way to reset weights
+			// if(this.fittestFieldType == null) {
+			// 	this.fieldTypeWeights = [];
+			// }
+			// eslint-disable-next-line eqeqeq
+			// if (this.fittestGraphType == null) {
+			// 	this.graphTypeWeights = [];
+			// }
 		}
 
 		/**
