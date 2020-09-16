@@ -231,11 +231,11 @@ function Suggestions(props) {
     const [form] = Form.useForm();
 
     const onFinish = values => {
-        console.log('Success:', values);
+        //console.log('Success:', values);
     };
     
     const onFinishFailed = errorInfo => {
-        console.log('Failed:', errorInfo);
+        //console.log('Failed:', errorInfo);
     };
 
     
@@ -281,6 +281,8 @@ function Suggestions(props) {
 
             let shouldcontinue = true;
             setLoading(true);
+
+            console.log(fittestGraphs);
 
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
@@ -361,11 +363,10 @@ function Suggestions(props) {
                                     setLoadedFirst(true);
 
                             }else{
-                                console.log('false');
+
+                                /**fetched graph is null*/
                                 setLoadedFirst(true);
-                            
-
-
+                        
                             }
                         
                         
@@ -396,7 +397,6 @@ function Suggestions(props) {
             requestCharts();
         }
 
-        console.log(request.cache.suggestions.graph.list.length);
     };
 
 
