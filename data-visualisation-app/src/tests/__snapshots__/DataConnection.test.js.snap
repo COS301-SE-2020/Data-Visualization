@@ -14,62 +14,67 @@ exports[`DataConnection component renders correctly 1`] = `
         <ul
           className="ant-list-items"
         >
-          <li
-            className="ant-list-item"
+          <div
+            className="ant-card dataConnectionCard ant-card-bordered ant-card-hoverable"
           >
             <div
-              className="ant-list-item-meta"
+              className="ant-card-body"
+              style={Object {}}
             >
-              <div
-                className="ant-list-item-meta-avatar"
+              <li
+                className="ant-list-item"
               >
-                <span
-                  className="ant-avatar ant-avatar-circle ant-avatar-image"
-                  style={Object {}}
-                >
-                  <img
-                    onError={[Function]}
-                    src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png"
-                  />
-                </span>
-              </div>
-              <div
-                className="ant-list-item-meta-content"
-              >
-                <h4
-                  className="ant-list-item-meta-title"
-                >
-                  <a
-                    href="https://ant.design"
-                  >
-                    https://services.odata.org/V2/Northwind/Northwind.svc
-                  </a>
-                </h4>
                 <div
-                  className="ant-list-item-meta-description"
+                  className="ant-list-item-meta"
                 >
-                  6
+                  <div
+                    className="ant-list-item-meta-avatar"
+                  >
+                    <span
+                      className="ant-avatar ant-avatar-circle ant-avatar-image"
+                      style={Object {}}
+                    >
+                      <img
+                        onError={[Function]}
+                        src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    className="ant-list-item-meta-content"
+                  >
+                    <h4
+                      className="ant-list-item-meta-title"
+                    >
+                      https://services.odata.org/V2/Northwind/Northwind.sv
+                    </h4>
+                    <div
+                      className="ant-list-item-meta-description"
+                    >
+                      6
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div />
-            <ul
-              className="ant-list-item-action"
-            >
-              <li>
-                <button
-                  className="ant-btn"
-                  id="deleteButton"
-                  onClick={[Function]}
-                  type="button"
+                <div />
+                <ul
+                  className="ant-list-item-action"
                 >
-                  <span>
-                    delete
-                  </span>
-                </button>
+                  <li>
+                    <button
+                      className="ant-btn"
+                      id="deleteButton"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <span>
+                        Delete
+                      </span>
+                    </button>
+                  </li>
+                </ul>
               </li>
-            </ul>
-          </li>
+            </div>
+          </div>
         </ul>
       </div>
     </div>
@@ -85,6 +90,7 @@ exports[`DataConnection component renders correctly 1`] = `
     >
       <button
         className="ant-btn ant-btn-round"
+        id="addConnetion__button"
         onClick={[Function]}
         style={
           Object {
@@ -98,7 +104,8 @@ exports[`DataConnection component renders correctly 1`] = `
         </span>
       </button>
       <button
-        className="ant-btn ant-btn-primary ant-btn-round"
+        className="ant-btn ant-btn-round"
+        id="next__button"
         onClick={[Function]}
         type="button"
       >

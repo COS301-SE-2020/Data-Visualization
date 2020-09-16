@@ -65,11 +65,11 @@ const API = {
 	},
 	dataSources: {
 		list: (apikey) => axios.post(constants.URL.DATASOURCE.LIST, { apikey }),
-		add: (apikey, dataSourceUrl) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceUrl }),
+		add: (apikey, dataSourceUrl, dataSourceType) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceUrl, dataSourceType }),
 		delete: (dataSourceID, apikey) => axios.post(constants.URL.DATASOURCE.REMOVE, { dataSourceID, apikey }),
 	},
 	entities: {
-		list: (sourceurl) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl }),
+		list: (sourceurl, sourcetype) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl, sourcetype }),
 	},
 	suggestion: {
 	
@@ -303,8 +303,7 @@ const request = {
 		 */
 		rememberLogin: (isLoggedInMutator) => {
 			request.user.setIsLoggedIn = isLoggedInMutator;
-			if (localStorage.getItem('apikey') == null || localStorage.getItem('apikey') !== '') {
-				console.debug('localStorage.getItem(\'apikey\')', localStorage.getItem('apikey'))
+			if (localStorage.getItem('apikey') !== 'null' && localStorage.getItem('apikey') != null && localStorage.getItem('apikey') !== '' && localStorage.getItem('apikey') !== '' && localStorage.getItem('remember') === 'true') {
 				request.user.firstName = localStorage.getItem('firstName');
 				request.user.lastName = localStorage.getItem('lastName');
 				request.user.apikey = localStorage.getItem('apikey');
@@ -326,16 +325,15 @@ const request = {
 					console.debug('Response from user.login:', res);
 					if (callback !== undefined) {
 						if (successfulResponse(res)) {
-							if (remember)
-
-								localStorage.setItem('firstName', res.data.firstname);
-								request.user.firstName = res.data.firstname;
-								localStorage.setItem('lastName', res.data.lastname);
-								request.user.lastName = res.data.lastname;
-								localStorage.setItem('apikey', res.data.apikey);
-								request.user.apikey = res.data.apikey;
-								request.user.isLoggedIn = true;
-								request.user.setIsLoggedIn(true);
+							localStorage.setItem('remember', remember);
+							localStorage.setItem('firstName', res.data.firstname);
+							request.user.firstName = res.data.firstname;
+							localStorage.setItem('lastName', res.data.lastname);
+							request.user.lastName = res.data.lastname;
+							localStorage.setItem('apikey', res.data.apikey);
+							request.user.apikey = res.data.apikey;
+							request.user.isLoggedIn = true;
+							request.user.setIsLoggedIn(true);
 							
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						} else {
@@ -419,6 +417,7 @@ const request = {
 				id: 6,
 				email: 'elna@gmail.com',
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
+				sourcetype: 0,
 			},
 		],
 		addedSourceID: '',
@@ -428,7 +427,7 @@ const request = {
 		selectedEntities : [],
 		fields: [],
 		selectedFields : [],
-		graphTypes: ['bar','line', 'pie', 'scatter', 'effectScatter'],
+		graphTypes: ['bar','line', 'pie', 'scatter'],
 		fittestGraphs: [],
 	},
 
@@ -447,7 +446,7 @@ const request = {
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 								console.debug(res);
-
+								console.log(res);
 								request.user.dataSources = res.data;
 
 								callback(constants.RESPONSE_CODES.SUCCESS);
@@ -468,10 +467,10 @@ const request = {
 		 *  @param dataSourceUrl Fully qualified url of the new data source.
 		 *  @param callback Function called at end of execution.
 		 */
-		add: (apikey, dataSourceUrl, callback) => {
+		add: (apikey, dataSourceUrl, sourcetype, callback) => {
 			if (request.user.isLoggedIn) {
 				API.dataSources
-					.add(apikey, dataSourceUrl)
+					.add(apikey, dataSourceUrl, sourcetype)
 					.then((res) => {
 						console.debug('Response from dataSources.add:', res);
 						if (callback !== undefined) {
@@ -530,15 +529,15 @@ const request = {
 		 *
 		 *  @param callback Function called at end of execution.
 		 */
-		list: (sourceurl, callback) => {
+		list: (sourceurl, sourcetype, callback) => {
 			API.entities
-				.list(sourceurl)
+				.list(sourceurl, sourcetype)
 					.then((res) => {
-						console.debug('Response from suggestion.list:', res);
+						//console.debug('Response from suggestion.list:', res);
 						if (callback !== undefined) {
 							if (successfulResponse(res)) {
 
-								console.log(res.data);
+								//console.log(res.data);
 								request.user.dataSourceInfo = res.data;
 
 								callback(constants.RESPONSE_CODES.SUCCESS);
@@ -560,25 +559,45 @@ const request = {
 				.set(graphTypes, selectedEntities, selectedFields, fittestGraph)
 				.then((res) => {
 					if (callback !== undefined) {
-						console.debug('Response from suggestion.graph:', res);
+						//console.debug('Response from suggestion.graph:', res);
 
-						console.log(res);
+						//console.log(res);
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
 				})
 				.catch((err) => console.error(err));
 		},
-
+		count: 0,
 		chart: (callback) => {
 
 			API.suggestion
 				.chart()
 				.then((res) => {
+					
 					if (callback !== undefined) {
-						console.debug('Response from suggestion.graph:', res);
-						request.cache.suggestions.graph.current = res.data;
 
+						//console.debug('Response from suggestion.graph:', res);
 						//console.log('get ' + res);
+
+
+						if(res.data.series !== undefined && res.data.series[0].type !== 'pie'){
+
+							if(request.suggestions.count === 0){
+								res.data.series[0].color = '#BD4032';
+							}
+							// else if(request.suggestions.count === 1){
+							// 	res.data.series[0].color = '#3EC195';
+							// }
+						
+							request.suggestions.count++;
+							if(request.suggestions.count === 1){
+								request.suggestions.count = 0;
+							}
+
+
+						}
+						//console.log(res.data);
+						request.cache.suggestions.graph.current = res.data;
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
 				})

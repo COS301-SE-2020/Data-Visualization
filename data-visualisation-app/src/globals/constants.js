@@ -153,5 +153,9 @@ export const CHART_TYPES = {
 	BAR: 'bar',
 	PIE: 'pie',
 	SCATTER: 'scatter'
+};
 
-}
+export const EDITCHART_MODES = {
+	EDIT: 1,
+	CREATE: 2
+};

@@ -82,7 +82,7 @@ import {useGlobalState} from '../../globals/Store';
 
 let w = window.innerWidth;
 let h = window.innerHeight;
-const drawerWidth = 240;
+var drawerWidth = 240;
 
 const globalMaterialUITheme = createMuiTheme({
 	typography: {
@@ -100,10 +100,30 @@ const globalMaterialUITheme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
 	root: {
+		//background: '#242424',
+		display: 'flex'
+	},
+	home: {
+		background: '#3EC195', //#03befc
+		display: 'flex'
+	},
+	suggestions: {
+		background: 'white', //#03befc
+		minHeight: '100%',
+  		minWidth: '1024px',
+	
+		/* Set up proportionate scaling */
+		width: '100%',
+		height: 'auto',
+			
+		/* Set up positioning */
+		position: 'absolute',
+		top:'0',
+		left:'0',
 		display: 'flex'
 	},
 	selected: {
-		color: 'white'
+		color: '#3EC195'
 	},
 	drawer: {
 		[theme.breakpoints.up('sm')]: {
@@ -114,6 +134,12 @@ const useStyles = makeStyles((theme) => ({
 	appBar: {
 		[theme.breakpoints.up('sm')]: {
 			width: `calc(100% - ${drawerWidth}px)`,
+			marginLeft: drawerWidth,
+		},
+		zIndex: '50'
+	},
+	appBarNotLoggedIn: {
+		[theme.breakpoints.up('sm')]: {
 			marginLeft: drawerWidth,
 		},
 	},
@@ -161,11 +187,12 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(9),
 	},
 	typographyHeading: {
-		color: 'white',
-		fontSize: '1.5em',
+		color: '#3EC195',
+		fontSize: '1.5em', 
+		fontWeight: '500',
 	},
 	typographyLocationHeading: {
-		color: 'white',
+		color: '#969698',
 		fontSize: '1.1em',
 		paddingRight: '7px'
 	},
@@ -227,6 +254,7 @@ function App(props) {
 	const [dashboardName, setDashboardName] = React.useState('Dashboard1');
 	const [isAddingDashboard, setIsAddingDashboard] = useState(false);
 	const [dashboardIndex, setDashboardIndex] = useState('');
+	const [showEditChart, setShowEditChart] = useState(false);
 
 	const handlePageType = (t) => {
 		if (pageType !== 'dashboards' && t === 'dashboards') {
@@ -248,8 +276,11 @@ function App(props) {
 		if(pageType === 'explore' && exploreStage === 'entities'){
 			setExploreStage('dataConnection');
 		}
-		if(pageType === 'explore' && exploreStage === 'suggestions'){
+		if(pageType === 'explore' && exploreStage === 'suggestions' && !showEditChart){
 			setExploreStage('entities');
+		}
+		if(pageType === 'explore' && exploreStage === 'suggestions' && showEditChart){
+			setShowEditChart(false);
 		}
 		if(pageType === 'dashboards' && dashboardStage === 'dashboardHome'){
 			setPageType('home');
@@ -259,6 +290,7 @@ function App(props) {
 			setDashboardIndex('');
 			setIsAddingDashboard(false);
 		}		
+		
 	};
 
 	/**
@@ -327,7 +359,7 @@ function App(props) {
 		page = <Home pType={pageType} handlePageType={handlePageType} renderBackground={renderHomeBackground} width={dimensions.width-4} height={dimensions.height-10} />;
 	}
 	if(pageType === 'explore'){
-		page = <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} />;
+		page = <Explore exploreStage = {exploreStage} setExploreStage = {setExploreStage} showEditChart={showEditChart} setShowEditChart={setShowEditChart}/>;
 	}
 	
 	if(pageType === 'trash'){
@@ -362,33 +394,24 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('home')} selected={pageType === 'home'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<HomeIcon size='25' style={(pageType === 'home' ? {color: 'white'} : {})} />
+						<HomeIcon size='25' style={(pageType === 'home' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Home" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('explore')} selected={pageType === 'explore'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: 'white'} : {})} />
+						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Explore" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: 'white'} : {})} />
+						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Dashboards" />
 				</MenuItem>
-
-				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
-					<ListItemIcon className={classes.icon} >
-						<PlusSquare size='25' style={(pageType === 'about' ? {color: 'white'} : {})} />
-					</ListItemIcon>
-					<ListItemText primary="Create chart" />
-				</MenuItem>
-
-
 
 				{/* <MenuItem button onClick={handleOpenIcon} selected={pageType === 'connections'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
@@ -425,7 +448,7 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<TrashIcon size='25' style={(pageType === 'trash' ? {color: 'white'} : {})} />
+						<TrashIcon size='25' style={(pageType === 'trash' ? {color: '#3EC195'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Trash" />
 				</MenuItem>
@@ -450,16 +473,14 @@ function App(props) {
 	const container = window !== undefined ? () => window().document.body : undefined;
 
 	return (
-	
-
 		
 		<GlobalStateProvider >
 		<MuiThemeProvider theme={globalMaterialUITheme}>
 
-			<div className={classes.root}>
+		<div className={`box ${pageType === 'home' ? classes.home : exploreStage === 'suggestions' ? classes.root : classes.root}`}>
 				<CssBaseline />
 				
-				<AppBar  position="fixed" className={classes.appBar} style={{ background: '' }}>
+				<AppBar  position="fixed"style={{ background: '' }}  className={`box ${!request.user.isLoggedIn ? classes.appBarNotLoggedIn : classes.appBar}`} >
 					<Toolbar>
 						<IconButton
 							color="inherit"
@@ -477,7 +498,7 @@ function App(props) {
 							backButton
 						}
 						
-						<Typography variant="h2" className={classes.typographyLocationHeading} noWrap children={
+						<Typography variant="h2" id = 'locationTitle'className={classes.typographyLocationHeading} noWrap children={
 							locationTitle
 						} >
 						</Typography>
@@ -485,8 +506,9 @@ function App(props) {
 						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
 							pageTitle
 						} >
-
 						</Typography>
+						
+
 						<LoginDialog
                             isLoggedIn={loginButton}
 							handlePageType ={handlePageType}
@@ -498,45 +520,49 @@ function App(props) {
 					</Toolbar>
 				</AppBar> : 
 				
-				
-
-				<nav className={classes.drawer} aria-label="mailbox folders">
-					{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-					<Hidden smUp implementation="css">
-						<Drawer
-							container={container}
-							variant="temporary"
-							anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-							open={mobileOpen}
-							onClose={handleDrawerToggle}
-							classes={{
-								paper: classes.drawerPaper,
-							}}
-							ModalProps={{
-								keepMounted: true, // Better open performance on mobile.
-							}}
-						>
-							{drawer}
-						</Drawer>
-					</Hidden>
-					<Hidden xsDown implementation="css">
-						<Drawer
-							classes={{
-								paper: classes.drawerPaper,
-							}}
-							variant="permanent"
-							open
-						>
-							{drawer}
-                            <div style={{height: '100vh', position: 'relative'}}>
-								<img src={constant.APPLICATION_LOGO_GREY} style={{height: '120px', position: 'absolute', bottom: '80px', left: '24%'}} alt="logo" className={classes.logo} />
-								<div style={{position: 'absolute', bottom: '20px', left: '18%', textAlign: 'center', color: '#535355'}}>
-                                    Brought to you by <br/> Doofenshmirtz Evil, Inc.
+				{request.user.isLoggedIn ? 
+					
+					<nav className={classes.drawer} aria-label="mailbox folders">
+						{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+						<Hidden smUp implementation="css">
+							<Drawer
+								container={container}
+								variant="temporary"
+								anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+								open={mobileOpen}
+								onClose={handleDrawerToggle}
+								classes={{
+									paper: classes.drawerPaper,
+								}}
+								ModalProps={{
+									keepMounted: true, // Better open performance on mobile.
+								}}
+							>
+								{drawer}
+							</Drawer>
+						</Hidden>
+						<Hidden xsDown implementation="css">
+							<Drawer
+								classes={{
+									paper: classes.drawerPaper,
+								}}
+								variant="permanent"
+								open
+							>
+								{drawer}
+								<div style={{height: '100vh', position: 'relative'}}>
+									<img src={constant.APPLICATION_LOGO_GREY} style={{height: '120px', position: 'absolute', bottom: '80px', left: '24%'}} alt="logo" className={classes.logo} />
+									<div style={{position: 'absolute', bottom: '20px', left: '18%', textAlign: 'center', color: '#535355'}}>
+										Brought to you by <br/> Doofenshmirtz Evil, Inc.
+									</div>
 								</div>
-                            </div>
-						</Drawer>
-					</Hidden>
-				</nav>
+							</Drawer>
+						</Hidden>
+					</nav>
+					:
+					null
+        		}
+
 
 				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : (pageType === 'home' ? {padding: '0', overflow: 'hidden'} : {}))} ref={targetRef}>
 

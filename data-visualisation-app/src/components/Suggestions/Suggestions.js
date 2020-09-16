@@ -23,15 +23,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
 import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined} from '@ant-design/icons';
-import {Typography, Menu, Dropdown, Button, message, Form, Checkbox} from 'antd';
+import {Typography, Menu, Dropdown, Button, message, Form, Checkbox, Space} from 'antd';
 import FilterDialog from '../FilterDialog';
 import './Suggestions.scss';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
 import EditChart from '../EditChart';
+import {EDITCHART_MODES} from '../../globals/constants';
 
 const renderChart = {index: -1};
+
+
 
 function Suggestion(props) {
     const [isAdded, setIsAdded] = useState(false);
@@ -79,7 +82,7 @@ function Suggestion(props) {
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Typography.Title level={4}>{props.chartData.title}</Typography.Title>
+                        <Typography.Title level={4} style = {{fontSize: '11pt'}}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
 
@@ -107,21 +110,80 @@ function Suggestion(props) {
             </div>
             {/*<ReactEcharts option={props.chartData.options} style={{height: '300px', width: '100%'}} />*/}
             <ReactEcharts option={props.chartData.options} />
-            <div style={{marginTop: '10px'}}>
-                <Grid container spacing={3}>
-                    <Grid item xs={2}>
-                        <ShareAltOutlined />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <BookOutlined />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <StarOutlined />
-                    </Grid>
-                    <Grid item xs={6}>
+            <div style={{marginTop: '10px', height: '40px'}}>
+                {/*<Grid container spacing={3}>*/}
+                {/*    <Grid item xs={2}>*/}
+                {/*        <ShareAltOutlined />*/}
+                {/*    </Grid>*/}
+                {/*    <Grid item xs={2}>*/}
+                {/*        <BookOutlined />*/}
+                {/*    </Grid>*/}
+                {/*    <Grid item xs={2}>*/}
+                {/*        <StarOutlined />*/}
+                {/*    </Grid>*/}
+                {/*    <Grid item xs={6}>*/}
+                <Space size={9} align="center">
                         <Button style={{float: 'right'}} onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; props.setShowEditChart(true);}}>Customize</Button>
-                    </Grid>
-                </Grid>
+                        <Button style={{float: 'right'}} onClick={() => {
+                           
+                            let rawCSV = 'data:text/csv;charset=utf-8,Series,Dimension,';
+
+                            let dataLength;
+                            if (props.chartData.options.hasOwnProperty('series')) {
+                                for (let s = 0; s < props.chartData.options.series.length; s++) {
+                                    if (props.chartData.options.series[s].hasOwnProperty('data')) {
+                                        dataLength = props.chartData.options.series[s].data.length;
+                                    } else if (props.chartData.options.series[s].hasOwnProperty('encode')) {
+                                        if (props.chartData.options.dataset.hasOwnProperty('source')) {
+                                            dataLength = props.chartData.options.dataset.source.length-1;
+                                        }
+                                    }
+                                }
+                            }
+
+                            for (let i = 1; i < dataLength+1; i++) {
+                                rawCSV += 'Data Value ' + i.toString();
+                                if (i === dataLength)
+                                    rawCSV += '\r\n';
+                                else
+                                    rawCSV += ',';
+
+                            }
+
+                            if (props.chartData.options.hasOwnProperty('dataset')) {
+
+                                const dimensionNames = ['X-Axis', 'Y-Axis'];
+
+                                for (let dimension = 0; dimension < 2; dimension++) {
+                                    rawCSV += 'Series 1,';
+
+                                    for (let i = 1; i < dataLength+1; i++) {
+
+                                        if (i === 1) {
+                                            rawCSV += dimensionNames[dimension] + ',';
+                                        }
+
+                                        rawCSV += (props.chartData.options.dataset.source[i][dimension] == null ? '' : props.chartData.options.dataset.source[i][dimension]);
+                                        if (i === dataLength)
+                                            rawCSV += '\r\n';
+                                        else
+                                            rawCSV += ',';
+                                    }
+                                }
+                            }
+
+                            let csvEncodedURI = encodeURI(rawCSV);
+                            let a = document.createElement('a');
+                            a.setAttribute('href', csvEncodedURI);
+                            a.setAttribute('download', props.chartData.title + '.csv');
+                            document.body.appendChild(a);
+
+                            a.click();
+
+                        }}>Export CSV</Button>
+                </Space>
+                {/*    </Grid>*/}
+                {/*</Grid>*/}
             </div>
         </div>
     );
@@ -155,25 +217,25 @@ function IGALoading() {
  */
 function Suggestions(props) {
 
-    const [showEditChart, setShowEditChart] = useState(false);
+    
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
     const [dashboardSelection, setDashboardSelection] = useState([]);
     const [dashboardList, setDashboardList] = useState(['a', 'b', 'c']);
     const editChartParameters = useRef({});
-    const newDashboardSelection = useRef(null);
+    const newDashboardSelection = useRef([]);
     const newCurrentCharts = useRef(null);
     const [getToReload, setGetToReload] = useState(false);
     const [filterState, setFilterState] = useState(false);
     const [form] = Form.useForm();
 
     const onFinish = values => {
-        console.log('Success:', values);
+        //console.log('Success:', values);
     };
     
     const onFinishFailed = errorInfo => {
-        console.log('Failed:', errorInfo);
+        //console.log('Failed:', errorInfo);
     };
 
     
@@ -182,15 +244,20 @@ function Suggestions(props) {
         let newCurrentCharts = JSON.parse(JSON.stringify(currentCharts));
         newCurrentCharts[chartIndex].options = request.cache.suggestions.graph.list[chartIndex];
         setCurrentCharts(newCurrentCharts);
-        setShowEditChart(false);
+        props.setShowEditChart(false);
     };
 
     const moreLikeThis = values =>{
 
         request.user.fittestGraphs = [];
         
-        for(var i = 0; i < request.cache.suggestions.graph.list.length-1; i++){
+        for(var i = 0; i < request.cache.suggestions.graph.list.length; i++){
             if(form.getFieldValue(i) === true){
+                var item = {};
+                item[i] = false;               
+                form.setFieldsValue(item);
+
+                document.getElementById('chartDiv-'+i).style.borderColor = '';
                 request.user.fittestGraphs.push(request.cache.suggestions.graph.list[i]);
             }
         }
@@ -203,128 +270,149 @@ function Suggestions(props) {
 
 
     const generateCharts = (graphTypes, selectedEntities, selectedFields, fittestGraphs)  =>{
-
+       
         // console.log(graphTypes);
         // console.log(selectedEntities);
         // console.log(selectedFields);
         // console.log(fittestGraphs);
 
+        let newDashbhoardList;
+        let requestCharts = function() {
 
-        if (request.user.isLoggedIn) {
-            request.dashboard.list(function() {
-                let newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
-                    return dashboarditem.name;
-                });
-                setDashboardList(newDashbhoardList);
-            });
-        }
+            let shouldcontinue = true;
+            setLoading(true);
 
-        let shouldcontinue = true;
-        
+            console.log(fittestGraphs);
+
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
 
+                    (async function () {
+                        for (let r = 0; shouldcontinue && r < 4; r++) {
+                            await new Promise(function (resolve) {
+                                request.suggestions.chart( function (result) {
+                                    if (result === constants.RESPONSE_CODES.SUCCESS) {
+                                        // console.log('graph');
+                                       
+                                        resolve(request.cache.suggestions.graph.current);
+                                    } else {
+                                        // todo: handle network error
+                                        // resolve(request.cache.suggestions.graph.current);
+                                        setLoading(false);
+                                        console.debug('errrr');
+                                    }
+                                });
+                            }).then(function (fetchedGraph) {
+                    
+                                if(fetchedGraph && JSON.stringify(fetchedGraph) !== '{}' && fetchedGraph != null){
+                                    request.cache.suggestions.graph.list.push(fetchedGraph);
+                                
+                                
+                                /**
+                                 *   Add newly an empty list of dashboard owners for the new chart.
+                                 */
 
-                (async function () {
-                    for (let r = 0; shouldcontinue && r < 4; r++) {
-                        await new Promise(function (resolve) {
-                            request.suggestions.chart( function (result) {
-                                if (result === constants.RESPONSE_CODES.SUCCESS) {
-                                    // console.log('graph');
-                                    resolve(request.cache.suggestions.graph.current);
-                                } else {
-                                    // todo: handle network error
-                                    resolve(request.cache.suggestions.graph.current);
-                                }
-                            });
-                        }).then(function (fetchedGraph) {
-                            request.cache.suggestions.graph.list.push(fetchedGraph);
-                            /**
-                             *   Add newly an empty list of dashboard owners for the new chart.
-                             */
-        
-                            if (request.user.isLoggedIn) {
-                                if (dashboardSelection.length === 0) {
-                                    newDashboardSelection.current = [];
-                                    for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
-                                        newDashboardSelection.current.push(dashboardList.map(() => {
+                                if (request.user.isLoggedIn) {
+                                    if (dashboardSelection.length === 0) {
+                                        newDashboardSelection.current = [];
+                                        for (let g = 0; g < request.cache.suggestions.graph.list.length; g++) {
+                                            newDashboardSelection.current.push(newDashbhoardList.map(() => {
+                                                return false;
+                                            }));
+                                        }
+                                    } else {
+                                        newDashboardSelection.current.push(newDashbhoardList.map(() => {
                                             return false;
                                         }));
                                     }
+                                }
+
+                                setDashboardSelection(newDashboardSelection.current);
+                                /**
+                                 *   Add newly fetched chart to list.
+                                 */
+                                if (newCurrentCharts.current == null) {
+                                    newCurrentCharts.current = request.cache.suggestions.graph.list.map((options, index) => {
+                                        let newchart = {
+                                            options: null
+                                        };
+                                        newchart.options = JSON.parse(JSON.stringify(options));
+                                        if (newchart.options.title && newchart.options.title.text) {
+                                            newchart.title = newchart.options.title.text;
+                                            newchart.options.title.text = '';
+                                        }
+                                        return newchart;
+                                    });
                                 } else {
-                                    newDashboardSelection.current.push(dashboardList.map(() => {
-                                        return false;
-                                    }));
-                                }
-                            }
-        
-                            setDashboardSelection(newDashboardSelection.current);
-                            /**
-                             *   Add newly fetched chart to list.
-                             */
-                            if (newCurrentCharts.current == null) {
-                                newCurrentCharts.current = request.cache.suggestions.graph.list.map((options, index) => {
-                                    let newchart = {
+                                    newCurrentCharts.current.push({
                                         options: null
-                                    };
-                                    newchart.options = JSON.parse(JSON.stringify(options));
-                                    if (newchart.options.title && newchart.options.title.text) {
-                                        newchart.title = newchart.options.title.text;
-                                        newchart.options.title.text = '';
+                                    });
+
+                                    newCurrentCharts.current[newCurrentCharts.current.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
+                                    if (fetchedGraph.title && fetchedGraph.title.text) {
+                                        newCurrentCharts.current[newCurrentCharts.current.length-1].title = fetchedGraph.title.text;
+                                        newCurrentCharts.current[newCurrentCharts.current.length-1].options.title.text = '';
                                     }
-                                    return newchart;
-                                });
-                            } else {
-                                newCurrentCharts.current.push({
-                                    options: null
-                                });
-        
-                                newCurrentCharts.current[newCurrentCharts.current.length-1].options = JSON.parse(JSON.stringify(fetchedGraph));
-                                if (fetchedGraph.title && fetchedGraph.title.text) {
-                                    newCurrentCharts.current[newCurrentCharts.current.length-1].title = fetchedGraph.title.text;
-                                    newCurrentCharts.current[newCurrentCharts.current.length-1].options.title.text = '';
                                 }
-                            }
-        
-                            setCurrentCharts(newCurrentCharts.current);
-                            setGetToReload(true);
-                            setGetToReload(false);
-        
-                            if (!loadedFirst)
+
+                                setCurrentCharts(newCurrentCharts.current);
+                                setGetToReload(true);
+                                setGetToReload(false);
+
+                                if (!loadedFirst)
+                                    setLoadedFirst(true);
+
+                            }else{
+
+                                /**fetched graph is null*/
                                 setLoadedFirst(true);
-        
+                        
+                            }
+                        
+                        
                         });
-                    }
-                })().then(function () {
-                    setLoading(false);
-                });
+                        }
+                    })().then(function () {
+                        setLoading(false);
+                    });
                 } else {
                     // todo: handle network error
+                    setLoading(false);
                 }
             });
+        };
 
-    
+        if (request.user.isLoggedIn) {
+
+            request.dashboard.list(function() {
+                newDashbhoardList = request.cache.dashboard.list.data.map((dashboarditem) => {
+                    return dashboarditem.name;
+                });
+
+                setDashboardList(newDashbhoardList);
+
+                requestCharts();
+            });
+        } else {
+            requestCharts();
+        }
+
     };
-
-    
-    
 
 
     useEffect(() => {
 
-       if (props.newPage)
-           request.cache.suggestions.graph.list = [];
+        if (props.newPage)
+            request.cache.suggestions.graph.list = [];
+
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
-        
-        
-        
+
     }, []);
 
     // if(filterState === false){
     //     generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
     //     request.user.fittestGraphs = [];
     // }
-
    
     
     const classes = useStyles();
@@ -425,7 +513,7 @@ function Suggestions(props) {
     }
 
 
-    return (showEditChart ? <EditChart options={editChartParameters.current.options} mutablePointer={request.cache.suggestions.graph.list} directory={editChartParameters.current.directory} synchronizeChanges={synchronizeChanges}/>
+    return (props.showEditChart ? <EditChart mode={EDITCHART_MODES.EDIT} options={editChartParameters.current.options} mutablePointer={request.cache.suggestions.graph.list} directory={editChartParameters.current.directory} synchronizeChanges={synchronizeChanges} setShowEditChart={props.setShowEditChart}/>
         :
         (
         loadedFirst ?
@@ -440,8 +528,8 @@ function Suggestions(props) {
                     <Grid container spacing={3}>
 
                         
-                            {currentCharts.map((achart, index) => {
-                                return <Grid item xs={12} md={6} lg={3} key={index}>
+                            {(currentCharts !== null ? currentCharts.map((achart, index) => {
+                                return <Grid item xs={12} md={6} lg={4} key={index}>
                                             <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={() => {
                                                 
                                                 var item = {};
@@ -451,12 +539,10 @@ function Suggestions(props) {
                                               
                                                 if(item[index]  === false){
                                                     
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '';
-                                                    document.getElementById('chartDiv-'+index).style.border = '';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
-                                                    document.getElementById('chartDiv-'+index).style.border = '1px solid #292929';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#329a77';
                                                 }
  
                                                 }}>
@@ -464,12 +550,14 @@ function Suggestions(props) {
                                                     <Checkbox className = 'checkboxItem' hidden = {true} style={{visibility: 'hidden'}}></Checkbox>
                                                 </Form.Item>
                                                 {/*<Suggestion id={index} chartData={achart}/>*/}
-                                                <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={setShowEditChart} />
+                                                <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={props.setShowEditChart} />
                                             </div>
                                         </Grid>;
-                            })}
+                            }) : <p id = 'noSuggestionMessage'>We could not display any suggestions for the selected entity.</p> )
+                            
+                            }
 
-                            {loading && <Grid item xs={12} md={6} lg={3}>
+                            {loading && <Grid item xs={12} md={6} lg={4}>
                                 <div id='suggestion__loading--container'>
                                     <div id='suggestion__loading--loader'>
                                         {constants.LOADER}

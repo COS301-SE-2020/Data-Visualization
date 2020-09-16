@@ -35,6 +35,8 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import useUndo from 'use-undo';
 import Trash from '../../pages/Trash';
+import EditChart from '../EditChart';
+import {EDITCHART_MODES} from '../../globals/constants';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -53,6 +55,7 @@ function Dashboard(props) {
 	const [visibleCharts, setVisibleCharts] = useState([]);
 	const [layoutGrid, setLayoutGrid] = useState({});
 	const [searchString, setSearchString] = useState('');
+	const [createChartMode, setCreateChartMode] = useState(false);
 	const defaultLayout = useRef(true);
 	const currentLayout = useRef(null);
 
@@ -348,6 +351,8 @@ function Dashboard(props) {
 	}
 
 	return (
+		createChartMode ?
+		<EditChart mode={EDITCHART_MODES.CREATE}/> :
 		<div className='content--padding'>
 			<div style={{marginBottom: '20px'}}>
 
@@ -361,10 +366,14 @@ function Dashboard(props) {
 					<Grid item xs={12} md={4} style={{textAlign: 'right', marginBottom: '25px'}}>
 
 						<Space size={9}>
-						{hasCharts &&
+						<Button ghost={!editMode} onClick={() => {setCreateChartMode(true);}}>
+							Create Chart
+						</Button>
+						{/*{hasCharts &&*/}
 						<Button ghost={!editMode} onClick={(editMode ? onSaveDashboardClick : onEditDashboardClick)}>
 							 {(editMode ? 'Save Dashboard' : 'Edit Dashboard')}
-						</Button>}
+						</Button>
+							{/*}*/}
 						{editMode &&
 							<React.Fragment>
 								{request.user.isLoggedIn &&

@@ -1,7 +1,7 @@
 .panelLayout {
     margin: 20px;
     padding: 20px;
-    float: left;
+    //float: left;
     overflow: hidden;
 }
 
@@ -16,6 +16,8 @@
     //width: 100px;
     transition: border-color, color 0.4s linear;
     //transition: color 0.4s linear;
+
+
 }
 
 .home-panel-add:hover {
@@ -53,4 +55,16 @@
     text-align: center;
     vertical-align: middle;
     line-height: 40px;
+}
+
+#dashboardList__container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.dashboardList__container--item {
+    width: 300px;
+    height: 300px;
+    flex: 1 1 300px;
 }
