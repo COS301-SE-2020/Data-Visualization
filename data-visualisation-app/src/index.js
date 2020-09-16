@@ -25,4 +25,4 @@ import './assets/fonts/segoe_ui/segoeui.ttf';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
-serviceWorker.register();
+// serviceWorker.register();

@@ -587,7 +587,7 @@ class GraphSuggesterController {
 				}
 				//else we can't make it less boring
 				console.log('Too many items in graph have the same value - invalidating graph');
-				console.log('data: ', data);
+				// console.log('data: ', data);
 				return {};
 			}
 		}
@@ -717,5 +717,6 @@ class GraphSuggesterController {
 }
 GraphSuggesterController.acceptedEntities = {};
 GraphSuggesterController.metadata = [];
+GraphSuggesterController.suggestionsMade = 0;
 
 module.exports = GraphSuggesterController;

@@ -289,7 +289,7 @@ class RestController {
 								console.log('Time Series Forecast failed...', err.data.error);
 							});
 
-							console.log(forecastResults);
+							// console.log(forecastResults);
 							if (forecastResults && isForecasting) {
 								forecast = forecastResults.forecast;
 								trimmedSet = forecastResults.trimmedSet;
@@ -303,7 +303,12 @@ class RestController {
 							data = this.removeDuplicateKeys(data);
 						}
 
-						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType);
+						let charttype = null;
+						if (suggestion && suggestion.option && suggestion.option.series && suggestion.option.series[0] && suggestion.option.series[0].type) {
+							charttype = suggestion.option.series[0].type;
+						}
+
+						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType, charttype);
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
@@ -314,9 +319,11 @@ class RestController {
 							// console.log('BEFORE:', chart);
 
 							if (isForecasting && forecast && trimmedSet) {
-								console.log('Forecast:', forecast);
+								// console.log('Forecast:', forecast);
 								chart = GraphSuggesterController.addSeriesData(chart, { forecast, trimmedSet });
 							}
+
+							GraphSuggesterController.suggestionsMade++;
 
 							done(chart);
 						}
@@ -753,7 +760,7 @@ function extractTitleData(title) {
 	} else return title;
 }
 
-function outputSuggestionMeta(src, srctype, item, set, field, fieldtype) {
+function outputSuggestionMeta(src, srctype, item, set, field, fieldtype, charttype) {
 	console.log('=====================================');
 	console.log('GENERATED SUGGESTION');
 	console.log('SRC:        ', src);
@@ -762,6 +769,8 @@ function outputSuggestionMeta(src, srctype, item, set, field, fieldtype) {
 	console.log('set:        ', set);
 	console.log('field:      ', field);
 	console.log('field type: ', fieldtype);
+	console.log('Chart type: ', charttype);
+	console.log('Suggstion nr: ', GraphSuggesterController.suggestionsMade);
 	console.log('=====================================');
 }
 
