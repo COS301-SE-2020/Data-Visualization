@@ -270,7 +270,7 @@ function Suggestions(props) {
 
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
-        scrollToBottom();
+        //scrollToBottom();
     };
 
 
