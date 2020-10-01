@@ -26,15 +26,29 @@
 
 
 
+@media only screen and (max-width: 600px) {
+  #moreLikeThisButton{
+    left: 50%;
+  }
+}
+
+
+.loggedInMoreLikeThis{
+  left: 57%;
+}
+
+.loggedOutMoreLikeThis{
+  left: 50%;
+}
+
+
 #moreLikeThisButton {
 
- 
   background-color: #fff;
   border: 1px solid #434ee8;
   color: #434ee8;
   margin: 0;
   top: 94%;
-  left: 57%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   position: fixed;
@@ -50,13 +64,24 @@
   -moz-box-shadow: 0px 2px 2px -2px #434ee8;
   box-shadow: 0px 2px 2px -2px #434ee8;
   font-weight: 700px;
+
+  background-color: #434EE8;
+    border: solid 2px white;
+    color: white;
+    -webkit-box-shadow: 0px 2px 2px -2px #434EE8;
+    -moz-box-shadow: 0px 2px 2px -2px #434EE8;
+    box-shadow: 0px 2px 2px -2px #434EE8;
 }
 
 
 
 
+
 #moreLikeThisButton:active {
-  transform: translateY(-1px);
+  transform: translate(-32%, -20%);
+
+
+
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -83,7 +108,7 @@
 }
 
 #moreLikeThisButton:hover::after {
-  transform: scaleX(1.4) scaleY(1.6);
+  transform: scaleX(1.9) scaleY(1.6);
   opacity: 0;
 }
 
@@ -103,6 +128,7 @@
       transform: translateY(0px);
   }
 }
+
 
 
 
@@ -141,8 +167,8 @@
   margin-right: 15px;
   
   background-color: white;
-  border: 1px solid #434ee8;
-  color: #434ee8;
+  border: 1px solid #7d8edb;
+  color: #7d8edb;
 }
 
 #igaloading {
@@ -171,7 +197,7 @@
 
 
 .suggestion{
-  border: 4px solid white;
+  border: 4px solid #fff;
   border-radius: 1%;
   //background-color: #EAFFF5;
   //background-color: #FAFFFD;

@@ -546,7 +546,7 @@ function Suggestions(props) {
                                                     document.getElementById('chartDiv-'+index).style.borderColor = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#434EE8';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#7d8edb';
                                                 }
  
                                                 }}>
@@ -573,7 +573,7 @@ function Suggestions(props) {
                     </Form>
                     
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like This</Button>
+                    <Button id = 'moreLikeThisButton' className={request.user.isLoggedIn ? 'loggedInMoreLikeThis' : 'loggedOutMoreLikeThis'} type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More like this</Button>
                     <main>
                         {
                             filterState ?

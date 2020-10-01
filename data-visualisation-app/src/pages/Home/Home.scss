@@ -245,8 +245,8 @@
     @include button--layout;
     @include button__explore--backgroundColor;
     -webkit-box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
--moz-box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
-box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
+  -moz-box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
+  box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
 
   font-size: 18px;
   font-weight: 500;

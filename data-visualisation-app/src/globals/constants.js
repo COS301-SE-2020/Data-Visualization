@@ -35,7 +35,7 @@ export const APPLICATION_LOGO_H = require('../assets/img/logo_vlong_s.png');
 export const APPLICATION_LOGO_WHITE = require('../assets/img/logo_white.png');
 export const APPLICATION_LOGO_GREY = require('../assets/img/logo_grey.png');
 export const APPLICATION_LOGO_GLOW = require('../assets/img/logo_glow.png');
-
+export const APPLICATION_LOGO_BLUE = require('../assets/img/logo_blue.png');
 /**
  *   Icons
  */

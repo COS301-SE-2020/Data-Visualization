@@ -167,12 +167,19 @@ const useStyles = makeStyles((theme) => ({
 			marginLeft: drawerWidth,
 		},
 	},
+
 	menuButton: {
 		marginRight: theme.spacing(2),
 		[theme.breakpoints.up('sm')]: {
 			display: 'none',
 		},
+		backgroundColor: '#434ee8',
 	},
+
+	menuButtonNotLoggedIn: {
+		display: 'none',
+	},
+
 	userButton: {
 
 		// marginRight: theme.spacing(2),
@@ -519,7 +526,7 @@ function App(props) {
 							aria-label="open drawer"
 							edge="start"
 							onClick={handleDrawerToggle}
-							className={classes.menuButton}
+							className={`box ${request.user.isLoggedIn ? classes.menuButton : classes.menuButtonNotLoggedIn}`}
 							style={{ color: 'white' }}
 
 						>
