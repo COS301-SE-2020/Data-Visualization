@@ -31,11 +31,12 @@ import Anime, { anime } from 'react-anime';
 
 
 var showAll = false;
+let mobileView = false;
 
 var entityIDs = []; 
 
 class Entities extends React.Component {
-  
+ 
   formRef = React.createRef();
 
   state = {
@@ -76,19 +77,23 @@ class Entities extends React.Component {
     
     showAll = !showAll;
     var tempItem = {};
-    console.log( entityIDs.length);
+    //console.log( entityIDs.length);
 
     entityIDs.forEach((id) => {
       tempItem[id] = showAll;
       //this.formRef.current.setFieldsValue(tempItem);
 
       if(showAll){
-        document.getElementById('card-'+id).style.backgroundColor = '#fff';
-        document.getElementById('card-'+id).style.boxShadow  = '0 7.8px 7.2px -15px #434ee8,0 13.7px 7.3px -15px #434ee8,0 7.5px 7px -15px #434ee8,0 13.3px 7.9px -15px #434ee8,0 7.8px 10.4px -15px #434ee8,0 13px 20px -15px #434ee8';
+        if(!mobileView){
+          document.getElementById('card-'+id).style.backgroundColor = 'white';
+          document.getElementById('card-'+id).style.boxShadow  = '0 2px 12.2px -20px #434ee8,0 5.7px 12.3px -20px #434ee8,0 2px 7px -20px #434ee8,0 5.3px 12.9px -20px #434ee8,0 2.8px 12.4px -20px #434ee8,0 5px 30px -20px #434ee8';
+        } 
       }
       else{
-        document.getElementById('card-'+id).style.backgroundColor = '';
-        document.getElementById('card-'+id).style.boxShadow = '';
+        if(!mobileView){
+          document.getElementById('card-'+id).style.backgroundColor = '';
+          document.getElementById('card-'+id).style.boxShadow = '';
+        }
       }
      
     });
@@ -197,7 +202,7 @@ class Entities extends React.Component {
    
       //1800px
       const mql = window.matchMedia('(max-width: 1000px)');
-      let mobileView = mql.matches;
+      mobileView = mql.matches;
 
       if (mobileView) {
         return (
@@ -226,16 +231,16 @@ class Entities extends React.Component {
                    
                        <Card id = {'card-'+item.entityName+item.datasource} onClick={() => { 
                                                  
-                          var tempItem = {};
-                          tempItem[item.entityName+item.datasource] = !this.formRef.current.getFieldValue(item.entityName+item.datasource);
-                          this.formRef.current.setFieldsValue(tempItem);
+                          // var tempItem = {};
+                          // tempItem[item.entityName+item.datasource] = !this.formRef.current.getFieldValue(item.entityName+item.datasource);
+                          // this.formRef.current.setFieldsValue(tempItem);
 
-                          if(tempItem[item.entityName+item.datasource]  === false){                       
-                            document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '';
-                           }
-                          else{
-                            //document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
-                          }
+                          // if(tempItem[item.entityName+item.datasource]  === false){                       
+                          //   document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '';
+                          //  }
+                          // else{
+                          //   document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
+                          // }
                         }} 
                         >
 
@@ -309,8 +314,8 @@ class Entities extends React.Component {
                             document.getElementById('card-'+item.entityName+item.datasource).style.backgroundColor = '';
                            }
                           else{
-                            document.getElementById('card-'+item.entityName+item.datasource).style.backgroundColor = '#fff';
-                            document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow  = '0 7.8px 7.2px -15px #434ee8,0 13.7px 7.3px -15px #434ee8,0 7.5px 7px -15px #434ee8,0 13.3px 7.9px -15px #434ee8,0 7.8px 10.4px -15px #434ee8,0 13px 20px -15px #434ee8';
+                            document.getElementById('card-'+item.entityName+item.datasource).style.backgroundColor = 'white';
+                            document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow  = '0 2px 12.2px -20px #434ee8,0 5.7px 12.3px -20px #434ee8,0 2px 7px -20px #434ee8,0 5.3px 12.9px -20px #434ee8,0 2.8px 12.4px -20px #434ee8,0 5px 30px -20px #434ee8';
                           }
                      
                         }} 

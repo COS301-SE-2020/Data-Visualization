@@ -155,12 +155,13 @@ const useStyles = makeStyles((theme) => ({
 			width: drawerWidth,
 			flexShrink: 0,
 		},
+		zIndex: 1
 	},
 	appBar: {
 		[theme.breakpoints.up('sm')]: {
 			marginLeft: drawerWidth,
 		},
-		zIndex: '1350'
+		zIndex: '1000'
 	},
 	appBarNotLoggedIn: {
 		[theme.breakpoints.up('sm')]: {
@@ -231,7 +232,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	drawerList: {
 		color: '#969698',
-		paddingLeft: '10px'
+		paddingLeft: '10px',
 	},
 	icon: {
 		color: '#969698',

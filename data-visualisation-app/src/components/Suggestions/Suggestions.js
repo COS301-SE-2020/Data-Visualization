@@ -82,10 +82,10 @@ function Suggestion(props) {
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Typography.Title level={4} style = {{fontSize: '11pt'}}>{props.chartData.title}</Typography.Title>
+                        <Typography.Title level={4} style = {{fontSize: '13pt'}}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
-
+                    <button className = 'hidddenButton'>
                         {request.user.isLoggedIn &&
                         <Dropdown overlay={(() => {
                             return <Menu>
@@ -104,7 +104,7 @@ function Suggestion(props) {
                             {(isAdded ? <CheckOutlined /> : <PlusCircleOutlined />)}
                         </Dropdown>
                         }
-
+                    </button>
                     </Grid>
                 </Grid>
             </div>
@@ -207,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function IGALoading() {
-    return <div id='igaloading'>{constants.LOADER} <br/> <br/> <br/> Generating chart suggestions by the IGA...</div>;
+    return <div className={request.user.isLoggedIn ? 'igaloadingLI' : 'igaloadingLO'} >{constants.LOADER} <br/> <br/> <br/> Generating chart suggestions by the IGA...</div>;
 }
 
 /**
@@ -263,7 +263,6 @@ function Suggestions(props) {
             }
         }
 
-
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
 
@@ -283,7 +282,7 @@ function Suggestions(props) {
             let shouldcontinue = true;
             
 
-            console.log(fittestGraphs);
+            //console.log(fittestGraphs);
 
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
@@ -300,7 +299,7 @@ function Suggestions(props) {
                                         // todo: handle network error
                                         // resolve(request.cache.suggestions.graph.current);
                                         setLoading(false);
-                                        console.debug('errrr');
+                                        //console.debug('errrr');
                                     }
                                 });
                             }).then(function (fetchedGraph) {
@@ -470,7 +469,6 @@ function Suggestions(props) {
                             <Typography.Title level={4}>{props.chartData.title}</Typography.Title>
                         </Grid>
                         <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
-
                             {request.user.isLoggedIn &&
                                 <Dropdown overlay={(() => {
                                     return <Menu>
@@ -489,7 +487,6 @@ function Suggestions(props) {
                                     {(isAdded ? <CheckOutlined /> : <PlusCircleOutlined />)}
                                 </Dropdown>
                             }
-
                         </Grid>
                     </Grid>
                 </div>
@@ -534,8 +531,14 @@ function Suggestions(props) {
                         
                             {(currentCharts !== null ? currentCharts.map((achart, index) => {
                                 return <Grid item xs={12} md={6} lg={4} key={index}>
-                                            <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={() => {
+                                            <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={(event) => {
                                                 
+                                             
+                                                if (event.target.tagName.toLowerCase() === 'span' || event.target.tagName.toLowerCase() === 'button' || event.target.tagName.toLowerCase() === 'svg') {
+                                                    event.stopPropagation();
+                                                    return;
+                                                }
+                            
                                                 var item = {};
                                                 item[index] = !form.getFieldValue(index); 
                                                
@@ -576,15 +579,15 @@ function Suggestions(props) {
 
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
                     {/* <Button id = 'moreLikeThisButton' className={request.user.isLoggedIn ? 'loggedInMoreLikeThis' : 'loggedOutMoreLikeThis'} type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More like this</Button> */}
-                    <div class="blob-div" >
-                        <button class="blob-btn" id={request.user.isLoggedIn ? 'loggedIn_moreLikeThis' : 'loggedOut_moreLikeThis'} htmlType="submit" form="my-form"  onClick={moreLikeThis}>
+                    <div className="blob-div" >
+                        <button className="blob-btn" id={request.user.isLoggedIn ? 'loggedIn_moreLikeThis' : 'loggedOut_moreLikeThis'} type='submit' form='my-form'  onClick={moreLikeThis}>
                             More like this
-                            <span class="blob-btn__inner">
-                            <span class="blob-btn__blobs">
-                                <span class="blob-btn__blob"></span>
-                                <span class="blob-btn__blob"></span>
-                                <span class="blob-btn__blob"></span>
-                                <span class="blob-btn__blob"></span>
+                            <span className="blob-btn__inner">
+                            <span className="blob-btn__blobs">
+                                <span className="blob-btn__blob"></span>
+                                <span className="blob-btn__blob"></span>
+                                <span className="blob-btn__blob"></span>
+                                <span className="blob-btn__blob"></span>
                             </span>
                             </span>
                         </button>
