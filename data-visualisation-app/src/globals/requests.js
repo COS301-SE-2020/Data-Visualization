@@ -583,7 +583,7 @@ const request = {
 						if(res.data.series !== undefined && res.data.series[0].type !== 'pie'){
 
 							if(request.suggestions.count === 0){
-								res.data.series[0].color = '#BD4032';
+								res.data.series[0].color = '#7d8edb';
 							}
 							// else if(request.suggestions.count === 1){
 							// 	res.data.series[0].color = '#3EC195';

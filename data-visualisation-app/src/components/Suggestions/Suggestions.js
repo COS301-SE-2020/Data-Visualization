@@ -532,7 +532,7 @@ function Suggestions(props) {
                             {(currentCharts !== null ? currentCharts.map((achart, index) => {
                                 return <Grid item xs={12} md={6} lg={4} key={index}>
                                             <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={(event) => {
-                                                                                             
+                                                                   
                                                 if (event.target.tagName.toLowerCase() === 'span' || event.target.tagName.toLowerCase() === 'button' || event.target.tagName.toLowerCase() === 'svg') {
                                                     event.stopPropagation();
                                                     return;

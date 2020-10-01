@@ -384,7 +384,8 @@ $borderW: 2px;
 
 #suggestion__loading--container {
   height: 100%;
-  padding: 15px 20px 15px 20px;
+  padding: 5px 20px 20px 20px;
+  margin-bottom: 40px;
   background-color: white;
   position: relative;
   animation: flash 1.5s normal infinite ease-in-out;
@@ -392,7 +393,7 @@ $borderW: 2px;
 }
 
 #suggestion__loading--loader {
-  margin: 0;
+  
   position: absolute;
   top: 45%;
   left: 45%;
@@ -414,18 +415,15 @@ $borderW: 2px;
   //background-color: #FAFFFD;
   background-color: white;
   cursor: pointer;
-  padding: 5px 20px 20px 20px;
+  padding: 15px 20px 20px 20px;
   transition: border-color 0.1s linear;
   -webkit-box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
--moz-box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
-box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
-  margin-bottom: 40px;
+  -moz-box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
+  box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
+  padding-bottom: 50px;
  
 }
 
-.suggestion:hover {
-
-}
 
 
 
