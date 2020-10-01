@@ -1,3 +1,4 @@
+@import '../../globals/globals.scss';
 
 #login-div{  
     left:81%;
@@ -114,7 +115,7 @@
 
 #loginButton{
     background-color: #FFFFFF;
-    color: #434EE8;
+    color: $color-primary;
     border: none;
     font-weight: 500;
     float: right;
@@ -122,13 +123,13 @@
 
 .dropdown-btn > .ant-dropdown-trigger  {
     background-color: #FFFFFF;
-    color: #434EE8;
+    color: $color-primary;
     border: none;
 }
 
 .dropdown-btn > .ant-btn-default  {
     background-color: #FFFFFF;
-    color: #434EE8;
+    color: $color-primary;
     border: none;
     border-radius: 25px;
     font-weight: 500;
@@ -136,13 +137,13 @@
 
 .dropdown-btn > .ant-btn-default:hover  {
     background-color: #FFFFFF;
-    color: #434EE8;
+    color: $color-primary;
   
 }
 
 .dropdown-btn > .ant-btn-default:focus  {
     background-color: #FFFFFF;
-    color: #434EE8;
+    color: $color-primary;
 }
 
 .dropdown-btn{

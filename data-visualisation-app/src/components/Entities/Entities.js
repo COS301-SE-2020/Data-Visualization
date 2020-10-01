@@ -231,16 +231,10 @@ class Entities extends React.Component {
                    
                        <Card id = {'card-'+item.entityName+item.datasource} onClick={() => { 
                                                  
-                          // var tempItem = {};
-                          // tempItem[item.entityName+item.datasource] = !this.formRef.current.getFieldValue(item.entityName+item.datasource);
-                          // this.formRef.current.setFieldsValue(tempItem);
+                          var tempItem = {};
+                          tempItem[item.entityName+item.datasource] = !this.formRef.current.getFieldValue(item.entityName+item.datasource);
+                          this.formRef.current.setFieldsValue(tempItem);
 
-                          // if(tempItem[item.entityName+item.datasource]  === false){                       
-                          //   document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '';
-                          //  }
-                          // else{
-                          //   document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
-                          // }
                         }} 
                         >
 

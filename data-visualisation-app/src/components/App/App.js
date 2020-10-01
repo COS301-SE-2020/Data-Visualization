@@ -174,7 +174,7 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.up('sm')]: {
 			display: 'none',
 		},
-		backgroundColor: '#434ee8',
+		backgroundColor: '#434EE8',
 	},
 
 	menuButtonNotLoggedIn: {
@@ -220,7 +220,7 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(9),
 	},
 	typographyHeading: {
-	
+		
 		color: '#434EE8',
 		fontSize: '1.5em', 
 		fontWeight: '500',
@@ -490,7 +490,7 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<TrashIcon size='25' style={(pageType === 'trash' ? {color: '#434EE8S'} : {})} />
+						<TrashIcon size='25' style={(pageType === 'trash' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Trash" />
 				</MenuItem>

@@ -82,7 +82,7 @@ function Suggestion(props) {
             <div style={{marginBottom: '10px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Typography.Title level={4} style = {{fontSize: '13pt'}}>{props.chartData.title}</Typography.Title>
+                        <Typography.Title level={4} style = {{fontSize: '12pt', fontWeight: '300'}}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
                     <button className = 'hidddenButton'>
@@ -532,8 +532,7 @@ function Suggestions(props) {
                             {(currentCharts !== null ? currentCharts.map((achart, index) => {
                                 return <Grid item xs={12} md={6} lg={4} key={index}>
                                             <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={(event) => {
-                                                
-                                             
+                                                                                             
                                                 if (event.target.tagName.toLowerCase() === 'span' || event.target.tagName.toLowerCase() === 'button' || event.target.tagName.toLowerCase() === 'svg') {
                                                     event.stopPropagation();
                                                     return;

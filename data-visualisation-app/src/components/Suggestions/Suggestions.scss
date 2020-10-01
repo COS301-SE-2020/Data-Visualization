@@ -2,7 +2,7 @@
 
 @keyframes flash {
   0% {
-    background-color: $color-secondary;
+    background-color: $color-quaternary;
     box-shadow: none;
   }
   50% {
@@ -10,7 +10,7 @@
     @include box__shadow;
   }
   100% {
-    background-color: $color-secondary;
+    background-color: $color-quaternary;
     box-shadow: none;
   }
 }
@@ -137,7 +137,7 @@
 
 
 
-$cyan: #434ee8;
+$cyan: $color-primary;
 $dark: #FFFFFF;
 $borderW: 2px;
 
