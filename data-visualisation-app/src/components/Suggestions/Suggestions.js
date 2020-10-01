@@ -217,7 +217,7 @@ function IGALoading() {
  */
 function Suggestions(props) {
 
-    
+        
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
@@ -248,6 +248,7 @@ function Suggestions(props) {
     };
 
     const moreLikeThis = values =>{
+
 
         request.user.fittestGraphs = [];
         
@@ -407,6 +408,9 @@ function Suggestions(props) {
 
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
 
+
+        
+
     }, []);
 
     // if(filterState === false){
@@ -542,7 +546,7 @@ function Suggestions(props) {
                                                     document.getElementById('chartDiv-'+index).style.borderColor = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#329a77';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#434EE8';
                                                 }
  
                                                 }}>
@@ -567,6 +571,7 @@ function Suggestions(props) {
                         
                     </Grid>
                     </Form>
+                    
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
                     <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like This</Button>
                     <main>

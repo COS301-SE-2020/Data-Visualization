@@ -89,22 +89,41 @@ const globalMaterialUITheme = createMuiTheme({
 		'fontFamily': 'Segoe UI'
 	},
 	palette: {
-
+		background: {
+			default: '#F4F5F9',
+		},
 		primary: {
-			main: '#242424',
+			main: '#FFFFFF',
 			mainGradient: 'linear-gradient(to right, tomato, cyan)',
 		}
+	},
+	overrides:{
+		MuiListItem: {
+			root: {
+			  '&$selected': {
+				backgroundColor: 'rgba(244,245,249,0)',
+				color: '#434EE8',
+				'&:hover': {
+				  backgroundColor: 'rgba(244,245,249,0)',
+				},
+			  },
+			  '&:hover:before': {
+				backgroundColor: 'rgba(244,245,249,0)',
+			  }
+			},
+		  },
 	}
+	
 });
 
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		//background: '#242424',
-		display: 'flex'
+		display: 'flex',
 	},
 	home: {
-		background: '#3EC195', //#03befc
+		background: '#F4F5F9', //#03befc
 		display: 'flex'
 	},
 	suggestions: {
@@ -122,9 +141,15 @@ const useStyles = makeStyles((theme) => ({
 		left:'0',
 		display: 'flex'
 	},
+
+
+
 	selected: {
-		color: '#3EC195'
+		backgroundColor: 'rgba(0,0,0,0)',
 	},
+
+	
+
 	drawer: {
 		[theme.breakpoints.up('sm')]: {
 			width: drawerWidth,
@@ -133,10 +158,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	appBar: {
 		[theme.breakpoints.up('sm')]: {
-			width: `calc(100% - ${drawerWidth}px)`,
 			marginLeft: drawerWidth,
 		},
-		zIndex: '50'
+		zIndex: '1350'
 	},
 	appBarNotLoggedIn: {
 		[theme.breakpoints.up('sm')]: {
@@ -167,8 +191,9 @@ const useStyles = makeStyles((theme) => ({
 		...theme.mixins.toolbar,
 	},
 	drawerPaper: {
+		border: 'none',
 		width: drawerWidth,
-		background: '#242424',
+		background: '#F4F5F9',
 	},
 	content: {
 		flexGrow: 1,
@@ -187,7 +212,8 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(9),
 	},
 	typographyHeading: {
-		color: '#3EC195',
+	
+		color: '#434EE8',
 		fontSize: '1.5em', 
 		fontWeight: '500',
 	},
@@ -198,6 +224,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	drawerList: {
 		color: '#969698',
+		paddingLeft: '10px'
 	},
 	icon: {
 		color: '#969698',
@@ -388,27 +415,34 @@ function App(props) {
 	const drawer = (
 		<div>
 			<div className={classes.toolbar} />
-			<Divider />
+			
 			<List className={classes.drawerList}>
+
+			<MenuItem>
+			</MenuItem>
+			<MenuItem>
+			</MenuItem>
+			<MenuItem>
+			</MenuItem>
 
 
 				<MenuItem button onClick={() => handlePageType('home')} selected={pageType === 'home'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<HomeIcon size='25' style={(pageType === 'home' ? {color: '#3EC195'} : {})} />
+						<HomeIcon size='25' style={(pageType === 'home' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Home" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('explore')} selected={pageType === 'explore'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: '#3EC195'} : {})} />
+						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Explore" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: '#3EC195'} : {})} />
+						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Dashboards" />
 				</MenuItem>
@@ -448,15 +482,13 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<TrashIcon size='25' style={(pageType === 'trash' ? {color: '#3EC195'} : {})} />
+						<TrashIcon size='25' style={(pageType === 'trash' ? {color: '#434EE8S'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Trash" />
 				</MenuItem>
 
-
-
 			</List>
-			<Divider />
+
 			<List component="nav" className={classes.drawerList}>
 				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>

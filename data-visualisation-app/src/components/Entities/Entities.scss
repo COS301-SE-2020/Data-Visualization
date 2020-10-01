@@ -1,11 +1,11 @@
 @import '../../globals/globals.scss';
 
 @mixin button__generateSuggestions--backgroundColor {
-    background-color: #FF3408;
+    background-color: #434EE8;
     background: rgb(117,48,154);
-    background: -moz-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-    background: -webkit-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-    background: linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
+    background: -moz-linear-gradient(97deg, #434EE8 0%, #ffd084 100%);
+    background: -webkit-linear-gradient(97deg, #434EE8 0%, #ffd084 100%);
+    background: linear-gradient(97deg, #434EE8 0%, #ffd084 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
   
 }

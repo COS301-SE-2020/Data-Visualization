@@ -83,8 +83,8 @@ class Entities extends React.Component {
       //this.formRef.current.setFieldsValue(tempItem);
 
       if(showAll){
-        document.getElementById('card-'+id).style.backgroundColor = '#EAFFF5';
-        document.getElementById('card-'+id).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
+        document.getElementById('card-'+id).style.backgroundColor = '#fff';
+        document.getElementById('card-'+id).style.boxShadow  = '0 7.8px 7.2px -15px #434ee8,0 13.7px 7.3px -15px #434ee8,0 7.5px 7px -15px #434ee8,0 13.3px 7.9px -15px #434ee8,0 7.8px 10.4px -15px #434ee8,0 13px 20px -15px #434ee8';
       }
       else{
         document.getElementById('card-'+id).style.backgroundColor = '';
@@ -160,7 +160,6 @@ class Entities extends React.Component {
             request.user.entities = Object.keys(request.user.dataSourceInfo.entityList);
             
             request.user.entities.map((entityName) => {
-              console.log('here');
               entityIDs.push(entityName+source.sourceurl);
               
               Obj = JSON.parse(JSON.stringify(Obj));
@@ -171,7 +170,6 @@ class Entities extends React.Component {
               
               request.user.entitiesToDisplay.push(Obj);
             });
-            console.log(entityIDs.length);
             callback(request.user.entitiesToDisplay);
           }
         });
@@ -236,7 +234,7 @@ class Entities extends React.Component {
                             document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '';
                            }
                           else{
-                            document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
+                            //document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
                           }
                         }} 
                         >
@@ -311,8 +309,8 @@ class Entities extends React.Component {
                             document.getElementById('card-'+item.entityName+item.datasource).style.backgroundColor = '';
                            }
                           else{
-                            document.getElementById('card-'+item.entityName+item.datasource).style.backgroundColor = '#EAFFF5';
-                            document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
+                            document.getElementById('card-'+item.entityName+item.datasource).style.backgroundColor = '#fff';
+                            document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow  = '0 7.8px 7.2px -15px #434ee8,0 13.7px 7.3px -15px #434ee8,0 7.5px 7px -15px #434ee8,0 13.3px 7.9px -15px #434ee8,0 7.8px 10.4px -15px #434ee8,0 13px 20px -15px #434ee8';
                           }
                      
                         }} 

@@ -15,92 +15,103 @@
   }
 }
 
-@mixin button__moreLikeThis--backgroundColor {
-  background-color: #FF3408;
-  background: rgb(117,48,154);
-  background: -moz-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-  background: -webkit-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-  background: linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
-}
+// @mixin button__moreLikeThis--backgroundColor {
+//   background-color: #FF3408;
+//   background: rgb(117,48,154);
+//   background: -moz-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
+//   background: -webkit-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
+//   background: linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
+//   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
+// }
 
-#moreLikeThisButton{
-  //@include button__moreLikeThis--backgroundColor;
-  background-color: #242424;
-  border: none;
-  color: #a0ebd1;
-  
+
+
+#moreLikeThisButton {
+
+ 
+  background-color: #fff;
+  border: 1px solid #434ee8;
+  color: #434ee8;
   margin: 0;
-  top: 96%;
-  left: 91%;
+  top: 94%;
+  left: 57%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   position: fixed;
-
   transition: 0.3s;
-  font-weight: bold;
+  font-weight: 400;
+  text-align: center;
 
+
+  background-color: #434ee8;
+  border: 1px solid #434ee8;
+  color: #fff;
+  -webkit-box-shadow: 0px 2px 2px -2px #434ee8;
+  -moz-box-shadow: 0px 2px 2px -2px #434ee8;
+  box-shadow: 0px 2px 2px -2px #434ee8;
+  font-weight: 700px;
 }
+
+
+
+
+#moreLikeThisButton:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+#moreLikeThisButton-white {
+  background-color: #fff;
+  color: #777;
+}
+
+#moreLikeThisButton::after {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  border-radius: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  transition: all .4s;
+}
+
+#moreLikeThisButton-white::after {
+  background-color: #fff;
+}
+
+#moreLikeThisButton:hover::after {
+  transform: scaleX(1.4) scaleY(1.6);
+  opacity: 0;
+}
+
+#moreLikeThisButton-animated {
+  animation: moveInBottom 7s ease-out;
+  animation-fill-mode: backwards;
+}
+
+@keyframes moveInBottom {
+  0% {
+      opacity: 0;
+      transform: translateY(30px);
+  }
+
+  100% {
+      opacity: 1;
+      transform: translateY(0px);
+  }
+}
+
+
+
+
 
 #noSuggestionMessage{
   margin: 0;
    position: absolute;   
    top: 10%;           
- 
-                      
- 
-}
-
-
-#moreLikeThisButton span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.5s;
-}
-
-#moreLikeThisButton span:after {
-  content: '\00bb';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.5s;
-}
-
-#moreLikeThisButton:hover span {
-  padding-right: 25px;
-}
-
-#moreLikeThisButton:hover span:after {
-  opacity: 1;
-  right: 0;
-}
-
-@media only screen and (max-width: 1550px) {
-  #moreLikeThisButton{
-      left: 88%;
-  }
-}
-@media only screen and (max-width: 1250px) {
-  #moreLikeThisButton{
-      left: 84%;
-  }
-}
-@media only screen and (max-width: 900px) {
-  #moreLikeThisButton{
-      left: 82%;
-  }
-}
-@media only screen and (max-width: 800px) {
-  #moreLikeThisButton{
-      left: 80%;
-  }
-}
-@media only screen and (max-width: 600px) {
-  #moreLikeThisButton{
-      left: 50%;
-  }
 }
 
 .chartDiv{
@@ -130,8 +141,8 @@
   margin-right: 15px;
   
   background-color: white;
-  border: 1px solid #60dbb2;
-  color: #60dbb2;
+  border: 1px solid #434ee8;
+  color: #434ee8;
 }
 
 #igaloading {
@@ -160,17 +171,17 @@
 
 
 .suggestion{
-  border: 4px solid #EAFFF5;
-  border-radius: 2%;
+  border: 4px solid white;
+  border-radius: 1%;
   //background-color: #EAFFF5;
   //background-color: #FAFFFD;
   background-color: white;
   cursor: pointer;
   padding: 15px 20px 15px 20px;
   transition: border-color 0.1s linear;
-  -webkit-box-shadow: 0px 1px 10px -3px rgba(0,0,0,0.8);
-  -moz-box-shadow: 0px 1px 10px -3px rgba(0,0,0,0.8);
-  box-shadow: 0px 1px 10px -3px rgba(0,0,0,0.8);
+  -webkit-box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
+-moz-box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
+box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
   margin-bottom: 40px;
  
 }

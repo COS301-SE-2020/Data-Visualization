@@ -1,7 +1,7 @@
 @import '../../globals/globals.scss';
 
 @mixin button__explore--backgroundColor {
-  background: #BD4032;
+  background: #434ee8;
 }
 
 @mixin button__dashboards--backgroundColor {
@@ -68,13 +68,15 @@
 }
 
 #welcomeTitle{
-  color: white;
+  color: #434ee8;
+  opacity: 0.9;
   font-size: 9vh;
   font-family: 'Futura Md BT';
 
 }
 #welcomeText{
-  color: white;
+  color: #242424;
+  opacity: 0.9;
   font-size: 2.5vh;
 }
 
@@ -88,6 +90,7 @@
   margin-left: -2px;
   margin-top: 170px;
   margin-bottom: 100px;
+  opacity: 0.8;
 }
 
 #explainExplore{
@@ -228,12 +231,12 @@
     @include button--layout;
     @include button__explore--backgroundColor;
 
-  -webkit-box-shadow: 0px 17px 18px -12px #BD4032;
-  -moz-box-shadow: 0px 17px 18px -12px #BD4032;
-  box-shadow: 0px 17px 18px -12px #BD4032;
+    -webkit-box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
+    -moz-box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
+    box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
 
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 500;
 
 }
 
@@ -241,12 +244,12 @@
 
     @include button--layout;
     @include button__explore--backgroundColor;
-    -webkit-box-shadow: 0px 17px 18px -12px #BD4032;
-    -moz-box-shadow: 0px 17px 18px -12px #BD4032;
-    box-shadow: 0px 17px 18px -12px#BD4032;
+    -webkit-box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
+-moz-box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
+box-shadow: 0px 10px 27px -17px rgba(67,78,232,1);
 
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 500;
 
 }
 
@@ -403,7 +406,7 @@
 
 
   #welcomeTitle {
-    font-size: 7vh;
+    font-size: 6vh;
   }
 
   .exploreIllustration {
