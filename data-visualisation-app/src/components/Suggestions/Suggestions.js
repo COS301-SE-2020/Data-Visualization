@@ -249,7 +249,7 @@ function Suggestions(props) {
 
     const moreLikeThis = values =>{
 
-
+        setLoading(true);
         request.user.fittestGraphs = [];
         
         for(var i = 0; i < request.cache.suggestions.graph.list.length; i++){
@@ -281,7 +281,7 @@ function Suggestions(props) {
         let requestCharts = function() {
 
             let shouldcontinue = true;
-            setLoading(true);
+            
 
             console.log(fittestGraphs);
 
@@ -571,9 +571,36 @@ function Suggestions(props) {
                         
                     </Grid>
                     </Form>
+
                     
+
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    <Button id = 'moreLikeThisButton' className={request.user.isLoggedIn ? 'loggedInMoreLikeThis' : 'loggedOutMoreLikeThis'} type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More like this</Button>
+                    {/* <Button id = 'moreLikeThisButton' className={request.user.isLoggedIn ? 'loggedInMoreLikeThis' : 'loggedOutMoreLikeThis'} type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More like this</Button> */}
+                    <div class="blob-div" >
+                        <button class="blob-btn" id={request.user.isLoggedIn ? 'loggedIn_moreLikeThis' : 'loggedOut_moreLikeThis'} htmlType="submit" form="my-form"  onClick={moreLikeThis}>
+                            More like this
+                            <span class="blob-btn__inner">
+                            <span class="blob-btn__blobs">
+                                <span class="blob-btn__blob"></span>
+                                <span class="blob-btn__blob"></span>
+                                <span class="blob-btn__blob"></span>
+                                <span class="blob-btn__blob"></span>
+                            </span>
+                            </span>
+                        </button>
+                        <br/>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                        <defs>
+                            <filter id="goo">
+                            <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+                            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+                            <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+                            </filter>
+                        </defs>
+                        </svg>
+                    </div>
+
                     <main>
                         {
                             filterState ?
