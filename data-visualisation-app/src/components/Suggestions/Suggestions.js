@@ -229,6 +229,11 @@ function Suggestions(props) {
     const [getToReload, setGetToReload] = useState(false);
     const [filterState, setFilterState] = useState(false);
     const [form] = Form.useForm();
+    const bottomDiv = useRef();
+
+    const scrollToBottom = () => {
+        bottomDiv.current.scrollIntoView({ behavior: 'smooth' });
+    };
 
     const onFinish = values => {
         //console.log('Success:', values);
@@ -265,7 +270,7 @@ function Suggestions(props) {
 
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
-
+        scrollToBottom();
     };
 
 
@@ -295,6 +300,7 @@ function Suggestions(props) {
                                         // console.log('graph');
                                        
                                         resolve(request.cache.suggestions.graph.current);
+                                        
                                     } else {
                                         // todo: handle network error
                                         // resolve(request.cache.suggestions.graph.current);
@@ -303,7 +309,7 @@ function Suggestions(props) {
                                     }
                                 });
                             }).then(function (fetchedGraph) {
-                    
+                                
                                 if(fetchedGraph && JSON.stringify(fetchedGraph) !== '{}' && fetchedGraph != null){
                                     request.cache.suggestions.graph.list.push(fetchedGraph);
                                 
@@ -409,7 +415,7 @@ function Suggestions(props) {
 
 
         
-
+        
     }, []);
 
     // if(filterState === false){
@@ -612,6 +618,7 @@ function Suggestions(props) {
                         }
 
                     </main>
+                    <div ref={bottomDiv} ></div>
                 </div>
             :
                 IGALoading()
