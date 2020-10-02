@@ -225,6 +225,12 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '1.5em', 
 		fontWeight: '500',
 	},
+	typographyHeading_home: {
+		color: '#242424',
+		fontSize: '1.5em', 
+		fontWeight: '500',
+		cursor: 'pointer',
+	},
 	typographyLocationHeading: {
 		color: '#969698',
 		fontSize: '1.1em',
@@ -324,7 +330,10 @@ function App(props) {
 			setDashboardStage('dashboardHome');
 			setDashboardIndex('');
 			setIsAddingDashboard(false);
-		}		
+		}	
+		if(pageType === 'about'){
+			setPageType('home');
+		}	
 		
 	};
 
@@ -336,6 +345,9 @@ function App(props) {
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else if(pageType === 'explore'){
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+	else if(pageType === 'about'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else{
@@ -350,7 +362,7 @@ function App(props) {
 	var locationTitle = '';
 
 	if(pageType === 'home'){
-		pageTitle = 'Home';
+		pageTitle = 'Data Visualization Generator';
 	}
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';
@@ -543,7 +555,14 @@ function App(props) {
 						} >
 						</Typography>
 
-						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
+						<Typography variant="h6" className={`box ${pageType === 'home' ? classes.typographyHeading_home :  classes.typographyHeading}`} onClick={() => {
+						
+								if(pageType === 'home'){
+									handlePageType('about');
+								}
+							}
+
+						} noWrap children={
 							pageTitle
 						} >
 						</Typography>
