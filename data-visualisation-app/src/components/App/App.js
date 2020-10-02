@@ -118,6 +118,13 @@ const globalMaterialUITheme = createMuiTheme({
 
 
 const useStyles = makeStyles((theme) => ({
+	overrides:{
+		main: {
+			
+			backgroundColor: 'rgba(244,245,249,0)',
+				
+		  },
+	},
 	root: {
 		//background: '#242424',
 		display: 'flex',
@@ -142,13 +149,9 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex'
 	},
 
-
-
 	selected: {
 		backgroundColor: 'rgba(0,0,0,0)',
 	},
-
-	
 
 	drawer: {
 		[theme.breakpoints.up('sm')]: {
@@ -224,6 +227,12 @@ const useStyles = makeStyles((theme) => ({
 		color: '#434EE8',
 		fontSize: '1.5em', 
 		fontWeight: '500',
+	},
+	typographyHeading_home: {
+		color: '#242424',
+		fontSize: '1.5em', 
+		fontWeight: '500',
+		cursor: 'pointer',
 	},
 	typographyLocationHeading: {
 		color: '#969698',
@@ -324,7 +333,13 @@ function App(props) {
 			setDashboardStage('dashboardHome');
 			setDashboardIndex('');
 			setIsAddingDashboard(false);
-		}		
+		}	
+		if(pageType === 'about'){
+			setPageType('home');
+		}	
+		if(pageType === 'trash'){
+			setPageType('home');
+		}	
 		
 	};
 
@@ -336,6 +351,12 @@ function App(props) {
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else if(pageType === 'explore'){
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+	else if(pageType === 'about'){
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+	else if(pageType === 'trash'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else{
@@ -350,7 +371,7 @@ function App(props) {
 	var locationTitle = '';
 
 	if(pageType === 'home'){
-		pageTitle = 'Home';
+		pageTitle = 'D.V.G';
 	}
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';
@@ -376,7 +397,7 @@ function App(props) {
 			
 		}
 		if(dashboardStage === 'selected'){
-			pageTitle = dashboardName;
+			pageTitle = ''; //dashboardName
 		}
 	}
 	if(pageType === 'about'){
@@ -543,7 +564,14 @@ function App(props) {
 						} >
 						</Typography>
 
-						<Typography variant="h6" className={classes.typographyHeading} noWrap children={
+						<Typography variant="h6" className={`box ${pageType === 'home' ? classes.typographyHeading_home :  classes.typographyHeading}`} onClick={() => {
+						
+								if(pageType === 'home'){
+									handlePageType('about');
+								}
+							}
+
+						} noWrap children={
 							pageTitle
 						} >
 						</Typography>

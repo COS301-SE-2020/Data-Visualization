@@ -32,14 +32,19 @@
 }
 
 .trash__dashboard--title {
-  background-image: linear-gradient(45deg, $color-primary 30%,$color-secondary 90%);
+  background-image: linear-gradient(45deg, #F4F5F9 30%, #F4F5F9  90%);
   height: 70px;
   line-height: 70px;
+  letter-spacing: 1px;
   border-radius: 10px 10px 0px 0px;
   padding-left: 20px;
-  font-weight: bold;
-  font-size: 18px;
-  color: white;
+  font-weight: 400;
+  font-size: 15pt;
+  color: #868686;
+  border: 1px solid #d3d3d3;
+  text-align: center;
+  border-bottom: none;
+ 
 }
 
 .trash__dashboard {

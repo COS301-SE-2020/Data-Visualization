@@ -427,9 +427,9 @@ function Dashboard(props) {
 		<div className='content--padding'>
 			<div style={{marginBottom: '20px'}}>
 
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={8}>
-						<Typography.Title level={3} editable={editMode && {onChange: onEditNameChange}}>
+				<Grid container spacing={3} >
+					<Grid item xs={12} md={8} >
+						<Typography.Title level={3} style = {{color: '#434EE8'}} editable={editMode && {onChange: onEditNameChange}}>
 							{presentDashboard.name}
 						</Typography.Title>
 						<Typography.Paragraph editable={editMode && {onChange: onEditDescriptionChange}}>{presentDashboard.description}</Typography.Paragraph>
@@ -534,7 +534,7 @@ function Dashboard(props) {
 												</Grid>
 											</Grid>
 										</div>
-										<ReactEcharts option={request.cache.graph.list[v].options} style={{height: '300px', width: '100%'}} />
+										<ReactEcharts option={request.cache.graph.list[v].options} style={{height: '85%', width: '100%'}} />
 									</div>;
 								});
 							})()}

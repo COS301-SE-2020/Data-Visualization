@@ -16,7 +16,9 @@
   background-color: $primary-black;
   color: $primary-white;
 }
-
+.makeStyles-content-14{
+  background-color: $color-background !important;
+}
 .app-header > img {
   height: 45px;
   margin-top: 5px;
@@ -37,12 +39,13 @@
   margin-top: 10px;
   background-color: transparent;
   background-repeat:no-repeat;
-  border: none;
+  border: none !important;
   cursor:pointer;
   overflow: hidden;
-  outline:none;
+  outline:none !important;
   float: left;
   margin-right: 10px;
+  box-shadow: none !important;
 }
 
 #backgroundDiv{

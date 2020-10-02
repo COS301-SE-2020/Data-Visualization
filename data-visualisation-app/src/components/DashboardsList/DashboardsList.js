@@ -103,17 +103,17 @@ function DashboardsList(props) {
 
 
     const backgrounds = [{
-        background: 'linear-gradient(16deg, rgba(67, 78, 232,1) 0%, rgba(255, 208, 132,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(85, 95, 233,1) 0%, rgba(85, 95, 233,1) 79%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(67, 78, 232,1) 0%, rgba(255, 208, 132,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(85, 95, 233,1) 0%, rgba(85, 95, 233,1) 79%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(67, 78, 232,1) 0%, rgba(255, 208, 132,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(85, 95, 233,1) 0%, rgba(85, 95, 233,1) 79%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(67, 78, 232,1) 0%, rgba(255, 208, 132,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(85, 95, 233,1) 0%, rgba(85, 95, 233,1) 79%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(67, 78, 232,1) 0%, rgba(255, 208, 132,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(85, 95, 233,1) 0%, rgba(85, 95, 233,1) 79%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(67, 78, 232,1) 0%, rgba(255, 208, 132,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(85, 95, 233,1) 0%, rgba(85, 95, 233,1) 79%)'
     }];
 
     let colorStack = [];
