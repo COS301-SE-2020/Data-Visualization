@@ -72,7 +72,7 @@ function AddDashboard(props) {
 					centered
 					visible={visible}
 					onCancel={props.home}
-					width={1000}
+					width={700}
 					footer={[
 						
 					]}
