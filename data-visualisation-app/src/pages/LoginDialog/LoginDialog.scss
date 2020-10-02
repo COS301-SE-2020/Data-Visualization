@@ -1,47 +1,155 @@
-#loginDiv{
-    
-}
 
-#login-div{
+#login-div{  
+    left:81%;
     position: absolute;
-    margin-left: 70vw;
+    display:inline-block;
+    overflow: auto;
+    margin:0px auto;
+    border-radius: 25px;
+    width: 100px;
+    width: 270px;
 }
+
+@media only screen and (max-width: 1660px) {
+    #login-div{
+        left: 77%;
+    }
+}
+
+@media only screen and (max-width: 1410px) {
+    #login-div{
+        left: 71%;
+    }
+}
+
+@media only screen and (max-width: 1170px) {
+    #login-div{
+        left: 65%;
+    }
+}
+
+@media only screen and (max-width: 1030px) {
+    #login-div{
+        left: 60%;
+    }
+}
+
+@media only screen and (max-width: 920px) {
+    #login-div{
+        left: 55%;
+    }
+}
+
+@media only screen and (max-width: 845px) {
+    #login-div{
+        left: 50%;
+    }
+}
+
+@media only screen and (max-width: 780px) {
+    #login-div{
+        left: 40%;
+    }
+}
+
+@media only screen and (max-width: 690px) {
+    #login-div{
+        left: 35%;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    #login-div{
+        left: 30%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #login-div{
+        left: 50%;
+    }
+}
+
+@media only screen and (max-width: 540px) {
+    #login-div{
+        left: 40%;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    #login-div{
+        left: 30%;
+    }
+}
+
+
+@media only screen and (max-width: 380px) {
+    #login-div{
+        left: 22%;
+    }
+}
+
+
+@media only screen and (max-width: 320px) {
+    #login-div{
+        left: 10%;
+        
+    }
+    .dropdown-btn > .ant-btn-default  {
+        font-size: 7pt;
+    }
+}
+
+@media only screen and (max-width: 280px) {
+    #login-div{
+        left: 4%;
+        
+    }
+    .dropdown-btn > .ant-btn-default  {
+        font-size: 5.5pt;
+    }
+}
+
+
+
+
+
+
+
 
 #loginButton{
-    color: #818481;
-    border-color: #818481;
+    background-color: #242424;
+    color: #3EC195;
+    border: none;
+    font-weight: 600;
+    float: right;
 }
 
-#loginButton{
-    color: #818481;
-    border-color: #818481;
+.dropdown-btn > .ant-dropdown-trigger  {
+    background-color: #242424;
+    color: #3EC195;
+    border: none;
 }
 
-#logout{
-    color: #818481;
-    border-color: #818481;
+.dropdown-btn > .ant-btn-default  {
+    background-color: #242424;
+    color: #3EC195;
+    border: none;
+    border-radius: 25px;
+    font-weight: 900;
 }
 
-.button__login {
-    color: #818481;
-    border-color: #818481;
+.dropdown-btn > .ant-btn-default:hover  {
+    background-color: #242424;
+    color: #3EC195;
+  
 }
 
-.button__login:focus {
-    color: #818481;
-    border-color: #818481;
+.dropdown-btn > .ant-btn-default:focus  {
+    background-color: #242424;
+    color: #3EC195;
 }
 
-.button__login:hover {
-    border-color: white;
-    color: white;
-}
-
-#logout:hover {
-    color: white;
-}
-
-
-#loginButton:hover {
-    color: white;
+.dropdown-btn{
+    float: right;
 }

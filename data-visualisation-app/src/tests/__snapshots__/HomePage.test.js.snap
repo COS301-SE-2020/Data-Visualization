@@ -1,8 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HomePage component HomePage renders correctly 1`] = `
+exports[`DashboardsList component DashboardsList renders correctly 1`] = `
 <div
   className="content--padding"
+  id="dashboardList__container"
 >
   <div
     style={

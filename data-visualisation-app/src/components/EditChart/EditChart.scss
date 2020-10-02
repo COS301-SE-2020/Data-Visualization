@@ -76,14 +76,6 @@ table.properties {
   width: 100%;
 }
 
-#editCharts {
-  //margin-top: 60px;
-
-  display: grid;
-  height: 90vh;
-  grid-template: auto 1fr auto / auto 1fr auto
-}
-
 #editCharts__header {
   //position: fixed;
   //top: $HEIGHT_TOOLBAR;
@@ -171,4 +163,158 @@ table.properties {
 
 .button__changeColour {
   border: 1px solid red;
+}
+
+.chooseChartModel {
+  position: fixed;
+  left: 50%;
+  top: 200px;
+  //border: 1px solid red;
+  border-radius: 5px;
+  width: 50vw;
+  height: 50vh;
+  margin-left: -25vw;
+  z-index: 100;
+  background-color: white;
+}
+
+.chartType {
+  background-color: $color-primary;
+  color: white;
+
+  padding: 10px;
+}
+
+.chooseChartModel__container {
+  display: grid;
+  grid-template-columns: minmax(150px, 25%) 1fr;
+  border-radius: 10%;
+}
+
+.chooseChartModel__background {
+  background-color: black;
+  opacity: 0.4;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+}
+
+.chartItem {
+  width: 200px;
+  height: 200px;
+  //padding: 5px;
+  //border: 1px solid red;
+
+  padding: 10px;
+
+  margin-left: -1px;
+}
+
+.chartItem:hover {
+  //-webkit-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  //-moz-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  //box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+}
+
+.chartNavigator--desktop {
+  background-color: $color-primary;
+}
+
+.chartBrowser--desktop {
+  background-color: white;
+  //padding: 20px;
+}
+
+.chartItem__echart {
+  padding-top: -30px;
+}
+
+.chartItem__inner {
+  border: 1px solid #ebebeb;
+}
+.chartItem__inner:hover {
+  -webkit-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  -moz-box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+  box-shadow: 0px 0px 19px -1px rgba(0,0,0,0.12);
+}
+
+.chartItem__inner--title {
+  margin-top: -30px;
+  text-align: center;
+}
+
+.chartTabTitle {
+  font-size: 14px;
+}
+
+.chartTabTitle__icon {
+  font-size: 5px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+
+.ant-slider-handle {
+  border: solid 2px #bec3ca;
+}
+
+@media only screen and (min-width: 700px) {
+
+
+  #editCharts {
+    //margin-top: 60px;
+
+    display: grid;
+    height: 90vh;
+    grid-template: auto 1fr auto / auto 1fr auto
+  }
+}
+
+.chartType--mobile {
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  z-index: 100;
+  background-color: $color-primary;
+  padding: 5%;
+  color: white;
+
+}
+
+.chartSelection--mobile {
+  padding: 1px;
+}
+
+.chartTabTitle__icon--mobile {
+  font-size: 5rem;
+  height: 20px;
+  margin-right: 10px;
+}
+
+
+.chartTabTitle--mobile {
+  font-size: 1rem;
+}
+
+.chartSelection--mobile {
+  padding: 20px;
+}
+
+.chartSelection__topBottom--mobile {
+  border-bottom: 1px solid #777777;
+}
+
+.chartBroweser--mobile {
+  position: fixed;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  z-index: 100;
+  background-color: white;
 }

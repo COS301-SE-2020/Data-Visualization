@@ -232,11 +232,11 @@ class DataSource {
 		const devUp = avg + numDevs * standardDeviation;
 		const devDown = avg - numDevs * standardDeviation;
 
-		console.log('numDevs:', numDevs);
-		console.log('mean:', avg);
-		console.log('stdDiv:', standardDeviation);
-		console.log('devUp:', devUp);
-		console.log('devDown:', devDown);
+		// console.log('numDevs:', numDevs);
+		// console.log('mean:', avg);
+		// console.log('stdDiv:', standardDeviation);
+		// console.log('devUp:', devUp);
+		// console.log('devDown:', devDown);
 
 		const withinDeviations = (num) => {
 			// console.log(Math.abs(num));
@@ -268,7 +268,7 @@ class DataSource {
 
 		const length = Object.keys(series).length;
 
-		console.log(length);
+		// console.log(length);
 
 		if (length > 1000) {
 			let short = {};
@@ -281,7 +281,7 @@ class DataSource {
 					}
 				});
 
-			console.log(Object.keys(short).length);
+			// console.log(Object.keys(short).length);
 
 			return short;
 		}

@@ -2,7 +2,7 @@
 
 exports[`LoginDialog component renders correctly renders correctly 1`] = `
 <div
-  id="loginDiv"
+  id="login-div"
 >
   <button
     className="ant-btn button__login ant-btn-dashed ant-btn-background-ghost"

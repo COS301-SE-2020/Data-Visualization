@@ -35,6 +35,8 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import useUndo from 'use-undo';
 import Trash from '../../pages/Trash';
+import EditChart from '../EditChart';
+import {EDITCHART_MODES} from '../../globals/constants';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -53,6 +55,7 @@ function Dashboard(props) {
 	const [visibleCharts, setVisibleCharts] = useState([]);
 	const [layoutGrid, setLayoutGrid] = useState({});
 	const [searchString, setSearchString] = useState('');
+	const [createChartMode, setCreateChartMode] = useState(false);
 	const defaultLayout = useRef(true);
 	const currentLayout = useRef(null);
 
@@ -71,6 +74,77 @@ function Dashboard(props) {
 	const { present: presentDashboard } = dashboardState;
 	const HEIGHT_DEFAULT = 14;
 	let currentCharts = [];
+
+	function synchronizeChanges() {
+
+		console.debug('request.cache.graph.list', request.cache.graph.list);
+
+		setHasCharts(false);
+		setIsLoading(true);
+		setVisibleCharts([]);
+		setLayoutGrid({});
+		setSearchString('');
+
+
+		setCreateChartMode(false);
+
+		initialize();
+
+		// setTimeout(initialize, 3000);
+
+	}
+
+	function initialize() {
+
+		request.graph.list(props.dashboardID, function(result) {
+			if (result === constants.RESPONSE_CODES.SUCCESS) {
+				if (request.cache.graph.list !== null && request.cache.graph.list.length > 0) {
+
+					let newChartIndex = -1, nonemptycount = 0;
+					let bestX = Number.MAX_VALUE, bestY = Number.MIN_VALUE;
+					for (let c = 0; c < request.cache.graph.list.length; c++) {
+						if (Object.keys(request.cache.graph.list[c].metadata).length === 0 && request.cache.graph.list[c].metadata.constructor === Object) {
+							if (newChartIndex === -1) {
+								newChartIndex = c;
+								defaultLayout.current = false;
+							} else {
+								defaultLayout.current = true;
+								break;
+							}
+						} else {
+							nonemptycount++;
+							if (request.cache.graph.list[c].metadata.x < bestX)
+								bestX = request.cache.graph.list[c].metadata.x;
+							if (request.cache.graph.list[c].metadata.y + request.cache.graph.list[c].metadata.h > bestY)
+								bestY = request.cache.graph.list[c].metadata.y + request.cache.graph.list[c].metadata.h;
+						}
+					}
+
+					defaultLayout.current = defaultLayout.current && nonemptycount !== request.cache.graph.list.length;
+
+					if (!defaultLayout && newChartIndex > -1) {
+						request.cache.graph.list[newChartIndex].metadata.x = bestX;
+						request.cache.graph.list[newChartIndex].metadata.y = bestY;
+						request.cache.graph.list[newChartIndex].metadata.w = 4;
+						request.cache.graph.list[newChartIndex].metadata.h = HEIGHT_DEFAULT;
+
+						// todo: update graph metadata
+					}
+					constructLayout(request.cache.graph.list.length);
+
+					showAllCharts(true);
+
+					setHasCharts(true);
+					setIsLoading(false);
+
+				} else {
+					setIsLoading(false);
+					setHasCharts(false);
+				}
+			}
+		});
+	}
+
 
 	useEffect(() => {
 		request.graph.list(props.dashboardID, function(result) {
@@ -348,6 +422,8 @@ function Dashboard(props) {
 	}
 
 	return (
+		createChartMode ?
+		<EditChart mode={EDITCHART_MODES.CREATE} synchronizeChanges={synchronizeChanges} dashboardID={props.dashboardID}/> :
 		<div className='content--padding'>
 			<div style={{marginBottom: '20px'}}>
 
@@ -361,10 +437,14 @@ function Dashboard(props) {
 					<Grid item xs={12} md={4} style={{textAlign: 'right', marginBottom: '25px'}}>
 
 						<Space size={9}>
-						{hasCharts &&
+						<Button ghost={!editMode} onClick={() => {setCreateChartMode(true);}}>
+							Create Chart
+						</Button>
+						{/*{hasCharts &&*/}
 						<Button ghost={!editMode} onClick={(editMode ? onSaveDashboardClick : onEditDashboardClick)}>
 							 {(editMode ? 'Save Dashboard' : 'Edit Dashboard')}
-						</Button>}
+						</Button>
+							{/*}*/}
 						{editMode &&
 							<React.Fragment>
 								{request.user.isLoggedIn &&

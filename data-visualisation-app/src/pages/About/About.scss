@@ -1,16 +1,37 @@
 #about__container {
   position: absolute;
-  left: 50%;
-  top: 150px;
-  margin-left: -400px;
-  width: 800px;
+  //left: 50%;
+  //top: 150px;
+  display: grid;
+  place-items: center;
+  //margin-left: -400px;
+  //width: 800px;
+}
+
+#about__item {
+  width: clamp(23ch, 50%, 150ch);
+  display: flex;
+  flex-direction: column;
 }
 
 #about__p {
   text-align: center;
-  padding: 15px;
+  //padding: 15px;
   background-color: rgba(248, 249, 251, 0.9);
   -webkit-box-shadow: 0px 0px 16px 25px rgba(248,249,251,0.9);
   -moz-box-shadow: 0px 0px 16px 25px rgba(248,249,251,0.9);
   box-shadow: 0px 0px 16px 25px rgba(248,249,251,0.9);
+}
+
+#about__image {
+  height: 350px;
+  margin: auto;
+  display: block;
+}
+
+
+@media only screen and (max-width: 600px) {
+  #about__image {
+    height: 50vw;
+  }
 }
