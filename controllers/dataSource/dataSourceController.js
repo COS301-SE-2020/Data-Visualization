@@ -31,6 +31,7 @@ const Forecaster = require('./Forecast/forecaster');
 const Odata = require('./Odata/Odata');
 const GraphQL = require('./GraphQL/GraphQL');
 const CSV = require('./CSV/CSV');
+const XML = require('./XML/XML');
 
 /**
  * Purpose: This class is responsible for getting DataSources.
@@ -372,10 +373,10 @@ class DataSource {
 		return days;
 	}
 }
-DataSource.sources = [Odata, GraphQL, CSV];
-DataSource.sourceNames = ['Odata', 'GraphQL', 'CSV'];
-DataSource.isLocalSource = [false, false, true];
-DataSource.sourceExtention = [null, null, 'csv'];
+DataSource.sources = [Odata, GraphQL, CSV, XML];
+DataSource.sourceNames = ['Odata', 'GraphQL', 'CSV', 'XML', 'JSON'];
+DataSource.isLocalSource = [false, false, true, true, true];
+DataSource.sourceExtention = ['json', 'json', 'csv', 'xml', 'json'];
 
 /**
  * This function formats entity list.

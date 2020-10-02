@@ -195,8 +195,7 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static csvImport(EntityName, PrimaryKey, fields, types, data, done, error) {
-		const srcType = 2;
+	static importLocalSource(srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
 		let src = DataSource.generateLocalSourceFileName(srcType);
 
 		DataSource.updateMetaData(src, srcType, EntityName, PrimaryKey, fields, types)
@@ -217,8 +216,7 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static csvImportAuth(email, EntityName, PrimaryKey, fields, types, data, done, error) {
-		const srcType = 2;
+	static importLocalSourceAuth(email, srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
 		const src = DataSource.generateLocalSourceFileName(srcType);
 
 		const meta = { entity: EntityName, prim: PrimaryKey, fields, types };

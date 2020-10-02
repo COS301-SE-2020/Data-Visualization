@@ -74,16 +74,18 @@ DataSourceRouteSrc.post('/remove', (req, res) => {
 	}
 });
 
-DataSourceRouteSrc.post('/csv-import', (req, res) => {
+DataSourceRouteSrc.post('/local-import', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.SourceType === undefined) error(res, { error: 'Source type undefined' }, 400);
 	else if (req.body.EntityName === undefined) error(res, { error: 'Entity name undefined' }, 400);
 	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
 	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
 	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
 	else if (req.body.data === undefined) error(res, { error: 'Data are undefined' }, 400);
 	else {
-		Rest.csvImportAuth(
+		Rest.importLocalSourceAuth(
 			req.body.email,
+			req.body.SourceType,
 			req.body.EntityName,
 			req.body.PrimaryKey,
 			req.body.fields,
@@ -141,15 +143,17 @@ DataSourceRouteMeta.post('/metadata', (req, res) => {
 	}
 });
 
-DataSourceRouteMeta.post('/csv-import', (req, res) => {
+DataSourceRouteMeta.post('/local-import', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.SourceType === undefined) error(res, { error: 'Source type undefined' }, 400);
 	else if (req.body.EntityName === undefined) error(res, { error: 'Entity name undefined' }, 400);
 	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
 	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
 	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
 	else if (req.body.data === undefined) error(res, { error: 'Data are undefined' }, 400);
 	else {
-		Rest.csvImport(
+		Rest.importLocalSource(
+			req.body.SourceType,
 			req.body.EntityName,
 			req.body.PrimaryKey,
 			req.body.fields,

@@ -202,13 +202,20 @@ class Database {
 	 * @returns a promise
 	 */
 	static async addDataSourceLocal(email, sourceURL, sourceType, sourceMeta, sourceData) {
+		if (sourceType === 3) {
+			sourceData = Buffer.from(sourceData).toString('base64');
+		} else {
+			sourceData = JSON.stringify(sourceData);
+		}
+		console.log(sourceData);
+
 		return new Promise((resolve, reject) => {
 			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType, sourceMeta, sourceData) VALUES ($1,$2,$3,$4,$5) RETURNING *;', [
 				email,
 				sourceURL,
 				sourceType,
 				JSON.stringify(sourceMeta),
-				JSON.stringify(sourceData),
+				sourceData,
 			])
 				.then(async (result) => {
 					if (result.rows.length > 0) resolve(result.rows[0]);
@@ -220,7 +227,7 @@ class Database {
 
 	static getDataSourceLocalMeta(src) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('SELECT SourceMeta FROM datasource WHERE (sourceurl = $1);', [src])
+			Database.sendQuery('SELECT SourceMeta, sourcetype FROM datasource WHERE (sourceurl = $1);', [src])
 				.then((result) => {
 					if (result.rows.length > 0) resolve(result.rows[0].sourcemeta);
 					else reject(result);
@@ -230,9 +237,17 @@ class Database {
 	}
 	static getDataSourceLocalData(src) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('SELECT SourceData FROM datasource WHERE (sourceurl = $1);', [src])
+			Database.sendQuery('SELECT SourceData, sourcetype FROM datasource WHERE (sourceurl = $1);', [src])
 				.then((result) => {
-					if (result.rows.length > 0) resolve(JSON.parse(Buffer.from(result.rows[0].sourcedata, 'base64').toString('ascii')));
+					let data = Buffer.from(result.rows[0].sourcedata, 'base64').toString('ascii');
+
+					if (result.rows[0].sourcetype === 3) {
+						data = Buffer.from(data, 'base64').toString('ascii');
+					} else {
+						data = JSON.parse(data);
+					}
+
+					if (result.rows.length > 0) resolve(data);
 					else reject(result);
 				})
 				.catch((result) => reject(result));
