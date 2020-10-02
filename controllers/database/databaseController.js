@@ -207,7 +207,7 @@ class Database {
 		} else {
 			sourceData = JSON.stringify(sourceData);
 		}
-		console.log(sourceData);
+		// console.log(sourceData);
 
 		return new Promise((resolve, reject) => {
 			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType, sourceMeta, sourceData) VALUES ($1,$2,$3,$4,$5) RETURNING *;', [
@@ -230,7 +230,7 @@ class Database {
 			Database.sendQuery('SELECT SourceMeta, sourcetype FROM datasource WHERE (sourceurl = $1);', [src])
 				.then((result) => {
 					if (result.rows.length > 0) resolve(result.rows[0].sourcemeta);
-					else reject(result);
+					else reject('This data-source does not exiss');
 				})
 				.catch((result) => reject(result));
 		});
@@ -246,9 +246,10 @@ class Database {
 					} else {
 						data = JSON.parse(data);
 					}
+					// console.log(data);
 
 					if (result.rows.length > 0) resolve(data);
-					else reject(result);
+					else reject('This data-source does not exiss');
 				})
 				.catch((result) => reject(result));
 		});

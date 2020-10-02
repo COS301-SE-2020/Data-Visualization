@@ -201,7 +201,10 @@ class RestController {
 		DataSource.updateMetaData(src, srcType, EntityName, PrimaryKey, fields, types)
 			.then(() => {
 				DataSource.updateEntityData(src, srcType, EntityName, fields, data)
-					.then(() => done({ source: src }))
+					.then(() => {
+						console.log('IMPORTED: ' + src);
+						done({ source: src });
+					})
 					.catch((err) => error && error(err));
 			})
 			.catch((err) => error && error(err));
@@ -222,7 +225,10 @@ class RestController {
 		const meta = { entity: EntityName, prim: PrimaryKey, fields, types };
 
 		Database.addDataSourceLocal(email, src, srcType, meta, data)
-			.then((data) => done({ source: src }))
+			.then(() => {
+				console.log('IMPORTED: ' + src);
+				done({ source: src });
+			})
 			.catch((err) => error && error(err));
 	}
 

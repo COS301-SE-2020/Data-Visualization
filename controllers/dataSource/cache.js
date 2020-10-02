@@ -115,7 +115,6 @@ const CacheMaker = (function () {
 					}
 				} else return;
 			}
-
 			this.entityData[src][entity] = {
 				timestamp: Date.now(),
 				data,

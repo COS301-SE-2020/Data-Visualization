@@ -32,7 +32,7 @@ class JSON {
 		let items = {};
 		items[entity] = fieldlist;
 
-		let sets = [ entity ];
+		let sets = [entity];
 
 		let associations = {};
 		associations[entity] = [];
