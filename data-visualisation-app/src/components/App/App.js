@@ -223,7 +223,6 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(9),
 	},
 	typographyHeading: {
-		
 		color: '#434EE8',
 		fontSize: '1.5em', 
 		fontWeight: '500',
@@ -233,6 +232,11 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '1.5em', 
 		fontWeight: '500',
 		cursor: 'pointer',
+	},
+	typographyHeading_black:{
+		color: '#242424',
+		fontSize: '1.5em', 
+		fontWeight: '500',
 	},
 	typographyLocationHeading: {
 		color: '#969698',
@@ -354,7 +358,7 @@ function App(props) {
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else if(pageType === 'about'){
-		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+		backButton = <Button id = 'backButtonAbout'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else if(pageType === 'trash'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
@@ -371,7 +375,7 @@ function App(props) {
 	var locationTitle = '';
 
 	if(pageType === 'home'){
-		pageTitle = 'D.V.G';
+		pageTitle = 'Data Visualization Generator.';
 	}
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';
@@ -521,7 +525,7 @@ function App(props) {
 			<List component="nav" className={classes.drawerList}>
 				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
-						<Info size='25' style={(pageType === 'about' ? {color: 'about'} : {})} />
+						<Info size='25' style={(pageType === 'about' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="About" />
 				</MenuItem>
@@ -532,7 +536,7 @@ function App(props) {
 
 
 	const container = window !== undefined ? () => window().document.body : undefined;
-
+//APPLICATION_LOGO_H
 	return (
 		
 		<GlobalStateProvider >
@@ -564,7 +568,7 @@ function App(props) {
 						} >
 						</Typography>
 
-						<Typography variant="h6" className={`box ${pageType === 'home' ? classes.typographyHeading_home :  classes.typographyHeading}`} onClick={() => {
+						<Typography variant="h6" className={`box ${pageType === 'home' ? classes.typographyHeading_home :  pageType === 'about' ? classes.typographyHeading_black : classes.typographyHeading}`} onClick={() => {
 						
 								if(pageType === 'home'){
 									handlePageType('about');
@@ -576,6 +580,7 @@ function App(props) {
 						} >
 						</Typography>
 						
+						{/* <img id='logoOnHome' src={constant.APPLICATION_LOGO_H} alt='logo'/> */}
 
 						<LoginDialog
                             isLoggedIn={loginButton}
