@@ -54,19 +54,11 @@ class DataSource {
 		return new Promise((resolve, reject) => {
 			DataSource.Data(type)
 				.getMetaData(src)
-<<<<<<< HEAD
-				.then((data) => {
-					if (DataSource.isLocalSource[type]) {
-						data = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
-					} else {
-						data = DataSource.parseMetadataRemote(data, type);
-=======
 				.then((mdata) => {
 					if (DataSource.isLocal(type)) {
 						mdata = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
 					} else {
 						mdata = DataSource.parseMetadataRemote(mdata, type);
->>>>>>> f1a98fe0c89e86d5cf5c26a4026e240f8cd9c99e
 					}
 					console.log(mdata);
 
