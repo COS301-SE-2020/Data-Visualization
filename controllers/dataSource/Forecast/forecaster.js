@@ -18,7 +18,7 @@
  * Assumptions: None
  * Constraints: None
  */
-const timeseries = require('timeseries-analysis');
+
 const axios = require('axios');
 // const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
