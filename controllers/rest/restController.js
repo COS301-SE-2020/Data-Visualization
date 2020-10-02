@@ -215,7 +215,7 @@ class RestController {
 					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], datasourceTypes[i], Meta));
 					console.log('================================================');
 					console.log('Meta Data retrieved for sources:');
-					console.log([...new Set(datasources)]);
+					console.log([ ...new Set(datasources) ]);
 					console.log('================================================');
 					done();
 				})
@@ -535,7 +535,7 @@ class RestController {
 		let data = [];
 		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
+			data.push([ keys[i], list[keys[i]] ]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -586,7 +586,7 @@ class RestController {
 		let data = [];
 		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
+			data.push([ keys[i], list[keys[i]] ]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -616,10 +616,24 @@ class RestController {
 
 		for (let i = 0; i < data.length; i++) {
 			rawDate = data[i][0]; //the key is a date
-			let index = rawDate.indexOf('(') + 1; //trim all up until the first integer
-			rawDate = rawDate.substr(index, rawDate.indexOf(')') - index); //trim everything after the last integer
-			rawDate = parseInt(rawDate); //convert from string to int
-			temp[i] = rawDate;
+
+			let index; //the first digit index
+			let lastIndex; //the last digit index
+			for (let j = 0; j < rawDate.length; j++) {
+				if ( /\d/.test(rawDate[j]) ) { //if it is a number
+					if ( !index ) { //if we don't have an index yet
+						index = j; //this is the first digit
+					}
+					lastIndex = j; //this will change to current index until the last digit is read
+				}
+			}
+
+			if ( !lastIndex ) { //no digits found
+				temp[i] = rawDate;
+			} else { //copy in index range
+				temp[i] = rawDate.substr(index, lastIndex-index+1);
+			}
+			// console.log(temp[i]);
 			// console.log(date.toDateString());
 		}
 
@@ -636,11 +650,25 @@ class RestController {
 
 		data = [];
 		let keys = Object.keys(tempMap);
-
-		for (let i = 0; i < keys.length; i++) {
-			data[i] = [];
-			data[i][0] = new Date(parseInt(keys[i])).toDateString();
-			data[i][1] = tempMap[keys[i]];
+		
+		try {
+			for (let i = 0; i < keys.length; i++) {
+				data[i] = [];
+				if (/[a-zA-Z]/.test(keys[i])) {//if contains text, don't do parseInt
+					data[i][0] = new Date(keys[i]).toDateString();
+				} else {
+					data[i][0] = new Date(parseInt(keys[i])).toDateString();
+				}
+				data[i][1] = tempMap[keys[i]];
+			}
+		} catch (e) {//invalid date
+			console.log('Invalid date encountered, treating dates as strings');
+			for (let i = 0; i < keys.length; i++) { //keep the reordered list, so replace old dataArray.data
+				dataArray.data[i] = [];
+				dataArray.data[i][0] = keys[i];
+				dataArray.data[i][1] = tempMap[keys[i]];
+			}
+			return this.stringsToGraphData(dataArray); //treat invalid dates as strings
 		}
 
 		dataArray.data = data;
@@ -676,7 +704,7 @@ class RestController {
 		let keys = Object.keys(uniques);
 
 		for (let i = 0; i < keys.length; i++) {
-			data[i] = [keys[i], uniques[keys[i]]]; //store the key-value pair in array format for echarts
+			data[i] = [ keys[i], uniques[keys[i]] ]; //store the key-value pair in array format for echarts
 		}
 
 		dataArray.data = data;
@@ -690,7 +718,7 @@ class RestController {
 		}
 		if (dataArray.constructor !== Array) {
 			//if it's just one value
-			return [dataArray];
+			return [ dataArray ];
 		} else if (dataArray[0].constructor !== Array) {
 			//if it's a 1D array
 			return dataArray;
