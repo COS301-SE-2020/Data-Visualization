@@ -232,6 +232,9 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '1.5em', 
 		fontWeight: '500',
 		cursor: 'pointer',
+		[theme.breakpoints.down('xs')]: {
+			fontSize: '1.2em',
+		},
 	},
 	typographyHeading_black:{
 		color: '#242424',
