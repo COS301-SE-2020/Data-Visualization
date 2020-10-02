@@ -226,7 +226,7 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: '500',
 	},
 	typographyHeading_home: {
-		color: '#242424',
+		color: '#434EE8',
 		fontSize: '1.5em', 
 		fontWeight: '500',
 		cursor: 'pointer',
@@ -362,7 +362,7 @@ function App(props) {
 	var locationTitle = '';
 
 	if(pageType === 'home'){
-		pageTitle = 'Data Visualization Generator';
+		pageTitle = 'D.V.G';
 	}
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';

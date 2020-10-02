@@ -32,12 +32,12 @@
 }
 
 .trash__dashboard--title {
-  background-image: linear-gradient(45deg, $color-primary 30%,$color-secondary 90%);
+  background-image: linear-gradient(45deg, $color-quinary 30%,$color-quinary 90%);
   height: 70px;
   line-height: 70px;
   border-radius: 10px 10px 0px 0px;
   padding-left: 20px;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 18px;
   color: white;
 }
