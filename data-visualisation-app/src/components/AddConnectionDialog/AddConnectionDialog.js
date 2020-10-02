@@ -156,7 +156,7 @@ const AddConnectionDialog = (props) => {
     const currentColumns_ = useRef([]);
 
 
-    const currentColumns = useRef([
+    const [currentColumns, setCurrentColumns] = useState([
         {
             Header: 'Name',
             columns: [
@@ -313,22 +313,37 @@ const AddConnectionDialog = (props) => {
      *   @param key Array indicating the directory required to locate object inside root echart object
      *   @param value New value of the found key property.
      */
-    function modifyAtomic(key, value) {
-        let pointer = dataBuffer.current[+currentBuffer.current][key[0]];
-        for (let k = 1; k < key.length-1; k++) {
-            pointer = pointer[key[k]];
-        }
-        pointer[key[key.length-1]] = value;
+    function modifyAtomic([key, value]) {
+
+        console.debug('calling modifyAtomic with key', key, 'value', value)
+
+        // let pointer = dataBuffer.current[+currentBuffer.current][key[0]];
+        // for (let k = 1; k < key.length-1; k++) {
+        //     pointer = pointer[key[k]];
+        // }
+
+        dataBuffer.current[+currentBuffer.current][key[0]][key[1]] = value;
+
+        // console.debug('what is the pointer', pointer, 'key[key.length-1]', key[key.length-1])
+
+
+        // pointer[key[key.length-1]] = value;
     }
 
     function modify(key, value) {
-        modifyAtomic(key, value);
 
+
+        console.debug('calling modify with key', key, 'value', value)
+
+        modifyAtomic([key, value]);
+
+
+        console.debug('what i snew new new data', dataBuffer.current[+!currentBuffer.current])
 
         setCurrentData(dataBuffer.current[+currentBuffer.current]);
 
         currentBuffer.current = !currentBuffer.current;
-        dataChanges.current.push([dataBuffer.current[+currentBuffer.current], key, value]);
+        dataChanges.current.push([key, value]);
 
         setTimeout(flushChanges, 100);
     }
@@ -343,9 +358,10 @@ const AddConnectionDialog = (props) => {
 
         console.debug('data', data)
 
-       currentColumns.current = [];
+       // currentColumns.current = [];
 
        let newData = [];
+       let newColumns = [];
 
        let regex = {
            boolean: /^(true|false|0|1)$/,
@@ -371,7 +387,7 @@ const AddConnectionDialog = (props) => {
            prefix = (outerLoopCount === 0 ? '' : String.fromCharCode(65 + outer));
            for (let c = 0; c < maxColumnCount; c++) {
                colName = prefix + String.fromCharCode(65 + c);
-               currentColumns.current.push({
+               newColumns.push({
                    Header: colName,
                    accessor: colName,
                });
@@ -389,7 +405,7 @@ const AddConnectionDialog = (props) => {
                     // todo: later
                 }
                 newData[newData.length-1][colNames[col]] = data[row].data[col];
-                storedPointers.current[colNames + row] = [row, col];
+                storedPointers.current[colNames[col] + row] = [row, colNames[col]];
             }
         }
 
@@ -402,11 +418,26 @@ const AddConnectionDialog = (props) => {
 
 
        // setImportDataMode(true);
-       setTimeout(function () {
 
-           setCurrentData(newData);
+       dataBuffer.current[+currentBuffer.current] = newData;
+       currentBuffer.current = !currentBuffer.current;
+       dataBuffer.current[+currentBuffer.current] = newData.map((newDataItem) => {
+           return newDataItem;
+       });
+
+       console.debug('SHOULD BE THE SAME', dataBuffer.current[+currentBuffer.current], 'AND THIS', dataBuffer.current[+!currentBuffer.current])
+
+       setCurrentColumns(newColumns);
+       setCurrentData(newData);
+
+       setTimeout(function () {
            setImportDataMode(true);
-       }, 5000);
+
+           // setCurrentData(newData);
+       }, 3000);
+
+
+       // setImportDataMode(true);
 
    }
 
@@ -479,15 +510,20 @@ const AddConnectionDialog = (props) => {
         const [value, setValue] = useState(initialValue);
 
         function onChange(e) {
-            // setValue(e.target.value);
+            setValue(e.target.value);
         }
 
         function onBlur() {
             // have id + index
             console.debug('index', index, 'id', id)
 
-            // updateMyData(index, id, value);
-            // modify(storedPointers.current[index + id], value);
+            updateMyData(index, id, value);
+
+
+            console.debug('storedPointers.current', storedPointers.current)
+            console.debug('what is value', value)
+
+            modify(storedPointers.current[id + index], value);
         }
 
         useEffect(() => {
@@ -601,7 +637,7 @@ const AddConnectionDialog = (props) => {
                     <tbody {...getTableBodyProps()}>
                     {rows.map((row, i) => {
                         prepareRow(row);
-                        console.debug('row: ', row)
+                        // console.debug('row: ', row)
 
                         rowClasses.current = '';
                         if (row.original.hasOwnProperty('error')) {
@@ -697,7 +733,7 @@ const AddConnectionDialog = (props) => {
                             <Divider />
                             <div style={{padding: '20px'}}>
                                 <Table
-                                    columns={currentColumns.current}
+                                    columns={currentColumns}
                                     data={currentData}
                                     updateMyData={updateMyData}
                                     skipPageReset={skipPageReset}
@@ -759,7 +795,7 @@ const AddConnectionDialog = (props) => {
                             {/*</div>*/}
 
                             <CSVReader
-                                onDrop={onLoadedCSVFile}
+                                onFileLoad={onLoadedCSVFile}
                                 onError={onFileError}
                                 // onError={this.handleOnError}
                                 // noDrag
@@ -772,6 +808,16 @@ const AddConnectionDialog = (props) => {
                                         borderColor: 'pink',
                                         borderRadius: 10,
                                         backgroundColor: '#f7f7f7'
+                                    }
+                                }}
+                                config={{
+                                    step: (results, file) => {
+                                        console.debug('im in step')
+                                        // setImportDataMode(true);
+                                    },
+                                    complete: (results, file) => {
+                                        // console.debug('im in cmplete')
+                                        // setImportDataMode(true);
                                     }
                                 }}
                             >
