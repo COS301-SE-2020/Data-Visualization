@@ -23,10 +23,10 @@
 /**
   * Imports
 */
-import React, {useCallback, useEffect, useMemo, usePagination, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Button, Modal, Input, Select, Typography, Divider, Checkbox} from 'antd';
 import { Form } from 'antd';
-import {useTable} from 'react-table';
+import {useTable, usePagination} from 'react-table';
 import './AddConnectionDialog.scss';
 import { CSVReader } from 'react-papaparse';
 import CloseOutlined from '@ant-design/icons/lib/icons/CloseOutlined';
@@ -56,7 +56,7 @@ const AddConnectionDialog = (props) => {
             }
         },
         {
-            firstName: 'peter',
+            firstName: 'peter1',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -64,7 +64,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'peter2',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -72,7 +72,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'peter3',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -80,7 +80,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'peter4',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -88,7 +88,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'peter5',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -96,7 +96,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'peter6',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -104,7 +104,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'pet7er',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -112,7 +112,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'pe8ter',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -120,7 +120,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'pe9ter',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -128,7 +128,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'pe10ter',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -136,7 +136,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'p11eter',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -144,7 +144,7 @@ const AddConnectionDialog = (props) => {
             progress: 323
         },
         {
-            firstName: 'peter',
+            firstName: 'pe12ter',
             lastName: 'pan',
             age: 12,
             visits: 32,
@@ -295,6 +295,65 @@ const AddConnectionDialog = (props) => {
 
 
 
+
+
+    // these are for the pagation, idk what it does
+
+    const [pageCount, setPageCount] = React.useState(0)
+    const fetchIdRef = React.useRef(0)
+
+    const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+        // This will get called when the table needs new data
+        // You could fetch your data from literally anywhere,
+        // even a server. But for this example, we'll just fake it.
+
+        // Give this fetch an ID
+        const fetchId = ++fetchIdRef.current
+
+        // Set the loading state
+        // setLoading(true)
+
+        // We'll even set a delay to simulate a server here
+        // setTimeout(() => {
+        //     // Only update the data if this is the latest fetch
+        //     if (fetchId === fetchIdRef.current) {
+        //         // const startRow = pageSize * pageIndex
+        //         // const endRow = startRow + pageSize
+        //
+        //         // Your server could send back total page count.
+        //         // For now we'll just fake it, too
+        //
+        //
+        //         // setPageCount(Math.ceil(serverData.length / pageSize))
+        //         setPageCount(2);
+        //
+        //         // setLoading(false)
+        //     }
+        // }, 1000);
+
+
+
+        console.debug('temptmeptemp.current', temptmeptemp.current)
+
+        if (pageIndex > 0)
+            setCurrentData(dataBuffer.current[+currentBuffer.current].slice(pageSize * pageIndex, pageSize * pageIndex + pageSize));
+        setPageCount(Math.ceil(dataBuffer.current[+currentBuffer.current].length / pageSize));
+
+
+
+    }, [])
+
+
+    const temptmeptemp = useRef(false);
+
+
+
+
+
+
+
+
+
     /** Constants */
 
     const DATA_TYPES = {
@@ -428,7 +487,11 @@ const AddConnectionDialog = (props) => {
        console.debug('SHOULD BE THE SAME', dataBuffer.current[+currentBuffer.current], 'AND THIS', dataBuffer.current[+!currentBuffer.current])
 
        setCurrentColumns(newColumns);
-       setCurrentData(newData);
+       // setCurrentData(newData);
+
+
+       setCurrentData(dataBuffer.current[+currentBuffer.current].slice(0, 10));
+
 
        setTimeout(function () {
            setImportDataMode(true);
@@ -439,6 +502,9 @@ const AddConnectionDialog = (props) => {
 
        // setImportDataMode(true);
 
+
+       temptmeptemp.current = true;
+
    }
 
     function onFileError() {
@@ -448,17 +514,22 @@ const AddConnectionDialog = (props) => {
     // After currentData chagnes, we turn the flag back off
     // so that if currentData actually changes when we're not
     // editing it, the page is reset
-    useEffect(() => {
-        setSkipPageReset(false);
-
-
-        // if (tableComponentMounted.current) {
-        //     setImportDataMode(true);
-        // }
-
-        console.debug('useeffect has run with', tableComponentMounted.current);
-
-    }, [currentData]);
+    // useEffect(() => {
+    //     // setSkipPageReset(false);
+    //
+    //
+    //     // if (tableComponentMounted.current) {
+    //     //     setImportDataMode(true);
+    //     // }
+    //
+    //
+    //
+    //     // fetchData({ pageIndex, pageSize });
+    //
+    //
+    //     console.debug('useeffect has run with', tableComponentMounted.current);
+    //
+    // }, []);
 
 
     const layout = {
@@ -566,100 +637,116 @@ const AddConnectionDialog = (props) => {
      */
 // Be sure to pass our updateMyData and the skipPageReset option
 
-    function Table({ columns, data, updateMyData, skipPageReset }) {
-
-        const rowClasses = useRef('');
-        const prevTableHeaders = useRef([
-            <th>nothing</th>
-        ]);
-        const [includedItems, setIncludedItems] = useState(data.map(() => {
-            return true;
-        }));
-
-        useEffect(() => {
-
-            console.debug('useeffect of table')
-
-            setSkipPageReset(false);
 
 
 
-        }, []);
-
-        // For this example, we're using pagination to illustrate how to stop
-        // the current page from resetting when our currentData changes
-        // Otherwise, nothing is different here.
+    function Table({
+                       columns,
+                       data,
+                       fetchData,
+                       pageCount: controlledPageCount,
+                   }) {
         const {
             getTableProps,
             getTableBodyProps,
             headerGroups,
             prepareRow,
-            rows,
+            page,
             canPreviousPage,
             canNextPage,
-            rowsOptions,
+            pageOptions,
             pageCount,
             gotoPage,
             nextPage,
             previousPage,
             setPageSize,
+            // Get the state from the instance
             state: { pageIndex, pageSize },
         } = useTable(
             {
                 columns,
                 data,
-                defaultColumn,
-                // use the skipPageReset option to disable page resetting temporarily
-                autoResetPage: !skipPageReset,
-                // updateMyData isn't part of the API, but
-                // anything we put into these options will
-                // automatically be available on the instance.
-                // That way we can call this function from our
-                // cell renderer!
-                updateMyData,
+                initialState: { pageIndex: 0 }, // Pass our hoisted table state
+                manualPagination: true, // Tell the usePagination
+                // hook that we'll handle our own data fetching
+                // This means we'll also have to provide our own
+                // pageCount.
+                pageCount: controlledPageCount,
             },
             usePagination
         )
 
+        // Listen for changes in pagination and use the state to fetch our new data
+        React.useEffect(() => {
+            fetchData({ pageIndex, pageSize })
+            console.debug('calling table useEffect', 'pageIndex', pageIndex, 'pageSize', pageSize)
+        }, [fetchData, pageIndex, pageSize])
+
         // Render the UI for your table
         return (
             <>
+      <pre>
+        <code>
+          {JSON.stringify(
+              {
+                  pageIndex,
+                  pageSize,
+                  pageCount,
+                  canNextPage,
+                  canPreviousPage,
+              },
+              null,
+              2
+          )}
+        </code>
+      </pre>
                 <table {...getTableProps()}>
                     <thead>
-                    {headerGroups.map((headerGroup) => (
+                    {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
-                            {[<th key={-1}>nothing</th>].concat(headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                            )))}
+                            {headerGroup.headers.map(column => (
+                                <th {...column.getHeaderProps()}>
+                                    {column.render('Header')}
+                                    <span>
+                    {column.isSorted
+                        ? column.isSortedDesc
+                            ? ' 🔽'
+                            : ' 🔼'
+                        : ''}
+                  </span>
+                                </th>
+                            ))}
                         </tr>
                     ))}
                     </thead>
                     <tbody {...getTableBodyProps()}>
-                    {rows.map((row, i) => {
-                        prepareRow(row);
-                        // console.debug('row: ', row)
-
-                        rowClasses.current = '';
-                        if (row.original.hasOwnProperty('error')) {
-                            rowClasses.current += 'error ';
-                        }
-                        rowClasses.current += (includedItems[i] ? 'included' : '');
-
+                    {page.map((row, i) => {
+                        prepareRow(row)
                         return (
-                            <tr {...row.getRowProps()} className={rowClasses.current} >
-                                {[<td key={-1}><Checkbox onChange={() => {
-                                    setIncludedItems(includedItems.map((tmp, tmp_index) => {
-                                        return (tmp_index === i ? !tmp : tmp);
-                                    }));
-                                }} checked={includedItems[i]} /></td>].concat(row.cells.map(cell => {
-                                    // console.debug('cell.row.original', cell.row.original)
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map(cell => {
                                     return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                }))}
+                                })}
                             </tr>
                         )
                     })}
+                    <tr>
+                        {/*{loading ? (*/}
+                        {/*    // Use our custom loading state to show a loading indicator*/}
+                        {/*    <td colSpan="10000">Loading...</td>*/}
+                        {/*) : (*/}
+                            <td colSpan="10000">
+                                Showing {page.length} of ~{controlledPageCount * pageSize}{' '}
+                                results
+                            </td>
+                        {/*)}*/}
+                    </tr>
                     </tbody>
                 </table>
+                {/*
+        Pagination can be built however you'd like.
+        This is just a very basic UI implementation:
+      */}
                 <div className="pagination">
                     <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                         {'<<'}
@@ -676,14 +763,14 @@ const AddConnectionDialog = (props) => {
                     <span>
           Page{' '}
                         <strong>
-            {/*{pageIndex + 1} of {rowsOptions.length}*/}
+            {pageIndex + 1} of {pageOptions.length}
           </strong>{' '}
         </span>
                     <span>
           | Go to page:{' '}
                         <input
                             type="number"
-                            // defaultValue={pageIndex + 1}
+                            defaultValue={pageIndex + 1}
                             onChange={e => {
                                 const page = e.target.value ? Number(e.target.value) - 1 : 0
                                 gotoPage(page)
@@ -732,12 +819,24 @@ const AddConnectionDialog = (props) => {
                             </div>
                             <Divider />
                             <div style={{padding: '20px'}}>
+
+
                                 <Table
                                     columns={currentColumns}
                                     data={currentData}
-                                    updateMyData={updateMyData}
-                                    skipPageReset={skipPageReset}
+                                    fetchData={fetchData}
+                                    // loading={false}
+                                    pageCount={pageCount}
                                 />
+
+
+
+                                {/*<Table*/}
+                                {/*    columns={currentColumns}*/}
+                                {/*    data={currentData}*/}
+                                {/*    updateMyData={updateMyData}*/}
+                                {/*    skipPageReset={skipPageReset}*/}
+                                {/*/>*/}
                                 <Button type='primary' disabled={acceptableData} > Finish</Button>
                             </div>
                         </div>
@@ -833,3 +932,155 @@ const AddConnectionDialog = (props) => {
 };
 
 export default AddConnectionDialog;
+
+
+// function Table({ columns, data, updateMyData, skipPageReset }) {
+//
+//     const rowClasses = useRef('');
+//     const prevTableHeaders = useRef([
+//         <th>nothing</th>
+//     ]);
+//     const [includedItems, setIncludedItems] = useState(data.map(() => {
+//         return true;
+//     }));
+//
+//     useEffect(() => {
+//
+//         console.debug('useeffect of table')
+//
+//         setSkipPageReset(false);
+//
+//
+//         console.debug('upageCount', pageCount)
+//         console.debug('rowsOptions', rowsOptions)
+//
+//     }, []);
+//
+//     // For this example, we're using pagination to illustrate how to stop
+//     // the current page from resetting when our currentData changes
+//     // Otherwise, nothing is different here.
+//     const {
+//         getTableProps,
+//         getTableBodyProps,
+//         headerGroups,
+//         prepareRow,
+//         rows,
+//         canPreviousPage,
+//         canNextPage,
+//         rowsOptions,
+//         pageCount,
+//         gotoPage,
+//         nextPage,
+//         previousPage,
+//         setPageSize,
+//         state: { pageIndex, pageSize },
+//     } = useTable(
+//         {
+//             columns,
+//             data,
+//             defaultColumn,
+//             // use the skipPageReset option to disable page resetting temporarily
+//             autoResetPage: !skipPageReset,
+//             // updateMyData isn't part of the API, but
+//             // anything we put into these options will
+//             // automatically be available on the instance.
+//             // That way we can call this function from our
+//             // cell renderer!
+//             updateMyData,
+//         },
+//         usePagination
+//     )
+//
+//     // Render the UI for your table
+//     return (
+//         <>
+//             <table {...getTableProps()}>
+//                 <thead>
+//                 {headerGroups.map((headerGroup) => (
+//                     <tr {...headerGroup.getHeaderGroupProps()}>
+//                         {[<th key={-1}>nothing</th>].concat(headerGroup.headers.map(column => (
+//                             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+//                         )))}
+//                     </tr>
+//                 ))}
+//                 </thead>
+//                 <tbody {...getTableBodyProps()}>
+//                 {rows.map((row, i) => {
+//                     prepareRow(row);
+//                     // console.debug('row: ', row)
+//
+//                     rowClasses.current = '';
+//                     if (row.original.hasOwnProperty('error')) {
+//                         rowClasses.current += 'error ';
+//                     }
+//                     rowClasses.current += (includedItems[i] ? 'included' : '');
+//
+//                     return (
+//                         <tr {...row.getRowProps()}>
+//                             {row.cells.map(cell => {
+//                                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+//                             })}
+//                         </tr>
+//                     );
+//                     // return (
+//                     //     <tr {...row.getRowProps()} className={rowClasses.current} >
+//                     //         {[<td key={-1}><Checkbox onChange={() => {
+//                     //             setIncludedItems(includedItems.map((tmp, tmp_index) => {
+//                     //                 return (tmp_index === i ? !tmp : tmp);
+//                     //             }));
+//                     //         }} checked={includedItems[i]} /></td>].concat(row.cells.map(cell => {
+//                     //             // console.debug('cell.row.original', cell.row.original)
+//                     //             return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+//                     //         }))}
+//                     //     </tr>
+//                     // )
+//                 })}
+//                 </tbody>
+//             </table>
+//             <div className="pagination">
+//                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+//                     {'<<'}
+//                 </button>{' '}
+//                 <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+//                     {'<'}
+//                 </button>{' '}
+//                 <button onClick={() => nextPage()} disabled={!canNextPage}>
+//                     {'>'}
+//                 </button>{' '}
+//                 <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+//                     {'>>'}
+//                 </button>{' '}
+//                 <span>
+//           {/*Page{' '}*/}
+//                     <strong>
+//             {pageIndex + 1} of {pageCount}
+//           </strong>{' '}
+//         </span>
+//                 <span>
+//           | Go to page:{' '}
+//                     <input
+//                         type="number"
+//                         // defaultValue={pageIndex + 1}
+//                         onChange={e => {
+//                             const page = e.target.value ? Number(e.target.value) - 1 : 0
+//                             gotoPage(page)
+//                         }}
+//                         style={{ width: '100px' }}
+//                     />
+//         </span>{' '}
+//                 <select
+//                     value={pageSize}
+//                     onChange={e => {
+//                         setPageSize(Number(e.target.value))
+//                     }}
+//                 >
+//                     {[10, 20, 30, 40, 50].map(pageSize => (
+//                         <option key={pageSize} value={pageSize}>
+//                             Show {pageSize}
+//                         </option>
+//                     ))}
+//                 </select>
+//             </div>
+//         </>
+//     )
+// }
