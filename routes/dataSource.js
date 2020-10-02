@@ -13,6 +13,7 @@
  * 05/08/2020   Elna Pistorius  					Added two new endpoints that returns a list of fields and a list of entities
  * 07/08/2020   Elna Pistorius   					Added new endpoint to retrieve data
  * 27/08/2020   Elna Pistorius 						Added a new error helper to make status code vary for different errors.
+ * 02/10/2020   Elna Pistorius 						Created a new route to import CSV
  *
  * Test Cases: none
  *
@@ -114,6 +115,24 @@ DataSourceRouteMeta.post('/metadata', (req, res) => {
 			req.body.sourceurl,
 			req.body.sourcetype,
 			(list) => res.status(200).json(list),
+			(err) => error(res, err)
+		);
+	}
+});
+
+DataSourceRouteMeta.post('/csv-import', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.EntityName === undefined) error(res, { error: 'Entity name undefined' }, 400);
+	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
+	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
+	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
+	else {
+		Rest.csvImport(
+			req.body.EntityName,
+			req.body.PrimaryKey,
+			req.body.fields,
+			req.body.types,
+			(src) => res.status(200).json(src),
 			(err) => error(res, err)
 		);
 	}

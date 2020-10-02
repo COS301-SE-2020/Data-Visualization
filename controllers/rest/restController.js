@@ -23,6 +23,7 @@
  * 04/08/2020   Elna Pistorius                       Updated CSV exporting function
  * 14/09/2020	Marco Lombaard						 Added mergeSort and dateConversion functions
  * 15/09/2020	Marco Lombaard						 added removeDuplicateKeys function
+ * 02/10/2020   Elna Pistorius 						 Created a new route to import CSV
  *
  * Test Cases: none
  *
@@ -184,6 +185,22 @@ class RestController {
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
+
+	/**
+	 * This function gets entity data.
+	 * @param EntityName the name of the entity that needs to be imported
+	 * @param PrimaryKey the primary key in the table
+	 * @param fields the list of fields that are in the table
+	 * @param types the types that are in the table
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static csvImport(EntityName, PrimaryKey, fields, types, done, error) {
+		let src = DataSource.generateLocalSourceFileName(2);
+		DataSource.updateMetaData(src, 2, EntityName, PrimaryKey, fields, types)
+			.then(() => done({ source : src}))
+			.catch((err) => error && error(err));
+	}
 	/**************** Suggestions ****************/
 
 	/**
@@ -191,6 +208,9 @@ class RestController {
 	 * @param graph the graph that is to be set as the fittest graph
 	 * @param entities the list of entities that should be used for suggestion generation
 	 * @param fields the list of fields that should be used for suggestion generation
+	 * @param graphTypes the types of graphs to be suggested
+	 * @param done
+	 * @param error
 	 */
 	static setSuggestionParams(graph, entities, fields, graphTypes, done, error) {
 		try {

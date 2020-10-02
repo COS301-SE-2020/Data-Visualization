@@ -21,7 +21,7 @@
  * Assumptions: None
  * Constraints: None
  */
-const { v5: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 const Cache = require('./cache');
 const Forecaster = require('./Forecast/forecaster');
@@ -40,6 +40,12 @@ class DataSource {
 	/**
 	 * This function updates meta data that is stored in the cache for this data source.
 	 * @param src the source where this Odata must be retrieved from
+	 * @param type
+	 * @param data
+	 * @param entityName
+	 * @param primaryKey
+	 * @param fieldlist
+	 * @param typelist
 	 * @returns a promise of Odata
 	 */
 	static updateMetaData(src, type, data, entityName, primaryKey, fieldlist, typelist) {
@@ -50,9 +56,9 @@ class DataSource {
 				.getMetaData(src)
 				.then((data) => {
 					if (DataSource.isLocalSource[type]) {
-						data = DataSource.parseMetadataRemote(data, type);
-					} else {
 						data = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
+					} else {
+						data = DataSource.parseMetadataRemote(data, type);
 					}
 					Cache.setMetaData(src, data);
 					resolve();
