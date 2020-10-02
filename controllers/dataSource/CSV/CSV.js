@@ -22,10 +22,26 @@
 // const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 class CSV {
-	static parseMetadata() {
-		// console.log(dataset);
+	static getMetaData() {
+		return new Promise((resolve) => resolve());
+	}
 
-		return '';
+	static parseMetadata(entityName, primaryKey, fieldlist, typelist) {
+		let items = {};
+		items[entityName] = fieldlist;
+
+		let sets = [entityName];
+
+		let associations = {};
+		associations[entityName] = [];
+
+		let types = {};
+		types[entityName] = typelist;
+
+		const res = { items, sets, associations, types };
+		console.log(res);
+
+		return { items, sets, associations, types };
 	}
 
 	static formatCSVdata() {

@@ -21,7 +21,7 @@
  * Assumptions: None
  * Constraints: None
  */
-import { v4 as uuidv4 } from 'uuid';
+const { v5: uuidv4 } = require('uuid');
 
 const Cache = require('./cache');
 const Forecaster = require('./Forecast/forecaster');
