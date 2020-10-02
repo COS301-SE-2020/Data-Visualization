@@ -267,9 +267,34 @@ class Entities extends React.Component {
 
                <Form.Item>
               
-                <Button id = 'button__generateSuggestions' type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
-                   Generate Suggestions
-                 </Button>
+               <div className="blob-div" >
+                  <button className="preblob-btn" id={request.user.isLoggedIn ? 'loggedIn_generateSuggestions' : 'loggedOut_generateSuggestions'}
+                    type='submit' shape = 'round' size = 'large' icon={<CompassOutlined />}>
+                    Generate Suggestions
+
+                    <span className="preblob-btn__inner">
+                            <span className="preblob-btn__blobs">
+                                <span className="preblob-btn__blob"></span>
+                                <span className="preblob-btn__blob"></span>
+                                <span className="preblob-btn__blob"></span>
+                                <span className="preblob-btn__blob"></span>
+                    </span>
+                    </span>
+                  </button>
+
+                  <br/>
+
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <defs>
+                      <filter id="goo">
+                        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+                        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+                        <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+                      </filter>
+                    </defs>
+                  </svg>
+
+                </div>
                 
                </Form.Item>
                
@@ -344,12 +369,34 @@ class Entities extends React.Component {
                </Card>
               
                <Form.Item>
-                  <Button id={
-                    request.user.isLoggedIn ? 'button__generateSuggestions_notLoggedIn' : 'button__generateSuggestions'
-                  }
-                   type="primary" htmlType="submit" shape = 'round' size = 'large' icon={<CompassOutlined />}>
+               <div className="blob-div" >
+                  <button className="preblob-btn" id={request.user.isLoggedIn ? 'loggedIn_generateSuggestions' : 'loggedOut_generateSuggestions'}
+                    type='submit' shape = 'round' size = 'large' icon={<CompassOutlined />}>
                     Generate Suggestions
-                  </Button>
+
+                    <span className="preblob-btn__inner">
+                            <span className="preblob-btn__blobs">
+                                <span className="preblob-btn__blob"></span>
+                                <span className="preblob-btn__blob"></span>
+                                <span className="preblob-btn__blob"></span>
+                                <span className="preblob-btn__blob"></span>
+                    </span>
+                    </span>
+                  </button>
+
+                  <br/>
+
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <defs>
+                      <filter id="goo">
+                        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+                        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+                        <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+                      </filter>
+                    </defs>
+                  </svg>
+
+                </div>
                </Form.Item>
                
              </Form>
