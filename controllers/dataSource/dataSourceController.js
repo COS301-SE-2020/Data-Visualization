@@ -42,19 +42,21 @@ class DataSource {
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
-	static updateMetaData(src, type, data, entityName, primaryKey, fieldlist, typelist) {
+	static updateMetaData(src, type, entityName, primaryKey, fieldlist, typelist) {
 		//src, type, data, entityName, primaryKey, fieldlist, typelist
 
 		return new Promise((resolve, reject) => {
 			DataSource.Data(type)
 				.getMetaData(src)
-				.then((data) => {
-					if (DataSource.isLocalSource[type]) {
-						data = DataSource.parseMetadataRemote(data, type);
+				.then((mdata) => {
+					if (DataSource.isLocal(type)) {
+						mdata = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
 					} else {
-						data = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
+						mdata = DataSource.parseMetadataRemote(mdata, type);
 					}
-					Cache.setMetaData(src, data);
+					console.log(mdata);
+
+					Cache.setMetaData(src, mdata);
 					resolve();
 				})
 				.catch((err) => reject({ error: err, status: 500 }));
@@ -104,11 +106,11 @@ class DataSource {
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
-	static getMetaData(src, type, data, entityName, primaryKey, fieldlist, typelist) {
+	static getMetaData(src, type, entityName, primaryKey, fieldlist, typelist) {
 		return new Promise((resolve, reject) => {
 			if (Cache.validateMetadata(src)) resolve(Cache.getMetaData(src));
 			else {
-				DataSource.updateMetaData(src, type, data, entityName, primaryKey, fieldlist, typelist)
+				DataSource.updateMetaData(src, type, entityName, primaryKey, fieldlist, typelist)
 					.then(() => resolve(Cache.getMetaData(src)))
 					.catch((err) => reject({ error: err, status: 500 }));
 			}
@@ -198,7 +200,7 @@ class DataSource {
 	 * @returns a standard JS object
 	 */
 	static parseMetadataRemote(data, type) {
-		if (!DataSource.isLocalSource[type]) {
+		if (!DataSource.isLocal(type)) {
 			return DataSource.Data(type).parseMetadata(data);
 		}
 		return null;
@@ -208,12 +210,17 @@ class DataSource {
 		return DataSource.sources[type];
 	}
 
+	static isLocal(type) {
+		if (type < 0 || type >= DataSource.isLocalSource.length) type = 0;
+		return DataSource.isLocalSource[type];
+	}
+
 	static sourceTypeName(type) {
 		return DataSource.sourceNames[type];
 	}
 
 	static parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist) {
-		if (DataSource.isLocalSource[type]) {
+		if (DataSource.isLocal(type)) {
 			return DataSource.Data(type).parseMetadata(entityName, primaryKey, fieldlist, typelist);
 		}
 		return null;
