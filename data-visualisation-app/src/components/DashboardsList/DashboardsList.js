@@ -141,6 +141,7 @@ function DashboardsList(props) {
                         }
                     )()}
                     <HomePanelButton
+                    style = {{ cursor: 'pointer'}}
                         colour={backgrounds[(colorStack.length > 0 ? colorStack.pop() : Math.floor(Math.random() * Math.floor(backgrounds.length)))]}
                         isAddButton={true}
                         action={() => props.onAddButtonClick(true)}
