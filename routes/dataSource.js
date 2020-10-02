@@ -74,6 +74,27 @@ DataSourceRouteSrc.post('/remove', (req, res) => {
 	}
 });
 
+DataSourceRouteSrc.post('/csv-import', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.EntityName === undefined) error(res, { error: 'Entity name undefined' }, 400);
+	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
+	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
+	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
+	else if (req.body.data === undefined) error(res, { error: 'Data are undefined' }, 400);
+	else {
+		Rest.csvImportAuth(
+			req.body.email,
+			req.body.EntityName,
+			req.body.PrimaryKey,
+			req.body.fields,
+			req.body.types,
+			req.body.data,
+			(src) => res.status(200).json(src),
+			(err) => error(res, err)
+		);
+	}
+});
+
 //=============	Unauthenticated Endpoints ================
 
 DataSourceRouteMeta.post('/entities', (req, res) => {
@@ -139,4 +160,5 @@ DataSourceRouteMeta.post('/csv-import', (req, res) => {
 		);
 	}
 });
+
 module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };

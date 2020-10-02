@@ -30,6 +30,7 @@ const params = require('url').parse(process.env.DATABASE_URL);
 const auth = params.auth.split(':');
 
 const bcrypt = require('bcryptjs');
+const { json } = require('../exports/exportsController');
 // const { off } = require('process');
 const saltRounds = 12;
 const config = {
@@ -172,7 +173,7 @@ class Database {
 	 */
 	static async getDataSourceList(email) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('SELECT * FROM datasource WHERE ( email = $1);', [email])
+			Database.sendQuery('SELECT id,email,sourceurl,sourcetype FROM datasource WHERE ( email = $1);', [email])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -183,7 +184,7 @@ class Database {
 	 * @param sourceURL the data source url to add
 	 * @returns a promise
 	 */
-	static async addDataSource(email, sourceURL, sourceType) {
+	static async addDataSourceRemote(email, sourceURL, sourceType) {
 		return new Promise((resolve, reject) => {
 			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType) VALUES ($1,$2,$3) RETURNING *;', [email, sourceURL, sourceType])
 				.then((result) => {
@@ -193,6 +194,51 @@ class Database {
 				.catch((result) => reject(result));
 		});
 	}
+
+	/**
+	 * This function is to add a data source
+	 * @param email the users email
+	 * @param sourceURL the data source url to add
+	 * @returns a promise
+	 */
+	static async addDataSourceLocal(email, sourceURL, sourceType, sourceMeta, sourceData) {
+		return new Promise((resolve, reject) => {
+			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType, sourceMeta, sourceData) VALUES ($1,$2,$3,$4,$5) RETURNING *;', [
+				email,
+				sourceURL,
+				sourceType,
+				JSON.stringify(sourceMeta),
+				JSON.stringify(sourceData),
+			])
+				.then(async (result) => {
+					if (result.rows.length > 0) resolve(result.rows[0]);
+					else reject(result);
+				})
+				.catch((result) => reject(result));
+		});
+	}
+
+	static getDataSourceLocalMeta(src) {
+		return new Promise((resolve, reject) => {
+			Database.sendQuery('SELECT SourceMeta FROM datasource WHERE (sourceurl = $1);', [src])
+				.then((result) => {
+					if (result.rows.length > 0) resolve(result.rows[0].sourcemeta);
+					else reject(result);
+				})
+				.catch((result) => reject(result));
+		});
+	}
+	static getDataSourceLocalData(src) {
+		return new Promise((resolve, reject) => {
+			Database.sendQuery('SELECT SourceData FROM datasource WHERE (sourceurl = $1);', [src])
+				.then((result) => {
+					if (result.rows.length > 0) resolve(JSON.parse(Buffer.from(result.rows[0].sourcedata, 'base64').toString('ascii')));
+					else reject(result);
+				})
+				.catch((result) => reject(result));
+		});
+	}
+
 	/**
 	 * This function is to remove a data source
 	 * @param email the users email

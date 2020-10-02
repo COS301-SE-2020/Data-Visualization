@@ -114,7 +114,7 @@ class RestController {
 	 * @return a promise
 	 */
 	static addDataSource(email, dataSourceURL, dataSourceType, done, error) {
-		Database.addDataSource(email, dataSourceURL, dataSourceType)
+		Database.addDataSourceRemote(email, dataSourceURL, dataSourceType)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
@@ -196,15 +196,38 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
 	static csvImport(EntityName, PrimaryKey, fields, types, data, done, error) {
-		let src = DataSource.generateLocalSourceFileName(2);
-		DataSource.updateMetaData(src, 2, EntityName, PrimaryKey, fields, types)
+		const srcType = 2;
+		let src = DataSource.generateLocalSourceFileName(srcType);
+
+		DataSource.updateMetaData(src, srcType, EntityName, PrimaryKey, fields, types)
 			.then(() => {
-				DataSource.updateEntityData(src, 2, EntityName, fields, data)
+				DataSource.updateEntityData(src, srcType, EntityName, fields, data)
 					.then(() => done({ source: src }))
 					.catch((err) => error && error(err));
 			})
 			.catch((err) => error && error(err));
 	}
+
+	/**
+	 * This function gets entity data.
+	 * @param EntityName the name of the entity that needs to be imported
+	 * @param PrimaryKey the primary key in the table
+	 * @param fields the list of fields that are in the table
+	 * @param types the types that are in the table
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static csvImportAuth(email, EntityName, PrimaryKey, fields, types, data, done, error) {
+		const srcType = 2;
+		const src = DataSource.generateLocalSourceFileName(srcType);
+
+		const meta = { entity: EntityName, prim: PrimaryKey, fields, types };
+
+		Database.addDataSourceLocal(email, src, srcType, meta, data)
+			.then((data) => done({ source: src }))
+			.catch((err) => error && error(err));
+	}
+
 	/**************** Suggestions ****************/
 
 	/**
@@ -286,12 +309,12 @@ class RestController {
 				let field = suggestion.field;
 				let primaryKey = suggestion.primaryKey;
 				let option = suggestion.option;
-				console.log('randEntity.datasource = >', randEntity.datasource);
-				console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
-				console.log('randEntity.entityName = >', randEntity.entityName);
-				console.log('randEntity.entitySet = >', randEntity.entitySet);
-				console.log('field = >', field);
-				console.log('fieldtype = >', fieldType);
+				// console.log('randEntity.datasource = >', randEntity.datasource);
+				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
+				// console.log('randEntity.entityName = >', randEntity.entityName);
+				// console.log('randEntity.entitySet = >', randEntity.entitySet);
+				// console.log('field = >', field);
+				// console.log('fieldtype = >', fieldType);
 				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field, primaryKey)
 					.then(async (data) => {
 						let isForecasting = false;

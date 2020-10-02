@@ -23,6 +23,8 @@
  */
 const { v4: uuidv4 } = require('uuid');
 
+const Database = require('../database/databaseController');
+
 const Cache = require('./cache');
 const Forecaster = require('./Forecast/forecaster');
 
@@ -54,9 +56,27 @@ class DataSource {
 		return new Promise((resolve, reject) => {
 			DataSource.Data(type)
 				.getMetaData(src)
-				.then((mdata) => {
+				.then(async (mdata) => {
 					if (DataSource.isLocal(type)) {
-						mdata = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
+						if (entityName && primaryKey && fieldlist && typelist) {
+							mdata = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
+						} else {
+							const meta = await Database.getDataSourceLocalMeta(src);
+
+							if (meta) {
+								const { entity, prim, fields, types } = meta;
+								mdata = DataSource.parseMetadataLocal(type, entity, prim, fields, types);
+							} else {
+								return reject({
+									error: {
+										message: 'Meta-Data not stored in Database and has not been provided.',
+										src,
+										type,
+									},
+									status: 500,
+								});
+							}
+						}
 					} else {
 						mdata = DataSource.parseMetadataRemote(mdata, type);
 					}
@@ -80,6 +100,16 @@ class DataSource {
 				let meta = await this.getMetaData(src);
 				fieldList = meta.items[entity];
 			}
+
+			if (!inputdata && DataSource.isLocal(type)) {
+				inputdata = await Database.getDataSourceLocalData(src);
+
+				if (!fieldList) {
+					const meta = await DataSource.getMetaData(src, type);
+					fieldList = meta.items[entity];
+				}
+			}
+
 			DataSource.Data(type)
 				.getEntityData(src, entity, fieldList, inputdata)
 				.then((data) => {
@@ -91,6 +121,7 @@ class DataSource {
 				});
 		});
 	}
+
 	static async getGraphQLFieldList(src, entity) {
 		let meta = await this.getMetaData(src);
 		//console.log('datasource metadata: ', meta);
