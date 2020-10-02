@@ -153,9 +153,10 @@ const AddConnectionDialog = (props) => {
         }
     ]);
 
-    const currentColumns = useRef([]);
+    const currentColumns_ = useRef([]);
 
-    const columns_ = useMemo(() => [
+
+    const currentColumns = useRef([
         {
             Header: 'Name',
             columns: [
@@ -189,7 +190,44 @@ const AddConnectionDialog = (props) => {
                     accessor: 'progress',
                 },
             ],
+        }]);
+
+
+    const currentColumns__ = useMemo(() => [
+        {
+            Header: 'Name',
+            columns: [
+                {
+                    Header: 'First Name',
+                    accessor: 'firstName',
+                },
+                {
+                    Header: 'Last Name',
+                    accessor: 'lastName',
+                },
+            ],
         },
+        {
+            Header: 'Info',
+            columns: [
+                {
+                    Header: 'Age',
+                    accessor: 'age',
+                },
+                {
+                    Header: 'Visits',
+                    accessor: 'visits',
+                },
+                {
+                    Header: 'Status',
+                    accessor: 'status',
+                },
+                {
+                    Header: 'Profile Progress',
+                    accessor: 'progress',
+                },
+            ],
+        }
     ], []);
     const columnTypes = useRef([]);
 
@@ -253,6 +291,9 @@ const AddConnectionDialog = (props) => {
     const storedPointers = useRef({});
     const dataChanges = useRef([]);
 
+    const tableComponentMounted = useRef(false);
+
+
 
     /** Constants */
 
@@ -300,7 +341,9 @@ const AddConnectionDialog = (props) => {
 
    function onLoadedCSVFile(data) {
 
-       currentColumns.current = {};
+        console.debug('data', data)
+
+       currentColumns.current = [];
 
        let newData = [];
 
@@ -312,11 +355,18 @@ const AddConnectionDialog = (props) => {
 
        let maxColumnCount = 0;
        for (let n = 0; n < data.length; n++)
-           if (data[n].length > maxColumnCount)
-               maxColumnCount = data[n].length;
+           if (data[n].data.length > maxColumnCount)
+               maxColumnCount = data[n].data.length;
+
+
 
        let outerLoopCount = Math.floor(maxColumnCount/26);
        let prefix = '', colName = '', colNames = [];
+
+
+       console.debug('outerLoopCount', outerLoopCount)
+       console.debug('maxColumnCount', maxColumnCount)
+
        for (let outer = 0; outer < (outerLoopCount === 0 ? 1 : 0); outer++) {
            prefix = (outerLoopCount === 0 ? '' : String.fromCharCode(65 + outer));
            for (let c = 0; c < maxColumnCount; c++) {
@@ -330,20 +380,34 @@ const AddConnectionDialog = (props) => {
            }
        }
 
+       console.debug('colNames', colNames)
+
         for (let row = 0; row < data.length; row++) {
-            for (let col = 0; col < data[row].length; col++) {
-                newData.push({});
-                if (data[row].length < maxColumnCount) {
+            newData.push({});
+            for (let col = 0; col < data[row].data.length; col++) {
+                if (data[row].data.length < maxColumnCount) {
                     // todo: later
                 }
-                newData[newData.length-1][colNames[col]] = data[row][col];
+                newData[newData.length-1][colNames[col]] = data[row].data[col];
                 storedPointers.current[colNames + row] = [row, col];
             }
         }
 
-        setCurrentData(newData);
+       // setImportDataMode(true);
 
-        console.debug('newData', newData)
+        // console.debug('newData', newData);
+
+       // tableComponentMounted.current = true;
+        // setImportDataMode(true);
+
+
+       // setImportDataMode(true);
+       setTimeout(function () {
+
+           setCurrentData(newData);
+           setImportDataMode(true);
+       }, 5000);
+
    }
 
     function onFileError() {
@@ -354,8 +418,16 @@ const AddConnectionDialog = (props) => {
     // so that if currentData actually changes when we're not
     // editing it, the page is reset
     useEffect(() => {
-        setSkipPageReset(false)
-    }, [currentData])
+        setSkipPageReset(false);
+
+
+        // if (tableComponentMounted.current) {
+        //     setImportDataMode(true);
+        // }
+
+        console.debug('useeffect has run with', tableComponentMounted.current);
+
+    }, [currentData]);
 
 
     const layout = {
@@ -470,9 +542,13 @@ const AddConnectionDialog = (props) => {
 
         useEffect(() => {
 
-            setSkipPageReset(false)
+            console.debug('useeffect of table')
 
-        }, [data]);
+            setSkipPageReset(false);
+
+
+
+        }, []);
 
         // For this example, we're using pagination to illustrate how to stop
         // the current page from resetting when our currentData changes
