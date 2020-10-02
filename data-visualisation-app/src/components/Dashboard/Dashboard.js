@@ -427,8 +427,8 @@ function Dashboard(props) {
 		<div className='content--padding'>
 			<div style={{marginBottom: '20px'}}>
 
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={8}>
+				<Grid container spacing={3} >
+					<Grid item xs={12} md={8} >
 						<Typography.Title level={3} style = {{color: '#434EE8'}} editable={editMode && {onChange: onEditNameChange}}>
 							{presentDashboard.name}
 						</Typography.Title>

@@ -25,7 +25,6 @@ import { ReactComponent as DashboardIllustration } from '../../assets/svg/dashbo
 import { Button } from 'antd';
 import { ReactComponent as WelcomeGraphic } from '../../assets/svg/welcome.svg';
 import grid from '../../assets/svg/grid.svg';
-import BackgroundDots from '../../helpers/backgroundWebGL';
 
 const { Title, Text } = Typography;
 

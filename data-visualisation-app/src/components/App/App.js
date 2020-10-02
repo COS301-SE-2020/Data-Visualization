@@ -118,6 +118,13 @@ const globalMaterialUITheme = createMuiTheme({
 
 
 const useStyles = makeStyles((theme) => ({
+	overrides:{
+		main: {
+			
+			backgroundColor: 'rgba(244,245,249,0)',
+				
+		  },
+	},
 	root: {
 		//background: '#242424',
 		display: 'flex',
@@ -142,13 +149,9 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex'
 	},
 
-
-
 	selected: {
 		backgroundColor: 'rgba(0,0,0,0)',
 	},
-
-	
 
 	drawer: {
 		[theme.breakpoints.up('sm')]: {
@@ -226,7 +229,7 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: '500',
 	},
 	typographyHeading_home: {
-		color: '#434EE8',
+		color: '#242424',
 		fontSize: '1.5em', 
 		fontWeight: '500',
 		cursor: 'pointer',
@@ -394,7 +397,7 @@ function App(props) {
 			
 		}
 		if(dashboardStage === 'selected'){
-			pageTitle = 'Viewing dashboard'; //dashboardName
+			pageTitle = ''; //dashboardName
 		}
 	}
 	if(pageType === 'about'){
