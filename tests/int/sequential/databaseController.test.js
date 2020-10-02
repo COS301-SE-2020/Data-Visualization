@@ -128,7 +128,7 @@ describe('Testing with an existing user', () => {
 		});
 
 		test('Adding a data source', () => {
-			return Database.addDataSource(EMAIL, DATA_SOURCE_URL, DATA_SOURCE_TYPE).then((response) => {
+			return Database.addDataSourceRemote(EMAIL, DATA_SOURCE_URL, DATA_SOURCE_TYPE).then((response) => {
 				DATA_SOURCE_ID = response.id;
 				expect(response.email).toBe(EMAIL);
 				expect(response.sourceurl).toBe(DATA_SOURCE_URL);
