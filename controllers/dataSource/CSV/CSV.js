@@ -39,6 +39,10 @@ class CSV {
 	}
 
 	static parseMetadata(entity, primaryKey, fieldlist, typelist) {
+		if (fieldlist.indexOf(primaryKey) < 0) {
+			primaryKey = fieldlist[0];
+		}
+
 		let items = {};
 		items[entity] = fieldlist;
 
