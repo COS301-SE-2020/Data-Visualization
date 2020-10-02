@@ -40,10 +40,10 @@ const AddConnectionDialog = (props) => {
 
     const { Option } = Select;
     const [visible, setVisible] = useState(true);
-    const [importDataMode, setImportDataMode] = useState(true);
+    const [importDataMode, setImportDataMode] = useState(false);
     const [acceptableData, setAcceptableData] = useState(false);
 
-    const [data, setData] = useState([
+    const [currentData, setCurrentData] = useState([
         {
             firstName: 'peter',
             lastName: 'pan',
@@ -152,7 +152,10 @@ const AddConnectionDialog = (props) => {
             progress: 323
         }
     ]);
-    const columns = useMemo(() => [
+
+    const currentColumns = useRef([]);
+
+    const columns_ = useMemo(() => [
         {
             Header: 'Name',
             columns: [
@@ -229,7 +232,7 @@ const AddConnectionDialog = (props) => {
     //     isDragAccept
     // ]);
 
-    const [originalData] = useState(data);
+    const [originalData] = useState(currentData);
     const [skipPageReset, setSkipPageReset] = useState(false);
 
     // const files = acceptedFiles.map(file => {
@@ -244,6 +247,13 @@ const AddConnectionDialog = (props) => {
 
     const [loadingData, setLoadingData] = useState(false);
 
+    const dataBuffer = useRef([]);
+    /** Currently mutable buffer index. */
+    const currentBuffer = useRef(true);
+    const storedPointers = useRef({});
+    const dataChanges = useRef([]);
+
+
     /** Constants */
 
     const DATA_TYPES = {
@@ -253,9 +263,44 @@ const AddConnectionDialog = (props) => {
         STRING: 3
     };
 
-    /** Functions */
+    /** -------------- Functions -------------- */
+
+
+
+    /**  Modify a single value inside the current EChart JSON object used.
+     *
+     *   @param key Array indicating the directory required to locate object inside root echart object
+     *   @param value New value of the found key property.
+     */
+    function modifyAtomic(key, value) {
+        let pointer = dataBuffer.current[+currentBuffer.current][key[0]];
+        for (let k = 1; k < key.length-1; k++) {
+            pointer = pointer[key[k]];
+        }
+        pointer[key[key.length-1]] = value;
+    }
+
+    function modify(key, value) {
+        modifyAtomic(key, value);
+
+
+        setCurrentData(dataBuffer.current[+currentBuffer.current]);
+
+        currentBuffer.current = !currentBuffer.current;
+        dataChanges.current.push([dataBuffer.current[+currentBuffer.current], key, value]);
+
+        setTimeout(flushChanges, 100);
+    }
+
+    function flushChanges() {
+        while (dataChanges.current.length > 0) {
+            modifyAtomic(dataChanges.current.pop());
+        }
+    }
 
    function onLoadedCSVFile(data) {
+
+       currentColumns.current = {};
 
        let newData = [];
 
@@ -276,7 +321,7 @@ const AddConnectionDialog = (props) => {
            prefix = (outerLoopCount === 0 ? '' : String.fromCharCode(65 + outer));
            for (let c = 0; c < maxColumnCount; c++) {
                colName = prefix + String.fromCharCode(65 + c);
-               columns.push({
+               currentColumns.current.push({
                    Header: colName,
                    accessor: colName,
                });
@@ -289,42 +334,28 @@ const AddConnectionDialog = (props) => {
             for (let col = 0; col < data[row].length; col++) {
                 newData.push({});
                 if (data[row].length < maxColumnCount) {
-
+                    // todo: later
                 }
-                // newData[newData.length-1][colNames[col]] = (dat)
+                newData[newData.length-1][colNames[col]] = data[row][col];
+                storedPointers.current[colNames + row] = [row, col];
             }
         }
 
+        setCurrentData(newData);
 
-            console.debug('thisi  s approvedFiles', data)
-       if (data.length > 0) {
-           var file = new File(["foo"], "foo.txt", {
-               type: "text/plain",
-           });
-           console.debug('this is a new file', file);
-           console.debug('thisi  s approvedFiles[0]', data[0])
-
-           // approvedFiles[0]
-
-
-
-       } else {
-           // todo: handle invalid file
-       }
-
-       console.debug('approvedFiles, ', data)
+        console.debug('newData', newData)
    }
 
     function onFileError() {
 
     }
 
-    // After data chagnes, we turn the flag back off
-    // so that if data actually changes when we're not
+    // After currentData chagnes, we turn the flag back off
+    // so that if currentData actually changes when we're not
     // editing it, the page is reset
     useEffect(() => {
         setSkipPageReset(false)
-    }, [data])
+    }, [currentData])
 
 
     const layout = {
@@ -371,42 +402,39 @@ const AddConnectionDialog = (props) => {
 
     /**  React component for individual cell values within table component.
      */
-    const EditableCell = ({
-                              value: initialValue,
-                              row: { index },
-                              column: { id },
-                              updateMyData, // This is a custom function that we supplied to our table instance
-                          }) => {
-        // We need to keep and update the state of the cell normally
-        const [value, setValue] = React.useState(initialValue)
 
-        const onChange = e => {
-            setValue(e.target.value)
+    function EditableCell({value: initialValue, row: { index }, column: { id }, updateMyData}) {
+        const [value, setValue] = useState(initialValue);
+
+        function onChange(e) {
+            // setValue(e.target.value);
         }
 
-        // We'll only update the external data when the input is blurred
-        const onBlur = () => {
-            updateMyData(index, id, value)
+        function onBlur() {
+            // have id + index
+            console.debug('index', index, 'id', id)
+
+            // updateMyData(index, id, value);
+            // modify(storedPointers.current[index + id], value);
         }
 
-        // If the initialValue is changed external, sync it up with our state
         useEffect(() => {
-            setValue(initialValue)
-        }, [initialValue])
+            setValue(initialValue);
+        }, [initialValue]);
 
-        return <input value={value} onChange={onChange} onBlur={onBlur} />
+        return <input className='EditableCell' value={value} onChange={onChange} onBlur={onBlur} style={{borderStyle: 'none'}} />;
     }
 
     // We need to keep the table from resetting the pageIndex when we
-    // Update data. So we can keep track of that flag with a ref.
+    // Update currentData. So we can keep track of that flag with a ref.
 
     // When our cell renderer calls updateMyData, we'll use
     // the rowIndex, columnId and new value to update the
-    // original data
+    // original currentData
     const updateMyData = (rowIndex, columnId, value) => {
         // We also turn on the flag to not reset the page
         setSkipPageReset(true)
-        setData(old =>
+        setCurrentData(old =>
             old.map((row, index) => {
                 if (index === rowIndex) {
                     return {
@@ -447,7 +475,7 @@ const AddConnectionDialog = (props) => {
         }, [data]);
 
         // For this example, we're using pagination to illustrate how to stop
-        // the current page from resetting when our data changes
+        // the current page from resetting when our currentData changes
         // Otherwise, nothing is different here.
         const {
             getTableProps,
@@ -568,9 +596,9 @@ const AddConnectionDialog = (props) => {
         )
     }
 
-    // Let's add a data resetter/randomizer to help
+    // Let's add a currentData resetter/randomizer to help
     // illustrate that flow...
-    const resetData = () => setData(originalData)
+    const resetData = () => setCurrentData(originalData)
 
     function onFileChange(evv) {
         console.debug(evv);
@@ -593,8 +621,8 @@ const AddConnectionDialog = (props) => {
                             <Divider />
                             <div style={{padding: '20px'}}>
                                 <Table
-                                    columns={columns}
-                                    data={data}
+                                    columns={currentColumns.current}
+                                    data={currentData}
                                     updateMyData={updateMyData}
                                     skipPageReset={skipPageReset}
                                 />
@@ -620,7 +648,7 @@ const AddConnectionDialog = (props) => {
                         >
                             <Form.Item
                                 name='dataSourceItem'
-                                rules={[{ required: true, message: 'Please select your data source type' }]}
+                                rules={[{ required: true, message: 'Please select your currentData source type' }]}
                             >
                                 <Select
                                     name='dataSourceType'
@@ -632,7 +660,7 @@ const AddConnectionDialog = (props) => {
 
                             <Form.Item
                                 name='uri'
-                                rules={[{ required: true, message: 'Please input your a data source URI' }]}
+                                rules={[{ required: true, message: 'Please input your a currentData source URI' }]}
                             >
                                 <Input placeholder='Please insert data source uri'/>
                             </Form.Item>
