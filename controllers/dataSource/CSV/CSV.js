@@ -22,7 +22,7 @@
 // const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
 
 class CSV {
-	static createCSVMetaData() {
+	static parseMetadata() {
 		// console.log(dataset);
 
 		return '';

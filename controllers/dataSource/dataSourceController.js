@@ -21,12 +21,14 @@
  * Assumptions: None
  * Constraints: None
  */
+import { v4 as uuidv4 } from 'uuid';
 
 const Cache = require('./cache');
 const Forecaster = require('./Forecast/forecaster');
 
 const Odata = require('./Odata/Odata');
 const GraphQL = require('./GraphQL/GraphQL');
+const CSV = require('./CSV/CSV');
 
 /**
  * Purpose: This class is responsible for getting DataSources.
@@ -40,13 +42,18 @@ class DataSource {
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
-	static updateMetaData(src, type) {
+	static updateMetaData(src, type, data, entityName, primaryKey, fieldlist, typelist) {
+		//src, type, data, entityName, primaryKey, fieldlist, typelist
+
 		return new Promise((resolve, reject) => {
 			DataSource.Data(type)
 				.getMetaData(src)
 				.then((data) => {
-					data = DataSource.parseMetadata(data, type);
-					// data.items = [1, 2, 3, 4, 5];
+					if (DataSource.isLocalSource[type]) {
+						data = DataSource.parseMetadataRemote(data, type);
+					} else {
+						data = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
+					}
 					Cache.setMetaData(src, data);
 					resolve();
 				})
@@ -97,11 +104,11 @@ class DataSource {
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
-	static getMetaData(src, type) {
+	static getMetaData(src, type, data, entityName, primaryKey, fieldlist, typelist) {
 		return new Promise((resolve, reject) => {
 			if (Cache.validateMetadata(src)) resolve(Cache.getMetaData(src));
 			else {
-				DataSource.updateMetaData(src, type)
+				DataSource.updateMetaData(src, type, data, entityName, primaryKey, fieldlist, typelist)
 					.then(() => resolve(Cache.getMetaData(src)))
 					.catch((err) => reject({ error: err, status: 500 }));
 			}
@@ -190,8 +197,11 @@ class DataSource {
 	 * @param xmlData the XML metadata received from an external data source
 	 * @returns a standard JS object
 	 */
-	static parseMetadata(data, type) {
-		return DataSource.Data(type).parseMetadata(data);
+	static parseMetadataRemote(data, type) {
+		if (!DataSource.isLocalSource[type]) {
+			return DataSource.Data(type).parseMetadata(data);
+		}
+		return null;
 	}
 
 	static Data(type) {
@@ -200,6 +210,18 @@ class DataSource {
 
 	static sourceTypeName(type) {
 		return DataSource.sourceNames[type];
+	}
+
+	static parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist) {
+		if (DataSource.isLocalSource[type]) {
+			return DataSource.Data(type).parseMetadata(entityName, primaryKey, fieldlist, typelist);
+		}
+		return null;
+	}
+
+	static generateLocalSourceFileName(type) {
+		const ext = DataSource.sourceExtention[type];
+		return uuidv4() + '.' + ext;
 	}
 
 	static predictTimeSeries(dataset, count = 4) {
@@ -317,8 +339,10 @@ class DataSource {
 		return days;
 	}
 }
-DataSource.sources = [Odata, GraphQL];
-DataSource.sourceNames = ['Odata', 'GraphQL'];
+DataSource.sources = [Odata, GraphQL, CSV];
+DataSource.sourceNames = ['Odata', 'GraphQL', 'CSV'];
+DataSource.isLocalSource = [false, false, true];
+DataSource.sourceExtention = [null, null, 'csv'];
 
 /**
  * This function formats entity list.
