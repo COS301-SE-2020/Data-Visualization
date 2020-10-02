@@ -334,6 +334,9 @@ function App(props) {
 		if(pageType === 'about'){
 			setPageType('home');
 		}	
+		if(pageType === 'trash'){
+			setPageType('home');
+		}	
 		
 	};
 
@@ -348,6 +351,9 @@ function App(props) {
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else if(pageType === 'about'){
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+	}
+	else if(pageType === 'trash'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else{
@@ -388,7 +394,7 @@ function App(props) {
 			
 		}
 		if(dashboardStage === 'selected'){
-			pageTitle = dashboardName;
+			pageTitle = 'Viewing dashboard'; //dashboardName
 		}
 	}
 	if(pageType === 'about'){

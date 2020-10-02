@@ -429,9 +429,9 @@ function Dashboard(props) {
 
 				<Grid container spacing={3}>
 					<Grid item xs={12} md={8}>
-						{/* <Typography.Title level={3} style = {{color: '#434EE8'}} editable={editMode && {onChange: onEditNameChange}}>
+						<Typography.Title level={3} style = {{color: '#434EE8'}} editable={editMode && {onChange: onEditNameChange}}>
 							{presentDashboard.name}
-						</Typography.Title> */}
+						</Typography.Title>
 						<Typography.Paragraph editable={editMode && {onChange: onEditDescriptionChange}}>{presentDashboard.description}</Typography.Paragraph>
 					</Grid>
 					<Grid item xs={12} md={4} style={{textAlign: 'right', marginBottom: '25px'}}>
