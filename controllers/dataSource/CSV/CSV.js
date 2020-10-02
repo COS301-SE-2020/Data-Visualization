@@ -26,20 +26,32 @@ class CSV {
 		return new Promise((resolve) => resolve());
 	}
 
-	static parseMetadata(entityName, primaryKey, fieldlist, typelist) {
-		let items = {};
-		items[entityName] = fieldlist;
+	static getEntityData(src, entity, fieldList, inputdata) {
+		let data = [];
+		inputdata.forEach((datarow, d) => {
+			let obj = {};
+			fieldList.forEach((field, i) => {
+				obj[field] = datarow[i];
+			});
+			data.push(obj);
+		});
+		return new Promise((resolve, reject) => resolve(data));
+	}
 
-		let sets = [entityName];
+	static parseMetadata(entity, primaryKey, fieldlist, typelist) {
+		let items = {};
+		items[entity] = fieldlist;
+
+		let sets = [entity];
 
 		let associations = {};
-		associations[entityName] = [];
+		associations[entity] = [];
 
 		let types = {};
-		types[entityName] = typelist;
+		types[entity] = typelist;
 
 		let prims = {};
-		prims[entityName] = primaryKey;
+		prims[entity] = primaryKey;
 
 		return { items, sets, associations, types, prims };
 	}

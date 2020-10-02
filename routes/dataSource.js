@@ -126,12 +126,14 @@ DataSourceRouteMeta.post('/csv-import', (req, res) => {
 	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
 	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
 	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
+	else if (req.body.data === undefined) error(res, { error: 'Data are undefined' }, 400);
 	else {
 		Rest.csvImport(
 			req.body.EntityName,
 			req.body.PrimaryKey,
 			req.body.fields,
 			req.body.types,
+			req.body.data,
 			(src) => res.status(200).json(src),
 			(err) => error(res, err)
 		);

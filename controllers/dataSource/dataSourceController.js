@@ -60,8 +60,6 @@ class DataSource {
 					} else {
 						mdata = DataSource.parseMetadataRemote(mdata, type);
 					}
-					console.log(mdata);
-
 					Cache.setMetaData(src, mdata);
 					resolve();
 				})
@@ -75,24 +73,15 @@ class DataSource {
 	 * @param entity the entity to which the data belongs to
 	 * @returns a promise of Odata
 	 */
-	static updateEntityData(src, type, entity) {
+	static updateEntityData(src, type, entity, fieldList, inputdata) {
 		// eslint-disable-next-line no-async-promise-executor
 		return new Promise(async (resolve, reject) => {
-			let fieldList = [];
-
-			// console.log(type);
-
 			if (type === 1) {
 				let meta = await this.getMetaData(src);
-				// console.log('META:', Object.keys(meta.items));
-				// console.log('ENTITY:', entity);
-				// console.log('FIELDS:', meta.items[entity]);
-				// console.log('META:', meta.items);
-
 				fieldList = meta.items[entity];
 			}
 			DataSource.Data(type)
-				.getEntityData(src, entity, fieldList)
+				.getEntityData(src, entity, fieldList, inputdata)
 				.then((data) => {
 					Cache.setEntityData(src, entity, data);
 					resolve();

@@ -195,10 +195,14 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static csvImport(EntityName, PrimaryKey, fields, types, done, error) {
+	static csvImport(EntityName, PrimaryKey, fields, types, data, done, error) {
 		let src = DataSource.generateLocalSourceFileName(2);
 		DataSource.updateMetaData(src, 2, EntityName, PrimaryKey, fields, types)
-			.then(() => done({ source : src}))
+			.then(() => {
+				DataSource.updateEntityData(src, 2, EntityName, fields, data)
+					.then(() => done({ source: src }))
+					.catch((err) => error && error(err));
+			})
 			.catch((err) => error && error(err));
 	}
 	/**************** Suggestions ****************/
@@ -235,7 +239,7 @@ class RestController {
 					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], datasourceTypes[i], Meta));
 					console.log('================================================');
 					console.log('Meta Data retrieved for sources:');
-					console.log([ ...new Set(datasources) ]);
+					console.log([...new Set(datasources)]);
 					console.log('================================================');
 					done();
 				})
@@ -282,12 +286,12 @@ class RestController {
 				let field = suggestion.field;
 				let primaryKey = suggestion.primaryKey;
 				let option = suggestion.option;
-				// console.log('randEntity.datasource = >', randEntity.datasource);
-				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
-				// console.log('randEntity.entityName = >', randEntity.entityName);
-				// console.log('randEntity.entitySet = >', randEntity.entitySet);
-				// console.log('field = >', field);
-				// console.log('fieldtype = >', fieldType);
+				console.log('randEntity.datasource = >', randEntity.datasource);
+				console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
+				console.log('randEntity.entityName = >', randEntity.entityName);
+				console.log('randEntity.entitySet = >', randEntity.entitySet);
+				console.log('field = >', field);
+				console.log('fieldtype = >', fieldType);
 				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field, primaryKey)
 					.then(async (data) => {
 						let isForecasting = false;
@@ -555,7 +559,7 @@ class RestController {
 		let data = [];
 		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([ keys[i], list[keys[i]] ]); //push a label-value pair, label is the key and value is that 'list' item
+			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -606,7 +610,7 @@ class RestController {
 		let data = [];
 		let keys = Object.keys(list); //get the keys
 		for (let i = 0; i < keys.length; i++) {
-			data.push([ keys[i], list[keys[i]] ]); //push a label-value pair, label is the key and value is that 'list' item
+			data.push([keys[i], list[keys[i]]]); //push a label-value pair, label is the key and value is that 'list' item
 		}
 
 		return { data };
@@ -640,18 +644,22 @@ class RestController {
 			let index; //the first digit index
 			let lastIndex; //the last digit index
 			for (let j = 0; j < rawDate.length; j++) {
-				if ( /\d/.test(rawDate[j]) ) { //if it is a number
-					if ( !index ) { //if we don't have an index yet
+				if (/\d/.test(rawDate[j])) {
+					//if it is a number
+					if (!index) {
+						//if we don't have an index yet
 						index = j; //this is the first digit
 					}
 					lastIndex = j; //this will change to current index until the last digit is read
 				}
 			}
 
-			if ( !lastIndex ) { //no digits found
+			if (!lastIndex) {
+				//no digits found
 				temp[i] = rawDate;
-			} else { //copy in index range
-				temp[i] = rawDate.substr(index, lastIndex-index+1);
+			} else {
+				//copy in index range
+				temp[i] = rawDate.substr(index, lastIndex - index + 1);
 			}
 			// console.log(temp[i]);
 			// console.log(date.toDateString());
@@ -670,20 +678,23 @@ class RestController {
 
 		data = [];
 		let keys = Object.keys(tempMap);
-		
+
 		try {
 			for (let i = 0; i < keys.length; i++) {
 				data[i] = [];
-				if (/[a-zA-Z]/.test(keys[i])) {//if contains text, don't do parseInt
+				if (/[a-zA-Z]/.test(keys[i])) {
+					//if contains text, don't do parseInt
 					data[i][0] = new Date(keys[i]).toDateString();
 				} else {
 					data[i][0] = new Date(parseInt(keys[i])).toDateString();
 				}
 				data[i][1] = tempMap[keys[i]];
 			}
-		} catch (e) {//invalid date
+		} catch (e) {
+			//invalid date
 			console.log('Invalid date encountered, treating dates as strings');
-			for (let i = 0; i < keys.length; i++) { //keep the reordered list, so replace old dataArray.data
+			for (let i = 0; i < keys.length; i++) {
+				//keep the reordered list, so replace old dataArray.data
 				dataArray.data[i] = [];
 				dataArray.data[i][0] = keys[i];
 				dataArray.data[i][1] = tempMap[keys[i]];
@@ -724,7 +735,7 @@ class RestController {
 		let keys = Object.keys(uniques);
 
 		for (let i = 0; i < keys.length; i++) {
-			data[i] = [ keys[i], uniques[keys[i]] ]; //store the key-value pair in array format for echarts
+			data[i] = [keys[i], uniques[keys[i]]]; //store the key-value pair in array format for echarts
 		}
 
 		dataArray.data = data;
@@ -738,7 +749,7 @@ class RestController {
 		}
 		if (dataArray.constructor !== Array) {
 			//if it's just one value
-			return [ dataArray ];
+			return [dataArray];
 		} else if (dataArray[0].constructor !== Array) {
 			//if it's a 1D array
 			return dataArray;
