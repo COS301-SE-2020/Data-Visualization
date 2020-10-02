@@ -1,10 +1,15 @@
 @import '../../globals/globals.scss';
 
+
+
+
+
 .panel {
     background-color: white;
     padding: 15px;
     z-index: 40;
 }
+
 
 .dashboardPanelStyling {
     background-color: white;
@@ -16,6 +21,7 @@
 
 .searchLabel {
 }
+
 .searchLabel--search-font {
     font-family: $font-light;
 }
@@ -27,3 +33,17 @@
     border-radius: 1%;
     padding: 10px;
 }
+
+.headingGrid{
+    padding-right: 70px;
+}
+
+// .makeStyles-content-14 {
+//     padding: 0px !important;
+// }
+
+@media only screen and (max-width: 600px) {
+    #searchBox{
+        padding-right: 100px;
+    }
+  }

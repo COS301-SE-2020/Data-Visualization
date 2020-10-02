@@ -337,16 +337,10 @@
 }
 
 @media only screen and (max-width: 1000px) {
-    #masterPalette{
-        left: 65%;
-        width: 400px;
-    }
-    //#button__dashboard {
-    //    float: left;
-    //}
-  //#home__visualizeDataSection {
-  //  margin-top: 600px;
-  //}
+  #masterPalette{
+      left: 65%;
+      width: 400px;
+  }
 
   .exploreIllustration {
     width: 30vw;
@@ -374,36 +368,18 @@
   #header__title {
     margin-top: 1rem;
     margin-left: 1rem;
-    //text-align: left;
-
-    //margin: auto;
     width: 100%;
   }
 
   .getStarted{
-    //margin-left: 1rem;
     margin: auto;
     width: 20%;
   }
 
   #getStartedTitle{
-    //margin-left: -2px;
-    //margin-top: 170px;
-    //margin-bottom: 100px;
-    //margin: auto;
     width: 300%;
     margin-left: -3rem;
   }
-
-  //.st11, .st10, .st9 {
-  //  visibility: hidden;
-  //}
-
-  //.remove__xs {
-  //  visibility: hidden;
-  //  //border: 1px solid red;
-  //}
-
 
   #welcomeTitle {
     padding-top: 50px;
@@ -417,28 +393,31 @@
     width: 60vw;
   }
 
-  //#home__section--visualizeData {
-  //  margin-top: 50px;
-  //}
-
-
   .home__getStartedSections {
-    height: 300vh;
+    height: 250vh;
+    border-radius: 15% 15% 15% 15% / 3% 3% 3% 3%;
   }
 
   #home__section--innerDescription {
-    padding-left: 20%;
+    text-align: center;
   }
-}
 
+  .home__section--middle > div {
+    height: 200px !important;
+  }
 
-@media only screen and (max-width: 600px) {
+  .home__section--button {
+    padding-top: 50px;
+  }
+
   #explainExplore{
   
     display:inline-block;
-    width: 90%;
+    width: 80%;
   }
+
 }
+
 
 
 
@@ -616,5 +595,6 @@ $anim-timing: 3s;
 
 #home__section--innerDescription {
   //border: 1px solid yellow;
-  width: 80%;
+  width: 85%;
+  margin: auto;
 }

@@ -228,12 +228,12 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: '500',
 	},
 	typographyHeading_home: {
+		opacity: '0.7',
 		color: '#242424',
-		fontSize: '1.5em', 
+		fontSize: '1.4em', 
 		fontWeight: '500',
-		cursor: 'pointer',
 		[theme.breakpoints.down('xs')]: {
-			fontSize: '1.2em',
+			fontSize: '1.05em',
 		},
 	},
 	typographyHeading_black:{
@@ -361,7 +361,7 @@ function App(props) {
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else if(pageType === 'about'){
-		backButton = <Button id = 'backButtonAbout'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
+		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
 	}
 	else if(pageType === 'trash'){
 		backButton = <Button id = 'backButton'  type="primary" icon={<ArrowBackIosIcon />} onClick = {handleBack}></Button>;
@@ -404,7 +404,7 @@ function App(props) {
 			
 		}
 		if(dashboardStage === 'selected'){
-			pageTitle = ''; //dashboardName
+			pageTitle = 'Viewing'; //dashboardName
 		}
 	}
 	if(pageType === 'about'){
@@ -571,16 +571,10 @@ function App(props) {
 						} >
 						</Typography>
 
-						<Typography variant="h6" className={`box ${pageType === 'home' ? classes.typographyHeading_home :  pageType === 'about' ? classes.typographyHeading_black : classes.typographyHeading}`} onClick={() => {
-						
-								if(pageType === 'home'){
-									handlePageType('about');
-								}
-							}
-
-						} noWrap children={
-							pageTitle
-						} >
+						<Typography variant="h6" className={`box ${pageType === 'home' ? classes.typographyHeading_home :  classes.typographyHeading}`} //onClick={() => {if(pageType === 'home'){handlePageType('about');}}} 
+							noWrap children={
+								pageTitle
+							} >
 						</Typography>
 						
 						{/* <img id='logoOnHome' src={constant.APPLICATION_LOGO_H} alt='logo'/> */}
@@ -593,6 +587,8 @@ function App(props) {
 							setIsAddingDashboard = {setIsAddingDashboard}
 							setExploreStage = {setExploreStage}
 						/>
+
+						
 					</Toolbar>
 				</AppBar> : 
 				

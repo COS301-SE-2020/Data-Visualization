@@ -27,6 +27,8 @@ import { QuestionCircleOutlined, UserOutlined, PoweroffOutlined} from '@ant-desi
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import {useGlobalState} from '../../globals/Store';
+import {Info} from '@styled-icons/open-iconic/Info';
+
 import './LoginDialog.scss';
 
 
@@ -436,7 +438,11 @@ function LoginDialog(props) {
                   {request.user.firstName}
                 </Dropdown.Button>
                 :
-                <Button ghost className='button__login' id = 'loginButton' type="dashed" onClick={showModal}>Login/Sign Up</Button>
+                <div>
+                  <Info size='25' id = 'aboutIcon' style={ {color: '#434EE8'}} onClick={() => { props.handlePageType('about');}} />
+                  <Button ghost className='button__login' id = 'loginButton' type="dashed" onClick={showModal}>Login/Sign Up</Button>
+                </div>
+                
         }
       <Modal
           title="Login"

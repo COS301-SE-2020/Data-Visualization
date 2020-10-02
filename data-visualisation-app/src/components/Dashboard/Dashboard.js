@@ -427,9 +427,9 @@ function Dashboard(props) {
 		<div className='content--padding'>
 			<div style={{marginBottom: '20px'}}>
 
-				<Grid container spacing={3} >
+				<Grid container spacing={3} className = 'headingGrid'>
 					<Grid item xs={12} md={8} >
-						<Typography.Title level={3} style = {{color: '#434EE8'}} editable={editMode && {onChange: onEditNameChange}}>
+						<Typography.Title level={3} style = {{color: '#242424', fontWeight: '400'}} editable={editMode && {onChange: onEditNameChange}}>
 							{presentDashboard.name}
 						</Typography.Title>
 						<Typography.Paragraph editable={editMode && {onChange: onEditDescriptionChange}}>{presentDashboard.description}</Typography.Paragraph>
@@ -482,7 +482,7 @@ function Dashboard(props) {
 				(hasCharts ?
 					<React.Fragment>
 
-						<Grid container spacing={3}>
+						<Grid id = 'searchBox' container spacing={3}>
 							<Grid item xs={6} md={8}>
 								{searchString !== '' && <span>Showing all charts named <span style={{fontWeight: 'bold'}}>"{searchString}"</span></span>}
 							</Grid>
@@ -500,7 +500,7 @@ function Dashboard(props) {
 
 						<ResponsiveReactGridLayout
 							className="layout"
-							breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
+							breakpoints={{lg: 1550, md: 1100, sm: 768, xs: 480, xxs: 0}}
 							cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
 							rowHeight={12}
 							layouts={layoutGrid}

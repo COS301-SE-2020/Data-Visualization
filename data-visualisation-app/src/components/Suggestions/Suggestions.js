@@ -79,32 +79,32 @@ function Suggestion(props) {
 
     return (
         <div>
-            <div style={{marginBottom: '10px'}}>
+            <div style={{marginBottom: '30px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
                         <Typography.Title level={4} style = {{fontSize: '12pt', fontWeight: '300'}}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
-                    <button className = 'hidddenButton'>
-                        {request.user.isLoggedIn &&
-                        <Dropdown overlay={(() => {
-                            return <Menu>
-                                {props.dashboardList.map((dashboardname, index) => {
-                                    return <Menu.Item key={index} onClick={() => {onAddChartToDashboard(props.id, index);}}>
+                        <button className = 'hidddenButton'>
+                            {request.user.isLoggedIn &&
+                            <Dropdown overlay={(() => {
+                                return <Menu>
+                                    {props.dashboardList.map((dashboardname, index) => {
+                                        return <Menu.Item key={index} onClick={() => {onAddChartToDashboard(props.id, index);}}>
 
-                                        <span>{dashboardname}</span>
-                                        <span style={{float: 'right'}}>
-                                                    {props.dashboardSelection[props.id][index] &&
-                                                    <CheckOutlined />}
-                                                </span>
-                                    </Menu.Item>;
-                                })}
-                            </Menu>;
-                        })()} placement="bottomLeft">
-                            {(isAdded ? <CheckOutlined /> : <PlusCircleOutlined />)}
-                        </Dropdown>
-                        }
-                    </button>
+                                            <span>{dashboardname}</span>
+                                            <span style={{float: 'right'}}>
+                                                        {props.dashboardSelection[props.id][index] &&
+                                                        <CheckOutlined />}
+                                                    </span>
+                                        </Menu.Item>;
+                                    })}
+                                </Menu>;
+                            })()} placement="bottomLeft">
+                                {(isAdded ? <CheckOutlined /> : <PlusCircleOutlined />)}
+                            </Dropdown>
+                            }
+                        </button>
                     </Grid>
                 </Grid>
             </div>
