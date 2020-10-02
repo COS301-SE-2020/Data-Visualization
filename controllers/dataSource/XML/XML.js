@@ -1,5 +1,5 @@
 /**
- * @file CSV.js
+ * @file XML.js
  * Project: Data Visualisation Generator
  * Copyright: Open Source
  * Organisation: Doofenshmirtz Evil Incorporated
@@ -8,45 +8,51 @@
  * Update History:
  * Date          Author              Changes
  * -------------------------------------------------------------------------------
- * 2/07/2020    Phillip Schulze     Original (2 October)
+ * 02/09/2020    Marco Lombaard		 Original (2 October)
  *
  * Test Cases: none
  *
- * Functional Description: This file implements a CSV class that gets CSV and formats this data
+ * Functional Description: This file implements an XML class that gets XML and formats this data
  *
  * Error Messages: "Error"
  * Assumptions: None
  * Constraints: None
  */
-
-// const PRODUCTION = !!(process.env.NODE_ENV && process.env.NODE_ENV === 'production');
-
-class CSV {
+const DOMParser = require('xmldom').DOMParser;
+class XML {
 	static getMetaData() {
 		return new Promise((resolve) => resolve());
 	}
 
 	static getEntityData(src, entity, fieldList, inputdata) {
 		let data = [];
-		inputdata.forEach((datarow, d) => {
-			let obj = {};
-			fieldList.forEach((field, i) => {
-				obj[field] = datarow[i];
-			});
-			data.push(obj);
-		});
+		
+		try {
+			
+			let parser = new DOMParser();
+			let xmlDoc = parser.parseFromString(inputdata, 'text/xml');
+			for (let i = 0; i < fieldList.length; i++) {
+				let field = xmlDoc.getElementsByTagName(fieldList[i]);
+				for (let j = 0; j < field.length; j++) {
+					if (!data[j]) {
+						data[j] = {};
+					}
+					data[j][fieldList[i]] = field[j].childNodes[0].data;
+				}
+			}
+			
+		} catch (e) {
+			console.log('XML File in invalid format');
+		}
+		
 		return new Promise((resolve, reject) => resolve(data));
 	}
 
 	static parseMetadata(entity, primaryKey, fieldlist, typelist) {
-		if (fieldlist.indexOf(primaryKey) < 0) {
-			primaryKey = fieldlist[0];
-		}
-
 		let items = {};
 		items[entity] = fieldlist;
 
-		let sets = [entity];
+		let sets = [ entity ];
 
 		let associations = {};
 		associations[entity] = [];
@@ -55,11 +61,15 @@ class CSV {
 		types[entity] = typelist;
 
 		let prims = {};
-		prims[entity] = primaryKey;
+		if (!primaryKey) {
+			prims[entity] = fieldlist[0];
+		} else {
+			prims[entity] = primaryKey;
+		}
 
 		return { items, sets, associations, types, prims };
 	}
 }
-CSV.logging = false;
+XML.logging = false;
 
-module.exports = CSV;
+module.exports = XML;
