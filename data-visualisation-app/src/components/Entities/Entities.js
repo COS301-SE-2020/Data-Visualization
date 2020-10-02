@@ -31,12 +31,11 @@ import Anime, { anime } from 'react-anime';
 
 
 var showAll = false;
-let mobileView = false;
 
-var entityIDs = []; 
 
 class Entities extends React.Component {
- 
+
+  
   formRef = React.createRef();
 
   state = {
@@ -46,7 +45,6 @@ class Entities extends React.Component {
     data: [],
     list: [],
     allChecked: false,
-
   };
 
   onFinish = values => {
@@ -55,7 +53,7 @@ class Entities extends React.Component {
     request.user.selectedEntities = [];
     
     request.user.entitiesToDisplay.map((item) => {
-      if(this.formRef.current.getFieldValue(item.entityName+item.datasource) === true){
+      if(this.formRef.current.getFieldValue(item.entityName) === true){
         request.user.selectedEntities.push(item);
         atLeastOne = true;
       }
@@ -77,34 +75,20 @@ class Entities extends React.Component {
     
     showAll = !showAll;
     var tempItem = {};
-    //console.log( entityIDs.length);
 
-    entityIDs.forEach((id) => {
-      tempItem[id] = showAll;
-      //this.formRef.current.setFieldsValue(tempItem);
-
+    request.user.entities.map((entityName) => {
+      tempItem[entityName] = showAll;
+      this.formRef.current.setFieldsValue(tempItem);
       if(showAll){
-        if(!mobileView){
-          document.getElementById('card-'+id).style.backgroundColor = 'white';
-          document.getElementById('card-'+id).style.boxShadow  = '0 2px 12.2px -20px #434ee8,0 5.7px 12.3px -20px #434ee8,0 2px 7px -20px #434ee8,0 5.3px 12.9px -20px #434ee8,0 2.8px 12.4px -20px #434ee8,0 5px 30px -20px #434ee8';
-        } 
+        document.getElementById('card-'+entityName).style.backgroundColor = '#EAFFF5';
+        document.getElementById('card-'+entityName).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
       }
       else{
-        if(!mobileView){
-          document.getElementById('card-'+id).style.backgroundColor = '';
-          document.getElementById('card-'+id).style.boxShadow = '';
-        }
+        document.getElementById('card-'+entityName).style.backgroundColor = '';
+        document.getElementById('card-'+entityName).style.boxShadow = '';
       }
      
     });
-    
-    this.formRef.current.setFieldsValue(tempItem);
-    
-    // this.props.form.setFieldsValue({
-    //   [e.target.name]: e.target.value,
-    // });
-
-    
 
   }
 
@@ -118,8 +102,6 @@ class Entities extends React.Component {
     * invoked immediately after a component is mounted (inserted into the tree).
   */
   componentDidMount() {
-    entityIDs = []; 
-    
 
     request.user.selectedFields = [];
     request.user.graphTypes = ['bar','line', 'pie', 'scatter'];
@@ -165,8 +147,7 @@ class Entities extends React.Component {
             request.user.entities = Object.keys(request.user.dataSourceInfo.entityList);
             
             request.user.entities.map((entityName) => {
-              entityIDs.push(entityName+source.sourceurl);
-              
+    
               Obj = JSON.parse(JSON.stringify(Obj));
               Obj['entityName'] = entityName;
               Obj['datasource'] = source.sourceurl;
@@ -202,7 +183,7 @@ class Entities extends React.Component {
    
       //1800px
       const mql = window.matchMedia('(max-width: 1000px)');
-      mobileView = mql.matches;
+      let mobileView = mql.matches;
 
       if (mobileView) {
         return (
@@ -225,16 +206,20 @@ class Entities extends React.Component {
                  loadMore={loadMore}
                  dataSource = {list}
                  
-                 renderItem={item => ( 
-
-                   <Fragment>
+                 renderItem={item => (
                    
-                       <Card id = {'card-'+item.entityName+item.datasource} onClick={() => { 
-                                                 
+                   <Fragment>
+                       <Card id = {'card-'+item.entityName} onClick={() => {                          
                           var tempItem = {};
-                          tempItem[item.entityName+item.datasource] = !this.formRef.current.getFieldValue(item.entityName+item.datasource);
+                          tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);
 
+                          if(tempItem[item.entityName]  === false){                       
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '';
+                           }
+                          else{
+                            document.getElementById('card-'+item.entityName).style.boxShadow = '0px 0px 43px -12px rgba(189,189,189,1)';
+                          }
                         }} 
                         >
 
@@ -243,7 +228,7 @@ class Entities extends React.Component {
                            actions={
                              [ 
                                
-                              <Form.Item name={item.entityName+item.datasource} valuePropName='checked'>
+                              <Form.Item name={item.entityName} valuePropName='checked'>
                                 <Checkbox/>
                               </Form.Item>
      
@@ -297,19 +282,19 @@ class Entities extends React.Component {
                  
                  renderItem={item => (
                    <Fragment>
-                       <Card.Grid hoverable = {false} className='entities__entity' id = {'card-'+item.entityName+item.datasource}  style= {{cursor: 'pointer', margin: '10px', marginLeft: '50px', width:'28%',  backgroundColor: 'transparent'}}  onClick={() => {
+                       <Card.Grid hoverable = {false} className='entities__entity' id = {'card-'+item.entityName}  style= {{cursor: 'pointer', margin: '10px', marginLeft: '50px', width:'28%',  backgroundColor: 'transparent'}}  onClick={() => {
                           var tempItem = {};
-                          tempItem[item.entityName+item.datasource] = !this.formRef.current.getFieldValue(item.entityName+item.datasource);
+                          tempItem[item.entityName] = !this.formRef.current.getFieldValue(item.entityName);
                           this.formRef.current.setFieldsValue(tempItem);
 
                 
-                          if(tempItem[item.entityName+item.datasource]  === false){                       
-                            document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow  = '';
-                            document.getElementById('card-'+item.entityName+item.datasource).style.backgroundColor = '';
+                          if(tempItem[item.entityName]  === false){                       
+                            document.getElementById('card-'+item.entityName).style.boxShadow  = '';
+                            document.getElementById('card-'+item.entityName).style.backgroundColor = '';
                            }
                           else{
-                            document.getElementById('card-'+item.entityName+item.datasource).style.backgroundColor = 'white';
-                            document.getElementById('card-'+item.entityName+item.datasource).style.boxShadow  = '0 2px 12.2px -20px #434ee8,0 5.7px 12.3px -20px #434ee8,0 2px 7px -20px #434ee8,0 5.3px 12.9px -20px #434ee8,0 2.8px 12.4px -20px #434ee8,0 5px 30px -20px #434ee8';
+                            document.getElementById('card-'+item.entityName).style.backgroundColor = '#EAFFF5';
+                            document.getElementById('card-'+item.entityName).style.boxShadow  = '0 -1.8px 1.2px #3EC195,0 1.7px 1.3px #3EC195,0 -1.5px 1px #3EC195,0 1.3px 1.9px #3EC195,0 -1.8px 3.4px #3EC195,0 1px 5px #3EC195';
                           }
                      
                         }} 
@@ -320,7 +305,7 @@ class Entities extends React.Component {
                            actions={
                              [ 
                                
-                              <Form.Item name={item.entityName+item.datasource} valuePropName='checked'>
+                              <Form.Item name={item.entityName} valuePropName='checked'>
                                    <Checkbox style={{visibility: 'hidden'}}/>
                                </Form.Item>
      

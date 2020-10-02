@@ -20,28 +20,24 @@
  */
 
 $primary-white: white;
-$primary-black: #434EE8;
+$primary-black: black;
 
 $font-light: 'Segoe UI Light';
 $font-default: 'Segoe UI';
 $font-semibold: 'Segoe UI Semibold';
 
 $color-menu-selected-background: #f1f1f1;
-$color-border-hover: #434EE8;
-$color-border-active:#434EE8;
-$color-border-focus: #434EE8;
+$color-border-hover: #616161;
+$color-border-active: #616161;
+$color-border-focus: #616161;
 $color-border: #d9d9d9;
 $color-border-panels: #f2f2f2;
-$color-active: #434EE8;
-$color-focus: #434EE8;
-$color-hover: #434EE8;
-$color-primary: #434EE8;
-$color-secondary: #ffd084;
-$color-tertiary: #242424;
-$color-quaternary: #F8F9FB;
-$color-quinary:#7d8edb;
-$color-box-shadow: rgba(67, 78, 232, 0.2);
-$color-background: #F4F5F9;
+$color-active: black;
+$color-focus: black;
+$color-hover: black;
+$color-primary: #292929;
+$color-secondary: #F8F9FB;
+$color-box-shadow: rgba(97,97,97, 0.2);
 
 $WIDTH_SIDE_NAVIGATION: 240px;
 $HEIGHT_TOOLBAR: 60px;
