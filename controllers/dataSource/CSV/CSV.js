@@ -38,10 +38,10 @@ class CSV {
 		let types = {};
 		types[entityName] = typelist;
 
-		const res = { items, sets, associations, types };
-		console.log(res);
+		let prims = {};
+		prims[entityName] = primaryKey;
 
-		return { items, sets, associations, types };
+		return { items, sets, associations, types, prims };
 	}
 
 	static formatCSVdata() {
