@@ -27,18 +27,28 @@ class CSV {
 	}
 
 	static getEntityData(src, entity, fieldList, inputdata) {
-		let data = [];
-		inputdata.forEach((datarow, d) => {
-			let obj = {};
-			fieldList.forEach((field, i) => {
-				obj[field] = datarow[i];
+		return new Promise((resolve, reject) => {
+			let data = [];
+			inputdata.forEach((datarow, d) => {
+				let obj = {};
+				fieldList.forEach((field, i) => {
+					if (i < datarow.length) obj[field] = datarow[i];
+					else obj[field] = null;
+				});
+				data.push(obj);
 			});
-			data.push(obj);
+			resolve(data);
 		});
-		return new Promise((resolve, reject) => resolve(data));
 	}
 
 	static parseMetadata(entity, primaryKey, fieldlist, typelist) {
+		if (fieldlist.length > typelist.length) {
+			const start = typelist.length;
+			for (let i = start; i < fieldlist.length; ++i) typelist.push('string');
+		} else if (fieldlist.length < typelist.length) {
+			typelist = typelist.slice(0, fieldlist.length);
+		}
+
 		if (fieldlist.indexOf(primaryKey) < 0) {
 			primaryKey = fieldlist[0];
 		}

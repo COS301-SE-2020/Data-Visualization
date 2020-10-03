@@ -32,6 +32,7 @@ const DataSourceRouteSrc = express.Router();
 const DataSourceRouteMeta = express.Router();
 
 const { Rest } = require('../controllers');
+const { convertArrayOfObjectsToCSV } = require('../controllers/exports/exportsController');
 const { error } = require('../helper');
 
 //=============	Authenticated Endpoints ================
@@ -82,6 +83,11 @@ DataSourceRouteSrc.post('/local-import', (req, res) => {
 	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
 	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
 	else if (req.body.data === undefined) error(res, { error: 'Data are undefined' }, 400);
+	else if (!Array.isArray(req.body.fields)) error(res, { error: 'Fields is not an array' }, 400);
+	else if (!Array.isArray(req.body.types)) error(res, { error: 'Types is not an array' }, 400);
+	else if (!isString(req.body.PrimaryKey)) error(res, { error: 'PrimaryKey is not a string' }, 400);
+	else if (!isStringArray(req.body.fields)) error(res, { error: 'Fields is not an array of strings' }, 400);
+	else if (!isStringArray(req.body.types)) error(res, { error: 'Types is not an array of strings' }, 400);
 	else {
 		Rest.importLocalSourceAuth(
 			req.body.email,
@@ -151,6 +157,11 @@ DataSourceRouteMeta.post('/local-import', (req, res) => {
 	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
 	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
 	else if (req.body.data === undefined) error(res, { error: 'Data are undefined' }, 400);
+	else if (!Array.isArray(req.body.fields)) error(res, { error: 'Fields is not an array' }, 400);
+	else if (!Array.isArray(req.body.types)) error(res, { error: 'Types is not an array' }, 400);
+	else if (!isString(req.body.PrimaryKey)) error(res, { error: 'PrimaryKey is not a string' }, 400);
+	else if (!isStringArray(req.body.fields)) error(res, { error: 'Fields is not an array of strings' }, 400);
+	else if (!isStringArray(req.body.types)) error(res, { error: 'Types is not an array of strings' }, 400);
 	else {
 		Rest.importLocalSource(
 			req.body.SourceType,
@@ -164,5 +175,13 @@ DataSourceRouteMeta.post('/local-import', (req, res) => {
 		);
 	}
 });
+
+function isString(str) {
+	return typeof str === 'string';
+}
+
+function isStringArray(strArray) {
+	return Array.isArray(strArray) && strArray.every((str) => isString(str));
+}
 
 module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };
