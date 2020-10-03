@@ -89,6 +89,10 @@ class XML {
 	}
 
 	static parseMetadata(entity, primaryKey, fieldlist, typelist) {
+		if (typelist.length !== fieldlist.length) {
+			throw('Field types and Fields do not align');
+		}
+
 		let items = {};
 		items[entity] = fieldlist;
 
@@ -101,10 +105,12 @@ class XML {
 		types[entity] = typelist;
 
 		let prims = {};
-		if (!primaryKey) {
-			prims[entity] = fieldlist[0];
-		} else {
-			prims[entity] = primaryKey;
+		if (fieldlist > 0) {
+			if (!primaryKey) {
+				prims[entity] = fieldlist[0];
+			} else {
+				prims[entity] = primaryKey;
+			}
 		}
 
 		return { items, sets, associations, types, prims };
