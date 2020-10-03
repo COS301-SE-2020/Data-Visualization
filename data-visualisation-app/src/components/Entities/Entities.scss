@@ -1,11 +1,11 @@
 @import '../../globals/globals.scss';
 
 @mixin button__generateSuggestions--backgroundColor {
-    background-color: #FF3408;
+    background-color: $color-primary;
     background: rgb(117,48,154);
-    background: -moz-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-    background: -webkit-linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
-    background: linear-gradient(97deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 100%);
+    background: -moz-linear-gradient(97deg, $color-primary 0%, $color-secondary 100%);
+    background: -webkit-linear-gradient(97deg, $color-primary 0%, $color-secondary 100%);
+    background: linear-gradient(97deg, $color-primary 0%, $color-secondary 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#75309a",endColorstr="#59a3e0",GradientType=1);
   
 }
@@ -99,17 +99,22 @@
 }
 
 .entities__entity {
-    background-color: '';
+  
     margin: 0 auto;
     margin-top: 20px;
     border-radius: 5px;
-    box-shadow:
-    0 2.8px 2.2px rgba(0, 0, 0, 0.034),
-    0 6.7px 5.3px rgba(0, 0, 0, 0.048),
-    0 12.5px 10px rgba(0, 0, 0, 0.06),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.072),
-    0 41.8px 33.4px rgba(0, 0, 0, 0.086),
-    0 100px 80px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    -webkit-transition: background-color 0.1s linear;
+    -ms-transition: background-color 0.1s linear;
+    transition: background-color 0.1s linear;
+    transition: box-shadow 0.1s ease-in-out;
+    // box-shadow:
+    // 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    // 0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+    // 0 12.5px 10px rgba(0, 0, 0, 0.06),
+    // 0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+    // 0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+    // 0 100px 80px rgba(0, 0, 0, 0.12);
     
 }
 

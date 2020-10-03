@@ -35,7 +35,7 @@ export const APPLICATION_LOGO_H = require('../assets/img/logo_vlong_s.png');
 export const APPLICATION_LOGO_WHITE = require('../assets/img/logo_white.png');
 export const APPLICATION_LOGO_GREY = require('../assets/img/logo_grey.png');
 export const APPLICATION_LOGO_GLOW = require('../assets/img/logo_glow.png');
-
+export const APPLICATION_LOGO_BLUE = require('../assets/img/logo_blue.png');
 /**
  *   Icons
  */
@@ -51,7 +51,7 @@ export const LOADER = <Spin />;
  */
 export const PRODUCTION_MODE = process.env.NODE_ENV && process.env.NODE_ENV === 'development' ? 0 : process.env.NODE_ENV === 'production' ? 1 : 2;
 // export const PRODUCTION_MODE = true;
-// console.debug('Production mode set to: ', PRODUCTION_MODE);
+console.debug('Production mode set to: ', PRODUCTION_MODE);
 
 export const URL_HOST = {
 	PRODUCTION: 'https://data-visualisation-prod.herokuapp.com',

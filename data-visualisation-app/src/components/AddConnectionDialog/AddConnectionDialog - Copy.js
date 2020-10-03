@@ -21,8 +21,8 @@
 
 
 /**
- * Imports
- */
+  * Imports
+*/
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Button, Modal, Input, Select, Typography, Divider, Checkbox, Cascader, Result} from 'antd';
 import { Form } from 'antd';
@@ -31,13 +31,11 @@ import './AddConnectionDialog.scss';
 import { CSVReader } from 'react-papaparse';
 import CloseOutlined from '@ant-design/icons/lib/icons/CloseOutlined';
 import CloseCircleOutlined from '@ant-design/icons/lib/icons/CloseCircleOutlined';
-import {FileText} from '@styled-icons/feather/FileText';
-import fileIcon from './../../assets/svg/file.svg';
 
 /**
- * @param props passed from DataConnection class.
- * @return React Component
- */
+  * @param props passed from DataConnection class.
+  * @return React Component
+*/
 
 const AddConnectionDialog = (props) => {
 
@@ -511,12 +509,12 @@ const AddConnectionDialog = (props) => {
         }
     }
 
-    function onLoadedCSVFile(data) {
+   function onLoadedCSVFile(data) {
 
         if (importError)
             setImportError(false);
 
-        console.debug('refCSVReader', refCSVReader)
+       console.debug('refCSVReader', refCSVReader)
         console.debug('refCSVReader.current', refCSVReader.current)
         if (data.length === 0) {
 
@@ -528,47 +526,47 @@ const AddConnectionDialog = (props) => {
 
         console.debug('data', data)
 
-        // currentColumns.current = [];
+       // currentColumns.current = [];
 
-        let newData = [];
-        let newColumns = [];
+       let newData = [];
+       let newColumns = [];
 
-        let dataValue = '';
-        let foundValue = false;
+       let dataValue = '';
+       let foundValue = false;
 
-        let maxColumnCount = 0;
-        for (let n = 0; n < data.length; n++)
-            if (data[n].data.length > maxColumnCount)
-                maxColumnCount = data[n].data.length;
-
-
-
-        let outerLoopCount = Math.floor(maxColumnCount/26);
-        let prefix = '', colName = '', colNames = [];
+       let maxColumnCount = 0;
+       for (let n = 0; n < data.length; n++)
+           if (data[n].data.length > maxColumnCount)
+               maxColumnCount = data[n].data.length;
 
 
-        console.debug('outerLoopCount', outerLoopCount)
-        console.debug('maxColumnCount', maxColumnCount)
 
-        for (let outer = 0; outer < (outerLoopCount === 0 ? 1 : 0); outer++) {
-            prefix = (outerLoopCount === 0 ? '' : String.fromCharCode(65 + outer));
-            for (let c = 0; c < maxColumnCount; c++) {
-                colName = prefix + String.fromCharCode(65 + c);
-                newColumns.push({
-                    Header: colName,
-                    accessor: colName,
-                });
+       let outerLoopCount = Math.floor(maxColumnCount/26);
+       let prefix = '', colName = '', colNames = [];
 
-                colNames.push(colName);
-            }
-        }
 
-        console.debug('colNames', colNames)
+       console.debug('outerLoopCount', outerLoopCount)
+       console.debug('maxColumnCount', maxColumnCount)
 
-        proposedTypes.current = new Array(colNames.length);
-        let uniqueColumn = colNames.map(() => {return true;});
-        // console.debug('proposedTypes', proposedTypes.current[0])
-        // console.debug('uniqueColumn', uniqueColumn)
+       for (let outer = 0; outer < (outerLoopCount === 0 ? 1 : 0); outer++) {
+           prefix = (outerLoopCount === 0 ? '' : String.fromCharCode(65 + outer));
+           for (let c = 0; c < maxColumnCount; c++) {
+               colName = prefix + String.fromCharCode(65 + c);
+               newColumns.push({
+                   Header: colName,
+                   accessor: colName,
+               });
+
+               colNames.push(colName);
+           }
+       }
+
+       console.debug('colNames', colNames)
+
+       proposedTypes.current = new Array(colNames.length);
+       let uniqueColumn = colNames.map(() => {return true;});
+       // console.debug('proposedTypes', proposedTypes.current[0])
+       // console.debug('uniqueColumn', uniqueColumn)
 
         for (let row = 0; row < data.length; row++) {
             newData.push({});
@@ -623,69 +621,69 @@ const AddConnectionDialog = (props) => {
             return;
         }
 
-        console.debug('befselectablePrimaryColumns', selectablePrimaryColumns.length)
-        let newSelectableCols = [{
-            value: 'default',
-            label: 'Select Column'
-        }];
-        for (let u = 0; u < uniqueColumn.length; u++) {
-            if (uniqueColumn[u])
-                primaryColumns.current.push(colNames[u]);
-            newSelectableCols.push({
-                value: colNames[u].toLowerCase(),
-                label: colNames[u]
-            });
-        }
+       console.debug('befselectablePrimaryColumns', selectablePrimaryColumns.length)
+       let newSelectableCols = [{
+           value: 'default',
+           label: 'Select Column'
+       }];
+       for (let u = 0; u < uniqueColumn.length; u++) {
+           if (uniqueColumn[u])
+               primaryColumns.current.push(colNames[u]);
+           newSelectableCols.push({
+               value: colNames[u].toLowerCase(),
+               label: colNames[u]
+           });
+       }
 
-        setSelectablePrimaryColumns(newSelectableCols);
+       setSelectablePrimaryColumns(newSelectableCols);
 
-        console.debug('selectablePrimaryColumns', selectablePrimaryColumns)
-        console.debug('primaryColumns', primaryColumns)
+       console.debug('selectablePrimaryColumns', selectablePrimaryColumns)
+       console.debug('primaryColumns', primaryColumns)
 
-        /** Data type analysis */
+       /** Data type analysis */
 
 
 
-        // setImportDataMode(true);
+       // setImportDataMode(true);
 
         // console.debug('newData', newData);
 
-        // tableComponentMounted.current = true;
+       // tableComponentMounted.current = true;
         // setImportDataMode(true);
 
 
-        // setImportDataMode(true);
+       // setImportDataMode(true);
 
-        dataBuffer.current[+currentBuffer.current] = newData;
-        currentBuffer.current = !currentBuffer.current;
-        dataBuffer.current[+currentBuffer.current] = newData.map((newDataItem) => {
-            return newDataItem;
-        });
-        //
-        // console.debug('SHOULD BE THE SAME', dataBuffer.current[+currentBuffer.current], 'AND THIS', dataBuffer.current[+!currentBuffer.current])
+       dataBuffer.current[+currentBuffer.current] = newData;
+       currentBuffer.current = !currentBuffer.current;
+       dataBuffer.current[+currentBuffer.current] = newData.map((newDataItem) => {
+           return newDataItem;
+       });
+       //
+       // console.debug('SHOULD BE THE SAME', dataBuffer.current[+currentBuffer.current], 'AND THIS', dataBuffer.current[+!currentBuffer.current])
 
-        setCurrentColumns(newColumns);
-        setCurrentData(newData);
-
-
-        // setCurrentData(dataBuffer.current[+currentBuffer.current].slice(0, 10));
+       setCurrentColumns(newColumns);
+       setCurrentData(newData);
 
 
-        setTimeout(function () {
-            // setImportDataMode(true);
-
-            // setCurrentData(newData);
-        }, 3000);
+       // setCurrentData(dataBuffer.current[+currentBuffer.current].slice(0, 10));
 
 
-        console.debug('proposedTypes.current', proposedTypes.current)
+       setTimeout(function () {
+           setImportDataMode(true);
 
-        // setImportDataMode(true);
+           // setCurrentData(newData);
+       }, 3000);
 
 
-        // initialRequestFlag.current = true;
+       console.debug('proposedTypes.current', proposedTypes.current)
 
-    }
+       // setImportDataMode(true);
+
+
+       // initialRequestFlag.current = true;
+
+   }
 
     function onFileError() {
 
@@ -715,14 +713,14 @@ const AddConnectionDialog = (props) => {
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 24 },
-    };
+      };
     const tailLayout = {
         wrapperCol: { offset: 16, span: 1 },
     };
 
     /**
-     * Update props value.
-     */
+      * Update props value.
+    */ 
     const onFinish = values => {
         var ulteredURI;
 
@@ -734,21 +732,21 @@ const AddConnectionDialog = (props) => {
             ulteredURI = values.uri;
             props.addItem(ulteredURI, 1);
         }
-
+     
         props.changeState();
         setVisible(false);
     };
-
+    
     /**
-     * Handle finish error.
-     */
+      * Handle finish error.
+    */  
     const onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
     };
 
     /**
-     * Actions for cancel
-     */
+      * Actions for cancel
+    */
     function handleCancel() {
         props.changeState();
         setVisible(false);
@@ -820,13 +818,13 @@ const AddConnectionDialog = (props) => {
     function Table({ columns, data, updateMyData }) {
         // Use the state and functions returned from useTable to build your UI
 
-        const rowClasses = useRef('');
-        const [checkedRows, setCheckRows] = useState(data.map(() => {
-            return true;
-        }));
-        const [checkedColumns, setCheckedColumns] = useState(columns.map(() => {
-            return true;
-        }));
+    const rowClasses = useRef('');
+    const [checkedRows, setCheckRows] = useState(data.map(() => {
+        return true;
+    }));
+    const [checkedColumns, setCheckedColumns] = useState(columns.map(() => {
+        return true;
+    }));
 
 
 
@@ -862,54 +860,54 @@ const AddConnectionDialog = (props) => {
         // Render the UI for your table
         return (
             <>
-                {/*<pre>*/}
-                {/*  <code>*/}
-                {/*    {JSON.stringify(*/}
-                {/*        {*/}
-                {/*            pageIndex,*/}
-                {/*            pageSize,*/}
-                {/*            pageCount,*/}
-                {/*            canNextPage,*/}
-                {/*            canPreviousPage,*/}
-                {/*        },*/}
-                {/*        null,*/}
-                {/*        2*/}
-                {/*    )}*/}
-                {/*  </code>*/}
-                {/*</pre>*/}
+              {/*<pre>*/}
+              {/*  <code>*/}
+              {/*    {JSON.stringify(*/}
+              {/*        {*/}
+              {/*            pageIndex,*/}
+              {/*            pageSize,*/}
+              {/*            pageCount,*/}
+              {/*            canNextPage,*/}
+              {/*            canPreviousPage,*/}
+              {/*        },*/}
+              {/*        null,*/}
+              {/*        2*/}
+              {/*    )}*/}
+              {/*  </code>*/}
+              {/*</pre>*/}
                 <table {...getTableProps()}>
                     <thead>
 
-                    <tr>
-                        <th></th>
-                        {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
-                            return <th key={tableCheckboxHeaderIndex}><Checkbox onChange={() => {
-                                setCheckedColumns(checkedColumns.map((tmp, tmp_index) => {
-                                    return (tmp_index === tableCheckboxHeaderIndex ? !tmp : tmp);
-                                }));
-                            }} checked={checkedColumns[tableCheckboxHeaderIndex]} /></th>;
-                        })}
-                    </tr>
-
-
-                    <tr>
-                        <th></th>
-                        {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
-                            return <th key={tableCheckboxHeaderIndex}>
-                                <Cascader allowClear={false} options={COMPONENT_DATA_TYPES} defaultValue={[COMPONENT_DATA_TYPES[proposedTypes.current[tableCheckboxHeaderIndex]].label]} onChange={v => {
-
-                                }} />
-
-                            </th>;
-                        })}
-                    </tr>
-                    {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {[<th key={-1}>nothing</th>].concat(headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                            )))}
+                        <tr>
+                            <th></th>
+                            {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
+                                return <th key={tableCheckboxHeaderIndex}><Checkbox onChange={() => {
+                                    setCheckedColumns(checkedColumns.map((tmp, tmp_index) => {
+                                        return (tmp_index === tableCheckboxHeaderIndex ? !tmp : tmp);
+                                    }));
+                                }} checked={checkedColumns[tableCheckboxHeaderIndex]} /></th>;
+                            })}
                         </tr>
-                    ))}
+
+
+                        <tr>
+                            <th></th>
+                            {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
+                                return <th key={tableCheckboxHeaderIndex}>
+                                    <Cascader allowClear={false} options={COMPONENT_DATA_TYPES} defaultValue={[COMPONENT_DATA_TYPES[proposedTypes.current[tableCheckboxHeaderIndex]].label]} onChange={v => {
+
+                                    }} />
+
+                                </th>;
+                            })}
+                        </tr>
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {[<th key={-1}>nothing</th>].concat(headerGroup.headers.map(column => (
+                                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                                )))}
+                            </tr>
+                        ))}
                     </thead>
                     <tbody {...getTableBodyProps()}>
                     {page.map((row, i) => {
@@ -917,7 +915,7 @@ const AddConnectionDialog = (props) => {
 
 
 
-                        // console.debug('row', row)
+                            // console.debug('row', row)
                         return (
                             <tr {...row.getRowProps()} >
                                 <td><Checkbox onChange={() => {
@@ -1034,21 +1032,21 @@ const AddConnectionDialog = (props) => {
                             <div style={{padding: '20px'}}>
 
                                 Unique Column: <Cascader allowClear={false} options={selectablePrimaryColumns} defaultValue={['Select Column']} onChange={v => {
-                                currentPrimarySelection.current = v;
-                                let found = false;
-                                for (let p = 0; p < primaryColumns.current.length; p++) {
-                                    if (primaryColumns.current[p] === v) {
-                                        found = true;
-                                        break;
+                                    currentPrimarySelection.current = v;
+                                    let found = false;
+                                    for (let p = 0; p < primaryColumns.current.length; p++) {
+                                        if (primaryColumns.current[p] === v) {
+                                            found = true;
+                                            break;
+                                        }
                                     }
-                                }
 
-                                if (!found)
-                                    setPrimaryMessage('Some data values are not unique within this column.');
-                                else
-                                    setPrimaryMessage('');
+                                    if (!found)
+                                        setPrimaryMessage('Some data values are not unique within this column.');
+                                    else
+                                        setPrimaryMessage('');
 
-                                // todo: check if row is selected as in checkbox selected.
+                                    // todo: check if row is selected as in checkbox selected.
                             }} /> <span>{primaryMessage}</span>
 
                                 <Table
@@ -1122,9 +1120,7 @@ const AddConnectionDialog = (props) => {
                         </Form>
 
                         <div style={{textAlign: 'center'}}>
-                            <div style={{marginBottom: '35px'}}>
-                                <span className='or__line or__left'/><span className='or__inline or__text'>OR</span><span className='or__line or__right'/>
-                            </div>
+                            <span className='or__line or__left'/><span className='or__inline or__text'>OR</span><span className='or__line or__right'/>
 
 
                             {/*<div {...getRootProps({className: 'dropzone dropzone__custom', style: {...styleDropzone}})}>*/}
@@ -1147,48 +1143,15 @@ const AddConnectionDialog = (props) => {
                                 onError={onFileError}
                                 // onError={this.handleOnError}
                                 // noDrag
-                                // addRemoveButton
+                                addRemoveButton
                                 // onRemoveFile={this.handleOnRemoveFile}
 
 
                                 style={{
                                     dropArea: {
-                                        border: '1px dashed #777777',
+                                        borderColor: 'pink',
                                         borderRadius: 10,
-                                        backgroundColor: '#f7f7f7',
-                                        height: '200px'
-                                    },
-                                    dropFile: {
-                                        border: '1px solid black',
-                                        borderRadius: '5px',
-                                        backgroundColor: 'white',
-                                        background: 'white',
-                                        width: '100%'
-                                    },
-                                    dropAreaActive: {
-                                        boxShadow: '0px 0px 13px 1px rgba(219,219,219,1)'
-                                    },
-                                    progressBar: {
-                                        backgroundColor: 'black',
-                                        height: '3px',
-
-                                    },
-                                    fileNameInfo: {
-                                        color: 'black',
-                                        fontFamily: 'Fira Code Light',
-                                        fontSize: '12px',
-                                        marginBottom: '10px'
-                                        // borderRadius: 3,
-                                        // fontSize: 14,
-                                        // lineHeight: 1,
-                                        // padding: '0 0.4em',
-                                    },
-                                    fileSizeInfo: {
-                                        color: 'rgba(0.0, 0.0, 0.0, 0.0)',
-                                        fontFamily: 'Fira Code Light',
-                                        backgroundImage: `url(${fileIcon})`,
-                                        backgroundRepeat: 'no-repeat',
-                                        height: '55px'
+                                        backgroundColor: '#f7f7f7'
                                     }
                                 }}
                                 config={{

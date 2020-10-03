@@ -223,6 +223,13 @@ const request = {
 					.then((res) => {
 						console.debug('Response from graph.list:', res);
 						if (callback !== undefined) {
+
+							res.data.forEach(element => {
+								if(element.options.series !== undefined && element.options.series[0].type !== 'pie'){
+									element.options.series[0].color = '#7d8edb';
+								}
+							});
+
 							request.cache.graph.list = res.data;
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						}
@@ -581,22 +588,11 @@ const request = {
 
 
 						if(res.data.series !== undefined && res.data.series[0].type !== 'pie'){
-
-							if(request.suggestions.count === 0){
-								res.data.series[0].color = '#BD4032';
-							}
-							// else if(request.suggestions.count === 1){
-							// 	res.data.series[0].color = '#3EC195';
-							// }
-						
-							request.suggestions.count++;
-							if(request.suggestions.count === 1){
-								request.suggestions.count = 0;
-							}
-
-
+							res.data.series[0].color = '#7d8edb';
 						}
+
 						//console.log(res.data);
+						
 						request.cache.suggestions.graph.current = res.data;
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}

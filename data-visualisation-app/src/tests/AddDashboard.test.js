@@ -24,5 +24,3 @@ describe('AddDashboard component', () => {
     });
 });
 
-
-

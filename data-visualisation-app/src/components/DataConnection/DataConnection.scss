@@ -1,6 +1,7 @@
-.dataConnectionCard{
-    
- 
+@import '../../globals/globals.scss';
+
+
+.dataConnectionCard{ 
   margin: 0 auto;
   margin-top: 20px;
 
@@ -23,28 +24,24 @@
 #addConnetion__button{
   background-color: white;
   border: none;
-  color: #3EC195;
-  -webkit-box-shadow: 0px 2px 2px -2px #3EC195;
-  -moz-box-shadow: 0px 2px 2px -2px #3EC195;
-  box-shadow: 0px 2px 2px -2px #3EC195;
+  color: $color-primary;
+  -webkit-box-shadow: 0px 2px 2px -2px $color-primary;
+  -moz-box-shadow: 0px 2px 2px -2px $color-primary;
+  box-shadow: 0px 2px 2px -2px $color-primary;
   font-weight: 700px;
 }
 
 
 #next__button{
-    background-color: #3EC195;
-    border: solid 2px white;
+    background-color: $color-primary;
+    border: none;
     color: white;
-    -webkit-box-shadow: 0px 2px 2px -2px #3EC195;
-    -moz-box-shadow: 0px 2px 2px -2px #3EC195;
-    box-shadow: 0px 2px 2px -2px #3EC195;
+    opacity: 0.9;
 }
 
 #next__button:hover{
   opacity: 1;
-  -webkit-box-shadow: 0px 3px 3px -2px #3EC195;
-  -moz-box-shadow: 0px 3px 3px -2px #3EC195;
-  box-shadow: 0px 3px 3px -2px #3EC195;
+ 
 }
 
 @media only screen and (max-width: 700px) {

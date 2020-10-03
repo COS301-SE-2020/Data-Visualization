@@ -78,7 +78,6 @@ import { MuiThemeProvider } from '@material-ui/core';
 */
 import GlobalStateProvider  from '../../globals/Store';
 import {useGlobalState} from '../../globals/Store';
-import {EDITCHART_MODES} from '../../globals/constants';
 
 
 let w = window.innerWidth;
@@ -90,12 +89,31 @@ const globalMaterialUITheme = createMuiTheme({
 		'fontFamily': 'Segoe UI'
 	},
 	palette: {
-
+		background: {
+			default: '#F4F5F9',
+		},
 		primary: {
-			main: '#242424',
+			main: '#FFFFFF',
 			mainGradient: 'linear-gradient(to right, tomato, cyan)',
 		}
+	},
+	overrides:{
+		MuiListItem: {
+			root: {
+			  '&$selected': {
+				backgroundColor: 'rgba(244,245,249,0)',
+				color: '#434EE8',
+				'&:hover': {
+				  backgroundColor: 'rgba(244,245,249,0)',
+				},
+			  },
+			  '&:hover:before': {
+				backgroundColor: 'rgba(244,245,249,0)',
+			  }
+			},
+		  },
 	}
+	
 });
 
 
@@ -109,10 +127,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	root: {
 		//background: '#242424',
-		display: 'flex'
+		display: 'flex',
 	},
 	home: {
-		background: '#3EC195', //#03befc
+		background: '#F4F5F9', //#03befc
 		display: 'flex'
 	},
 	suggestions: {
@@ -130,33 +148,42 @@ const useStyles = makeStyles((theme) => ({
 		left:'0',
 		display: 'flex'
 	},
+
 	selected: {
-		color: '#3EC195'
+		backgroundColor: 'rgba(0,0,0,0)',
 	},
+
 	drawer: {
 		[theme.breakpoints.up('sm')]: {
 			width: drawerWidth,
 			flexShrink: 0,
 		},
+		zIndex: 1
 	},
 	appBar: {
 		[theme.breakpoints.up('sm')]: {
-			width: `calc(100% - ${drawerWidth}px)`,
 			marginLeft: drawerWidth,
 		},
-		zIndex: '50'
+		zIndex: '1000'
 	},
 	appBarNotLoggedIn: {
 		[theme.breakpoints.up('sm')]: {
 			marginLeft: drawerWidth,
 		},
 	},
+
 	menuButton: {
 		marginRight: theme.spacing(2),
 		[theme.breakpoints.up('sm')]: {
 			display: 'none',
 		},
+		backgroundColor: '#434EE8',
 	},
+
+	menuButtonNotLoggedIn: {
+		display: 'none',
+	},
+
 	userButton: {
 
 		// marginRight: theme.spacing(2),
@@ -175,8 +202,9 @@ const useStyles = makeStyles((theme) => ({
 		...theme.mixins.toolbar,
 	},
 	drawerPaper: {
+		border: 'none',
 		width: drawerWidth,
-		background: '#242424',
+		background: '#F4F5F9',
 	},
 	content: {
 		flexGrow: 1,
@@ -220,6 +248,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	drawerList: {
 		color: '#969698',
+		paddingLeft: '10px',
 	},
 	icon: {
 		color: '#969698',
@@ -422,27 +451,34 @@ function App(props) {
 	const drawer = (
 		<div>
 			<div className={classes.toolbar} />
-			<Divider />
+			
 			<List className={classes.drawerList}>
+
+			<MenuItem>
+			</MenuItem>
+			<MenuItem>
+			</MenuItem>
+			<MenuItem>
+			</MenuItem>
 
 
 				<MenuItem button onClick={() => handlePageType('home')} selected={pageType === 'home'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<HomeIcon size='25' style={(pageType === 'home' ? {color: '#3EC195'} : {})} />
+						<HomeIcon size='25' style={(pageType === 'home' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Home" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('explore')} selected={pageType === 'explore'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: '#3EC195'} : {})} />
+						<ExploreOutlinedIcon style={(pageType === 'explore' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Explore" />
 				</MenuItem>
 
 				<MenuItem button onClick={() => handlePageType('dashboards')} selected={pageType === 'dashboards'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: '#3EC195'} : {})} />
+						<DashboardIcon size='25' style={(pageType === 'dashboards' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Dashboards" />
 				</MenuItem>
@@ -482,15 +518,13 @@ function App(props) {
 
 				<MenuItem button onClick={() => handlePageType('trash')} selected={pageType === 'trash'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon} >
-						<TrashIcon size='25' style={(pageType === 'trash' ? {color: '#3EC195'} : {})} />
+						<TrashIcon size='25' style={(pageType === 'trash' ? {color: '#434EE8'} : {})} />
 					</ListItemIcon>
 					<ListItemText primary="Trash" />
 				</MenuItem>
 
-
-
 			</List>
-			<Divider />
+
 			<List component="nav" className={classes.drawerList}>
 				<MenuItem button onClick={() => handlePageType('about')} selected={pageType === 'about'} classes={{selected: classes.selected}}>
 					<ListItemIcon className={classes.icon}>
@@ -521,7 +555,7 @@ function App(props) {
 							aria-label="open drawer"
 							edge="start"
 							onClick={handleDrawerToggle}
-							className={classes.menuButton}
+							className={`box ${request.user.isLoggedIn ? classes.menuButton : classes.menuButtonNotLoggedIn}`}
 							style={{ color: 'white' }}
 
 						>
@@ -604,9 +638,7 @@ function App(props) {
 
 				<main className={classes.content} style={(pageType === 'about' ? {overflow: 'hidden', padding: '0',  backgroundColor: 'white', height: '100vh' } : (pageType === 'home' ? {padding: '0', overflow: 'hidden'} : {}))} ref={targetRef}>
 
-					{/*<div className={classes.toolbar} />*/}
-
-					{/*<EditChart mode={EDITCHART_MODES.CREATE}/>*/}
+					<div className={classes.toolbar} />
 
 					{page}
 					{/*<EditChart options={{*/}
