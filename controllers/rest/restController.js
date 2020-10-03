@@ -225,9 +225,9 @@ class RestController {
 		const meta = { entity: EntityName, prim: PrimaryKey, fields, types };
 
 		Database.addDataSourceLocal(email, src, srcType, meta, data)
-			.then(() => {
+			.then((result) => {
 				console.log('IMPORTED: ' + src);
-				done({ source: src });
+				done({ source: src, id: result.id });
 			})
 			.catch((err) => error && error(err));
 	}
