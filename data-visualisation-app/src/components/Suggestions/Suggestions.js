@@ -82,7 +82,7 @@ function Suggestion(props) {
             <div style={{marginBottom: '30px'}}>
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Typography.Title level={4} style = {{fontSize: '12pt', fontWeight: '300'}}>{props.chartData.title}</Typography.Title>
+                        <Typography.Title level={4} style = {{fontSize: '11pt'}}>{props.chartData.title}</Typography.Title>
                     </Grid>
                     <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
                         <button className = 'hidddenButton'>
@@ -207,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function IGALoading() {
-    return <div className={request.user.isLoggedIn ? 'igaloadingLI' : 'igaloadingLO'} >{constants.LOADER} <br/> <br/> <br/> Generating chart suggestions by the IGA...</div>;
+    return <div id='igaloading'>{constants.LOADER} <br/> <br/> <br/> Generating chart suggestions by the IGA...</div>;
 }
 
 /**
@@ -217,7 +217,7 @@ function IGALoading() {
  */
 function Suggestions(props) {
 
-        
+    
     const [loadedFirst, setLoadedFirst] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currentCharts, setCurrentCharts] = useState(null);
@@ -229,11 +229,6 @@ function Suggestions(props) {
     const [getToReload, setGetToReload] = useState(false);
     const [filterState, setFilterState] = useState(false);
     const [form] = Form.useForm();
-    const bottomDiv = useRef();
-
-    const scrollToBottom = () => {
-        bottomDiv.current.scrollIntoView({ behavior: 'smooth' });
-    };
 
     const onFinish = values => {
         //console.log('Success:', values);
@@ -254,7 +249,6 @@ function Suggestions(props) {
 
     const moreLikeThis = values =>{
 
-        setLoading(true);
         request.user.fittestGraphs = [];
         
         for(var i = 0; i < request.cache.suggestions.graph.list.length; i++){
@@ -268,9 +262,10 @@ function Suggestions(props) {
             }
         }
 
+
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
-        //scrollToBottom();
+
     };
 
 
@@ -285,9 +280,9 @@ function Suggestions(props) {
         let requestCharts = function() {
 
             let shouldcontinue = true;
-            
+            setLoading(true);
 
-            //console.log(fittestGraphs);
+            console.log(fittestGraphs);
 
             request.suggestions.set(graphTypes, selectedEntities, selectedFields, fittestGraphs, function (result) {
                 if (result === constants.RESPONSE_CODES.SUCCESS) {
@@ -300,16 +295,15 @@ function Suggestions(props) {
                                         // console.log('graph');
                                        
                                         resolve(request.cache.suggestions.graph.current);
-                                        
                                     } else {
                                         // todo: handle network error
                                         // resolve(request.cache.suggestions.graph.current);
                                         setLoading(false);
-                                        //console.debug('errrr');
+                                        console.debug('errrr');
                                     }
                                 });
                             }).then(function (fetchedGraph) {
-                                
+                    
                                 if(fetchedGraph && JSON.stringify(fetchedGraph) !== '{}' && fetchedGraph != null){
                                     request.cache.suggestions.graph.list.push(fetchedGraph);
                                 
@@ -413,9 +407,6 @@ function Suggestions(props) {
 
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs);
 
-
-        
-        
     }, []);
 
     // if(filterState === false){
@@ -475,6 +466,7 @@ function Suggestions(props) {
                             <Typography.Title level={4}>{props.chartData.title}</Typography.Title>
                         </Grid>
                         <Grid item xs={2} style={{textAlign: 'right', fontSize: '20px'}}>
+
                             {request.user.isLoggedIn &&
                                 <Dropdown overlay={(() => {
                                     return <Menu>
@@ -493,6 +485,7 @@ function Suggestions(props) {
                                     {(isAdded ? <CheckOutlined /> : <PlusCircleOutlined />)}
                                 </Dropdown>
                             }
+
                         </Grid>
                     </Grid>
                 </div>
@@ -537,13 +530,8 @@ function Suggestions(props) {
                         
                             {(currentCharts !== null ? currentCharts.map((achart, index) => {
                                 return <Grid item xs={12} md={6} lg={4} key={index}>
-                                            <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={(event) => {
-                                                                   
-                                                if (event.target.tagName.toLowerCase() === 'span' || event.target.tagName.toLowerCase() === 'button' || event.target.tagName.toLowerCase() === 'svg') {
-                                                    event.stopPropagation();
-                                                    return;
-                                                }
-                            
+                                            <div id = {'chartDiv-'+index} className = 'suggestion chartDiv' onClick={() => {
+                                                
                                                 var item = {};
                                                 item[index] = !form.getFieldValue(index); 
                                                
@@ -554,7 +542,7 @@ function Suggestions(props) {
                                                     document.getElementById('chartDiv-'+index).style.borderColor = '';
                                                 }
                                                 else{
-                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#7d8edb';
+                                                    document.getElementById('chartDiv-'+index).style.borderColor = '#329a77';
                                                 }
  
                                                 }}>
@@ -579,36 +567,8 @@ function Suggestions(props) {
                         
                     </Grid>
                     </Form>
-
-                    
-
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
-                    {/* <Button id = 'moreLikeThisButton' className={request.user.isLoggedIn ? 'loggedInMoreLikeThis' : 'loggedOutMoreLikeThis'} type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More like this</Button> */}
-                    <div className="blob-div" >
-                        <button className="blob-btn" id={request.user.isLoggedIn ? 'loggedIn_moreLikeThis' : 'loggedOut_moreLikeThis'} type='submit' form='my-form'  onClick={moreLikeThis}>
-                            More like this
-                            <span className="blob-btn__inner">
-                            <span className="blob-btn__blobs">
-                                <span className="blob-btn__blob"></span>
-                                <span className="blob-btn__blob"></span>
-                                <span className="blob-btn__blob"></span>
-                                <span className="blob-btn__blob"></span>
-                            </span>
-                            </span>
-                        </button>
-                        <br/>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-                        <defs>
-                            <filter id="goo">
-                            <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
-                            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
-                            <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
-                            </filter>
-                        </defs>
-                        </svg>
-                    </div>
-
+                    <Button id = 'moreLikeThisButton' type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More Like This</Button>
                     <main>
                         {
                             filterState ?
@@ -618,7 +578,6 @@ function Suggestions(props) {
                         }
 
                     </main>
-                    <div ref={bottomDiv} ></div>
                 </div>
             :
                 IGALoading()

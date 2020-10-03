@@ -1,0 +1,63 @@
+@import './../../globals/globals.scss';
+
+$side_margin: 100px;
+
+.or__line {
+  border-bottom: 1px solid grey;
+  width: 95px;
+  margin-top: 10px;
+}
+
+.or__left {
+  float: left;
+  margin-left: $side_margin;
+}
+
+.or__right {
+  float: right;
+  margin-right: $side_margin;
+}
+
+.or__text {
+  text-align: center;
+}
+
+.dropzone__custom {
+  margin-top: 30px;
+  border: 2px dashed rgb(227, 227, 227);
+  background-color: rgb(247, 247, 247);
+  padding: 30px;
+}
+
+.background__transparent {
+  background-color: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  opacity: 0.6;
+}
+
+.csv__container {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.csv_importer {
+  background-color: white;
+  border: 1px solid red;
+  z-index: 100;
+  margin-left: -$WIDTH_SIDE_NAVIGATION;
+}
+
+tr.error {
+  background-color: #ffacac;
+}
+
+td.included {
+  background-color: grey;
+  border: 1px solid red;
+}

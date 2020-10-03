@@ -518,7 +518,7 @@ function Dashboard(props) {
 										<div>
 											<Grid container spacing={3}>
 												<Grid item xs={11}>
-													<Typography.Title level={4} style = {{fontSize: '12pt', fontWeight: '300'}} editable={editMode && {onChange: ev => {onChartTitleEdit(ev, request.cache.graph.list[v].id, v);}}} >{presentDashboard.chartNames[v]}</Typography.Title>
+													<Typography.Title level={4} editable={editMode && {onChange: ev => {onChartTitleEdit(ev, request.cache.graph.list[v].id, v);}}} >{presentDashboard.chartNames[v]}</Typography.Title>
 												</Grid>
 												<Grid item xs={1} style={{textAlign: 'right', fontSize: '1.2em'}}>
 													{editMode &&
