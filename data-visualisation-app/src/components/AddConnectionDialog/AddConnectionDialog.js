@@ -24,7 +24,7 @@
  * Imports
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Button, Modal, Input, Select, Typography, Divider, Checkbox, Cascader, Result} from 'antd';
+import {Button, Modal, Input, Select, Typography, Divider, Checkbox, Cascader, Result, message} from 'antd';
 import { Form } from 'antd';
 import {useTable, usePagination} from 'react-table';
 import './AddConnectionDialog.scss';
@@ -33,6 +33,8 @@ import CloseOutlined from '@ant-design/icons/lib/icons/CloseOutlined';
 import CloseCircleOutlined from '@ant-design/icons/lib/icons/CloseCircleOutlined';
 import {FileText} from '@styled-icons/feather/FileText';
 import fileIcon from './../../assets/svg/file.svg';
+import request from '../../globals/requests';
+import * as constants from '../../globals/constants';
 
 /**
  * @param props passed from DataConnection class.
@@ -371,6 +373,13 @@ const AddConnectionDialog = (props) => {
 
     const refCSVReader = useRef(null);
 
+    const [entityName, setEntityName] = useState('');
+
+    const colNames = useRef([]);
+
+    const selectedTypes = useRef([]);
+
+
 
 
 
@@ -385,6 +394,14 @@ const AddConnectionDialog = (props) => {
         STRING: 3,
         DATE: 4
     };
+
+    const DATA_TYPES_STRINGS = [
+        'boolean',
+        'int',
+        'float',
+        'string',
+        'date'
+    ];
 
     const DATA_TYPE_REGEX = {
         boolean: /^(true|false|0|1)$/,
@@ -511,7 +528,9 @@ const AddConnectionDialog = (props) => {
         }
     }
 
-    function onLoadedCSVFile(data) {
+    function onLoadedCSVFile(data, fileInformation) {
+
+        setEntityName(fileInformation.name);
 
         if (importError)
             setImportError(false);
@@ -544,7 +563,7 @@ const AddConnectionDialog = (props) => {
 
 
         let outerLoopCount = Math.floor(maxColumnCount/26);
-        let prefix = '', colName = '', colNames = [];
+        let prefix = '', colName = '';
 
 
         console.debug('outerLoopCount', outerLoopCount)
@@ -559,14 +578,14 @@ const AddConnectionDialog = (props) => {
                     accessor: colName,
                 });
 
-                colNames.push(colName);
+                colNames.current.push(colName);
             }
         }
 
-        console.debug('colNames', colNames)
+        console.debug('colNames.current', colNames.current)
 
-        proposedTypes.current = new Array(colNames.length);
-        let uniqueColumn = colNames.map(() => {return true;});
+        proposedTypes.current = new Array(colNames.current.length);
+        let uniqueColumn = colNames.current.map(() => {return true;});
         // console.debug('proposedTypes', proposedTypes.current[0])
         // console.debug('uniqueColumn', uniqueColumn)
 
@@ -593,7 +612,7 @@ const AddConnectionDialog = (props) => {
                     proposedTypes.current[col] = getStringDataType(dataValue);
                 } else if (getStringDataType(dataValue) !== proposedTypes.current[col]) {
                     // todo: allow for error correction
-                    // newData[newData.length-1][colNames[col]].error = {};
+                    // newData[newData.length-1][colNames.current[col]].error = {};
                 }
 
                 if (data[row].data.length < maxColumnCount) {
@@ -611,10 +630,13 @@ const AddConnectionDialog = (props) => {
                 }
 
 
-                newData[newData.length-1][colNames[col]] = dataValue;
-                storedPointers.current[colNames[col] + row] = [row, colNames[col]];
+                newData[newData.length-1][colNames.current[col]] = dataValue;
+                storedPointers.current[colNames.current[col] + row] = [row, colNames.current[col]];
             }
         }
+
+        selectedTypes.current = proposedTypes.current.map(v => {return DATA_TYPES_STRINGS[v];});
+        console.debug('selectedTypes.current', selectedTypes.current)
 
         if (!foundValue) {
             refCSVReader.current.removeFile();
@@ -630,10 +652,10 @@ const AddConnectionDialog = (props) => {
         }];
         for (let u = 0; u < uniqueColumn.length; u++) {
             if (uniqueColumn[u])
-                primaryColumns.current.push(colNames[u]);
+                primaryColumns.current.push(colNames.current[u]);
             newSelectableCols.push({
-                value: colNames[u].toLowerCase(),
-                label: colNames[u]
+                value: colNames.current[u],
+                label: colNames.current[u]
             });
         }
 
@@ -672,13 +694,14 @@ const AddConnectionDialog = (props) => {
 
 
         setTimeout(function () {
-            // setImportDataMode(true);
+            setImportDataMode(true);
 
             // setCurrentData(newData);
         }, 3000);
 
 
         console.debug('proposedTypes.current', proposedTypes.current)
+        console.debug('dataBuffer.current[+currentBuffer.current]', dataBuffer.current[+currentBuffer.current])
 
         // setImportDataMode(true);
 
@@ -829,7 +852,6 @@ const AddConnectionDialog = (props) => {
         }));
 
 
-
         const {
             getTableProps,
             getTableBodyProps,
@@ -897,7 +919,9 @@ const AddConnectionDialog = (props) => {
                         {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
                             return <th key={tableCheckboxHeaderIndex}>
                                 <Cascader allowClear={false} options={COMPONENT_DATA_TYPES} defaultValue={[COMPONENT_DATA_TYPES[proposedTypes.current[tableCheckboxHeaderIndex]].label]} onChange={v => {
-
+                                    if (v.length > 0)
+                                        selectedTypes.current[tableCheckboxHeaderIndex] = DATA_TYPES_STRINGS[DATA_TYPES[v[0]]];
+                                    console.debug('selectedTypes.current', selectedTypes.current)
                                 }} />
 
                             </th>;
@@ -1003,6 +1027,42 @@ const AddConnectionDialog = (props) => {
                         ))}
                     </select>
                 </div>
+                <div style={{marginBottom: '20px'}}>
+                    <Button type='primary' disabled={acceptableData} style={{float: 'right'}} onClick={() => {
+                        let akey = 1234;
+                        message.loading({ content: 'Uploading CSV file...', akey});
+                        let requestFields = [];
+                        for (let field in dataBuffer.current[+currentBuffer.current][0]) {
+                            if (colNames.current.includes(field)) {
+                                requestFields.push(dataBuffer.current[+currentBuffer.current][0][field]);
+                            }
+                        }
+
+                        let requestData = [];
+                        for (let row = 1; row < dataBuffer.current[+currentBuffer.current].length; row++) {
+                            requestData.push([]);
+                            for (let field in dataBuffer.current[+currentBuffer.current][row]) {
+                                if (colNames.current.includes(field))
+                                    requestData[row-1].push(dataBuffer.current[+currentBuffer.current][row][field]);
+                            }
+                        }
+
+                        console.debug('requestFields', requestFields, 'requestData', requestData)
+                        console.debug('dataBuffer.current[+currentBuffer.current]', dataBuffer.current[+currentBuffer.current])
+                        console.debug('dataBuffer.current[+currentBuffer.current][0]', requestFields)
+                        console.debug('(currentPrimarySelection.current === \'\' ? \'A\' : currentPrimarySelection.current)', (currentPrimarySelection.current === '' ? 'A' : currentPrimarySelection.current))
+
+                        request.suggestions.csv(entityName, dataBuffer.current[+currentBuffer.current][0][(currentPrimarySelection.current === 'default' ? 'A' : currentPrimarySelection.current)], requestFields, selectedTypes.current, requestData, function(response) {
+                            if (response === constants.RESPONSE_CODES.SUCCESS) {
+                                message.success({ content: 'Successfully imported CSV file!', akey, duration: 2 });
+
+
+                                props.changeState();
+                            }
+
+                        });
+                    }}> Finish</Button>
+                </div>
             </>
         )
     }
@@ -1033,8 +1093,12 @@ const AddConnectionDialog = (props) => {
                             <Divider />
                             <div style={{padding: '20px'}}>
 
+                                Table Name: <Input placeholder={entityName} onChange={e => {setEntityName(e.target.value);} } />
+
                                 Unique Column: <Cascader allowClear={false} options={selectablePrimaryColumns} defaultValue={['Select Column']} onChange={v => {
                                 currentPrimarySelection.current = v;
+
+                                console.debug('currentPrimarySelection.current', currentPrimarySelection.current)
                                 let found = false;
                                 for (let p = 0; p < primaryColumns.current.length; p++) {
                                     if (primaryColumns.current[p] === v) {
@@ -1073,7 +1137,6 @@ const AddConnectionDialog = (props) => {
                                 {/*    updateMyData={updateMyData}*/}
                                 {/*    skipPageReset={skipPageReset}*/}
                                 {/*/>*/}
-                                <Button type='primary' disabled={acceptableData} > Finish</Button>
                             </div>
                         </div>
                     </div>
@@ -1191,13 +1254,13 @@ const AddConnectionDialog = (props) => {
                                         height: '55px'
                                     }
                                 }}
-                                config={{
+                                parseConfig={{
                                     step: (results, file) => {
                                         console.debug('im in step')
                                         // setImportDataMode(true);
                                     },
                                     complete: (results, file) => {
-                                        // console.debug('im in cmplete')
+                                        console.debug('im in cmplete')
                                         // setImportDataMode(true);
                                     }
                                 }}

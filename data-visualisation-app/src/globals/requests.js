@@ -76,6 +76,8 @@ const API = {
 		set: (graphTypes, selectedEntities, selectedFields, fittestGraph) => axios.post(constants.URL.SUGGESTIONS.SET, {graphTypes, selectedEntities, selectedFields, fittestGraph}),
 		chart: () => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {}),
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl}),
+		csv: (SourceType, EntityName, PrimaryKey, fields, types, data) => axios.post(constants.URL.DATASOURCE.CSV, {SourceType, EntityName, PrimaryKey, fields, types, data}),
+		csvAuthorized: (apikey, SourceType, EntityName, PrimaryKey, fields, types, data) => axios.post(constants.URL.DATASOURCE.CSV_AUTHORIZED, {apikey, SourceType, EntityName, PrimaryKey, fields, types, data})
 	},
 };
 
@@ -425,7 +427,7 @@ const request = {
 				email: 'elna@gmail.com',
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				sourcetype: 0,
-			},
+			}
 		],
 		addedSourceID: '',
 		dataSourceInfo: [],
@@ -650,6 +652,62 @@ const request = {
 				callback(shouldContinue ? constants.RESPONSE_CODES.SUCCESS : constants.RESPONSE_CODES.ERROR);
 			});
 		},
+		/**
+		 *  Requests an amount of graph suggestions.
+		 *
+		 *  @param sourceurl Source from which the suggestions be made of.
+		 *  @param amount Amount of graph suggestions.
+		 *  @param callback Function called at end of execution.
+		 */
+		csv: (EntityName, PrimaryKey, fields, types, data, callback) => {
+			console.debug('Requesting suggestion.csv with:', EntityName, PrimaryKey, fields, types, data);
+			if (!request.user.isLoggedIn) {
+
+				API.suggestion
+					.csv(2, EntityName, PrimaryKey, fields, types, data)
+					.then((res) => {
+						if (callback !== undefined) {
+							console.debug('Response from suggestion.csv:', res);
+
+							if (res.hasOwnProperty('data') && res.data.hasOwnProperty('source')) {
+
+								request.user.dataSources.push({
+									id: request.user.dataSources.length,
+									email: '',
+									sourceurl: res.data.source,
+									sourcetype: 2
+								});
+								callback(constants.RESPONSE_CODES.SUCCESS);
+							} else {
+								callback(constants.RESPONSE_CODES.ERROR);
+							}
+						}
+					})
+					.catch((err) => console.error(err));
+			} else {
+				API.suggestion
+					.csvAuthorized(request.user.apikey, 2, EntityName, PrimaryKey, fields, types, data)
+					.then((res) => {
+						if (callback !== undefined) {
+							console.debug('Response efrom suggestion.csv:', res);
+
+							if (res.hasOwnProperty('data') && res.data.hasOwnProperty('source') && res.data.hasOwnProperty('id')) {
+
+								request.user.dataSources.push({
+									id: res.data.id,
+									email: '',
+									sourceurl: res.data.source,
+									sourcetype: 2
+								});
+								callback(constants.RESPONSE_CODES.SUCCESS);
+							} else {
+								callback(constants.RESPONSE_CODES.ERROR);
+							}
+						}
+					})
+					.catch((err) => console.error(err));
+			}
+		}
 	},
 
 	cache: {
