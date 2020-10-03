@@ -304,8 +304,8 @@ const AddConnectionDialog = (props) => {
 
     // these are for the pagation, idk what it does
 
-    const [pageCount, setPageCount] = React.useState(0)
-    const fetchIdRef = React.useRef(0)
+    const [pageCount, setPageCount] = React.useState(0);
+    const fetchIdRef = React.useRef(0);
 
     const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
         // This will get called when the table needs new data
@@ -338,7 +338,7 @@ const AddConnectionDialog = (props) => {
 
 
 
-        console.debug('initialRequestFlag.current', initialRequestFlag.current)
+        console.debug('initialRequestFlag.current', initialRequestFlag.current);
 
         // if (initialRequestFlag.current || (pageIndex > 0 && !initialRequestFlag.current)) {
         if (pageIndex > 0) {
@@ -350,7 +350,7 @@ const AddConnectionDialog = (props) => {
 
 
 
-    }, [])
+    }, []);
 
 
     const initialRequestFlag = useRef(false);
@@ -469,7 +469,7 @@ const AddConnectionDialog = (props) => {
      */
     function modifyAtomic([key, value]) {
 
-        console.debug('calling modifyAtomic with key', key, 'value', value)
+        console.debug('calling modifyAtomic with key', key, 'value', value);
 
         // let pointer = dataBuffer.current[+currentBuffer.current][key[0]];
         // for (let k = 1; k < key.length-1; k++) {
@@ -487,12 +487,12 @@ const AddConnectionDialog = (props) => {
     function modify(key, value) {
 
 
-        console.debug('calling modify with key', key, 'value', value)
+        console.debug('calling modify with key', key, 'value', value);
 
         modifyAtomic([key, value]);
 
 
-        console.debug('what i snew new new data', dataBuffer.current[+!currentBuffer.current])
+        console.debug('what i snew new new data', dataBuffer.current[+!currentBuffer.current]);
 
         setCurrentData(dataBuffer.current[+currentBuffer.current]);
 
@@ -535,8 +535,8 @@ const AddConnectionDialog = (props) => {
         if (importError)
             setImportError(false);
 
-        console.debug('refCSVReader', refCSVReader)
-        console.debug('refCSVReader.current', refCSVReader.current)
+        console.debug('refCSVReader', refCSVReader);
+        console.debug('refCSVReader.current', refCSVReader.current);
         if (data.length === 0) {
 
             refCSVReader.current.removeFile();
@@ -545,7 +545,7 @@ const AddConnectionDialog = (props) => {
             return;
         }
 
-        console.debug('data', data)
+        console.debug('data', data);
 
         // currentColumns.current = [];
 
@@ -566,8 +566,8 @@ const AddConnectionDialog = (props) => {
         let prefix = '', colName = '';
 
 
-        console.debug('outerLoopCount', outerLoopCount)
-        console.debug('maxColumnCount', maxColumnCount)
+        console.debug('outerLoopCount', outerLoopCount);
+        console.debug('maxColumnCount', maxColumnCount);
 
         for (let outer = 0; outer < (outerLoopCount === 0 ? 1 : 0); outer++) {
             prefix = (outerLoopCount === 0 ? '' : String.fromCharCode(65 + outer));
@@ -582,7 +582,7 @@ const AddConnectionDialog = (props) => {
             }
         }
 
-        console.debug('colNames.current', colNames.current)
+        console.debug('colNames.current', colNames.current);
 
         proposedTypes.current = new Array(colNames.current.length);
         let uniqueColumn = colNames.current.map(() => {return true;});
@@ -636,7 +636,7 @@ const AddConnectionDialog = (props) => {
         }
 
         selectedTypes.current = proposedTypes.current.map(v => {return DATA_TYPES_STRINGS[v];});
-        console.debug('selectedTypes.current', selectedTypes.current)
+        console.debug('selectedTypes.current', selectedTypes.current);
 
         if (!foundValue) {
             refCSVReader.current.removeFile();
@@ -645,7 +645,7 @@ const AddConnectionDialog = (props) => {
             return;
         }
 
-        console.debug('befselectablePrimaryColumns', selectablePrimaryColumns.length)
+        console.debug('befselectablePrimaryColumns', selectablePrimaryColumns.length);
         let newSelectableCols = [{
             value: 'default',
             label: 'Select Column'
@@ -661,8 +661,8 @@ const AddConnectionDialog = (props) => {
 
         setSelectablePrimaryColumns(newSelectableCols);
 
-        console.debug('selectablePrimaryColumns', selectablePrimaryColumns)
-        console.debug('primaryColumns', primaryColumns)
+        console.debug('selectablePrimaryColumns', selectablePrimaryColumns);
+        console.debug('primaryColumns', primaryColumns);
 
         /** Data type analysis */
 
@@ -700,8 +700,8 @@ const AddConnectionDialog = (props) => {
         }, 3000);
 
 
-        console.debug('proposedTypes.current', proposedTypes.current)
-        console.debug('dataBuffer.current[+currentBuffer.current]', dataBuffer.current[+currentBuffer.current])
+        console.debug('proposedTypes.current', proposedTypes.current);
+        console.debug('dataBuffer.current[+currentBuffer.current]', dataBuffer.current[+currentBuffer.current]);
 
         // setImportDataMode(true);
 
@@ -789,13 +789,13 @@ const AddConnectionDialog = (props) => {
 
         function onBlur() {
             // have id + index
-            console.debug('index', index, 'id', id)
+            console.debug('index', index, 'id', id);
 
             updateMyData(index, id, value);
 
 
-            console.debug('storedPointers.current', storedPointers.current)
-            console.debug('what is value', value)
+            console.debug('storedPointers.current', storedPointers.current);
+            console.debug('what is value', value);
 
             modify(storedPointers.current[id + index], value);
         }
@@ -815,19 +815,19 @@ const AddConnectionDialog = (props) => {
     // original currentData
     const updateMyData = (rowIndex, columnId, value) => {
         // We also turn on the flag to not reset the page
-        setSkipPageReset(true)
+        setSkipPageReset(true);
         setCurrentData(old =>
             old.map((row, index) => {
                 if (index === rowIndex) {
                     return {
                         ...old[rowIndex],
                         [columnId]: value,
-                    }
+                    };
                 }
-                return row
+                return row;
             })
-        )
-    }
+        );
+    };
 
 // Set our editable cell renderer as the default Cell renderer
     // todo: just use editablecell in place of defaulcolumn
@@ -879,7 +879,7 @@ const AddConnectionDialog = (props) => {
                 updateMyData
             },
             usePagination
-        )
+        );
 
         // Render the UI for your table
         return (
@@ -921,7 +921,7 @@ const AddConnectionDialog = (props) => {
                                 <Cascader allowClear={false} options={COMPONENT_DATA_TYPES} defaultValue={[COMPONENT_DATA_TYPES[proposedTypes.current[tableCheckboxHeaderIndex]].label]} onChange={v => {
                                     if (v.length > 0)
                                         selectedTypes.current[tableCheckboxHeaderIndex] = DATA_TYPES_STRINGS[DATA_TYPES[v[0]]];
-                                    console.debug('selectedTypes.current', selectedTypes.current)
+                                    console.debug('selectedTypes.current', selectedTypes.current);
                                 }} />
 
                             </th>;
@@ -937,7 +937,7 @@ const AddConnectionDialog = (props) => {
                     </thead>
                     <tbody {...getTableBodyProps()}>
                     {page.map((row, i) => {
-                        prepareRow(row)
+                        prepareRow(row);
 
 
 
@@ -961,12 +961,12 @@ const AddConnectionDialog = (props) => {
                                     //     console.debug('data', data)
                                     rowClasses.current += (checkedRows[i] && checkedColumns[cellIndex] ? 'included' : '');
 
-                                    console.debug('rowClasses.current', rowClasses.current)
+                                    console.debug('rowClasses.current', rowClasses.current);
 
                                     return <td {...cell.getCellProps()} className={rowClasses.current}>{cell.render('Cell')}</td>;
                                 })}
                             </tr>
-                        )
+                        );
 
 
                         // return (
@@ -1008,8 +1008,8 @@ const AddConnectionDialog = (props) => {
                             type="number"
                             defaultValue={pageIndex + 1}
                             onChange={e => {
-                                const page = e.target.value ? Number(e.target.value) - 1 : 0
-                                gotoPage(page)
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                                gotoPage(page);
                             }}
                             style={{ width: '100px' }}
                         />
@@ -1017,7 +1017,7 @@ const AddConnectionDialog = (props) => {
                     <select
                         value={pageSize}
                         onChange={e => {
-                            setPageSize(Number(e.target.value))
+                            setPageSize(Number(e.target.value));
                         }}
                     >
                         {[10, 20, 30, 40, 50].map(pageSize => (
@@ -1047,10 +1047,10 @@ const AddConnectionDialog = (props) => {
                             }
                         }
 
-                        console.debug('requestFields', requestFields, 'requestData', requestData)
-                        console.debug('dataBuffer.current[+currentBuffer.current]', dataBuffer.current[+currentBuffer.current])
-                        console.debug('dataBuffer.current[+currentBuffer.current][0]', requestFields)
-                        console.debug('(currentPrimarySelection.current === \'\' ? \'A\' : currentPrimarySelection.current)', (currentPrimarySelection.current === '' ? 'A' : currentPrimarySelection.current))
+                        console.debug('requestFields', requestFields, 'requestData', requestData);
+                        console.debug('dataBuffer.current[+currentBuffer.current]', dataBuffer.current[+currentBuffer.current]);
+                        console.debug('dataBuffer.current[+currentBuffer.current][0]', requestFields);
+                        console.debug('(currentPrimarySelection.current === \'\' ? \'A\' : currentPrimarySelection.current)', (currentPrimarySelection.current === '' ? 'A' : currentPrimarySelection.current));
 
                         request.suggestions.csv(entityName, dataBuffer.current[+currentBuffer.current][0][(currentPrimarySelection.current === 'default' ? 'A' : currentPrimarySelection.current)], requestFields, selectedTypes.current, requestData, function(response) {
                             if (response === constants.RESPONSE_CODES.SUCCESS) {
@@ -1064,13 +1064,13 @@ const AddConnectionDialog = (props) => {
                     }}> Finish</Button>
                 </div>
             </>
-        )
+        );
     }
 
 
     // Let's add a currentData resetter/randomizer to help
     // illustrate that flow...
-    const resetData = () => setCurrentData(originalData)
+    const resetData = () => setCurrentData(originalData);
 
     function onFileChange(evv) {
         console.debug(evv);
@@ -1098,7 +1098,7 @@ const AddConnectionDialog = (props) => {
                                 Unique Column: <Cascader allowClear={false} options={selectablePrimaryColumns} defaultValue={['Select Column']} onChange={v => {
                                 currentPrimarySelection.current = v;
 
-                                console.debug('currentPrimarySelection.current', currentPrimarySelection.current)
+                                console.debug('currentPrimarySelection.current', currentPrimarySelection.current);
                                 let found = false;
                                 for (let p = 0; p < primaryColumns.current.length; p++) {
                                     if (primaryColumns.current[p] === v) {
@@ -1256,11 +1256,11 @@ const AddConnectionDialog = (props) => {
                                 }}
                                 parseConfig={{
                                     step: (results, file) => {
-                                        console.debug('im in step')
+                                        console.debug('im in step');
                                         // setImportDataMode(true);
                                     },
                                     complete: (results, file) => {
-                                        console.debug('im in cmplete')
+                                        console.debug('im in cmplete');
                                         // setImportDataMode(true);
                                     }
                                 }}

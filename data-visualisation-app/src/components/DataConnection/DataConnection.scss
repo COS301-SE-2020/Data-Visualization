@@ -2,11 +2,8 @@
 
 
 .dataConnectionCard{ 
-  margin: 0 auto;
-  margin-top: 20px;
 
   border-radius: 5px;
-  
   box-shadow:
     0 2.8px 2px rgba(0, 0, 0, 0.004),
     0 6.7px 5px rgba(0, 0, 0, 0.008),
@@ -16,9 +13,10 @@
     0 1px 8px rgba(0, 0, 0, 0.02);
 
   width: 80%;
-  margin: 50px auto;
+  margin: 40px auto;
   background: white;
   border-radius: 5px;
+  word-wrap: break-word;
 }
 
 #addConnetion__button{
@@ -51,3 +49,13 @@
   
   }
 }
+
+.connectionHeader{
+  width:'80%'; 
+  margin: '0 auto';
+  text-align: center; 
+  margin-top: 36px;
+  font-size: 1.175em;
+  font-weight: 500;
+}
+

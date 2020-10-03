@@ -26,7 +26,6 @@ import {CompassOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
-import Anime, { anime } from 'react-anime';
 
 
 
@@ -62,7 +61,7 @@ class Entities extends React.Component {
     });
   
     if(atLeastOne){
-      //console.log(request.user.selectedEntities);
+      console.log(request.user.selectedEntities);
       showAll = false;
       this.next();
     }
@@ -156,7 +155,7 @@ class Entities extends React.Component {
     request.user.entitiesToDisplay = [];
 
     request.user.dataSources.map((source) => {
-        //console.log(source);
+      //console.log(source);
      
       request.entities.list(source.sourceurl, source.sourcetype, function(result) {
 

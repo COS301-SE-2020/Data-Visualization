@@ -383,7 +383,7 @@ function App(props) {
 	if(pageType === 'explore'){
 		pageTitle = 'Expore';
 		if(exploreStage === 'dataConnection'){
-			pageTitle = 'Data Sources';
+			pageTitle = 'Data Connections';
 			locationTitle = 'Explore /';
 		}
 		if(exploreStage === 'entities'){
