@@ -22,7 +22,6 @@
 
 import axios from 'axios';
 import * as constants from './constants.js';
-import LoginDialog from '../pages/LoginDialog';
 
 /**
  *   Static Variables
@@ -424,7 +423,7 @@ const request = {
 		dataSources: [
 			{
 				id: 6,
-				email: 'elna@gmail.com',
+				email: 'doofenshmirtz.evil.inc.cos@gmail.com',
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				sourcetype: 0,
 			}

@@ -185,6 +185,7 @@ class DataConnection extends React.Component {
         'sourcetype' : sourcetype,
       });
 
+
       this.setState(previousState => ({
         data: request.user.dataSources,
         list: request.user.dataSources
@@ -238,7 +239,7 @@ class DataConnection extends React.Component {
     return (
      <div>
 
-      <p className = 'connectionHeader' headStyle={{ border: 0, textAlign: 'center'}}>Manage Your Data Connections</p>
+      <p className = 'connectionHeader'>Manage Your Data Connections</p>
         <List
           className="dataSourceList"
           loading={initLoading}

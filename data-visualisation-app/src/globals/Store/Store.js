@@ -6,7 +6,7 @@ const defaultGlobalState = {
 	dataSources : [
 			{
 				'id': 6,
-				'email': 'elna@gmail.com',
+				'email': 'doofenshmirtz.evil.inc.cos@gmail.com',
 				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				'sourcetype': 0,
 			}

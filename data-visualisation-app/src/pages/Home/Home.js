@@ -15,8 +15,8 @@
  *   Constraints: None
  */
 
-import React, { useRef } from 'react';
-import { Link, animateScroll as scroll } from 'react-scroll';
+import React from 'react';
+import { Link } from 'react-scroll';
 import { Typography } from 'antd';
 import './Home.scss';
 import Anime, { anime } from 'react-anime';

@@ -20,8 +20,8 @@
  */
 
 import './Entities.scss';
-import React, { Fragment, useEffect, useState, useRef} from 'react';
-import { List, Avatar, Button, Skeleton, Form, Checkbox, Card, message } from 'antd';
+import React, { Fragment} from 'react';
+import { List, Avatar, Skeleton, Form, Checkbox, Card, message } from 'antd';
 import {CompassOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
@@ -61,7 +61,7 @@ class Entities extends React.Component {
     });
   
     if(atLeastOne){
-      console.log(request.user.selectedEntities);
+      //console.log(request.user.selectedEntities);
       showAll = false;
       this.next();
     }
@@ -183,7 +183,7 @@ class Entities extends React.Component {
 
   render() {
   
-    const { getFieldDecorator } = this.props.form;
+    //const { getFieldDecorator } = this.props.form;
     const { initLoading, loading, list } = this.state;
 
     const loadMore =

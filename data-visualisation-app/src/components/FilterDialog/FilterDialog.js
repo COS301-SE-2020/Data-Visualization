@@ -22,10 +22,9 @@
 /**
   * Imports
 */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Button, Modal, Select, Tag, Form} from 'antd';
 import request from '../../globals/requests';
-import * as constants from '../../globals/constants';
 import {message} from 'antd';
 
 
@@ -133,8 +132,8 @@ const FilterDialog = (props) => {
       };
 
     function handleFilterCancel() {
-        props.setFState(false);
         setVisible(false);
+        props.setFState(false);
     };
 
 

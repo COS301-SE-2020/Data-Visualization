@@ -21,7 +21,7 @@
 
 import React from 'react';
 import {useState} from 'react';
-import {Button, Modal, Input, Tooltip, AutoComplete, Select, notification, Menu, Dropdown, message  } from 'antd';
+import {Button, Modal, Input, Tooltip, notification, Menu, Dropdown  } from 'antd';
 import {Form, Checkbox, Spin} from 'antd';
 import { QuestionCircleOutlined, UserOutlined, PoweroffOutlined} from '@ant-design/icons';
 import request from '../../globals/requests';
@@ -32,9 +32,6 @@ import {Info} from '@styled-icons/open-iconic/Info';
 import './LoginDialog.scss';
 
 
-
-const { Option } = Select;
-const AutoCompleteOption = AutoComplete.Option;
 
 const formItemLayout = {
   labelCol: {
@@ -244,7 +241,7 @@ function SignUpDialog(props) {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             name="agreement"
             valuePropName="checked"
             rules={[
@@ -255,7 +252,7 @@ function SignUpDialog(props) {
             <Checkbox>
               I have read the <a href="">agreement</a>
             </Checkbox>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit">
               Register
@@ -367,7 +364,7 @@ function LoginDialog(props) {
         request.user.dataSources = [
           {
             'id': 6,
-            'email': 'elna@gmail.com',
+            'email': 'doofenshmirtz.evil.inc.cos@gmail.com',
             'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc',
             'sourcetype': 0,
           }
