@@ -24,12 +24,13 @@
   * Imports
 */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Button, Modal, Input, Select, Typography, Divider, Checkbox} from 'antd';
+import {Button, Modal, Input, Select, Typography, Divider, Checkbox, Cascader, Result} from 'antd';
 import { Form } from 'antd';
 import {useTable, usePagination} from 'react-table';
 import './AddConnectionDialog.scss';
 import { CSVReader } from 'react-papaparse';
 import CloseOutlined from '@ant-design/icons/lib/icons/CloseOutlined';
+import CloseCircleOutlined from '@ant-design/icons/lib/icons/CloseCircleOutlined';
 
 /**
   * @param props passed from DataConnection class.
@@ -308,7 +309,7 @@ const AddConnectionDialog = (props) => {
         // even a server. But for this example, we'll just fake it.
 
         // Give this fetch an ID
-        const fetchId = ++fetchIdRef.current
+        // const fetchId = ++fetchIdRef.current
 
         // Set the loading state
         // setLoading(true)
@@ -333,21 +334,40 @@ const AddConnectionDialog = (props) => {
 
 
 
-        console.debug('temptmeptemp.current', temptmeptemp.current)
+        console.debug('initialRequestFlag.current', initialRequestFlag.current)
 
-        if (pageIndex > 0)
+        // if (initialRequestFlag.current || (pageIndex > 0 && !initialRequestFlag.current)) {
+        if (pageIndex > 0) {
+            initialRequestFlag.current = true;
             setCurrentData(dataBuffer.current[+currentBuffer.current].slice(pageSize * pageIndex, pageSize * pageIndex + pageSize));
-        setPageCount(Math.ceil(dataBuffer.current[+currentBuffer.current].length / pageSize));
+        }
+        // setPageCount(Math.ceil(dataBuffer.current[+currentBuffer.current].length / pageSize));
+        setPageCount(10);
 
 
 
     }, [])
 
 
-    const temptmeptemp = useRef(false);
+    const initialRequestFlag = useRef(false);
+
+    const primaryColumns = useRef([]);
+    const [selectablePrimaryColumns, setSelectablePrimaryColumns] = useState([{
+        value: 'Select Column',
+        label: 'default'
+    }]);
+    const currentPrimarySelection = useRef('default');
+    const [primaryMessage, setPrimaryMessage] = useState('');
 
 
 
+    const proposedTypes = useRef();
+
+    const [importError, setImportError] = useState(false);
+
+    const [fileError, setFileError] = useState(null);
+
+    const refCSVReader = useRef(null);
 
 
 
@@ -360,7 +380,63 @@ const AddConnectionDialog = (props) => {
         BOOLEAN: 0,
         INTEGER: 1,
         FLOAT: 2,
-        STRING: 3
+        STRING: 3,
+        DATE: 4
+    };
+
+    const DATA_TYPE_REGEX = {
+        boolean: /^(true|false|0|1)$/,
+        integer: /^-?\d{1,8}$/,
+        float: /^-?\d{1,23}\.\d{1,8}$/
+    };
+
+    const ERROR_TYPES = {
+        TYPE: {
+            message: '',
+            validate: function () {
+
+            }
+        },
+        PRIMARY_KEY: {
+            message: '',
+            validate: function () {
+
+            }
+        },
+        QUOTES: {
+            message: '',
+            validate: function () {
+
+            }
+        }
+    };
+
+    const COMPONENT_DATA_TYPES = [{
+        value: 'BOOLEAN',
+        label: 'Boolean'
+    }, {
+        value: 'INTEGER',
+        label: 'Integer'
+    }, {
+        value: 'FLOAT',
+        label: 'Float'
+    }, {
+        value: 'STRING',
+        label: 'String'
+    }, {
+        value: 'DATE',
+        label: 'Date'
+    }];
+
+    const INVALID_FILE_ERROR = {
+        EMPTY_FILE: {
+            title: 'Empty File',
+            description: 'Please upload a CSV file with at least one row of data.'
+        },
+        NO_DATA: {
+            title: 'No Data',
+            description: 'Please upload a CSV file with at least one data value.'
+        }
     };
 
     /** -------------- Functions -------------- */
@@ -413,7 +489,40 @@ const AddConnectionDialog = (props) => {
         }
     }
 
+    function getStringDataType(stringValue) {
+        /** Determine type of string value. */
+
+        if (stringValue.match(DATA_TYPE_REGEX.boolean)) {
+            return DATA_TYPES.BOOLEAN;
+        } else if (stringValue.match(DATA_TYPE_REGEX.integer)) {
+            return DATA_TYPES.INTEGER;
+        } else if (stringValue.match(DATA_TYPE_REGEX.float)) {
+            return DATA_TYPES.FLOAT;
+        } else {
+            /** Check if value is date. */
+            if (!isNaN(Date.parse(stringValue))) {
+                return DATA_TYPES.DATE;
+            } else {
+                /** Else value is string. */
+                return DATA_TYPES.STRING;
+            }
+        }
+    }
+
    function onLoadedCSVFile(data) {
+
+        if (importError)
+            setImportError(false);
+
+       console.debug('refCSVReader', refCSVReader)
+        console.debug('refCSVReader.current', refCSVReader.current)
+        if (data.length === 0) {
+
+            refCSVReader.current.removeFile();
+            setFileError(INVALID_FILE_ERROR.EMPTY_FILE);
+            setImportError(true);
+            return;
+        }
 
         console.debug('data', data)
 
@@ -422,11 +531,8 @@ const AddConnectionDialog = (props) => {
        let newData = [];
        let newColumns = [];
 
-       let regex = {
-           boolean: /^(true|false|0|1)$/,
-           integer: /^-?\d{1,8}$/,
-           float: /^-?\d{1,23}\.\d{1,8}$/
-       };
+       let dataValue = '';
+       let foundValue = false;
 
        let maxColumnCount = 0;
        for (let n = 0; n < data.length; n++)
@@ -457,16 +563,86 @@ const AddConnectionDialog = (props) => {
 
        console.debug('colNames', colNames)
 
+       proposedTypes.current = new Array(colNames.length);
+       let uniqueColumn = colNames.map(() => {return true;});
+       // console.debug('proposedTypes', proposedTypes.current[0])
+       // console.debug('uniqueColumn', uniqueColumn)
+
         for (let row = 0; row < data.length; row++) {
             newData.push({});
             for (let col = 0; col < data[row].data.length; col++) {
+
+                if (data[row].errors.length > 0) {
+                    refCSVReader.current.removeFile();
+                    setFileError({
+                        title: data[row].errors[0].type,
+                        description: data[row].errors[0].message + '.'
+                    });
+                    setImportError(true);
+                    return;
+                }
+
+                dataValue = data[row].data[col].trim();
+
+                if (!foundValue && dataValue !== '')
+                    foundValue = true;
+
+                if (row === 0 || typeof proposedTypes.current[col] === 'undefined') {
+                    proposedTypes.current[col] = getStringDataType(dataValue);
+                } else if (getStringDataType(dataValue) !== proposedTypes.current[col]) {
+                    // todo: allow for error correction
+                    // newData[newData.length-1][colNames[col]].error = {};
+                }
+
                 if (data[row].data.length < maxColumnCount) {
                     // todo: later
                 }
-                newData[newData.length-1][colNames[col]] = data[row].data[col];
+
+                /** Determine if value in row is unique. */
+                if (uniqueColumn[col]) {
+                    for (let d = row; d < data.length; d++) {
+                        if (dataValue === data[d].data[col]) {
+                            uniqueColumn[col] = false;
+                            break;
+                        }
+                    }
+                }
+
+
+                newData[newData.length-1][colNames[col]] = dataValue;
                 storedPointers.current[colNames[col] + row] = [row, colNames[col]];
             }
         }
+
+        if (!foundValue) {
+            refCSVReader.current.removeFile();
+            setFileError(INVALID_FILE_ERROR.NO_DATA);
+            setImportError(true);
+            return;
+        }
+
+       console.debug('befselectablePrimaryColumns', selectablePrimaryColumns.length)
+       let newSelectableCols = [{
+           value: 'default',
+           label: 'Select Column'
+       }];
+       for (let u = 0; u < uniqueColumn.length; u++) {
+           if (uniqueColumn[u])
+               primaryColumns.current.push(colNames[u]);
+           newSelectableCols.push({
+               value: colNames[u].toLowerCase(),
+               label: colNames[u]
+           });
+       }
+
+       setSelectablePrimaryColumns(newSelectableCols);
+
+       console.debug('selectablePrimaryColumns', selectablePrimaryColumns)
+       console.debug('primaryColumns', primaryColumns)
+
+       /** Data type analysis */
+
+
 
        // setImportDataMode(true);
 
@@ -483,14 +659,14 @@ const AddConnectionDialog = (props) => {
        dataBuffer.current[+currentBuffer.current] = newData.map((newDataItem) => {
            return newDataItem;
        });
-
-       console.debug('SHOULD BE THE SAME', dataBuffer.current[+currentBuffer.current], 'AND THIS', dataBuffer.current[+!currentBuffer.current])
+       //
+       // console.debug('SHOULD BE THE SAME', dataBuffer.current[+currentBuffer.current], 'AND THIS', dataBuffer.current[+!currentBuffer.current])
 
        setCurrentColumns(newColumns);
-       // setCurrentData(newData);
+       setCurrentData(newData);
 
 
-       setCurrentData(dataBuffer.current[+currentBuffer.current].slice(0, 10));
+       // setCurrentData(dataBuffer.current[+currentBuffer.current].slice(0, 10));
 
 
        setTimeout(function () {
@@ -500,10 +676,12 @@ const AddConnectionDialog = (props) => {
        }, 3000);
 
 
+       console.debug('proposedTypes.current', proposedTypes.current)
+
        // setImportDataMode(true);
 
 
-       temptmeptemp.current = true;
+       // initialRequestFlag.current = true;
 
    }
 
@@ -637,21 +815,28 @@ const AddConnectionDialog = (props) => {
      */
 // Be sure to pass our updateMyData and the skipPageReset option
 
+    function Table({ columns, data, updateMyData }) {
+        // Use the state and functions returned from useTable to build your UI
+
+    const rowClasses = useRef('');
+    const [checkedRows, setCheckRows] = useState(data.map(() => {
+        return true;
+    }));
+    const [checkedColumns, setCheckedColumns] = useState(columns.map(() => {
+        return true;
+    }));
 
 
 
-    function Table({
-                       columns,
-                       data,
-                       fetchData,
-                       pageCount: controlledPageCount,
-                   }) {
         const {
             getTableProps,
             getTableBodyProps,
             headerGroups,
             prepareRow,
-            page,
+            page, // Instead of using 'rows', we'll use page,
+            // which has only the rows for the active page
+
+            // The rest of these things are super handy, too ;)
             canPreviousPage,
             canNextPage,
             pageOptions,
@@ -660,87 +845,112 @@ const AddConnectionDialog = (props) => {
             nextPage,
             previousPage,
             setPageSize,
-            // Get the state from the instance
             state: { pageIndex, pageSize },
         } = useTable(
             {
                 columns,
                 data,
-                initialState: { pageIndex: 0 }, // Pass our hoisted table state
-                manualPagination: true, // Tell the usePagination
-                // hook that we'll handle our own data fetching
-                // This means we'll also have to provide our own
-                // pageCount.
-                pageCount: controlledPageCount,
+                initialState: { pageIndex: 0, pageSize: 10 },
+                defaultColumn,
+                updateMyData
             },
             usePagination
         )
 
-        // Listen for changes in pagination and use the state to fetch our new data
-        React.useEffect(() => {
-            fetchData({ pageIndex, pageSize })
-            console.debug('calling table useEffect', 'pageIndex', pageIndex, 'pageSize', pageSize)
-        }, [fetchData, pageIndex, pageSize])
-
         // Render the UI for your table
         return (
             <>
-      <pre>
-        <code>
-          {JSON.stringify(
-              {
-                  pageIndex,
-                  pageSize,
-                  pageCount,
-                  canNextPage,
-                  canPreviousPage,
-              },
-              null,
-              2
-          )}
-        </code>
-      </pre>
+              {/*<pre>*/}
+              {/*  <code>*/}
+              {/*    {JSON.stringify(*/}
+              {/*        {*/}
+              {/*            pageIndex,*/}
+              {/*            pageSize,*/}
+              {/*            pageCount,*/}
+              {/*            canNextPage,*/}
+              {/*            canPreviousPage,*/}
+              {/*        },*/}
+              {/*        null,*/}
+              {/*        2*/}
+              {/*    )}*/}
+              {/*  </code>*/}
+              {/*</pre>*/}
                 <table {...getTableProps()}>
                     <thead>
-                    {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>
-                                    {column.render('Header')}
-                                    <span>
-                    {column.isSorted
-                        ? column.isSortedDesc
-                            ? ' 🔽'
-                            : ' 🔼'
-                        : ''}
-                  </span>
-                                </th>
-                            ))}
+
+                        <tr>
+                            <th></th>
+                            {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
+                                return <th key={tableCheckboxHeaderIndex}><Checkbox onChange={() => {
+                                    setCheckedColumns(checkedColumns.map((tmp, tmp_index) => {
+                                        return (tmp_index === tableCheckboxHeaderIndex ? !tmp : tmp);
+                                    }));
+                                }} checked={checkedColumns[tableCheckboxHeaderIndex]} /></th>;
+                            })}
                         </tr>
-                    ))}
+
+
+                        <tr>
+                            <th></th>
+                            {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
+                                return <th key={tableCheckboxHeaderIndex}>
+                                    <Cascader allowClear={false} options={COMPONENT_DATA_TYPES} defaultValue={[COMPONENT_DATA_TYPES[proposedTypes.current[tableCheckboxHeaderIndex]].label]} onChange={v => {
+
+                                    }} />
+
+                                </th>;
+                            })}
+                        </tr>
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {[<th key={-1}>nothing</th>].concat(headerGroup.headers.map(column => (
+                                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                                )))}
+                            </tr>
+                        ))}
                     </thead>
                     <tbody {...getTableBodyProps()}>
                     {page.map((row, i) => {
                         prepareRow(row)
+
+
+
+                            // console.debug('row', row)
                         return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map(cell => {
-                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                            <tr {...row.getRowProps()} >
+                                <td><Checkbox onChange={() => {
+
+                                    setCheckRows(checkedRows.map((tmp, tmp_index) => {
+                                        return (tmp_index === row.index ? !tmp : tmp);
+                                    }));
+                                }} checked={checkedRows[row.index]} /></td>
+
+                                {row.cells.map((cell, cellIndex) => {
+
+                                    rowClasses.current = '';
+                                    if (row.original.hasOwnProperty('error')) {
+                                        rowClasses.current += 'error ';
+                                    }
+                                    // console.debug('checkedRows', checkedRows)
+                                    //     console.debug('data', data)
+                                    rowClasses.current += (checkedRows[i] && checkedColumns[cellIndex] ? 'included' : '');
+
+                                    console.debug('rowClasses.current', rowClasses.current)
+
+                                    return <td {...cell.getCellProps()} className={rowClasses.current}>{cell.render('Cell')}</td>;
                                 })}
                             </tr>
                         )
+
+
+                        // return (
+                        //     <tr {...row.getRowProps()}>
+                        //         {row.cells.map(cell => {
+                        //             return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        //         })}
+                        //     </tr>
+                        // )
                     })}
-                    <tr>
-                        {/*{loading ? (*/}
-                        {/*    // Use our custom loading state to show a loading indicator*/}
-                        {/*    <td colSpan="10000">Loading...</td>*/}
-                        {/*) : (*/}
-                            <td colSpan="10000">
-                                Showing {page.length} of ~{controlledPageCount * pageSize}{' '}
-                                results
-                            </td>
-                        {/*)}*/}
-                    </tr>
                     </tbody>
                 </table>
                 {/*
@@ -795,6 +1005,7 @@ const AddConnectionDialog = (props) => {
         )
     }
 
+
     // Let's add a currentData resetter/randomizer to help
     // illustrate that flow...
     const resetData = () => setCurrentData(originalData)
@@ -820,14 +1031,37 @@ const AddConnectionDialog = (props) => {
                             <Divider />
                             <div style={{padding: '20px'}}>
 
+                                Unique Column: <Cascader allowClear={false} options={selectablePrimaryColumns} defaultValue={['Select Column']} onChange={v => {
+                                    currentPrimarySelection.current = v;
+                                    let found = false;
+                                    for (let p = 0; p < primaryColumns.current.length; p++) {
+                                        if (primaryColumns.current[p] === v) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!found)
+                                        setPrimaryMessage('Some data values are not unique within this column.');
+                                    else
+                                        setPrimaryMessage('');
+
+                                    // todo: check if row is selected as in checkbox selected.
+                            }} /> <span>{primaryMessage}</span>
 
                                 <Table
                                     columns={currentColumns}
                                     data={currentData}
-                                    fetchData={fetchData}
-                                    // loading={false}
-                                    pageCount={pageCount}
+                                    updateMyData={updateMyData}
                                 />
+
+                                {/*<Table*/}
+                                {/*    columns={currentColumns}*/}
+                                {/*    data={currentData}*/}
+                                {/*    fetchData={fetchData}*/}
+                                {/*    // loading={false}*/}
+                                {/*    pageCount={pageCount}*/}
+                                {/*/>*/}
 
 
 
@@ -841,6 +1075,8 @@ const AddConnectionDialog = (props) => {
                             </div>
                         </div>
                     </div>
+
+
                     :
                     <Modal
                         title='Add data source'
@@ -893,7 +1129,16 @@ const AddConnectionDialog = (props) => {
                             {/*    <Button  style={{marginTop: '25px'}} onClick={open}>Import CSV Data</Button>*/}
                             {/*</div>*/}
 
+                            {(importError &&
+                                <Result
+                                    status="error"
+                                    title={fileError.title}
+                                    subTitle={fileError.description}
+                                >
+                                </Result>)}
+
                             <CSVReader
+                                ref={refCSVReader}
                                 onFileLoad={onLoadedCSVFile}
                                 onError={onFileError}
                                 // onError={this.handleOnError}
@@ -932,6 +1177,172 @@ const AddConnectionDialog = (props) => {
 };
 
 export default AddConnectionDialog;
+
+
+
+// below one is controlled pagination
+
+// function Table({
+//                    columns,
+//                    data,
+//                    fetchData,
+//                    pageCount: controlledPageCount,
+//                }) {
+//     const {
+//         getTableProps,
+//         getTableBodyProps,
+//         headerGroups,
+//         prepareRow,
+//         page,
+//         canPreviousPage,
+//         canNextPage,
+//         pageOptions,
+//         pageCount,
+//         gotoPage,
+//         nextPage,
+//         previousPage,
+//         setPageSize,
+//         // Get the state from the instance
+//         state: { pageIndex, pageSize },
+//     } = useTable(
+//         {
+//             columns,
+//             data,
+//             initialState: { pageIndex: 0 }, // Pass our hoisted table state
+//             manualPagination: true, // Tell the usePagination
+//             // hook that we'll handle our own data fetching
+//             // This means we'll also have to provide our own
+//             // pageCount.
+//             pageCount: controlledPageCount,
+//         },
+//         usePagination
+//     )
+//
+//     // Listen for changes in pagination and use the state to fetch our new data
+//     React.useEffect(() => {
+//         fetchData({ pageIndex, pageSize })
+//         console.debug('calling table useEffect', 'pageIndex', pageIndex, 'pageSize', pageSize)
+//     }, [fetchData, pageIndex, pageSize])
+//
+//     // Render the UI for your table
+//     return (
+//         <>
+//       <pre>
+//         <code>
+//           {JSON.stringify(
+//               {
+//                   pageIndex,
+//                   pageSize,
+//                   pageCount,
+//                   canNextPage,
+//                   canPreviousPage,
+//               },
+//               null,
+//               2
+//           )}
+//         </code>
+//       </pre>
+//             <table {...getTableProps()}>
+//                 <thead>
+//                 {headerGroups.map(headerGroup => (
+//                     <tr {...headerGroup.getHeaderGroupProps()}>
+//                         {headerGroup.headers.map(column => (
+//                             <th {...column.getHeaderProps()}>
+//                                 {column.render('Header')}
+//                                 <span>
+//                     {column.isSorted
+//                         ? column.isSortedDesc
+//                             ? ' 🔽'
+//                             : ' 🔼'
+//                         : ''}
+//                   </span>
+//                             </th>
+//                         ))}
+//                     </tr>
+//                 ))}
+//                 </thead>
+//                 <tbody {...getTableBodyProps()}>
+//                 {page.map((row, i) => {
+//                     prepareRow(row)
+//                     return (
+//                         <tr {...row.getRowProps()}>
+//                             {row.cells.map(cell => {
+//                                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+//                             })}
+//                         </tr>
+//                     )
+//                 })}
+//                 <tr>
+//                     {/*{loading ? (*/}
+//                     {/*    // Use our custom loading state to show a loading indicator*/}
+//                     {/*    <td colSpan="10000">Loading...</td>*/}
+//                     {/*) : (*/}
+//                     <td colSpan="10000">
+//                         Showing {page.length} of ~{controlledPageCount * pageSize}{' '}
+//                         results
+//                     </td>
+//                     {/*)}*/}
+//                 </tr>
+//                 </tbody>
+//             </table>
+//             {/*
+//         Pagination can be built however you'd like.
+//         This is just a very basic UI implementation:
+//       */}
+//             <div className="pagination">
+//                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+//                     {'<<'}
+//                 </button>{' '}
+//                 <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+//                     {'<'}
+//                 </button>{' '}
+//                 <button onClick={() => nextPage()} disabled={!canNextPage}>
+//                     {'>'}
+//                 </button>{' '}
+//                 <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+//                     {'>>'}
+//                 </button>{' '}
+//                 <span>
+//           Page{' '}
+//                     <strong>
+//             {pageIndex + 1} of {pageOptions.length}
+//           </strong>{' '}
+//         </span>
+//                 <span>
+//           | Go to page:{' '}
+//                     <input
+//                         type="number"
+//                         defaultValue={pageIndex + 1}
+//                         onChange={e => {
+//                             const page = e.target.value ? Number(e.target.value) - 1 : 0
+//                             gotoPage(page)
+//                         }}
+//                         style={{ width: '100px' }}
+//                     />
+//         </span>{' '}
+//                 <select
+//                     value={pageSize}
+//                     onChange={e => {
+//                         setPageSize(Number(e.target.value))
+//                     }}
+//                 >
+//                     {[10, 20, 30, 40, 50].map(pageSize => (
+//                         <option key={pageSize} value={pageSize}>
+//                             Show {pageSize}
+//                         </option>
+//                     ))}
+//                 </select>
+//             </div>
+//         </>
+//     )
+// }
+
+
+
+
+
+
+
 
 
 // function Table({ columns, data, updateMyData, skipPageReset }) {
