@@ -26,29 +26,73 @@ class XML {
 
 	static getEntityData(src, entity, fieldList, inputdata) {
 		let data = [];
-		
-		try {
-			
-			let parser = new DOMParser();
-			let xmlDoc = parser.parseFromString(inputdata, 'text/xml');
-			for (let i = 0; i < fieldList.length; i++) {
-				let field = xmlDoc.getElementsByTagName(fieldList[i]);
-				for (let j = 0; j < field.length; j++) {
-					if (!data[j]) {
-						data[j] = {};
+
+		return new Promise((resolve, reject) => {
+			try {
+				let parser = new DOMParser();
+				let xmlDoc = parser.parseFromString(inputdata, 'text/xml');
+				let parents;
+
+				if (fieldList.length > 0) {
+					parents = xmlDoc.getElementsByTagName(xmlDoc.getElementsByTagName(fieldList[0])[0].parentNode.tagName);
+
+					if (!parents || parents.length === 0) {
+
+						let count = 0;
+						let children = xmlDoc.childNodes;
+
+						data[0] = {};
+						for (let i = 0; i < fieldList.length; i++) {
+							data[0][fieldList[i]] = null;
+						}
+						for (let i = 0; i < children.length; i++) {
+							if (data[count][children[i].tagName]) {
+								count++;
+								data[count] = {};
+								for (let j = 0; j < fieldList.length; j++) {
+									data[count][fieldList[j]] = null;
+								}
+							}
+							if (fieldList.indexOf(children[i].tagName) >= 0) {
+								data[count][children[i].tagName] = children[i].childNodes[0].data;
+							}
+						}
+
+					} else {
+						for (let i = 0; i < parents.length; i++) {
+							let children = parents[i].childNodes;
+							data[i] = {};
+							for (let j = 0; j < fieldList.length; j++) {
+								data[i][fieldList[j]] = null;
+							}
+
+							for (let j = 0; j < children.length; j++) {
+								if (fieldList.indexOf(children[j].tagName) >= 0) {
+									data[i][children[j].tagName] = children[j].childNodes[0].data;
+								}
+							}
+						}
 					}
-					data[j][fieldList[i]] = field[j].childNodes[0].data;
 				}
+				//console.log(data);
+				resolve(data);
+			} catch(e) {
+				console.log('XML File in invalid format');
+				//console.log(e);
+				reject({
+					title: 'Invalid XML',
+					description: 'XML File in invalid format'
+				});
 			}
-			
-		} catch (e) {
-			console.log('XML File in invalid format');
-		}
+		});
 		
-		return new Promise((resolve, reject) => resolve(data));
 	}
 
 	static parseMetadata(entity, primaryKey, fieldlist, typelist) {
+		if (typelist.length !== fieldlist.length) {
+			throw('Field types and Fields do not align');
+		}
+
 		let items = {};
 		items[entity] = fieldlist;
 
@@ -61,10 +105,12 @@ class XML {
 		types[entity] = typelist;
 
 		let prims = {};
-		if (!primaryKey) {
-			prims[entity] = fieldlist[0];
-		} else {
-			prims[entity] = primaryKey;
+		if (fieldlist > 0) {
+			if (!primaryKey) {
+				prims[entity] = fieldlist[0];
+			} else {
+				prims[entity] = primaryKey;
+			}
 		}
 
 		return { items, sets, associations, types, prims };
