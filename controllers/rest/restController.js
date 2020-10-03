@@ -23,6 +23,7 @@
  * 04/08/2020   Elna Pistorius                       Updated CSV exporting function
  * 14/09/2020	Marco Lombaard						 Added mergeSort and dateConversion functions
  * 15/09/2020	Marco Lombaard						 added removeDuplicateKeys function
+ * 02/10/2020   Elna Pistorius 						 Created a new route to import CSV
  *
  * Test Cases: none
  *
@@ -113,7 +114,7 @@ class RestController {
 	 * @return a promise
 	 */
 	static addDataSource(email, dataSourceURL, dataSourceType, done, error) {
-		Database.addDataSource(email, dataSourceURL, dataSourceType)
+		Database.addDataSourceRemote(email, dataSourceURL, dataSourceType)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
@@ -184,6 +185,53 @@ class RestController {
 			.then((list) => done(list))
 			.catch((err) => error && error(err));
 	}
+
+	/**
+	 * This function gets entity data.
+	 * @param EntityName the name of the entity that needs to be imported
+	 * @param PrimaryKey the primary key in the table
+	 * @param fields the list of fields that are in the table
+	 * @param types the types that are in the table
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static importLocalSource(srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
+		let src = DataSource.generateLocalSourceFileName(srcType);
+
+		DataSource.updateMetaData(src, srcType, EntityName, PrimaryKey, fields, types)
+			.then(() => {
+				DataSource.updateEntityData(src, srcType, EntityName, fields, data)
+					.then(() => {
+						console.log('IMPORTED: ' + src);
+						done({ source: src });
+					})
+					.catch((err) => error && error(err));
+			})
+			.catch((err) => error && error(err));
+	}
+
+	/**
+	 * This function gets entity data.
+	 * @param EntityName the name of the entity that needs to be imported
+	 * @param PrimaryKey the primary key in the table
+	 * @param fields the list of fields that are in the table
+	 * @param types the types that are in the table
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 */
+	static importLocalSourceAuth(email, srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
+		const src = DataSource.generateLocalSourceFileName(srcType);
+
+		const meta = { entity: EntityName, prim: PrimaryKey, fields, types };
+
+		Database.addDataSourceLocal(email, src, srcType, meta, data)
+			.then(() => {
+				console.log('IMPORTED: ' + src);
+				done({ source: src });
+			})
+			.catch((err) => error && error(err));
+	}
+
 	/**************** Suggestions ****************/
 
 	/**
@@ -191,6 +239,9 @@ class RestController {
 	 * @param graph the graph that is to be set as the fittest graph
 	 * @param entities the list of entities that should be used for suggestion generation
 	 * @param fields the list of fields that should be used for suggestion generation
+	 * @param graphTypes the types of graphs to be suggested
+	 * @param done
+	 * @param error
 	 */
 	static setSuggestionParams(graph, entities, fields, graphTypes, done, error) {
 		try {
@@ -208,14 +259,15 @@ class RestController {
 				return entity.datasource;
 			});
 
-			console.log(datasourceTypes, datasources);
+			// console.log(datasourceTypes, datasources);
 
 			Promise.all(datasources.map((src, i) => DataSource.getMetaData(src, datasourceTypes[i])))
 				.then((metaDataList) => {
 					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], datasourceTypes[i], Meta));
+					console.log('================================================');
 					console.log('Meta Data retrieved for sources:');
-					console.log(datasources);
-
+					console.log([...new Set(datasources)]);
+					console.log('================================================');
 					done();
 				})
 				.catch((err) => {
@@ -286,20 +338,29 @@ class RestController {
 
 							let forecastResults = await DataSource.predictTimeSeries(data.data, count).catch((err) => {
 								isForecasting = false;
-								console.log('Time Series Forecast failed...');
+								console.log('Time Series Forecast failed...', err.data.error);
 							});
 
-							console.log(forecastResults);
+							// console.log(forecastResults);
 							if (forecastResults && isForecasting) {
 								forecast = forecastResults.forecast;
 								trimmedSet = forecastResults.trimmedSet;
-							} else isForecasting = false;
 
-						} else { //get rid of duplicate keys(previous checks did that automatically, it should do it for others too)
+								if (data) {
+									forecast.unshift(data.data[data.data.length - 1]);
+								}
+							} else isForecasting = false;
+						} else {
+							//get rid of duplicate keys(previous checks did that automatically, it should do it for others too)
 							data = this.removeDuplicateKeys(data);
 						}
 
-						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType);
+						let charttype = null;
+						if (suggestion && suggestion.option && suggestion.option.series && suggestion.option.series[0] && suggestion.option.series[0].type) {
+							charttype = suggestion.option.series[0].type;
+						}
+
+						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType, charttype);
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
@@ -310,16 +371,19 @@ class RestController {
 							// console.log('BEFORE:', chart);
 
 							if (isForecasting && forecast && trimmedSet) {
-								console.log('Forecast:', forecast);
-
+								// console.log('Forecast:', forecast);
 								chart = GraphSuggesterController.addSeriesData(chart, { forecast, trimmedSet });
 							}
-							console.log('AFTER:', chart.series);
+
+							GraphSuggesterController.suggestionsMade++;
 
 							done(chart);
 						}
 					})
-					.catch((err) => error & error(err));
+					.catch((err) => {
+						console.log(err);
+						done({});
+					});
 			}
 		} else {
 			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status: 500 });
@@ -494,13 +558,17 @@ class RestController {
 	 * @return {data} an object containing a 2D array of label-value pairs
 	 */
 	static stringsToGraphData(stringDataArray) {
+		// eslint-disable-next-line eqeqeq
+		if (!stringDataArray) {
+			console.log('No data received');
+			return null;
+		}
 		//TODO could move this to IGA for generation on best way to represent strings
 		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
 		let dataArray = stringDataArray.data;
 
-		// eslint-disable-next-line eqeqeq
-		if (dataArray == null) {
+		if (!dataArray) {
 			console.log('No data received for this entity and field');
 			return null;
 		}
@@ -533,6 +601,10 @@ class RestController {
 	static boolsToGraphData(boolDataArray) {
 		//TODO could move this to IGA for generation on best way to represent strings
 
+		if (!boolDataArray) {
+			console.log('No data received');
+			return null;
+		}
 		let list = {}; //The basic structure will be key-value pairs, where keys are unique string values
 		//values will be how many times each key has occurred
 		let dataArray = boolDataArray.data;
@@ -577,17 +649,46 @@ class RestController {
 	 * @returns {*} the object containing the converted data
 	 */
 	static dateConversion(dataArray) {
+		if (!dataArray) {
+			console.log('No data received');
+			return null;
+		}
+
 		let data = dataArray.data;
+
+		if (!data) {
+			console.log('No data received for this entity and field');
+			return null;
+		}
+
 		let rawDate;
 
 		let temp = [];
 
 		for (let i = 0; i < data.length; i++) {
 			rawDate = data[i][0]; //the key is a date
-			let index = rawDate.indexOf('(') + 1; //trim all up until the first integer
-			rawDate = rawDate.substr(index, rawDate.indexOf(')') - index); //trim everything after the last integer
-			rawDate = parseInt(rawDate); //convert from string to int
-			temp[i] = rawDate;
+
+			let index; //the first digit index
+			let lastIndex; //the last digit index
+			for (let j = 0; j < rawDate.length; j++) {
+				if (/\d/.test(rawDate[j])) {
+					//if it is a number
+					if (!index) {
+						//if we don't have an index yet
+						index = j; //this is the first digit
+					}
+					lastIndex = j; //this will change to current index until the last digit is read
+				}
+			}
+
+			if (!lastIndex) {
+				//no digits found
+				temp[i] = rawDate;
+			} else {
+				//copy in index range
+				temp[i] = rawDate.substr(index, lastIndex - index + 1);
+			}
+			// console.log(temp[i]);
 			// console.log(date.toDateString());
 		}
 
@@ -605,10 +706,27 @@ class RestController {
 		data = [];
 		let keys = Object.keys(tempMap);
 
-		for (let i = 0; i < keys.length; i++) {
-			data[i] = [];
-			data[i][0] = new Date(parseInt(keys[i])).toDateString();
-			data[i][1] = tempMap[keys[i]];
+		try {
+			for (let i = 0; i < keys.length; i++) {
+				data[i] = [];
+				if (/[a-zA-Z]/.test(keys[i])) {
+					//if contains text, don't do parseInt
+					data[i][0] = new Date(keys[i]).toDateString();
+				} else {
+					data[i][0] = new Date(parseInt(keys[i])).toDateString();
+				}
+				data[i][1] = tempMap[keys[i]];
+			}
+		} catch (e) {
+			//invalid date
+			console.log('Invalid date encountered, treating dates as strings');
+			for (let i = 0; i < keys.length; i++) {
+				//keep the reordered list, so replace old dataArray.data
+				dataArray.data[i] = [];
+				dataArray.data[i][0] = keys[i];
+				dataArray.data[i][1] = tempMap[keys[i]];
+			}
+			return this.stringsToGraphData(dataArray); //treat invalid dates as strings
 		}
 
 		dataArray.data = data;
@@ -622,8 +740,16 @@ class RestController {
 	 * @returns {*} the object containing the new data array.
 	 */
 	static removeDuplicateKeys(dataArray) {
+		if (!dataArray) {
+			console.log('No data received');
+			return null;
+		}
 		let uniques = [];
 		let data = dataArray.data;
+		if (!data) {
+			console.log('No data received for this entity and field');
+			return null;
+		}
 		for (let i = 0; i < data.length; i++) {
 			if (!uniques[data[i][0]]) {
 				uniques[data[i][0]] = parseFloat(data[i][1]);
@@ -636,7 +762,7 @@ class RestController {
 		let keys = Object.keys(uniques);
 
 		for (let i = 0; i < keys.length; i++) {
-			data[i] = [ keys[i], uniques[keys[i]] ];	//store the key-value pair in array format for echarts
+			data[i] = [keys[i], uniques[keys[i]]]; //store the key-value pair in array format for echarts
 		}
 
 		dataArray.data = data;
@@ -644,6 +770,10 @@ class RestController {
 	}
 
 	static make1DArray(dataArray) {
+		if (!dataArray) {
+			console.log('No data received');
+			return null;
+		}
 		if (dataArray.constructor !== Array) {
 			//if it's just one value
 			return [dataArray];
@@ -724,7 +854,7 @@ function extractTitleData(title) {
 	} else return title;
 }
 
-function outputSuggestionMeta(src, srctype, item, set, field, fieldtype) {
+function outputSuggestionMeta(src, srctype, item, set, field, fieldtype, charttype) {
 	console.log('=====================================');
 	console.log('GENERATED SUGGESTION');
 	console.log('SRC:        ', src);
@@ -733,6 +863,8 @@ function outputSuggestionMeta(src, srctype, item, set, field, fieldtype) {
 	console.log('set:        ', set);
 	console.log('field:      ', field);
 	console.log('field type: ', fieldtype);
+	console.log('Chart type: ', charttype);
+	console.log('Suggstion nr: ', GraphSuggesterController.suggestionsMade);
 	console.log('=====================================');
 }
 

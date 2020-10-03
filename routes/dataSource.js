@@ -13,6 +13,7 @@
  * 05/08/2020   Elna Pistorius  					Added two new endpoints that returns a list of fields and a list of entities
  * 07/08/2020   Elna Pistorius   					Added new endpoint to retrieve data
  * 27/08/2020   Elna Pistorius 						Added a new error helper to make status code vary for different errors.
+ * 02/10/2020   Elna Pistorius 						Created a new route to import CSV
  *
  * Test Cases: none
  *
@@ -73,6 +74,29 @@ DataSourceRouteSrc.post('/remove', (req, res) => {
 	}
 });
 
+DataSourceRouteSrc.post('/local-import', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.SourceType === undefined) error(res, { error: 'Source type undefined' }, 400);
+	else if (req.body.EntityName === undefined) error(res, { error: 'Entity name undefined' }, 400);
+	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
+	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
+	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
+	else if (req.body.data === undefined) error(res, { error: 'Data are undefined' }, 400);
+	else {
+		Rest.importLocalSourceAuth(
+			req.body.email,
+			req.body.SourceType,
+			req.body.EntityName,
+			req.body.PrimaryKey,
+			req.body.fields,
+			req.body.types,
+			req.body.data,
+			(src) => res.status(200).json(src),
+			(err) => error(res, err)
+		);
+	}
+});
+
 //=============	Unauthenticated Endpoints ================
 
 DataSourceRouteMeta.post('/entities', (req, res) => {
@@ -118,4 +142,27 @@ DataSourceRouteMeta.post('/metadata', (req, res) => {
 		);
 	}
 });
+
+DataSourceRouteMeta.post('/local-import', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
+	else if (req.body.SourceType === undefined) error(res, { error: 'Source type undefined' }, 400);
+	else if (req.body.EntityName === undefined) error(res, { error: 'Entity name undefined' }, 400);
+	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
+	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
+	else if (req.body.types === undefined) error(res, { error: 'Types are undefined' }, 400);
+	else if (req.body.data === undefined) error(res, { error: 'Data are undefined' }, 400);
+	else {
+		Rest.importLocalSource(
+			req.body.SourceType,
+			req.body.EntityName,
+			req.body.PrimaryKey,
+			req.body.fields,
+			req.body.types,
+			req.body.data,
+			(src) => res.status(200).json(src),
+			(err) => error(res, err)
+		);
+	}
+});
+
 module.exports = { DataSourceRouteSrc, DataSourceRouteMeta };

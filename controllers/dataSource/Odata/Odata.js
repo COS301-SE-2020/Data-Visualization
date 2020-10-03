@@ -74,7 +74,9 @@ class Odata {
 				.get(Odata.formatEntity(src, entity))
 				.then((res) => {
 					const { results } = res.data.d;
-					resolve(results);
+
+					if (results) resolve(results);
+					else resolve(res.data.d);
 				})
 				.catch((err) => reject(err));
 		});

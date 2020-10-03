@@ -48,6 +48,7 @@ const CacheMaker = (function () {
 		getEntityData(src, entity, field, primaryKey = null) {
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				const data = this.entityData[src][entity].data;
+
 				let prim;
 				// eslint-disable-next-line eqeqeq
 				if (primaryKey == null) {
@@ -55,12 +56,13 @@ const CacheMaker = (function () {
 				} else {
 					prim = primaryKey;
 				}
+
 				return data.map((item, i) => [item[prim], item[field]]);
 			}
 			return null;
 		}
 
-		getEntityDataAll(src, entity){
+		getEntityDataAll(src, entity) {
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				return this.entityData[src][entity].data;
 			}
@@ -104,6 +106,15 @@ const CacheMaker = (function () {
 			if (!this.entityData) this.entityData = {};
 			if (!this.entityData[src]) this.entityData[src] = {};
 
+			if (!Array.isArray(data)) {
+				if (typeof data === 'object') {
+					if (Object.keys(data) === 0) return;
+					if (Object.keys(data) === 1) data = [data];
+					else {
+						data = Object.keys(data).map((key) => data[key]);
+					}
+				} else return;
+			}
 			this.entityData[src][entity] = {
 				timestamp: Date.now(),
 				data,

@@ -24,6 +24,7 @@
  * 02/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display better graphs
  * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display even better graphs
  * 11/09/2020	 Marco Lombaard						Added function to add a series to a suggestion
+ * 16/09/2020	 Marco Lombaard						Pie charts convert to bar charts if they have too much data
  *
  * Test Cases: none
  *
@@ -80,7 +81,7 @@ class GraphSuggesterController {
 		// console.log(entity, this.metadata[source]);
 
 		if (!this.isInitialised()) {
-			console.log('Metadata isn\'t initialised, returning null...');
+			console.log("Metadata isn't initialised, returning null...");
 			return null;
 		}
 		if (!this.metadata[source]) {
@@ -407,7 +408,9 @@ class GraphSuggesterController {
 				{
 					type: graph,
 					radius: '60%',
+
 					center: ['30%', '50%'],
+
 					labelLine: {
 						show: false,
 					},
@@ -480,7 +483,7 @@ class GraphSuggesterController {
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //select the set name(different from the entity name) for database querying
 			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
-			console.log('Entity selected: ', entity);
+			// console.log('Entity selected: ', entity);
 
 			return entity; //return the random entity
 		} else {
@@ -566,26 +569,42 @@ class GraphSuggesterController {
 				selectedFields[data[i][0]] = false;
 			}
 		}
-		
+
 		let keys = Object.keys(sameValues);
 		let proportion;
 		for (let i = 0; i < keys.length; i++) {
 			proportion = sameValues[keys[i]] / data.length;
 			if (proportion > 0.8) {
 				//if more than 80% of the same value exists, boring graph
-				if (hasValues.length <= 5 && hasValues.length >= 2) {
-					//if we have less or equal to 5 non-zero values, return a pie chart of the values
+				if (hasValues.length <= 5 && hasValues.length >= 2 && keys.length > 1 && graphSuggesterAI.graphTypes.includes('pie')) {
+					//if we have less or equal to 5 non-zero values, with some variance, return a pie chart of the values
 					let params = suggestion['dataset']['source'][0];
-					let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']);//new chart
+					let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']); //new chart
 					for (let i = 0; i < hasValues.length; i++) {
 						replacement['dataset']['source'].push(hasValues[i]); //add the values to the data field
 					}
-					return replacement;	//return the new chart
+					return replacement; //return the new chart
 				}
 				//else we can't make it less boring
 				console.log('Too many items in graph have the same value - invalidating graph');
-				console.log('data: ', data);
+				// console.log('data: ', data);
 				return {};
+			}
+		}
+
+		let chartType = suggestion['series'][0]['type'];
+
+		//do chart conversions between pie and bar charts
+		if (graphSuggesterAI.graphTypes.includes('bar') && chartType.includes('pie')) {
+			//if we are allowed to have bar charts, consider limiting data
+
+			if (hasValues.length > 10) {
+				//pie charts shouldn't have too many values, use a bar chart instead
+				let params = suggestion['dataset']['source'][0];
+				//create a new bar chart
+				let replacement = this.constructOption('bar', params, params[0], params[1], suggestion['title']['text']);
+				replacement['dataset']['source'] = suggestion['dataset']['source'];
+				return replacement;
 			}
 		}
 
@@ -614,29 +633,30 @@ class GraphSuggesterController {
 			console.log('Invalid series in given suggestion');
 		}
 		let original = suggestion['series'][0];
-		original.name = 'Original data';
+		original.name = 'Original Data';
 
 		let series1 = {
 			type: original.type,
 			data: trimmedSet,
-			name: 'Approximated data',
+			name: 'Estimated Data',
 		};
+
 		let series2 = {
 			type: original.type,
 			data: forecast,
-			name: 'Forecast data',
+			name: 'Forecast Data',
 		};
-		suggestion['series'].push(series2);
 		suggestion['series'].push(series1);
+		suggestion['series'].push(series2);
 
 		suggestion.legend = {
 			data: [original.name, series1.name, series2.name],
-
 		};
 		return suggestion;
 	}
 }
 GraphSuggesterController.acceptedEntities = {};
 GraphSuggesterController.metadata = [];
+GraphSuggesterController.suggestionsMade = 0;
 
 module.exports = GraphSuggesterController;

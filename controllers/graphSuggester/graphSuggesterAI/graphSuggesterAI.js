@@ -102,7 +102,7 @@ let graphSuggesterMaker = (function () {
 			this.fieldTypes = {};
 
 			//eslint-disable-next-line eqeqeq
-			if (items != null) {
+			if (items) {
 				let itemsKeys = Object.keys(items); //get the named keys for the set
 				for (let i = 0; i < itemsKeys.length; i++) {
 					this.terminals[itemsKeys[i]] = items[itemsKeys[i]];
@@ -110,7 +110,7 @@ let graphSuggesterMaker = (function () {
 			}
 
 			//eslint-disable-next-line eqeqeq
-			if (associations != null) {
+			if (associations) {
 				let associationKeys = Object.keys(associations); //get the named keys for the set
 				for (let i = 0; i < associationKeys.length; i++) {
 					this.nonTerminals[associationKeys[i]] = associations[associationKeys[i]];
@@ -118,7 +118,7 @@ let graphSuggesterMaker = (function () {
 			}
 
 			//eslint-disable-next-line eqeqeq
-			if (types != null) {
+			if (types) {
 				let typeKeys = Object.keys(types); //get the named keys for the set
 				//it is important to note that types is an object with key-value pairs, where keys are entities
 				//and values are arrays, therefore type[typeKeys[i]] gives an array of values
@@ -144,7 +144,7 @@ let graphSuggesterMaker = (function () {
 		geneticAlgorithm(options, types) {
 			//TODO maybe we can make it so the GA selects entities? will require restructuring other functionality - leave for later
 			//eslint-disable-next-line eqeqeq
-			if (options == null || options.length === 0 || types == null || types.length === 0) {
+			if (options == null || options.length === 0 || types == null || types.length === 0 || !this.graphTypes || this.graphTypes.length === 0) {
 				return null;
 			}
 			let chromosomes = []; //Our population
@@ -399,8 +399,8 @@ let graphSuggesterMaker = (function () {
 			}
 
 			let keys = this.terminals[entity];
-			// eslint-disable-next-line eqeqeq
-			if (keys == null) {
+			
+			if (!keys) {
 				console.log('No keys found in metadata to match', entity);
 				return null;
 			}
@@ -486,6 +486,9 @@ let graphSuggesterMaker = (function () {
 			}
 
 			let suggestion = this.geneticAlgorithm(options, types);
+			if (!suggestion) {
+				return null;
+			}
 			let processed = [];
 			processed[0] = options[suggestion[0]];	//field being used for data
 			for (let i = 1; i < suggestion.length; i++) {
@@ -512,6 +515,16 @@ let graphSuggesterMaker = (function () {
 			this.fittestGraphType = graphType;
 			this.fittestFieldType = fieldType;
 			this.scaleFitnessTarget(graphType, fieldType);
+			
+			// eslint-disable-next-line eqeqeq
+			// TODO add way to reset weights
+			// if(this.fittestFieldType == null) {
+			// 	this.fieldTypeWeights = [];
+			// }
+			// eslint-disable-next-line eqeqeq
+			// if (this.fittestGraphType == null) {
+			// 	this.graphTypeWeights = [];
+			// }
 		}
 
 		/**

@@ -21,12 +21,19 @@
  * Assumptions: None
  * Constraints: None
  */
+const { v4: uuidv4 } = require('uuid');
+
+const Database = require('../database/databaseController');
 
 const Cache = require('./cache');
 const Forecaster = require('./Forecast/forecaster');
 
 const Odata = require('./Odata/Odata');
 const GraphQL = require('./GraphQL/GraphQL');
+
+const CSV = require('./CSV/CSV');
+const XML = require('./XML/XML');
+const JSON = require('./JSON/JSON');
 
 /**
  * Purpose: This class is responsible for getting DataSources.
@@ -38,16 +45,45 @@ class DataSource {
 	/**
 	 * This function updates meta data that is stored in the cache for this data source.
 	 * @param src the source where this Odata must be retrieved from
+	 * @param type
+	 * @param data
+	 * @param entityName
+	 * @param primaryKey
+	 * @param fieldlist
+	 * @param typelist
 	 * @returns a promise of Odata
 	 */
-	static updateMetaData(src, type) {
+	static updateMetaData(src, type, entityName, primaryKey, fieldlist, typelist) {
+		//src, type, data, entityName, primaryKey, fieldlist, typelist
+
 		return new Promise((resolve, reject) => {
 			DataSource.Data(type)
 				.getMetaData(src)
-				.then((data) => {
-					data = DataSource.parseMetadata(data, type);
-					// data.items = [1, 2, 3, 4, 5];
-					Cache.setMetaData(src, data);
+				.then(async (mdata) => {
+					if (DataSource.isLocal(type)) {
+						if (entityName && primaryKey && fieldlist && typelist) {
+							mdata = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
+						} else {
+							const meta = await Database.getDataSourceLocalMeta(src);
+
+							if (meta) {
+								const { entity, prim, fields, types } = meta;
+								mdata = DataSource.parseMetadataLocal(type, entity, prim, fields, types);
+							} else {
+								return reject({
+									error: {
+										message: 'Meta-Data not stored in Database and has not been provided.',
+										src,
+										type,
+									},
+									status: 500,
+								});
+							}
+						}
+					} else {
+						mdata = DataSource.parseMetadataRemote(mdata, type);
+					}
+					Cache.setMetaData(src, mdata);
 					resolve();
 				})
 				.catch((err) => reject({ error: err, status: 500 }));
@@ -60,24 +96,25 @@ class DataSource {
 	 * @param entity the entity to which the data belongs to
 	 * @returns a promise of Odata
 	 */
-	static updateEntityData(src, type, entity) {
+	static updateEntityData(src, type, entity, fieldList, inputdata) {
 		// eslint-disable-next-line no-async-promise-executor
 		return new Promise(async (resolve, reject) => {
-			let fieldList = [];
-
-			// console.log(type);
-
 			if (type === 1) {
 				let meta = await this.getMetaData(src);
-				// console.log('META:', Object.keys(meta.items));
-				// console.log('ENTITY:', entity);
-				// console.log('FIELDS:', meta.items[entity]);
-				// console.log('META:', meta.items);
-
 				fieldList = meta.items[entity];
 			}
+
+			if (!inputdata && DataSource.isLocal(type)) {
+				inputdata = await Database.getDataSourceLocalData(src);
+
+				if (!fieldList) {
+					const meta = await DataSource.getMetaData(src, type);
+					fieldList = meta.items[entity];
+				}
+			}
+
 			DataSource.Data(type)
-				.getEntityData(src, entity, fieldList)
+				.getEntityData(src, entity, fieldList, inputdata)
 				.then((data) => {
 					Cache.setEntityData(src, entity, data);
 					resolve();
@@ -87,6 +124,7 @@ class DataSource {
 				});
 		});
 	}
+
 	static async getGraphQLFieldList(src, entity) {
 		let meta = await this.getMetaData(src);
 		//console.log('datasource metadata: ', meta);
@@ -97,11 +135,11 @@ class DataSource {
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
-	static getMetaData(src, type) {
+	static getMetaData(src, type, entityName, primaryKey, fieldlist, typelist) {
 		return new Promise((resolve, reject) => {
 			if (Cache.validateMetadata(src)) resolve(Cache.getMetaData(src));
 			else {
-				DataSource.updateMetaData(src, type)
+				DataSource.updateMetaData(src, type, entityName, primaryKey, fieldlist, typelist)
 					.then(() => resolve(Cache.getMetaData(src)))
 					.catch((err) => reject({ error: err, status: 500 }));
 			}
@@ -190,16 +228,36 @@ class DataSource {
 	 * @param xmlData the XML metadata received from an external data source
 	 * @returns a standard JS object
 	 */
-	static parseMetadata(data, type) {
-		return DataSource.Data(type).parseMetadata(data);
+	static parseMetadataRemote(data, type) {
+		if (!DataSource.isLocal(type)) {
+			return DataSource.Data(type).parseMetadata(data);
+		}
+		return null;
 	}
 
 	static Data(type) {
 		return DataSource.sources[type];
 	}
 
+	static isLocal(type) {
+		if (type < 0 || type >= DataSource.isLocalSource.length) type = 0;
+		return DataSource.isLocalSource[type];
+	}
+
 	static sourceTypeName(type) {
 		return DataSource.sourceNames[type];
+	}
+
+	static parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist) {
+		if (DataSource.isLocal(type)) {
+			return DataSource.Data(type).parseMetadata(entityName, primaryKey, fieldlist, typelist);
+		}
+		return null;
+	}
+
+	static generateLocalSourceFileName(type) {
+		const ext = DataSource.sourceExtention[type];
+		return uuidv4() + '.' + ext;
 	}
 
 	static predictTimeSeries(dataset, count = 4) {
@@ -210,7 +268,7 @@ class DataSource {
 			Forecaster.predict(DataSource.toSeries(dataset), count)
 				.then((forecast) => {
 					forecast = DataSource.toDataset(forecast);
-					forecast.unshift(dataset[dataset.length - 1]);
+					dataset.push(forecast[0]);
 					resolve({ forecast, trimmedSet: dataset });
 				})
 				.catch((err) => reject(err));
@@ -232,11 +290,11 @@ class DataSource {
 		const devUp = avg + numDevs * standardDeviation;
 		const devDown = avg - numDevs * standardDeviation;
 
-		console.log('numDevs:', numDevs);
-		console.log('mean:', avg);
-		console.log('stdDiv:', standardDeviation);
-		console.log('devUp:', devUp);
-		console.log('devDown:', devDown);
+		// console.log('numDevs:', numDevs);
+		// console.log('mean:', avg);
+		// console.log('stdDiv:', standardDeviation);
+		// console.log('devUp:', devUp);
+		// console.log('devDown:', devDown);
 
 		const withinDeviations = (num) => {
 			// console.log(Math.abs(num));
@@ -265,6 +323,27 @@ class DataSource {
 			}
 			series[formatDate(time)] = value;
 		});
+
+		const length = Object.keys(series).length;
+
+		// console.log(length);
+
+		if (length > 1000) {
+			let short = {};
+
+			Object.keys(series)
+				.sort()
+				.forEach((value, i) => {
+					if (i > length - 1000) {
+						short[value] = series[value];
+					}
+				});
+
+			// console.log(Object.keys(short).length);
+
+			return short;
+		}
+
 		return series;
 	}
 
@@ -296,8 +375,10 @@ class DataSource {
 		return days;
 	}
 }
-DataSource.sources = [Odata, GraphQL];
-DataSource.sourceNames = ['Odata', 'GraphQL'];
+DataSource.sources = [Odata, GraphQL, CSV, XML, JSON];
+DataSource.sourceNames = ['Odata', 'GraphQL', 'CSV', 'XML', 'JSON'];
+DataSource.isLocalSource = [false, false, true, true, true];
+DataSource.sourceExtention = ['json', 'json', 'csv', 'xml', 'json'];
 
 /**
  * This function formats entity list.
