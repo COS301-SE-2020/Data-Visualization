@@ -29,6 +29,10 @@ class CSV {
 	static getEntityData(src, entity, fieldList, inputdata) {
 		return new Promise((resolve, reject) => {
 			let data = [];
+
+			console.log('=====================================');
+			console.log(inputdata);
+
 			inputdata.forEach((datarow, d) => {
 				let obj = {};
 				fieldList.forEach((field, i) => {
