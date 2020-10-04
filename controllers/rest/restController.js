@@ -198,6 +198,12 @@ class RestController {
 	static importLocalSource(srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
 		let src = DataSource.generateLocalSourceFileName(srcType);
 
+		if (PrimaryKey.length <= 0) {
+			do {
+				PrimaryKey += '_';
+			} while (fields.indexOf(PrimaryKey) >= 0);
+		}
+
 		DataSource.updateMetaData(src, srcType, EntityName, PrimaryKey, fields, types)
 			.then(() => {
 				DataSource.updateEntityData(src, srcType, EntityName, fields, data)
@@ -221,6 +227,12 @@ class RestController {
 	 */
 	static importLocalSourceAuth(email, srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
 		const src = DataSource.generateLocalSourceFileName(srcType);
+
+		if (PrimaryKey.length <= 0) {
+			do {
+				PrimaryKey += '_';
+			} while (fields.indexOf(PrimaryKey) >= 0);
+		}
 
 		const meta = { entity: EntityName, prim: PrimaryKey, fields, types };
 
