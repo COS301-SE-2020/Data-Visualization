@@ -66,8 +66,8 @@ function HomePanelButton(props) {
                     className='dashboardList__container--item panelLayout panelStyling'
                     style={props.colour}
                     onClick={() => props.action()}>
-                        <Title ellipsis level={(props.data.name.length < 14 ? 2 : (props.data.name.length > 20 ? 4 : 3))} style={{...getContentPositionStyle(), color: '#434EE8'}}>{props.data.name}</Title>
-                        <Paragraph ellipsis={{rows: 7}} style={ {...getContentPositionStyle1(), color: '#434EE8'}} >{props.data.description}</Paragraph>
+                        <Title ellipsis level={(props.data.name.length < 14 ? 2 : (props.data.name.length > 20 ? 4 : 3))} style={{...getContentPositionStyle(), color: '#F4F5F9'}}>{props.data.name}</Title>
+                        <Paragraph ellipsis={{rows: 7}} style={ {...getContentPositionStyle1(), color: '#F4F5F9'}} >{props.data.description}</Paragraph>
                 </div>
             );
         }
@@ -103,17 +103,17 @@ function DashboardsList(props) {
 
 
     const backgrounds = [{
-        background: 'linear-gradient(16deg, rgba(242, 243, 255, 1) 0%, rgba(255, 255, 255, 1) 100%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(242, 243, 255, 1) 0%, rgba(255, 255, 255, 1) 100%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(242, 243, 255, 1) 0%, rgba(255, 255, 255, 1) 100%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(242, 243, 255, 1) 0%, rgba(255, 255, 255, 1) 100%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(242, 243, 255, 1) 0%, rgba(255, 255, 255, 1) 100%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(242, 243, 255, 1) 0%, rgba(255, 255, 255, 1) 100%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }];
 
     let colorStack = [];
