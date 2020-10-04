@@ -66,8 +66,8 @@ function HomePanelButton(props) {
                     className='dashboardList__container--item panelLayout panelStyling'
                     style={props.colour}
                     onClick={() => props.action()}>
-                        <Title ellipsis level={(props.data.name.length < 14 ? 2 : (props.data.name.length > 20 ? 4 : 3))} style={{...getContentPositionStyle(), color: 'white'}}>{props.data.name}</Title>
-                        <Paragraph ellipsis={{rows: 7}} style={ {...getContentPositionStyle1(), color: 'white'}} >{props.data.description}</Paragraph>
+                        <Title ellipsis level={(props.data.name.length < 14 ? 2 : (props.data.name.length > 20 ? 4 : 3))} style={{...getContentPositionStyle(), color: '#F4F5F9'}}>{props.data.name}</Title>
+                        <Paragraph ellipsis={{rows: 7}} style={ {...getContentPositionStyle1(), color: '#F4F5F9'}} >{props.data.description}</Paragraph>
                 </div>
             );
         }
@@ -103,17 +103,17 @@ function DashboardsList(props) {
 
 
     const backgrounds = [{
-        background: 'linear-gradient(16deg, rgba(36,11,54,1) 0%, rgba(195,20,48,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(245,175,25,1) 0%, rgba(241,39,17,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(168,192,255,1) 0%, rgba(63,43,150,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(225,0,255,1) 0%, rgba(127,0,255,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(203,53,107,1) 0%, rgba(189,63,50,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }, {
-        background: 'linear-gradient(16deg, rgba(68,160,141,1) 0%, rgba(189,63,50,1) 79%)'
+        background: 'linear-gradient(16deg, rgba(100, 109, 237, 1) 0%, rgba(100, 109, 237, 1) 100%)'
     }];
 
     let colorStack = [];
@@ -130,6 +130,7 @@ function DashboardsList(props) {
                             return dashboardList.map((dashboard) => {
                                 return (
                                     <HomePanelButton
+                                        style = {{ cursor: 'pointer'}}
                                         colour={backgrounds[(colorStack.length > 0 ? colorStack.pop() : Math.floor(Math.random() * Math.floor(backgrounds.length)))]}
                                         data={dashboard}
                                         key={dashboard.id}
@@ -141,6 +142,7 @@ function DashboardsList(props) {
                         }
                     )()}
                     <HomePanelButton
+                        style = {{ cursor: 'pointer'}}
                         colour={backgrounds[(colorStack.length > 0 ? colorStack.pop() : Math.floor(Math.random() * Math.floor(backgrounds.length)))]}
                         isAddButton={true}
                         action={() => props.onAddButtonClick(true)}

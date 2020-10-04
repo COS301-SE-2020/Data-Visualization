@@ -22,10 +22,10 @@
 /**
   * Imports
 */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Button, Modal, Select, Tag, Form} from 'antd';
 import request from '../../globals/requests';
-import * as constants from '../../globals/constants';
+import {message} from 'antd';
 
 
 
@@ -122,7 +122,8 @@ const FilterDialog = (props) => {
         console.log('Success:', values);
 
         handleFilterCancel();
-        props.generateCharts(request.user.graphTypes, request.user.selectedEntities,  request.user.selectedFields, request.user.fittestGraphs);
+        message.success('Filter settings set');
+        //props.generateCharts(request.user.graphTypes, request.user.selectedEntities,  request.user.selectedFields, request.user.fittestGraphs);
       };
     
       const onFinishFailed = errorInfo => {
@@ -131,8 +132,8 @@ const FilterDialog = (props) => {
       };
 
     function handleFilterCancel() {
-        props.setFState(false);
         setVisible(false);
+        props.setFState(false);
     };
 
 

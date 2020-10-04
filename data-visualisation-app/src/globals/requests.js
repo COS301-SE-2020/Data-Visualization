@@ -76,6 +76,8 @@ const API = {
 		set: (graphTypes, selectedEntities, selectedFields, fittestGraph) => axios.post(constants.URL.SUGGESTIONS.SET, {graphTypes, selectedEntities, selectedFields, fittestGraph}),
 		chart: () => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {}),
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl}),
+		csv: (SourceType, EntityName, PrimaryKey, fields, types, data) => axios.post(constants.URL.DATASOURCE.CSV, {SourceType, EntityName, PrimaryKey, fields, types, data}),
+		csvAuthorized: (apikey, SourceType, EntityName, PrimaryKey, fields, types, data) => axios.post(constants.URL.DATASOURCE.CSV_AUTHORIZED, {apikey, SourceType, EntityName, PrimaryKey, fields, types, data})
 	},
 };
 
@@ -223,6 +225,13 @@ const request = {
 					.then((res) => {
 						console.debug('Response from graph.list:', res);
 						if (callback !== undefined) {
+
+							res.data.forEach(element => {
+								if(element.options.series !== undefined && element.options.series[0].type !== 'pie'){
+									element.options.series[0].color = '#7d8edb';
+								}
+							});
+
 							request.cache.graph.list = res.data;
 							callback(constants.RESPONSE_CODES.SUCCESS);
 						}
@@ -418,7 +427,7 @@ const request = {
 				email: 'elna@gmail.com',
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				sourcetype: 0,
-			},
+			}
 		],
 		addedSourceID: '',
 		dataSourceInfo: [],
@@ -581,22 +590,11 @@ const request = {
 
 
 						if(res.data.series !== undefined && res.data.series[0].type !== 'pie'){
-
-							if(request.suggestions.count === 0){
-								res.data.series[0].color = '#BD4032';
-							}
-							// else if(request.suggestions.count === 1){
-							// 	res.data.series[0].color = '#3EC195';
-							// }
-						
-							request.suggestions.count++;
-							if(request.suggestions.count === 1){
-								request.suggestions.count = 0;
-							}
-
-
+							res.data.series[0].color = '#7d8edb';
 						}
+
 						//console.log(res.data);
+						
 						request.cache.suggestions.graph.current = res.data;
 						callback(constants.RESPONSE_CODES.SUCCESS);
 					}
@@ -654,6 +652,62 @@ const request = {
 				callback(shouldContinue ? constants.RESPONSE_CODES.SUCCESS : constants.RESPONSE_CODES.ERROR);
 			});
 		},
+		/**
+		 *  Requests an amount of graph suggestions.
+		 *
+		 *  @param sourceurl Source from which the suggestions be made of.
+		 *  @param amount Amount of graph suggestions.
+		 *  @param callback Function called at end of execution.
+		 */
+		importFile: (SourceType, EntityName, PrimaryKey, fields, types, data, callback) => {
+			console.debug('Requesting suggestion.csv with:', EntityName, PrimaryKey, fields, types, data);
+			if (!request.user.isLoggedIn) {
+
+				API.suggestion
+					.csv(SourceType, EntityName, PrimaryKey, fields, types, data)
+					.then((res) => {
+						if (callback !== undefined) {
+							console.debug('Response from suggestion.csv:', res);
+
+							if (res.hasOwnProperty('data') && res.data.hasOwnProperty('source')) {
+
+								request.user.dataSources.push({
+									id: request.user.dataSources.length,
+									email: '',
+									sourceurl: res.data.source,
+									sourcetype: SourceType
+								});
+								callback(constants.RESPONSE_CODES.SUCCESS);
+							} else {
+								callback(constants.RESPONSE_CODES.ERROR);
+							}
+						}
+					})
+					.catch((err) => console.error(err));
+			} else {
+				API.suggestion
+					.csvAuthorized(request.user.apikey, SourceType, EntityName, PrimaryKey, fields, types, data)
+					.then((res) => {
+						if (callback !== undefined) {
+							console.debug('Response from suggestion.csv:', res);
+
+							if (res.hasOwnProperty('data') && res.data.hasOwnProperty('source') && res.data.hasOwnProperty('id')) {
+
+								request.user.dataSources.push({
+									id: res.data.id,
+									email: '',
+									sourceurl: res.data.source,
+									sourcetype: SourceType
+								});
+								callback(constants.RESPONSE_CODES.SUCCESS);
+							} else {
+								callback(constants.RESPONSE_CODES.ERROR);
+							}
+						}
+					})
+					.catch((err) => console.error(err));
+			}
+		}
 	},
 
 	cache: {

@@ -16,7 +16,9 @@
   background-color: $primary-black;
   color: $primary-white;
 }
-
+.makeStyles-content-14{
+  background-color: $color-background !important;
+}
 .app-header > img {
   height: 45px;
   margin-top: 5px;
@@ -33,16 +35,31 @@
 }
 
 #backButton{
-  color: #3EC195;
+  color: $color-primary;
   margin-top: 10px;
   background-color: transparent;
   background-repeat:no-repeat;
-  border: none;
+  border: none !important;
   cursor:pointer;
   overflow: hidden;
-  outline:none;
+  outline:none !important;
   float: left;
   margin-right: 10px;
+  box-shadow: none !important;
+}
+
+#backButtonAbout{
+  color: $color-tertiary;
+  margin-top: 10px;
+  background-color: transparent;
+  background-repeat:no-repeat;
+  border: none !important;
+  cursor:pointer;
+  overflow: hidden;
+  outline:none !important;
+  float: left;
+  margin-right: 10px;
+  box-shadow: none !important;
 }
 
 #backgroundDiv{
@@ -64,7 +81,7 @@
   float: right;
   left: 81%;
   top: 20px;
-  color: #3EC195;
+  color: $color-primary;
 }
 
 
@@ -91,3 +108,7 @@
 //   background: #3EC195; 
 // }
 
+// #logoOnHome{
+//   width: 25vh;
+//   height: 5vh;
+// }

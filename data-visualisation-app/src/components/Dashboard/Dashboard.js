@@ -427,9 +427,9 @@ function Dashboard(props) {
 		<div className='content--padding'>
 			<div style={{marginBottom: '20px'}}>
 
-				<Grid container spacing={3}>
-					<Grid item xs={12} md={8}>
-						<Typography.Title level={3} editable={editMode && {onChange: onEditNameChange}}>
+				<Grid container spacing={3} className = 'headingGrid'>
+					<Grid item xs={12} md={8} >
+						<Typography.Title level={3} style = {{color: '#242424', fontWeight: '400'}} editable={editMode && {onChange: onEditNameChange}}>
 							{presentDashboard.name}
 						</Typography.Title>
 						<Typography.Paragraph editable={editMode && {onChange: onEditDescriptionChange}}>{presentDashboard.description}</Typography.Paragraph>
@@ -482,7 +482,7 @@ function Dashboard(props) {
 				(hasCharts ?
 					<React.Fragment>
 
-						<Grid container spacing={3}>
+						<Grid id = 'searchBox' container spacing={3}>
 							<Grid item xs={6} md={8}>
 								{searchString !== '' && <span>Showing all charts named <span style={{fontWeight: 'bold'}}>"{searchString}"</span></span>}
 							</Grid>
@@ -500,7 +500,7 @@ function Dashboard(props) {
 
 						<ResponsiveReactGridLayout
 							className="layout"
-							breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
+							breakpoints={{lg: 1550, md: 1100, sm: 768, xs: 480, xxs: 0}}
 							cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
 							rowHeight={12}
 							layouts={layoutGrid}
@@ -518,7 +518,7 @@ function Dashboard(props) {
 										<div>
 											<Grid container spacing={3}>
 												<Grid item xs={11}>
-													<Typography.Title level={4} editable={editMode && {onChange: ev => {onChartTitleEdit(ev, request.cache.graph.list[v].id, v);}}} >{presentDashboard.chartNames[v]}</Typography.Title>
+													<Typography.Title level={4} style = {{fontSize: '12pt', fontWeight: '300'}} editable={editMode && {onChange: ev => {onChartTitleEdit(ev, request.cache.graph.list[v].id, v);}}} >{presentDashboard.chartNames[v]}</Typography.Title>
 												</Grid>
 												<Grid item xs={1} style={{textAlign: 'right', fontSize: '1.2em'}}>
 													{editMode &&
@@ -534,7 +534,7 @@ function Dashboard(props) {
 												</Grid>
 											</Grid>
 										</div>
-										<ReactEcharts option={request.cache.graph.list[v].options} style={{height: '300px', width: '100%'}} />
+										<ReactEcharts option={request.cache.graph.list[v].options} style={{height: '85%', width: '100%'}} />
 									</div>;
 								});
 							})()}

@@ -1,0 +1,19 @@
+
+.csv_importer {
+    position: fixed;
+    left: 50%;
+    top: 10%;
+
+
+    background-color: white;
+//border: 1px solid red;
+    z-index: 100;
+//margin-left: -($WIDTH_SIDE_NAVIGATION);
+//margin-left: -(37%);
+
+    height: min(80vh, auto);
+    /*width: min(80%, auto);*/
+    width: 80vw;
+
+    overflow-y: scroll;
+}

@@ -40,3 +40,8 @@ code {
   font-family: 'Segoe UI Semibold';
   src: local('Segoe UI'), url(./assets/fonts/segoe_ui/segoeui.ttf) format('truetype');
 }
+
+@font-face {
+  font-family: 'Fira Code Light';
+  src: local('Fira Code Light'), url(./assets/fonts/fira_code/FiraCode-Light.ttf) format('truetype');
+}

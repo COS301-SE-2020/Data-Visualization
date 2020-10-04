@@ -22,6 +22,7 @@ import './AddDashboard.css';
 import { Form, Input, Button, Layout, Row, Col, Typography, Space, message } from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
+import { Modal} from 'antd';
 
 
 /**
@@ -32,7 +33,7 @@ function AddDashboard(props) {
 	const [dashBoardName, setDashboardName] = useState('');
 	const [dashBoardDescription, setDashboardDescription] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-
+	const [visible, setVisible] = useState(true);
 
 	const mySubmitHandler = (event) => {
 		// props.add({ name: dashBoardName, description: dashBoardDescription });
@@ -65,13 +66,18 @@ function AddDashboard(props) {
 
 	return (
 
-		<Layout.Content style={{ overflow: 'hidden' }}>
 
-			<Row gutter={[16, 16]}>
-				<Col span={8} offset={8}>
-
+			<Modal
+					title="Create a new dashboard"
+					centered
+					visible={visible}
+					onCancel={props.home}
+					width={700}
+					footer={[
+						
+					]}
+				>
 					<div className='add-dashboard-box'>
-						<Typography.Title level={4} style={{ marginBottom: '30px' }}>Create New Dashboard</Typography.Title>
 
 						<Form
 							{...layout}
@@ -113,10 +119,12 @@ function AddDashboard(props) {
 						</Form>
 
 					</div>
+					
 
-				</Col>
-			</Row>
-		</Layout.Content>
+
+			</Modal>
+
+
 	);
 }
 

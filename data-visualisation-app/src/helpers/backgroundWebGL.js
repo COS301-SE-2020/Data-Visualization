@@ -69,7 +69,7 @@ class BackgroundDots extends Component {
 
             // 0x242424
             uniforms: {
-                color: { value: new THREE.Color( 0xcccccc ) },
+                color: { value: new THREE.Color( 0x7d8edb ) },
             },
             vertexShader: document.getElementById( 'vertexshader' ).textContent,
             fragmentShader: document.getElementById( 'fragmentshader' ).textContent
@@ -82,7 +82,7 @@ class BackgroundDots extends Component {
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
 
-        this.renderer.setClearColor(0xF8F9FB, 1);
+        this.renderer.setClearColor(0xF4F5F9, 1);
 
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -143,7 +143,7 @@ class BackgroundDots extends Component {
         this.particles.geometry.attributes.position.needsUpdate = true;
         this.particles.geometry.attributes.scale.needsUpdate = true;
 
-        count += 0.04;
+        count += 0.01;
     }
 
     addCube(cube) {
@@ -161,7 +161,7 @@ class BackgroundDots extends Component {
                 {/*        this.mount = mount;*/}
                 {/*    }}*/}
                 {/*/>*/}
-                <GaussianBlur x="8" y="5">
+                <GaussianBlur x="2" y="2">
                     <div
                         id="boardCanvas"
                         style={{ width: '2100px', height: '1300px', position: 'fixed', top: '-300px', left: '-10px'}}

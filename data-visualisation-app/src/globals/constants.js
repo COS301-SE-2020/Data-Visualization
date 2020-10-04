@@ -35,7 +35,7 @@ export const APPLICATION_LOGO_H = require('../assets/img/logo_vlong_s.png');
 export const APPLICATION_LOGO_WHITE = require('../assets/img/logo_white.png');
 export const APPLICATION_LOGO_GREY = require('../assets/img/logo_grey.png');
 export const APPLICATION_LOGO_GLOW = require('../assets/img/logo_glow.png');
-
+export const APPLICATION_LOGO_BLUE = require('../assets/img/logo_blue.png');
 /**
  *   Icons
  */
@@ -66,7 +66,7 @@ export const URL_ROOT = {
 	DASHBOARD: URL_HOST_DEFAULT + '/dashboards',
 	DATASOURCE: URL_HOST_DEFAULT + '/datasource',
 	GRAPH: URL_HOST_DEFAULT + '/graphs',
-	SUGGESTIONS: URL_HOST_DEFAULT + '/suggestions',
+	SUGGESTIONS: URL_HOST_DEFAULT + '/suggestions'
 };
 
 /**
@@ -80,7 +80,7 @@ export const URL = {
 	USER: {
 		LOGIN: URL_ROOT.USER + '/login',
 		REGISTER: URL_ROOT.USER + '/register',
-		LOGOUT: URL_ROOT.USER + '/logout',
+		LOGOUT: URL_ROOT.USER + '/logout'
 	},
 	DATASOURCE: {
 		LIST: URL_ROOT.DATASOURCE + '/src/list',
@@ -88,24 +88,26 @@ export const URL = {
 		REMOVE: URL_ROOT.DATASOURCE + '/src/remove',
 		ENTITIES:  URL_ROOT.DATASOURCE + '/meta/entities',
 		FIELDS:  URL_ROOT.DATASOURCE + '/meta/fields',
+		CSV:  URL_ROOT.DATASOURCE + '/meta/local-import',
+		CSV_AUTHORIZED:  URL_ROOT.DATASOURCE + '/src/local-import'
 	},
 	DASHBOARD: {
 		LIST: URL_ROOT.DASHBOARD + '/list',
 		ADD: URL_ROOT.DASHBOARD + '/add',
 		REMOVE: URL_ROOT.DASHBOARD + '/remove',
-		UPDATE: URL_ROOT.DASHBOARD + '/update',
+		UPDATE: URL_ROOT.DASHBOARD + '/update'
 	},
 	GRAPH: {
 		LIST: URL_ROOT.GRAPH + '/list',
 		ADD: URL_ROOT.GRAPH + '/add',
 		REMOVE: URL_ROOT.GRAPH + '/remove',
-		UPDATE: URL_ROOT.GRAPH + '/update',
+		UPDATE: URL_ROOT.GRAPH + '/update'
 	},
 	SUGGESTIONS: {
 		SET: URL_ROOT.SUGGESTIONS + '/params',
 		CHART: URL_ROOT.SUGGESTIONS + '/graphs',
-		GRAPHS: URL_ROOT.SUGGESTIONS + '/graphs',
-	},
+		GRAPHS: URL_ROOT.SUGGESTIONS + '/graphs'
+	}
 };
 
 /**
