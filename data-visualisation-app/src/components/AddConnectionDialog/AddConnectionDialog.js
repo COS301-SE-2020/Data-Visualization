@@ -643,7 +643,7 @@ const AddConnectionDialog = (props) => {
                             return (
                                 <tr {...rowData.getRowProps()} >
                                     <td className={'disabled_borderBottom ' + (rowIndex === 0 ? 'disabled_borderTop' : '')}>
-                                        {(rowIndex > 0 && 
+                                        {(rowData.index > 0 &&
                                             <Checkbox onChange={() => {
                                                 setCheckRows(checkedRows.map((tmp, tmp_index) => {
                                                     return (tmp_index === rowData.index ? !tmp : tmp);
@@ -652,7 +652,7 @@ const AddConnectionDialog = (props) => {
                                         )}
                                     </td>
 
-                                    <td className={'table__headerCell outer_borderLeft outer_borderRight ' + (rowIndex === pageSize-1 ? 'outer_borderBottom ' : 'inner_borderBottom')}>{rowData.index+1}</td>
+                                    <td className={'table__headerCell outer_borderLeft outer_borderRight ' + (rowIndex === pageSize-1 || rowData.index === currentData.length ? 'outer_borderBottom ' : 'inner_borderBottom')}>{rowData.index+1}</td>
                                         {rowData.cells.map((cellData, colIndex) => {
 
                                             rowClasses.current = '';
