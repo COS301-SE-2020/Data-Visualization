@@ -49,6 +49,7 @@ const AddConnectionDialog = (props) => {
 
     const [visible, setVisible] = useState(true);
     const [importDataMode, setImportDataMode] = useState(false);
+    const [inspectColumnsOnly, setInspectColumnsOnly] = useState(false);
     const [acceptableData, setAcceptableData] = useState(false);
 
     const [currentData, setCurrentData] = useState([]);
@@ -64,6 +65,8 @@ const AddConnectionDialog = (props) => {
         noKeyboard: true,
         onDropAccepted: function (droppedFiles) {
 
+            setLoading(true);
+
             let extension = droppedFiles[0].name.split('.').pop();
 
             if (extension === 'csv') {
@@ -78,6 +81,7 @@ const AddConnectionDialog = (props) => {
                             });
                         }
 
+                        setInspectColumnsOnly(false);
                         onLoadedCSVFile(dataResult, file);
                     }
                 });
@@ -86,26 +90,31 @@ const AddConnectionDialog = (props) => {
                 let fileReader = new FileReader();
                 fileReader.onload = function () {
 
-                    let akey = 234;
-                    message.loading({ content: 'Uploading ' + extension.toUpperCase() + ' file...', akey});
-
-                    console.debug('fileReader.result,', fileReader.result.replace(/(\r\n|\n|\r)/gm,""));
-
-                    console.debug('getXMLFields()', getXMLFields(fileReader.result));
-
-
                     let dataFields = (extension === 'xml' ? getXMLFields(fileReader.result) : getJSONFields(JSON.parse(fileReader.result)));
-                    let typeFields = dataFields.map(dataField => {return 'string';});
 
-                    console.debug('dataFields', dataFields);
+                    if (dataFields.length === 0) {
 
-                    request.suggestions.importFile((extension === 'xml' ? 3 : 4), droppedFiles[0].name, '', dataFields, /*selectedTypes.current*/typeFields, (extension === 'json' ? fileReader.result.replace(/(\r\n|\n|\r|\t)/gm,'') : fileReader.result), function(response) {
-                        if (response === constants.RESPONSE_CODES.SUCCESS) {
-                            message.success({ content: 'Successfully imported ' + extension.toUpperCase() + ' file!', akey, duration: 2 });
+                        setFileError({
+                            title: 'Invalid Format',
+                            description: 'The fields from the given file could not be detected.'
+                        });
 
-                            props.changeState();
-                        }
-                    });
+                        setLoading(false);
+
+                        setImportError(true);
+                    } else {
+
+                        setNonCSVFileFields(dataFields);
+                        setNonCSVFileTypes(dataFields.map(() => {return 'string';}));
+                        setNonCSVPrimaryKey(dataFields[0]);
+
+                        setImportDataMode(true);
+                        setInspectColumnsOnly(true);
+
+                        importedFileObject.current = droppedFiles[0];
+                        importedFileStringContents.current = fileReader.result;
+                        alignContainer(false);
+                    }
                 };
                 fileReader.readAsText(droppedFiles[0]);
             }
@@ -143,6 +152,14 @@ const AddConnectionDialog = (props) => {
     const [entityName, setEntityName] = useState('');
     const colNames = useRef([]);
     const selectedTypes = useRef([]);
+    const [nonCSVFileFields, setNonCSVFileFields] = useState([]);
+    const [nonCSVFileTypes, setNonCSVFileTypes] = useState([]);
+    const [nonCSVPrimaryKey, setNonCSVPrimaryKey] = useState('');
+    const [loading, setLoading] = useState(false);
+    const importedFileObject = useRef();
+    const importedFileStringContents = useRef('');
+    const containerComponentRef = useRef(null);
+    const [containerComponentStyles, setContainerComponentStyles] = useState({});
 
     /** --------------------------------------------- */
 
@@ -223,6 +240,10 @@ const AddConnectionDialog = (props) => {
 
     /** -------------- Functions -------------- */
 
+    function alignContainer(addMargin) {
+        setContainerComponentStyles({marginLeft: (-0.5*containerComponentRef.current.offsetWidth + (addMargin ? -100 : 0)) + 'px'});
+    }
+
     function getXMLFields(data){
         let fields = [];
 
@@ -262,7 +283,7 @@ const AddConnectionDialog = (props) => {
             return fields;
         } catch (e) {
             //Invalid XML file
-            console.log("Invalid XML format");
+            console.log('Invalid XML format');
             // console.log(e);
             return [];
         }
@@ -450,7 +471,11 @@ const AddConnectionDialog = (props) => {
         setCurrentColumns(newColumns);
         setCurrentData(newData);
 
+
+
+        setLoading(false);
         setImportDataMode(true);
+        alignContainer(true);
     }
 
     const layout = {
@@ -555,10 +580,7 @@ const AddConnectionDialog = (props) => {
             getTableBodyProps,
             headerGroups,
             prepareRow,
-            page, // Instead of using 'rows', we'll use page,
-            // which has only the rows for the active page
-
-            // The rest of these things are super handy, too ;)
+            page,
             canPreviousPage,
             canNextPage,
             pageOptions,
@@ -620,12 +642,15 @@ const AddConnectionDialog = (props) => {
 
                             return (
                                 <tr {...rowData.getRowProps()} >
-                                    <td className={'disabled_borderBottom ' + (rowIndex === 0 ? 'disabled_borderTop' : '')}><Checkbox onChange={() => {
-
-                                        setCheckRows(checkedRows.map((tmp, tmp_index) => {
-                                            return (tmp_index === rowData.index ? !tmp : tmp);
-                                        }));
-                                    }} checked={checkedRows[rowData.index]} /></td>
+                                    <td className={'disabled_borderBottom ' + (rowIndex === 0 ? 'disabled_borderTop' : '')}>
+                                        {(rowIndex > 0 && 
+                                            <Checkbox onChange={() => {
+                                                setCheckRows(checkedRows.map((tmp, tmp_index) => {
+                                                    return (tmp_index === rowData.index ? !tmp : tmp);
+                                                }));
+                                            }} checked={checkedRows[rowData.index]} />
+                                        )}
+                                    </td>
 
                                     <td className={'table__headerCell outer_borderLeft outer_borderRight ' + (rowIndex === pageSize-1 ? 'outer_borderBottom ' : 'inner_borderBottom')}>{rowData.index+1}</td>
                                         {rowData.cells.map((cellData, colIndex) => {
@@ -635,22 +660,28 @@ const AddConnectionDialog = (props) => {
                                                 rowClasses.current += 'error ';
                                             }
 
-                                            rowClasses.current += (checkedRows[rowIndex] && checkedColumns[colIndex] ? 'included ' : '');
+                                            rowClasses.current += (checkedRows[pageSize*pageIndex + rowIndex] && checkedColumns[colIndex] ? 'included ' : 'excluded ');
 
                                             if (rowIndex < pageSize-1) {
-                                                if (checkedColumns[colIndex])
-                                                    rowClasses.current += 'inner_borderBottom ';
-                                                else
+                                                if (checkedColumns[colIndex]) {
+                                                    if ((!checkedRows[pageSize*pageIndex + rowIndex+1] && checkedRows[pageSize*pageIndex + rowIndex]) || (checkedRows[pageSize*pageIndex + rowIndex+1] && !checkedRows[pageSize*pageIndex + rowIndex]))
+                                                        rowClasses.current += 'outer_borderBottom ';
+                                                    else
+                                                        rowClasses.current += 'inner_borderBottom ';
+                                                } else {
                                                     rowClasses.current += 'disabled_borderBottom ';
+                                                }
+
+
                                             } else {
-                                                if (checkedColumns[colIndex])
+                                                if (checkedColumns[colIndex] && checkedRows[pageSize*pageIndex + rowIndex])
                                                     rowClasses.current += 'outer_borderBottom ';
                                                 else
                                                     rowClasses.current += 'disabled_borderBottom ';
                                             }
 
                                             if (colIndex < rowData.cells.length-1) {
-                                                if ((!checkedColumns[colIndex+1] && checkedColumns[colIndex]) || (checkedColumns[colIndex+1] && !checkedColumns[colIndex]))
+                                                if (((!checkedColumns[colIndex+1] && checkedColumns[colIndex]) || (checkedColumns[colIndex+1] && !checkedColumns[colIndex])) && checkedRows[pageSize*pageIndex + rowIndex])
                                                     rowClasses.current += 'outer_borderRight ';
                                                 else
                                                     rowClasses.current += 'inner_borderRight ';
@@ -661,8 +692,6 @@ const AddConnectionDialog = (props) => {
                                                     rowClasses.current += 'disabled_borderRight ';
 
                                             }
-                                            if (checkedColumns[colIndex])
-                                                rowClasses.current += 'disabled_tableCell ';
 
                                             return <td {...cellData.getCellProps()} className={rowClasses.current}>{cellData.render('Cell')}</td>;
                                         })}
@@ -697,28 +726,42 @@ const AddConnectionDialog = (props) => {
                 </div>
                 <div style={{marginBottom: '40px'}}>
                     <Button type='primary' disabled={acceptableData} style={{float: 'right'}} onClick={() => {
+
+                        function getColIndex(field) {
+                            for (let c = 0; c < colNames.current.length; c++)
+                                if (field === colNames.current[c])
+                                    return c;
+                            return 0;
+                        }
+
                         let akey = 1234;
                         message.loading({ content: 'Uploading CSV file...', akey});
                         let requestFields = [];
                         for (let field in dataBuffer.current[+currentBuffer.current][0]) {
-                            if (colNames.current.includes(field)) {
+                            if (colNames.current.includes(field) && checkedColumns[getColIndex(field)]) {
                                 requestFields.push(dataBuffer.current[+currentBuffer.current][0][field]);
                             }
                         }
 
                         let requestData = [];
                         for (let row = 1; row < dataBuffer.current[+currentBuffer.current].length; row++) {
-                            requestData.push([]);
-                            for (let field in dataBuffer.current[+currentBuffer.current][row]) {
-                                if (colNames.current.includes(field))
-                                    requestData[row-1].push(dataBuffer.current[+currentBuffer.current][row][field]);
+                            if (checkedRows[row]) {
+                                requestData.push([]);
+                                for (let field in dataBuffer.current[+currentBuffer.current][row]) {
+                                    if (colNames.current.includes(field) && checkedColumns[getColIndex(field)]) {
+                                        requestData[requestData.length-1].push(dataBuffer.current[+currentBuffer.current][row][field]);
+                                    }
+                                }
                             }
                         }
                         request.suggestions.importFile(2, entityName, dataBuffer.current[+currentBuffer.current][0][(currentPrimarySelection.current === 'default' ? 'A' : currentPrimarySelection.current)], requestFields, selectedTypes.current, requestData, function(response) {
+
                             if (response === constants.RESPONSE_CODES.SUCCESS) {
                                 message.success({ content: 'Successfully imported CSV file!', akey, duration: 2 });
 
                                 props.changeState();
+                            } else {
+                                message.error({ content: 'Something went wrong. Please try again later.', akey, duration: 2 });
                             }
 
                         });
@@ -735,54 +778,114 @@ const AddConnectionDialog = (props) => {
             {(importDataMode ?
                 <div className='csv__container'>
                     <div className='background__transparent'></div>
-                    <div className='csv_importer'>
+                    <div ref={containerComponentRef} style={containerComponentStyles} className='csv_importer'>
                         <div style={{border: '1px solid blue', backgroundColor: 'red'}}>
                             <div style={{float: 'left', fontSize: '16px', padding: '20px'}}>Inspect CSV Data</div>
                             <div style={{float: 'right', padding: '20px'}} onClick={props.changeState}><CloseOutlined /></div>
                         </div>
                         <Divider />
+
                         <div style={{paddingRight: '20px', paddingLeft: '20px', paddingBottom: '20px'}}>
+                            {(inspectColumnsOnly ?
+                                <div>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th className='generic__tableCell'>Field Name</th>
+                                            <th className='generic__tableCell'>Data Type</th>
+                                            <th className='generic__tableCell'>Primary Key</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {nonCSVFileFields.map((field, fieldIndex) => {
+                                            return <tr key={fieldIndex}>
+                                                <td>{field}</td>
+                                                <td>
+                                                    <Cascader
+                                                        allowClear={false}
+                                                        options={COMPONENT_DATA_TYPES}
+                                                        defaultValue={[COMPONENT_DATA_TYPES[COMPONENT_DATA_TYPES.length-2].label]} onChange={v => {
+                                                        if (v.length > 0)
+                                                            setNonCSVFileTypes(nonCSVFileTypes.map((csvFileType, csvFileTypeIndex) => {
+                                                                if (csvFileTypeIndex === fieldIndex) {
+                                                                    return v[0];
+                                                                } else {
+                                                                    return csvFileType;
+                                                                }
+                                                            }));
+                                                    }} />
+                                                </td>
+                                                <td>
+                                                    <Checkbox onChange={() => {
+                                                        setNonCSVPrimaryKey(nonCSVFileFields[fieldIndex]);
+                                                    }} checked={nonCSVPrimaryKey === nonCSVFileFields[fieldIndex]} />
+                                                </td>
+                                            </tr>;
+                                        })}
 
-                            <div style={{marginBottom: '10px'}}>
-                               <Input addonBefore={'Table Name: '} placeholder={entityName} onChange={e => {setEntityName(e.target.value);} } />
-                            </div>
+                                        </tbody>
+                                    </table>
+                                    <div>
+                                        <Button type='primary' disabled={acceptableData} style={{float: 'right'}} onClick={() => {
+                                            let extension = importedFileObject.current.name.split('.').pop();
+                                            let akey = 234;
+                                            message.loading({ content: 'Uploading ' + extension.toUpperCase() + ' file...', akey});
 
-                            <div style={{marginBottom: '20px'}}>
-                                Unique Column: <Cascader allowClear={false} options={selectablePrimaryColumns} defaultValue={['Select Column']} onChange={v => {
-                                    if (v.length > 0) {
-                                        currentPrimarySelection.current = v[0];
-                                        if (v[0] === 'default') {
-                                            setPrimaryMessage('');
-                                        } else {
-                                            let found = false;
-                                            for (let p = 0; p < primaryColumns.current.length; p++) {
-                                                if (primaryColumns.current[p] === v[0]) {
-                                                    found = true;
-                                                    break;
+                                            request.suggestions.importFile((extension === 'xml' ? 3 : 4), importedFileObject.current.name, '', nonCSVFileFields, nonCSVFileTypes, (extension === 'json' ? importedFileStringContents.current.replace(/(\r\n|\n|\r|\t)/gm,'') : importedFileStringContents.current), function(response) {
+                                                if (response === constants.RESPONSE_CODES.SUCCESS) {
+                                                    message.success({ content: 'Successfully imported ' + extension.toUpperCase() + ' file!', akey, duration: 2 });
+
+                                                    props.changeState();
+                                                } else {
+                                                    message.error({ content: 'Something went wrong. Please try again later.', akey, duration: 2 });
                                                 }
-                                            }
+                                            });
+                                        }}> Finish </Button>
+                                    </div>
+                                </div>
+                            :
+                                <>
+                                    <div style={{marginBottom: '10px'}}>
+                                    <Input addonBefore={'Table Name: '} placeholder={entityName} onChange={e => {setEntityName(e.target.value);} } />
+                                    </div>
 
-                                            if (!found)
-                                                setPrimaryMessage('Some data values are not unique within this column.');
-                                            else
+                                    <div style={{marginBottom: '20px'}}>
+                                    Unique Column: <Cascader allowClear={false} options={selectablePrimaryColumns} defaultValue={['Select Column']} onChange={v => {
+                                        if (v.length > 0) {
+                                            currentPrimarySelection.current = v[0];
+                                            if (v[0] === 'default') {
                                                 setPrimaryMessage('');
+                                            } else {
+                                                let found = false;
+                                                for (let p = 0; p < primaryColumns.current.length; p++) {
+                                                    if (primaryColumns.current[p] === v[0]) {
+                                                        found = true;
+                                                        break;
+                                                    }
+                                                }
 
-                                            // todo: check if row is selected as in checkbox selected.
+                                                if (!found)
+                                                    setPrimaryMessage('Some data values are not unique within this column.');
+                                                else
+                                                    setPrimaryMessage('');
+
+                                                // todo: check if row is selected as in checkbox selected.
+                                            }
                                         }
-                                    }
-                            }} /> <span>{primaryMessage}</span>
-                            </div>
+                                    }} /> <span>{primaryMessage}</span>
+                                    </div>
 
-                            <div style={{overflowX: 'scroll'}}>
-                                <Table
-                                    columns={currentColumns}
-                                    data={currentData}
-                                    synchronizeData={synchronizeData}
-                                />
-                            </div>
-
-
+                                    <div style={{overflowX: 'scroll'}}>
+                                        <Table
+                                            columns={currentColumns}
+                                            data={currentData}
+                                            synchronizeData={synchronizeData}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
+
                     </div>
                 </div>
 
@@ -834,12 +937,6 @@ const AddConnectionDialog = (props) => {
                             <span className='or__line or__left'/><span className='or__inline or__text'>OR</span><span className='or__line or__right'/>
                         </div>
 
-
-                        <div {...getRootProps({className: 'dropzone dropzone__custom', style: {...styleDropzone}})}>
-                            <input {...getInputProps()} />
-                            Drag and drop either a CSV, XML or JSON data file. <br/>
-                            <Button  style={{marginTop: '25px'}} onClick={open}>Import Data File</Button>
-                        </div>
 
                         {(importError &&
                             <Result
@@ -915,6 +1012,18 @@ const AddConnectionDialog = (props) => {
                         {/*>*/}
                         {/*    <span>Drag or click to upload.</span>*/}
                         {/*</CSVReader>*/}
+
+                        {(loading ?
+                            <div style={{height: '200px'}}>
+                                {constants.LOADER}
+                            </div>
+                        :
+                            <div {...getRootProps({className: 'dropzone dropzone__custom', style: {...styleDropzone}})}>
+                                <input {...getInputProps()} />
+                                Drag and drop either a CSV, XML or JSON data file. <br/>
+                                <Button  style={{marginTop: '25px'}} onClick={open}>Import Data File</Button>
+                            </div>
+                        )}
 
                     </div>
 

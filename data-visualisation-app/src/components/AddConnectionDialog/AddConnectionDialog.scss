@@ -56,7 +56,7 @@ $side_margin: 100px;
   //border: 1px solid red;
   z-index: 100;
   //margin-left: -($WIDTH_SIDE_NAVIGATION);
-  margin-left: -(37%);
+  //margin-left: -(37%);
 
   height: 80vh;
 
@@ -72,6 +72,10 @@ td.included {
 
 
   //border: 1px solid red;
+}
+
+.excluded{
+  color: #adadad;
 }
 
 
@@ -149,4 +153,8 @@ td {
   padding: 5px;
   text-align: center;
   font-weight: bold;
+}
+
+.generic__tableCell {
+  padding: 5px;
 }
