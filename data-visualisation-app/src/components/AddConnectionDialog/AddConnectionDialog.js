@@ -60,7 +60,7 @@ const AddConnectionDialog = (props) => {
 
 
     const {getRootProps, getInputProps, open, acceptedFiles, isDragActive, isDragAccept, isDragReject} = useDropzone({
-        accept: ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/json', 'application/xml', 'text/xml'],
+        accept: ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/json', 'application/xml', 'text/xml', 'text/*'],
         noClick: true,
         noKeyboard: true,
         onDropAccepted: function (droppedFiles) {
@@ -80,7 +80,6 @@ const AddConnectionDialog = (props) => {
                                 errors: []
                             });
                         }
-
                         setInspectColumnsOnly(false);
                         onLoadedCSVFile(dataResult, file);
                     }
@@ -348,7 +347,6 @@ const AddConnectionDialog = (props) => {
     }
 
     function onLoadedCSVFile(data, fileInformation) {
-
         setEntityName(fileInformation.name);
 
         if (importError)
