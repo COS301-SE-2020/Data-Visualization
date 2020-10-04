@@ -62,7 +62,11 @@ class DataSource {
 				.then(async (mdata) => {
 					if (DataSource.isLocal(type)) {
 						if (entityName && primaryKey && fieldlist && typelist) {
-							mdata = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
+							try {
+								mdata = DataSource.parseMetadataLocal(type, entityName, primaryKey, fieldlist, typelist);
+							} catch (err) {
+								reject({ error: err, status: 400 });
+							}
 						} else {
 							const meta = await Database.getDataSourceLocalMeta(src);
 

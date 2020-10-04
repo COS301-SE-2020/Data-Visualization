@@ -45,6 +45,7 @@
 		"bcryptjs": "^2.4.3",
 		"connect-pg-simple": "^6.1.0",
 		"cors": "^2.8.5",
+		"csv-js": "^1.0.0",
 		"dom-parser": "^0.1.6",
 		"dotenv": "^8.2.0",
 		"error": "^10.4.0",
