@@ -89,7 +89,17 @@ const AddConnectionDialog = (props) => {
                     let akey = 234;
                     message.loading({ content: 'Uploading ' + extension.toUpperCase() + ' file...', akey});
 
-                    request.suggestions.importFile((extension === 'xml' ? 3 : 4), droppedFiles[0].name, '', [], selectedTypes.current, fileReader.result, function(response) {
+                    console.debug('fileReader.result,', fileReader.result.replace(/(\r\n|\n|\r)/gm,""));
+
+                    console.debug('getXMLFields()', getXMLFields(fileReader.result));
+
+
+                    let dataFields = (extension === 'xml' ? getXMLFields(fileReader.result) : getJSONFields(JSON.parse(fileReader.result)));
+                    let typeFields = dataFields.map(dataField => {return 'string';});
+
+                    console.debug('dataFields', dataFields);
+
+                    request.suggestions.importFile((extension === 'xml' ? 3 : 4), droppedFiles[0].name, '', dataFields, /*selectedTypes.current*/typeFields, (extension === 'json' ? fileReader.result.replace(/(\r\n|\n|\r|\t)/gm,'') : fileReader.result), function(response) {
                         if (response === constants.RESPONSE_CODES.SUCCESS) {
                             message.success({ content: 'Successfully imported ' + extension.toUpperCase() + ' file!', akey, duration: 2 });
 
@@ -212,6 +222,60 @@ const AddConnectionDialog = (props) => {
     /** --------------------------------------------- */
 
     /** -------------- Functions -------------- */
+
+    function getXMLFields(data){
+        let fields = [];
+        let types = [];
+        try {
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(data, 'text/xml');
+            if (!xmlDoc || !xmlDoc.childNodes) {
+                return fields;
+            }
+            let level = xmlDoc;
+            while (level.childNodes && level.childNodes[0] && !level.childNodes[0].data || level.tagName.toLowerCase().includes('xml')) {
+                level = level.childNodes[0];
+            }
+            let parents = xmlDoc.getElementsByTagName(level.parentNode.tagName);
+            // console.log(parents);
+            if (parents && parents.length !== 0) {
+                for (let i = 0; i < parents.length; i++) {
+                    for (let j = 0; j < parents[i].childNodes.length; j++) {
+                        let child = parents[i].childNodes[j].tagName;
+                        if (!fields.includes(child)) {
+                            fields.push(child);
+                        }
+                    }
+                }
+            } else {
+                let children = xmlDoc.childNodes;
+                for (let i = 0; i < children.length; i++) {
+                    if (children[i]) {
+                        let child = children[i].tagName;
+                        if (!fields.includes(child)) {
+                            fields.push(child);
+                        }
+                    }
+                }
+            }
+            return fields;
+        } catch (e) {
+            //Invalid XML file
+            console.log("Invalid XML format");
+            // console.log(e);
+            return [];
+        }
+    }
+
+    function getJSONFields(data) {
+        let fields = [];
+        for (let i = 0; i < data.length; i++) {
+            let temp = data[i];
+            let keys = Object.keys(temp);
+            fields = [...new Set([...fields, ...keys])];
+        }
+        return fields;
+    }
 
 
     /**  Modify a single value inside the current EChart JSON object used.

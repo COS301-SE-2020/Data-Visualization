@@ -689,7 +689,7 @@ const request = {
 					.csvAuthorized(request.user.apikey, SourceType, EntityName, PrimaryKey, fields, types, data)
 					.then((res) => {
 						if (callback !== undefined) {
-							console.debug('Response efrom suggestion.csv:', res);
+							console.debug('Response from suggestion.csv:', res);
 
 							if (res.hasOwnProperty('data') && res.data.hasOwnProperty('source') && res.data.hasOwnProperty('id')) {
 
