@@ -1,25 +1,30 @@
 version: 2.1
 orbs:
-  node: circleci/node@1.1.6
+    node: circleci/node@1.1.6
+
+dependencies:
+    cache_directories:
+        - node_modules
+        - data-visualisation-app/node_modules
 
 jobs:
-  build-and-test:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-            - run: npm test
-      - store_test_results:
-          path: test_results
+    build-and-test:
+        executor:
+            name: node/default
+        steps:
+            - checkout
+            - node/with-cache:
+                  steps:
+                      - run: npm install
+                      - run: npm test
+            - store_test_results:
+                  path: test_results
 workflows:
-  build-and-test:
-    jobs:
-      - build-and-test:
-        filters:
-          branches:
-            only:
-              - develop
-              - master
+    build-and-test:
+        jobs:
+            - build-and-test:
+              filters:
+                  branches:
+                      only:
+                          - develop
+                          - master
