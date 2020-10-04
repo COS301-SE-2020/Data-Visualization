@@ -198,6 +198,7 @@ class RestController {
 	static importLocalSource(srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
 		let src = DataSource.generateLocalSourceFileName(srcType);
 
+		if (!PrimaryKey) PrimaryKey = '';
 		if (PrimaryKey.length <= 0) {
 			do {
 				PrimaryKey += '_';
@@ -228,6 +229,7 @@ class RestController {
 	static importLocalSourceAuth(email, srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
 		const src = DataSource.generateLocalSourceFileName(srcType);
 
+		if (!PrimaryKey) PrimaryKey = '';
 		if (PrimaryKey.length <= 0) {
 			do {
 				PrimaryKey += '_';
@@ -321,6 +323,8 @@ class RestController {
 			} else if (!suggestion) {
 				done({});
 			} else {
+				// console.log('SUGGESTION: ', suggestion);
+
 				let fieldType = suggestion.fieldType;
 				let field = suggestion.field;
 				let primaryKey = suggestion.primaryKey;
@@ -350,7 +354,7 @@ class RestController {
 
 							let forecastResults = await DataSource.predictTimeSeries(data.data, count).catch((err) => {
 								isForecasting = false;
-								console.log('Time Series Forecast failed...', err.data.error);
+								console.log('Time Series Forecast failed...', err && err.data && err.data.error);
 							});
 
 							// console.log(forecastResults);

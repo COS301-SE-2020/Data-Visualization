@@ -96,6 +96,9 @@ const CacheMaker = (function () {
 
 		setMetaData(src, data) {
 			if (!this.metaData) this.metaData = {};
+
+			console.log('META', src, data);
+
 			this.metaData[src] = {
 				timestamp: Date.now(),
 				data,
