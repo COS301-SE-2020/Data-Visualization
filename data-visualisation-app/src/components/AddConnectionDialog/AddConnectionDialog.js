@@ -182,6 +182,14 @@ const AddConnectionDialog = (props) => {
         'date'
     ];
 
+    const DATA_TYPES_STRING_LOOKUP = {
+        boolean: 0,
+        int: 1,
+        float: 2,
+        string: 3,
+        date: 4
+    };
+
     const DATA_TYPE_REGEX = {
         boolean: /^(true|false|0|1)$/,
         integer: /^-?\d{1,8}$/,
@@ -594,6 +602,15 @@ const AddConnectionDialog = (props) => {
         const [checkedColumns, setCheckedColumns] = useState(columns.map(() => {
             return true;
         }));
+        const [chosenColumnTypes, setChosenColumnTypes] = useState(selectedTypes.current.map(selectedType => {
+            return COMPONENT_DATA_TYPES[DATA_TYPES_STRING_LOOKUP[selectedType]].value;
+        }));
+
+        useEffect(() => {
+            // setChosenColumnTypes(proposedTypes.current.map(proposedType => {
+            //     return COMPONENT_DATA_TYPES[DATA_TYPES[proposedType]].value;
+            // }));
+        }, []);
 
         const {
             getTableProps,
@@ -630,7 +647,7 @@ const AddConnectionDialog = (props) => {
                             <th></th>
                             <th></th>
                             {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
-                                return <th key={tableCheckboxHeaderIndex} className={'disabled_borderLeft ' + (tableCheckboxHeaderIndex === checkedColumns.length-1 ? 'disabled_borderRight ' : '')}>
+                                return <th key={tableCheckboxHeaderIndex} className={'resizeable disabled_borderLeft ' + (tableCheckboxHeaderIndex === checkedColumns.length-1 ? 'disabled_borderRight ' : '')}>
 
                                     <div style={{textAlign: 'center', marginBottom: '5px'}}>
                                         <Checkbox onChange={() => {
@@ -641,9 +658,19 @@ const AddConnectionDialog = (props) => {
                                     </div>
                                     <div style={{padding: '5px'}}>
                                         <Cascader allowClear={false} options={COMPONENT_DATA_TYPES} defaultValue={[COMPONENT_DATA_TYPES[proposedTypes.current[tableCheckboxHeaderIndex]].label]} onChange={v => {
-                                            if (v.length > 0)
+                                            if (v.length > 0) {
                                                 selectedTypes.current[tableCheckboxHeaderIndex] = DATA_TYPES_STRINGS[DATA_TYPES[v[0]]];
-                                        }} />
+                                                setChosenColumnTypes(chosenColumnTypes.map((chosenColumnType, chosenColumnTypeIndex) => {
+                                                    if (chosenColumnTypeIndex === tableCheckboxHeaderIndex)
+                                                        return v[0];
+                                                    else
+                                                        return chosenColumnType;
+                                                }));
+                                            }
+                                                // selectedTypes.current[tableCheckboxHeaderIndex] = DATA_TYPES_STRINGS[DATA_TYPES[v[0]]];
+                                        }}
+                                        // value={[(selectedTypes.current.length === 0 ? 'STRING' : COMPONENT_DATA_TYPES[DATA_TYPES_STRING_LOOKUP[selectedTypes.current[tableCheckboxHeaderIndex]]].label)]}
+                                        value={[(chosenColumnTypes.length === 0 ? 'STRING' : chosenColumnTypes[tableCheckboxHeaderIndex])]} />
                                     </div>
                                 </th>;
                             })}
@@ -651,7 +678,7 @@ const AddConnectionDialog = (props) => {
                         {headerGroups.map(headerGroup => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 <th></th>
-                                <th className='inner_borderRight inner_borderBottom outer_borderLeft outer_borderTop '></th>
+                                <th className='resizeable inner_borderRight inner_borderBottom outer_borderLeft outer_borderTop '></th>
                                 {headerGroup.headers.map((column, columnIndex) => (
                                     <th {...column.getHeaderProps()} className={'table__headerCell outer_borderTop outer_borderBottom ' + (columnIndex === headerGroup.headers.length-1 ? 'outer_borderRight' : 'inner_borderRight ')} >{column.render('Header')}</th>
                                 ))}
@@ -664,7 +691,7 @@ const AddConnectionDialog = (props) => {
 
                                 return (
                                     <tr {...rowData.getRowProps()} >
-                                        <td className={'disabled_borderBottom ' + (rowIndex === 0 ? 'disabled_borderTop' : '')}>
+                                        <td className={'notResizeable disabled_borderBottom ' + (rowIndex === 0 ? 'disabled_borderTop' : '')}>
                                             {(rowData.index > 0 &&
                                                 <Checkbox onChange={() => {
                                                     setCheckRows(checkedRows.map((tmp, tmp_index) => {
@@ -674,49 +701,49 @@ const AddConnectionDialog = (props) => {
                                             )}
                                         </td>
 
-                                        <td className={'table__headerCell outer_borderLeft outer_borderRight ' + (rowIndex === pageSize-1 || rowData.index === currentData.length ? 'outer_borderBottom ' : 'inner_borderBottom')}>{rowData.index+1}</td>
-                                            {rowData.cells.map((cellData, colIndex) => {
+                                        <td className={'notResizeable table__headerCell outer_borderLeft outer_borderRight ' + (rowIndex === pageSize-1 || rowData.index === currentData.length ? 'outer_borderBottom ' : 'inner_borderBottom')}>{rowData.index+1}</td>
+                                        {rowData.cells.map((cellData, colIndex) => {
 
-                                                rowClasses.current = '';
-                                                if (rowData.original.hasOwnProperty('error')) {
-                                                    rowClasses.current += 'error ';
-                                                }
+                                            rowClasses.current = 'resizeable ';
+                                            if (rowData.original.hasOwnProperty('error')) {
+                                                rowClasses.current += 'error ';
+                                            }
 
-                                                rowClasses.current += (checkedRows[pageSize*pageIndex + rowIndex] && checkedColumns[colIndex] ? 'included ' : 'excluded ');
+                                            rowClasses.current += (checkedRows[pageSize*pageIndex + rowIndex] && checkedColumns[colIndex] ? 'included ' : 'excluded ');
 
-                                                if (rowIndex < pageSize-1) {
-                                                    if (checkedColumns[colIndex]) {
-                                                        if ((!checkedRows[pageSize*pageIndex + rowIndex+1] && checkedRows[pageSize*pageIndex + rowIndex]) || (checkedRows[pageSize*pageIndex + rowIndex+1] && !checkedRows[pageSize*pageIndex + rowIndex]))
-                                                            rowClasses.current += 'outer_borderBottom ';
-                                                        else
-                                                            rowClasses.current += 'inner_borderBottom ';
-                                                    } else {
-                                                        rowClasses.current += 'disabled_borderBottom ';
-                                                    }
-
-
-                                                } else {
-                                                    if (checkedColumns[colIndex] && checkedRows[pageSize*pageIndex + rowIndex])
+                                            if (rowIndex < pageSize-1) {
+                                                if (checkedColumns[colIndex]) {
+                                                    if ((!checkedRows[pageSize*pageIndex + rowIndex+1] && checkedRows[pageSize*pageIndex + rowIndex]) || (checkedRows[pageSize*pageIndex + rowIndex+1] && !checkedRows[pageSize*pageIndex + rowIndex]))
                                                         rowClasses.current += 'outer_borderBottom ';
                                                     else
-                                                        rowClasses.current += 'disabled_borderBottom ';
-                                                }
-
-                                                if (colIndex < rowData.cells.length-1) {
-                                                    if (((!checkedColumns[colIndex+1] && checkedColumns[colIndex]) || (checkedColumns[colIndex+1] && !checkedColumns[colIndex])) && checkedRows[pageSize*pageIndex + rowIndex])
-                                                        rowClasses.current += 'outer_borderRight ';
-                                                    else
-                                                        rowClasses.current += 'inner_borderRight ';
+                                                        rowClasses.current += 'inner_borderBottom ';
                                                 } else {
-                                                    if (checkedColumns[colIndex])
-                                                        rowClasses.current += 'outer_borderRight ';
-                                                    else
-                                                        rowClasses.current += 'disabled_borderRight ';
-
+                                                    rowClasses.current += 'disabled_borderBottom ';
                                                 }
 
-                                                return <td {...cellData.getCellProps()} className={rowClasses.current}>{cellData.render('Cell')}</td>;
-                                            })}
+
+                                            } else {
+                                                if (checkedColumns[colIndex] && checkedRows[pageSize*pageIndex + rowIndex])
+                                                    rowClasses.current += 'outer_borderBottom ';
+                                                else
+                                                    rowClasses.current += 'disabled_borderBottom ';
+                                            }
+
+                                            if (colIndex < rowData.cells.length-1) {
+                                                if (((!checkedColumns[colIndex+1] && checkedColumns[colIndex]) || (checkedColumns[colIndex+1] && !checkedColumns[colIndex])) && checkedRows[pageSize*pageIndex + rowIndex])
+                                                    rowClasses.current += 'outer_borderRight ';
+                                                else
+                                                    rowClasses.current += 'inner_borderRight ';
+                                            } else {
+                                                if (checkedColumns[colIndex])
+                                                    rowClasses.current += 'outer_borderRight ';
+                                                else
+                                                    rowClasses.current += 'disabled_borderRight ';
+
+                                            }
+
+                                            return <td {...cellData.getCellProps()} className={rowClasses.current}>{cellData.render('Cell')}</td>;
+                                        })}
                                     </tr>
                                 );
                             })}
@@ -877,24 +904,24 @@ const AddConnectionDialog = (props) => {
                                     Unique Column: <Cascader allowClear={false} options={selectablePrimaryColumns} defaultValue={['Select Column']} onChange={v => {
                                         if (v.length > 0) {
                                             currentPrimarySelection.current = v[0];
-                                            if (v[0] === 'default') {
-                                                setPrimaryMessage('');
-                                            } else {
-                                                let found = false;
-                                                for (let p = 0; p < primaryColumns.current.length; p++) {
-                                                    if (primaryColumns.current[p] === v[0]) {
-                                                        found = true;
-                                                        break;
-                                                    }
-                                                }
-
-                                                if (!found)
-                                                    setPrimaryMessage('Some data values are not unique within this column.');
-                                                else
-                                                    setPrimaryMessage('');
-
-                                                // todo: check if row is selected as in checkbox selected.
-                                            }
+                                            // if (v[0] === 'default') {
+                                            //     setPrimaryMessage('');
+                                            // } else {
+                                            //     let found = false;
+                                            //     for (let p = 0; p < primaryColumns.current.length; p++) {
+                                            //         if (primaryColumns.current[p] === v[0]) {
+                                            //             found = true;
+                                            //             break;
+                                            //         }
+                                            //     }
+                                            //
+                                            //     if (!found)
+                                            //         setPrimaryMessage('Some data values are not unique within this column.');
+                                            //     else
+                                            //         setPrimaryMessage('');
+                                            //
+                                            //     // todo: check if row is selected as in checkbox selected.
+                                            // }
                                         }
                                     }} /> <span>{primaryMessage}</span>
                                     </div>

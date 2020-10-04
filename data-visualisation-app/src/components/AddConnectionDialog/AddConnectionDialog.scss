@@ -163,6 +163,27 @@ table.mainTable {
     }
   }
 
+
+  th.resizeable,
+  td.resizeable {
+    //margin: 0;
+    //padding: 0.5rem;
+    //border-bottom: 1px solid black;
+    //border-right: 1px solid black;
+
+    /* The secret sauce */
+    /* Each cell should grow equally */
+    width: 1%;
+    /* But "collapsed" cells should be as small as possible */
+    &.collapse {
+      width: 0.0000000001%;
+    }
+
+    //:last-child {
+    //  border-right: 0;
+    //}
+  }
+
   th,
   td {
     //margin: 0;
