@@ -1,4 +1,5 @@
 {
+	"SourceType": 2,
 	"EntityName": "Fruits",
 	"PrimaryKey": "id",
 	"fields": ["id", "name", "price", "quantity"],
