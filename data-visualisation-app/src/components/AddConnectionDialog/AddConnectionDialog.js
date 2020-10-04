@@ -24,13 +24,13 @@
  * Imports
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Button, Modal, Input, Select, Typography, Divider, Checkbox, Cascader, Result, message, Space} from 'antd';
+import {Button, Modal, Input, Select, Divider, Checkbox, Cascader, Result, message, Space} from 'antd';
 import { Form } from 'antd';
 import {useTable, usePagination} from 'react-table';
 import './AddConnectionDialog.scss';
+import './AddConnectionDialogCSS.css';
 import { CSVReader } from 'react-papaparse';
 import CloseOutlined from '@ant-design/icons/lib/icons/CloseOutlined';
-import fileIcon from './../../assets/svg/file.svg';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import {useDropzone} from 'react-dropzone';
@@ -159,6 +159,7 @@ const AddConnectionDialog = (props) => {
     const importedFileStringContents = useRef('');
     const containerComponentRef = useRef(null);
     const [containerComponentStyles, setContainerComponentStyles] = useState({});
+    const [containerOuterTableStyles, setContainerOuterTableStyles] = useState({overflow: 'scroll', border: '1px solid black', width: '100px'});
 
     /** --------------------------------------------- */
 
@@ -240,7 +241,13 @@ const AddConnectionDialog = (props) => {
     /** -------------- Functions -------------- */
 
     function alignContainer(addMargin) {
-        setContainerComponentStyles({marginLeft: (-0.5*containerComponentRef.current.offsetWidth + (addMargin ? -100 : 0)) + 'px'});
+
+        // let newContainerStyles = {};
+
+        setContainerComponentStyles({marginLeft: (-0.5*containerComponentRef.current.offsetWidth ) + 'px'});
+
+        // if (addMargin)
+        //     setContainerOuterTableStyles({width: (containerComponentRef.current.offsetWidth - 20) + 'px', ...containerComponentStyles});
     }
 
     function getXMLFields(data){
@@ -347,6 +354,7 @@ const AddConnectionDialog = (props) => {
     }
 
     function onLoadedCSVFile(data, fileInformation) {
+
         setEntityName(fileInformation.name);
 
         if (importError)
@@ -373,7 +381,22 @@ const AddConnectionDialog = (props) => {
         let outerLoopCount = Math.floor(maxColumnCount/26);
         let prefix = '', colName = '';
 
-        for (let outer = 0; outer < (outerLoopCount === 0 ? 1 : 0); outer++) {
+        for (let c = 0; c < (outerLoopCount === 0 ? maxColumnCount : 26); c++) {
+
+            colName = String.fromCharCode(65 + c);
+            newColumns.push({
+                Header: colName,
+                accessor: colName,
+            });
+
+            colNames.current.push(colName);
+        }
+
+        maxColumnCount -= (outerLoopCount === 0 ? maxColumnCount : 26);
+        outerLoopCount -= 1;
+
+        for (let outer = 0; outer < outerLoopCount; outer++) {
+
             prefix = (outerLoopCount === 0 ? '' : String.fromCharCode(65 + outer));
             for (let c = 0; c < maxColumnCount; c++) {
                 colName = prefix + String.fromCharCode(65 + c);
@@ -468,7 +491,6 @@ const AddConnectionDialog = (props) => {
 
         setCurrentColumns(newColumns);
         setCurrentData(newData);
-
 
 
         setLoading(false);
@@ -600,104 +622,107 @@ const AddConnectionDialog = (props) => {
 
         return (
             <>
-                <table {...getTableProps()}>
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
-                            return <th key={tableCheckboxHeaderIndex} className={'disabled_borderLeft ' + (tableCheckboxHeaderIndex === checkedColumns.length-1 ? 'disabled_borderRight ' : '')}>
 
-                                <div style={{textAlign: 'center', marginBottom: '5px'}}>
-                                    <Checkbox onChange={() => {
-                                        setCheckedColumns(checkedColumns.map((tmp, tmp_index) => {
-                                            return (tmp_index === tableCheckboxHeaderIndex ? !tmp : tmp);
-                                        }));
-                                    }} checked={checkedColumns[tableCheckboxHeaderIndex]} />
-                                </div>
-                                <div style={{padding: '5px'}}>
-                                    <Cascader allowClear={false} options={COMPONENT_DATA_TYPES} defaultValue={[COMPONENT_DATA_TYPES[proposedTypes.current[tableCheckboxHeaderIndex]].label]} onChange={v => {
-                                        if (v.length > 0)
-                                            selectedTypes.current[tableCheckboxHeaderIndex] = DATA_TYPES_STRINGS[DATA_TYPES[v[0]]];
-                                    }} />
-                                </div>
-                            </th>;
-                        })}
-                    </tr>
-                    {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
+                <div /*style={{overflow: 'scroll', width: '100%', border: '1px solid red'}}*/ className='tableWrap'>
+                    <table className='mainTable' {...getTableProps()}>
+                        <thead>
+                        <tr>
                             <th></th>
-                            <th className='inner_borderRight inner_borderBottom outer_borderLeft outer_borderTop '></th>
-                            {headerGroup.headers.map((column, columnIndex) => (
-                                <th {...column.getHeaderProps()} className={'table__headerCell outer_borderTop outer_borderBottom ' + (columnIndex === headerGroup.headers.length-1 ? 'outer_borderRight' : 'inner_borderRight ')} >{column.render('Header')}</th>
-                            ))}
+                            <th></th>
+                            {checkedColumns.map((tableCheckboxHeader, tableCheckboxHeaderIndex) => {
+                                return <th key={tableCheckboxHeaderIndex} className={'disabled_borderLeft ' + (tableCheckboxHeaderIndex === checkedColumns.length-1 ? 'disabled_borderRight ' : '')}>
+
+                                    <div style={{textAlign: 'center', marginBottom: '5px'}}>
+                                        <Checkbox onChange={() => {
+                                            setCheckedColumns(checkedColumns.map((tmp, tmp_index) => {
+                                                return (tmp_index === tableCheckboxHeaderIndex ? !tmp : tmp);
+                                            }));
+                                        }} checked={checkedColumns[tableCheckboxHeaderIndex]} />
+                                    </div>
+                                    <div style={{padding: '5px'}}>
+                                        <Cascader allowClear={false} options={COMPONENT_DATA_TYPES} defaultValue={[COMPONENT_DATA_TYPES[proposedTypes.current[tableCheckboxHeaderIndex]].label]} onChange={v => {
+                                            if (v.length > 0)
+                                                selectedTypes.current[tableCheckboxHeaderIndex] = DATA_TYPES_STRINGS[DATA_TYPES[v[0]]];
+                                        }} />
+                                    </div>
+                                </th>;
+                            })}
                         </tr>
-                    ))}
-                    </thead>
-                    <tbody {...getTableBodyProps()}>
-                        {page.map((rowData, rowIndex) => {
-                            prepareRow(rowData);
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                <th></th>
+                                <th className='inner_borderRight inner_borderBottom outer_borderLeft outer_borderTop '></th>
+                                {headerGroup.headers.map((column, columnIndex) => (
+                                    <th {...column.getHeaderProps()} className={'table__headerCell outer_borderTop outer_borderBottom ' + (columnIndex === headerGroup.headers.length-1 ? 'outer_borderRight' : 'inner_borderRight ')} >{column.render('Header')}</th>
+                                ))}
+                            </tr>
+                        ))}
+                        </thead>
+                        <tbody {...getTableBodyProps()}>
+                            {page.map((rowData, rowIndex) => {
+                                prepareRow(rowData);
 
-                            return (
-                                <tr {...rowData.getRowProps()} >
-                                    <td className={'disabled_borderBottom ' + (rowIndex === 0 ? 'disabled_borderTop' : '')}>
-                                        {(rowData.index > 0 &&
-                                            <Checkbox onChange={() => {
-                                                setCheckRows(checkedRows.map((tmp, tmp_index) => {
-                                                    return (tmp_index === rowData.index ? !tmp : tmp);
-                                                }));
-                                            }} checked={checkedRows[rowData.index]} />
-                                        )}
-                                    </td>
+                                return (
+                                    <tr {...rowData.getRowProps()} >
+                                        <td className={'disabled_borderBottom ' + (rowIndex === 0 ? 'disabled_borderTop' : '')}>
+                                            {(rowData.index > 0 &&
+                                                <Checkbox onChange={() => {
+                                                    setCheckRows(checkedRows.map((tmp, tmp_index) => {
+                                                        return (tmp_index === rowData.index ? !tmp : tmp);
+                                                    }));
+                                                }} checked={checkedRows[rowData.index]} />
+                                            )}
+                                        </td>
 
-                                    <td className={'table__headerCell outer_borderLeft outer_borderRight ' + (rowIndex === pageSize-1 || rowData.index === currentData.length ? 'outer_borderBottom ' : 'inner_borderBottom')}>{rowData.index+1}</td>
-                                        {rowData.cells.map((cellData, colIndex) => {
+                                        <td className={'table__headerCell outer_borderLeft outer_borderRight ' + (rowIndex === pageSize-1 || rowData.index === currentData.length ? 'outer_borderBottom ' : 'inner_borderBottom')}>{rowData.index+1}</td>
+                                            {rowData.cells.map((cellData, colIndex) => {
 
-                                            rowClasses.current = '';
-                                            if (rowData.original.hasOwnProperty('error')) {
-                                                rowClasses.current += 'error ';
-                                            }
-
-                                            rowClasses.current += (checkedRows[pageSize*pageIndex + rowIndex] && checkedColumns[colIndex] ? 'included ' : 'excluded ');
-
-                                            if (rowIndex < pageSize-1) {
-                                                if (checkedColumns[colIndex]) {
-                                                    if ((!checkedRows[pageSize*pageIndex + rowIndex+1] && checkedRows[pageSize*pageIndex + rowIndex]) || (checkedRows[pageSize*pageIndex + rowIndex+1] && !checkedRows[pageSize*pageIndex + rowIndex]))
-                                                        rowClasses.current += 'outer_borderBottom ';
-                                                    else
-                                                        rowClasses.current += 'inner_borderBottom ';
-                                                } else {
-                                                    rowClasses.current += 'disabled_borderBottom ';
+                                                rowClasses.current = '';
+                                                if (rowData.original.hasOwnProperty('error')) {
+                                                    rowClasses.current += 'error ';
                                                 }
 
+                                                rowClasses.current += (checkedRows[pageSize*pageIndex + rowIndex] && checkedColumns[colIndex] ? 'included ' : 'excluded ');
 
-                                            } else {
-                                                if (checkedColumns[colIndex] && checkedRows[pageSize*pageIndex + rowIndex])
-                                                    rowClasses.current += 'outer_borderBottom ';
-                                                else
-                                                    rowClasses.current += 'disabled_borderBottom ';
-                                            }
+                                                if (rowIndex < pageSize-1) {
+                                                    if (checkedColumns[colIndex]) {
+                                                        if ((!checkedRows[pageSize*pageIndex + rowIndex+1] && checkedRows[pageSize*pageIndex + rowIndex]) || (checkedRows[pageSize*pageIndex + rowIndex+1] && !checkedRows[pageSize*pageIndex + rowIndex]))
+                                                            rowClasses.current += 'outer_borderBottom ';
+                                                        else
+                                                            rowClasses.current += 'inner_borderBottom ';
+                                                    } else {
+                                                        rowClasses.current += 'disabled_borderBottom ';
+                                                    }
 
-                                            if (colIndex < rowData.cells.length-1) {
-                                                if (((!checkedColumns[colIndex+1] && checkedColumns[colIndex]) || (checkedColumns[colIndex+1] && !checkedColumns[colIndex])) && checkedRows[pageSize*pageIndex + rowIndex])
-                                                    rowClasses.current += 'outer_borderRight ';
-                                                else
-                                                    rowClasses.current += 'inner_borderRight ';
-                                            } else {
-                                                if (checkedColumns[colIndex])
-                                                    rowClasses.current += 'outer_borderRight ';
-                                                else
-                                                    rowClasses.current += 'disabled_borderRight ';
 
-                                            }
+                                                } else {
+                                                    if (checkedColumns[colIndex] && checkedRows[pageSize*pageIndex + rowIndex])
+                                                        rowClasses.current += 'outer_borderBottom ';
+                                                    else
+                                                        rowClasses.current += 'disabled_borderBottom ';
+                                                }
 
-                                            return <td {...cellData.getCellProps()} className={rowClasses.current}>{cellData.render('Cell')}</td>;
-                                        })}
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                                if (colIndex < rowData.cells.length-1) {
+                                                    if (((!checkedColumns[colIndex+1] && checkedColumns[colIndex]) || (checkedColumns[colIndex+1] && !checkedColumns[colIndex])) && checkedRows[pageSize*pageIndex + rowIndex])
+                                                        rowClasses.current += 'outer_borderRight ';
+                                                    else
+                                                        rowClasses.current += 'inner_borderRight ';
+                                                } else {
+                                                    if (checkedColumns[colIndex])
+                                                        rowClasses.current += 'outer_borderRight ';
+                                                    else
+                                                        rowClasses.current += 'disabled_borderRight ';
+
+                                                }
+
+                                                return <td {...cellData.getCellProps()} className={rowClasses.current}>{cellData.render('Cell')}</td>;
+                                            })}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
                 <div className="pagination" style={{marginTop: '15px'}}>
                     <Space size={9}>
                         <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}> First </Button>
@@ -784,7 +809,7 @@ const AddConnectionDialog = (props) => {
                         </div>
                         <Divider />
 
-                        <div style={{paddingRight: '20px', paddingLeft: '20px', paddingBottom: '20px'}}>
+                        <div style={{paddingRight: '20px', paddingLeft: '20px', paddingBottom: '20px', overflow: 'scroll'}}>
                             {(inspectColumnsOnly ?
                                 <div>
                                     <table>
@@ -874,13 +899,13 @@ const AddConnectionDialog = (props) => {
                                     }} /> <span>{primaryMessage}</span>
                                     </div>
 
-                                    <div style={{overflowX: 'scroll'}}>
-                                        <Table
-                                            columns={currentColumns}
-                                            data={currentData}
-                                            synchronizeData={synchronizeData}
-                                        />
-                                    </div>
+                                    {/*<div style={{overflow: 'scroll', width: '100%'}}>*/}
+                                    <Table
+                                        columns={currentColumns}
+                                        data={currentData}
+                                        synchronizeData={synchronizeData}
+                                    />
+                                    {/*</div>*/}
                                 </>
                             )}
                         </div>
@@ -1000,11 +1025,9 @@ const AddConnectionDialog = (props) => {
                         {/*    }}*/}
                         {/*    parseConfig={{*/}
                         {/*        step: (results, file) => {*/}
-                        {/*            console.debug('im in step')*/}
                         {/*            // setImportDataMode(true);*/}
                         {/*        },*/}
                         {/*        complete: (results, file) => {*/}
-                        {/*            console.debug('im in cmplete')*/}
                         {/*            // setImportDataMode(true);*/}
                         {/*        }*/}
                         {/*    }}*/}
@@ -1013,7 +1036,7 @@ const AddConnectionDialog = (props) => {
                         {/*</CSVReader>*/}
 
                         {(loading ?
-                            <div style={{height: '200px'}}>
+                            <div style={{height: '200px', paddingTop: '100px'}}>
                                 {constants.LOADER}
                             </div>
                         :
