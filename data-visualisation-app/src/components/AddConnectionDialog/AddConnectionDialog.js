@@ -60,7 +60,7 @@ const AddConnectionDialog = (props) => {
 
 
     const {getRootProps, getInputProps, open, acceptedFiles, isDragActive, isDragAccept, isDragReject} = useDropzone({
-        accept: ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/json', 'application/xml', 'text/xml', 'text/*'],
+        accept: ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/json', 'application/xml', 'text/xml', 'text/*', '.csv'],
         noClick: true,
         noKeyboard: true,
         onDropAccepted: function (droppedFiles) {
@@ -778,7 +778,7 @@ const AddConnectionDialog = (props) => {
                     <div className='background__transparent'></div>
                     <div ref={containerComponentRef} style={containerComponentStyles} className='csv_importer'>
                         <div style={{border: '1px solid blue', backgroundColor: 'red'}}>
-                            <div style={{float: 'left', fontSize: '16px', padding: '20px'}}>Inspect CSV Data</div>
+                            <div style={{float: 'left', fontSize: '16px', padding: '20px'}}>Inspect Data File</div>
                             <div style={{float: 'right', padding: '20px'}} onClick={props.changeState}><CloseOutlined /></div>
                         </div>
                         <Divider />
