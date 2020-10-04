@@ -323,7 +323,7 @@ class RestController {
 			} else if (!suggestion) {
 				done({});
 			} else {
-				console.log('SUGGESTION: ', suggestion);
+				// console.log('SUGGESTION: ', suggestion);
 
 				let fieldType = suggestion.fieldType;
 				let field = suggestion.field;
@@ -346,15 +346,22 @@ class RestController {
 							data = this.stringsToGraphData(data); //process the data
 						} else if (fieldType.toLowerCase().includes('bool')) {
 							data = this.boolsToGraphData(data);
-						} else if (primaryKey.toLowerCase().includes('date')) {
+						} else if (primaryKey && primaryKey.toLowerCase().includes('date')) {
+							console.log('DATE before', data);
 							data = this.dateConversion(data);
+							console.log('DATE after', data);
 
 							const count = Math.ceil(data.length * 0.2);
 							isForecasting = true;
 
 							let forecastResults = await DataSource.predictTimeSeries(data.data, count).catch((err) => {
 								isForecasting = false;
-								console.log('Time Series Forecast failed...', err && err.data && err.data.error);
+
+								// console.log('ERROR', err);
+
+								const errReport = err.data ? err.data.error : null;
+
+								console.log('Time Series Forecast failed...', errReport);
 							});
 
 							// console.log(forecastResults);
@@ -702,7 +709,7 @@ class RestController {
 				temp[i] = rawDate;
 			} else {
 				//copy in index range
-				temp[i] = rawDate.substr(index, lastIndex - index + 1);
+				temp[i] = rawDate.substr(index - 1, lastIndex - index + 2);
 			}
 			// console.log(temp[i]);
 			// console.log(date.toDateString());
@@ -725,7 +732,10 @@ class RestController {
 		try {
 			for (let i = 0; i < keys.length; i++) {
 				data[i] = [];
-				if (/[a-zA-Z]/.test(keys[i])) {
+
+				console.log(`KEYS[${i}]`, keys[i], new Date(keys[i]));
+
+				if (new RegExp('[a-zA-Z-.,/]').test(keys[i])) {
 					//if contains text, don't do parseInt
 					data[i][0] = new Date(keys[i]).toDateString();
 				} else {
@@ -735,7 +745,7 @@ class RestController {
 			}
 		} catch (e) {
 			//invalid date
-			console.log('Invalid date encountered, treating dates as strings');
+			console.log('Invalid date encountered, treating dates as strings', e);
 			for (let i = 0; i < keys.length; i++) {
 				//keep the reordered list, so replace old dataArray.data
 				dataArray.data[i] = [];

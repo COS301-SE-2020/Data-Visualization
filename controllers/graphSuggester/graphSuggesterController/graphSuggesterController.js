@@ -126,6 +126,7 @@ class GraphSuggesterController {
 				return null;
 			}
 			//graph, params, xEntries, yEntries, graphName
+
 			let graphType = suggestion[1];
 			let primaryKey = suggestion[3];
 			let dependentVariable = 'value';
