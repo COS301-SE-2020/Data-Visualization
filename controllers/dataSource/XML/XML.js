@@ -24,6 +24,72 @@ class XML {
 		return new Promise((resolve) => resolve());
 	}
 
+	/* // TODO put this in frontend
+	static getXMLFields(data){
+		let fields = [];
+		let types = [];
+
+		try {
+
+			let parser = new DOMParser();
+			let xmlDoc = parser.parseFromString(data, 'text/xml');
+
+			if (!xmlDoc || !xmlDoc.childNodes) {
+				return fields;
+			}
+
+			let level = xmlDoc;
+
+			while (level.childNodes && level.childNodes[0] && !level.childNodes[0].data || level.tagName.toLowerCase().includes('xml')) {
+				level = level.childNodes[0];
+			}
+
+			let parents = xmlDoc.getElementsByTagName(level.parentNode.tagName);
+			// console.log(parents);
+
+			if (parents && parents.length !== 0) {
+				for (let i = 0; i < parents.length; i++) {
+					for (let j = 0; j < parents[i].childNodes.length; j++) {
+						let child = parents[i].childNodes[j].tagName;
+						if (!fields.includes(child)) {
+							fields.push(child);
+						}
+					}
+				}
+			} else {
+				let children = xmlDoc.childNodes;
+				for (let i = 0; i < children.length; i++) {
+					if (children[i]) {
+						let child = children[i].tagName;
+						if (!fields.includes(child)) {
+							fields.push(child);
+						}
+					}
+				}
+			}
+
+			return fields;
+		} catch (e) {
+			//Invalid XML file
+			console.log("Invalid XML format");
+			// console.log(e);
+			return [];
+		}
+	}
+
+	static getJSONFields(data) {
+
+		let fields = [];
+		for (let i = 0; i < data.length; i++) {
+			let temp = data[i];
+			let keys = Object.keys(temp);
+			fields = [...new Set([...fields, ...keys])];
+		}
+
+		return fields;
+	}
+	 /**/
+
 	static getEntityData(src, entity, fieldList, inputdata) {
 		let data = [];
 
