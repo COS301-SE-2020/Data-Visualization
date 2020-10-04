@@ -225,7 +225,7 @@ const AddConnectionDialog = (props) => {
 
     function getXMLFields(data){
         let fields = [];
-        let types = [];
+
         try {
             let parser = new DOMParser();
             let xmlDoc = parser.parseFromString(data, 'text/xml');
@@ -233,16 +233,17 @@ const AddConnectionDialog = (props) => {
                 return fields;
             }
             let level = xmlDoc;
-            while (level.childNodes && level.childNodes[0] && !level.childNodes[0].data || level.tagName.toLowerCase().includes('xml')) {
-                level = level.childNodes[0];
+            while (level.children && level.children[0] && !level.children[0].data) {
+                level = level.children[0];
             }
             let parents = xmlDoc.getElementsByTagName(level.parentNode.tagName);
             // console.log(parents);
             if (parents && parents.length !== 0) {
                 for (let i = 0; i < parents.length; i++) {
                     for (let j = 0; j < parents[i].childNodes.length; j++) {
+                        // console.log(parents[i]);
                         let child = parents[i].childNodes[j].tagName;
-                        if (!fields.includes(child)) {
+                        if (child && !fields.includes(child)) {
                             fields.push(child);
                         }
                     }
@@ -252,7 +253,7 @@ const AddConnectionDialog = (props) => {
                 for (let i = 0; i < children.length; i++) {
                     if (children[i]) {
                         let child = children[i].tagName;
-                        if (!fields.includes(child)) {
+                        if (child && !fields.includes(child)) {
                             fields.push(child);
                         }
                     }
