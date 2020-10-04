@@ -211,7 +211,7 @@ class GraphQL {
 			}
 		}
 
-		if (found) console.log('ArrayIndex()', str, array);
+		// if (found) console.log('ArrayIndex()', str, array);
 
 		if (found) return index;
 		return -1;

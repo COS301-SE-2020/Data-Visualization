@@ -323,7 +323,7 @@ class RestController {
 			} else if (!suggestion) {
 				done({});
 			} else {
-				// console.log('SUGGESTION: ', suggestion);
+				console.log('SUGGESTION: ', suggestion);
 
 				let fieldType = suggestion.fieldType;
 				let field = suggestion.field;
