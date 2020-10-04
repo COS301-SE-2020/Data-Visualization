@@ -40,7 +40,7 @@ function Home(props) {
 			<Anime delay={anime.stagger(100)} scale={[.85, .9]}>
 				<div id='header__title'>
 					<p id='welcomeTitle'>Visualize Data</p>
-					<p id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide your OData or GraphQL link and visualize away!</p>
+					<p id='welcomeText'><b>Data Visualization Generator </b>makes it easy to visualize your data with the help of an Interactive Genetic Algorithm. Simply provide a data connection and visualize away!</p>
 
 				</div>
 		
@@ -95,7 +95,7 @@ function Home(props) {
 						<div className='home__section--middle'>
 							<div><ExploreIllustration className='exploreIllustration' /></div>
 							<div className='home__section--description'>
-								<Text id='explainExplore'>Explore Big Data sources with an OData link. <br/> Generate and customize chart suggestions which can then be added a dashboard.</Text>
+								<Text id='explainExplore'>Explore chart suggestions from an OData or GraphQL link or CSV, JSON or XML file. <br/> Generate and customize chart suggestions which can then be added a dashboard.</Text>
 							</div>
 						</div>
 						<div className='home__section--button' >
