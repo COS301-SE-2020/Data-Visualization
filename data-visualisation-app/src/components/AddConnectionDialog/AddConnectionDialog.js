@@ -752,6 +752,7 @@ const AddConnectionDialog = (props) => {
                                 }
                             }
                         }
+
                         request.suggestions.importFile(2, entityName, dataBuffer.current[+currentBuffer.current][0][(currentPrimarySelection.current === 'default' ? 'A' : currentPrimarySelection.current)], requestFields, selectedTypes.current, requestData, function(response) {
 
                             if (response === constants.RESPONSE_CODES.SUCCESS) {
@@ -829,7 +830,7 @@ const AddConnectionDialog = (props) => {
                                             let akey = 234;
                                             message.loading({ content: 'Uploading ' + extension.toUpperCase() + ' file...', akey});
 
-                                            request.suggestions.importFile((extension === 'xml' ? 3 : 4), importedFileObject.current.name, '', nonCSVFileFields, nonCSVFileTypes, (extension === 'json' ? importedFileStringContents.current.replace(/(\r\n|\n|\r|\t)/gm,'') : importedFileStringContents.current), function(response) {
+                                            request.suggestions.importFile((extension === 'xml' ? 3 : 4), importedFileObject.current.name, nonCSVPrimaryKey, nonCSVFileFields, nonCSVFileTypes, (extension === 'json' ? importedFileStringContents.current.replace(/(\r\n|\n|\r|\t)/gm,'') : importedFileStringContents.current), function(response) {
                                                 if (response === constants.RESPONSE_CODES.SUCCESS) {
                                                     message.success({ content: 'Successfully imported ' + extension.toUpperCase() + ' file!', akey, duration: 2 });
 
