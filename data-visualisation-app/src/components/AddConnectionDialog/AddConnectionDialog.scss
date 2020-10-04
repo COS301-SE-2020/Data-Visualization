@@ -41,16 +41,26 @@ $side_margin: 100px;
 }
 
 .csv__container {
-  justify-content: center;
-  display: flex;
-  align-items: center;
+  //justify-content: center;
+  //display: flex;
+  //align-items: center;
 }
 
 .csv_importer {
+  position: fixed;
+  left: 50%;
+  top: 10%;
+
+
   background-color: white;
-  border: 1px solid red;
+  //border: 1px solid red;
   z-index: 100;
-  margin-left: -$WIDTH_SIDE_NAVIGATION;
+  //margin-left: -($WIDTH_SIDE_NAVIGATION);
+  margin-left: -(37%);
+
+  height: 80vh;
+
+  overflow-y: scroll;
 }
 
 tr.error {
@@ -58,6 +68,85 @@ tr.error {
 }
 
 td.included {
-  background-color: grey;
-  border: 1px solid red;
+  //background-color: grey;
+
+
+  //border: 1px solid red;
+}
+
+
+// Table styling
+
+
+$outerBorder: 1px solid black;
+$innerBorder: 1px solid #cccccc;
+$disabledBorder: 1px solid #c9c9c9;
+
+$boxShadowRadius: 6px;
+$spreadShadowRadius: -2px;
+$shadowColour: rgba(0,0,0,0.10);
+$shadowLength: 6px;
+
+
+.outer_borderLeft {
+  border-left: $outerBorder;
+  box-shadow: -$shadowLength 0px $boxShadowRadius $spreadShadowRadius $shadowColour;
+}
+.outer_borderRight {
+  border-right: $outerBorder;
+  box-shadow: $shadowLength 0px $boxShadowRadius $spreadShadowRadius $shadowColour;
+}
+.outer_borderTop {
+  border-top: $outerBorder;
+  box-shadow: 0px -$shadowLength $boxShadowRadius $spreadShadowRadius $shadowColour;
+}
+.outer_borderBottom {
+  border-bottom: $outerBorder;
+  box-shadow: 0px $shadowLength $boxShadowRadius $spreadShadowRadius $shadowColour;
+}
+
+.inner_borderLeft {
+  border-left: $innerBorder;
+}
+.inner_borderRight {
+  border-right: $innerBorder;
+}
+.inner_borderTop {
+  border-top: $innerBorder;
+}
+.inner_borderBottom {
+  border-bottom: $innerBorder;
+}
+
+.disabled_borderLeft {
+  border-left: $disabledBorder;
+}
+.disabled_borderRight {
+  border-right: $disabledBorder;
+}
+.disabled_borderTop {
+  border-top: $disabledBorder;
+}
+.disabled_borderBottom {
+  border-bottom: $disabledBorder;
+  //border-bottom: 1px solid;
+  //border-iamge: linear-gradient(to right, rgba(255,53,53,1) 0%,rgba(27,24,206,1) 100%);
+}
+
+.darkness {
+  background-color: #434EE8;
+}
+
+.disabled_tableCell {
+  color: #3c3c40;
+}
+
+td {
+  padding: 5px;
+}
+
+.table__headerCell {
+  padding: 5px;
+  text-align: center;
+  font-weight: bold;
 }

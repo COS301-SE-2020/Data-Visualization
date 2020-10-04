@@ -22,6 +22,7 @@
 
 import axios from 'axios';
 import * as constants from './constants.js';
+import LoginDialog from '../pages/LoginDialog';
 
 /**
  *   Static Variables
@@ -423,7 +424,7 @@ const request = {
 		dataSources: [
 			{
 				id: 6,
-				email: 'doofenshmirtz.evil.inc.cos@gmail.com',
+				email: 'elna@gmail.com',
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				sourcetype: 0,
 			}
@@ -658,12 +659,12 @@ const request = {
 		 *  @param amount Amount of graph suggestions.
 		 *  @param callback Function called at end of execution.
 		 */
-		csv: (EntityName, PrimaryKey, fields, types, data, callback) => {
+		importFile: (SourceType, EntityName, PrimaryKey, fields, types, data, callback) => {
 			console.debug('Requesting suggestion.csv with:', EntityName, PrimaryKey, fields, types, data);
 			if (!request.user.isLoggedIn) {
 
 				API.suggestion
-					.csv(2, EntityName, PrimaryKey, fields, types, data)
+					.csv(SourceType, EntityName, PrimaryKey, fields, types, data)
 					.then((res) => {
 						if (callback !== undefined) {
 							console.debug('Response from suggestion.csv:', res);
@@ -674,7 +675,7 @@ const request = {
 									id: request.user.dataSources.length,
 									email: '',
 									sourceurl: res.data.source,
-									sourcetype: 2
+									sourcetype: SourceType
 								});
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
@@ -685,7 +686,7 @@ const request = {
 					.catch((err) => console.error(err));
 			} else {
 				API.suggestion
-					.csvAuthorized(request.user.apikey, 2, EntityName, PrimaryKey, fields, types, data)
+					.csvAuthorized(request.user.apikey, SourceType, EntityName, PrimaryKey, fields, types, data)
 					.then((res) => {
 						if (callback !== undefined) {
 							console.debug('Response efrom suggestion.csv:', res);
@@ -696,7 +697,7 @@ const request = {
 									id: res.data.id,
 									email: '',
 									sourceurl: res.data.source,
-									sourcetype: 2
+									sourcetype: SourceType
 								});
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {

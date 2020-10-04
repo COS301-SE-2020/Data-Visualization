@@ -66,7 +66,7 @@ export const URL_ROOT = {
 	DASHBOARD: URL_HOST_DEFAULT + '/dashboards',
 	DATASOURCE: URL_HOST_DEFAULT + '/datasource',
 	GRAPH: URL_HOST_DEFAULT + '/graphs',
-	SUGGESTIONS: URL_HOST_DEFAULT + '/suggestions',
+	SUGGESTIONS: URL_HOST_DEFAULT + '/suggestions'
 };
 
 /**
@@ -107,7 +107,7 @@ export const URL = {
 		SET: URL_ROOT.SUGGESTIONS + '/params',
 		CHART: URL_ROOT.SUGGESTIONS + '/graphs',
 		GRAPHS: URL_ROOT.SUGGESTIONS + '/graphs'
-	},
+	}
 };
 
 /**
