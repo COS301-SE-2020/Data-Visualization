@@ -31,6 +31,7 @@ import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
 import EditChart from '../EditChart';
 import {EDITCHART_MODES} from '../../globals/constants';
+import { ReactComponent as SuggestionsGraphic } from './../../assets/svg/prgress.svg';
 
 const renderChart = {index: -1};
 
@@ -207,7 +208,14 @@ const useStyles = makeStyles((theme) => ({
 
 
 function IGALoading() {
-    return <div className={request.user.isLoggedIn ? 'igaloadingLI' : 'igaloadingLO'} >{constants.LOADER} <br/> <br/> <br/> Generating chart suggestions by the IGA...</div>;
+    return <div className='igaloadingLO' >
+        <div style={{marginTop: '5vw'}}>
+            <div style={{marginBottom: '-30vw', fontSize: '20px'}}>
+                Generating chart suggestions by the IGA...
+            </div>
+            <SuggestionsGraphic style={{width: '15vw'}} />
+        </div>
+    </div>;
 }
 
 /**
