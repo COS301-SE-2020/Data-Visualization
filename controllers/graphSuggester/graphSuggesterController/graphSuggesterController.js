@@ -126,6 +126,7 @@ class GraphSuggesterController {
 				return null;
 			}
 			//graph, params, xEntries, yEntries, graphName
+
 			let graphType = suggestion[1];
 			let primaryKey = suggestion[3];
 			let dependentVariable = 'value';
@@ -483,7 +484,7 @@ class GraphSuggesterController {
 			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //select the set name(different from the entity name) for database querying
 			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
 
-			console.log('Entity selected: ', entity);
+			// console.log('Entity selected: ', entity);
 
 			return entity; //return the random entity
 		} else {

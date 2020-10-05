@@ -250,7 +250,7 @@ class Trash extends React.Component {
                                                 <Grid item xs={12} md={6} lg={3} key={chartIndex}>
                                                     <div className='trash'>
                                                         <div style={{marginBottom: '10px'}}>
-                                                            <Typography.Title level={4}>{chart.chartData.title}</Typography.Title>
+                                                            <Typography.Title level={4} style = {{fontSize: '12pt', fontWeight: '300'}}> {chart.chartData.title}</Typography.Title>
 
                                                         </div>
                                                         <ReactEcharts option={chart.chartData.options} />

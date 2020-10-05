@@ -36,9 +36,10 @@ import {Typography} from 'antd';
 function About(props) {
     return (
         <React.Fragment>
-            {props.renderBackground && <BackgroundDots width={props.width} height={props.height} />}
+            {props.renderBackground && <BackgroundDots id = 'backgroundCanvas' width={props.width} height={props.height} />}
             <div id='about__container'>
                 <div id='about__item'>
+                    
                     <img id='about__image' src={constants.APPLICATION_LOGO_GLOW} alt='logo'/>
                     <div id={'about__p'}>
                         <Typography.Paragraph style={{fontSize: '20px', marginTop: '30px'}}>

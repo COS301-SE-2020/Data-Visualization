@@ -29,7 +29,9 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import './DataConnection.scss';
 import AddConnectionDialog from '../AddConnectionDialog';
-import Anime, {anime} from 'react-anime';
+import csvIcon from '../../assets/img/csv.svg';
+import jsonIcon from '../../assets/img/json.svg';
+import xmlIcon from '../../assets/img/xml.svg';
 
 /**
   * takes no arguments and returns a random string of length 10.
@@ -88,6 +90,7 @@ class DataConnection extends React.Component {
         console.log(result);
         
         if (result === constants.RESPONSE_CODES.SUCCESS) {
+
           callback(request.user.dataSources);
         }
       });
@@ -182,6 +185,7 @@ class DataConnection extends React.Component {
         'sourcetype' : sourcetype,
       });
 
+
       this.setState(previousState => ({
         data: request.user.dataSources,
         list: request.user.dataSources
@@ -234,6 +238,8 @@ class DataConnection extends React.Component {
 
     return (
      <div>
+
+      <p className = 'connectionHeader'>Manage Your Data Connections</p>
         <List
           className="dataSourceList"
           loading={initLoading}
@@ -252,9 +258,9 @@ class DataConnection extends React.Component {
               <Skeleton avatar title={false} loading={item.loading} active>
                 <List.Item.Meta
                   avatar={
-                    <Avatar src="https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png" />
+                    <Avatar shape='square' src={item.sourceurl.slice(-3) === 'csv' ? csvIcon : item.sourceurl.slice(-3) === 'xml' ? xmlIcon : item.sourceurl.slice(-4) === 'json' ? jsonIcon : 'https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png'}/>
                   }
-                  title={item.sourceurl.slice(0, -1)}
+                  title={item.sourceurl}
                   description={item.id}
                 />
                 <div></div>
