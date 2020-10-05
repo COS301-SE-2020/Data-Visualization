@@ -540,6 +540,8 @@ class GraphSuggesterController {
 
 		let count = 0;
 		let sameValues = [];
+		let sameKeys = true;
+		let sameKeyValue = null;
 		let hasValues = [];
 		let index = 0;
 		// let allSameValue = true;	//if everything has the same value, we have a boring graph
@@ -569,6 +571,21 @@ class GraphSuggesterController {
 			} else {
 				selectedFields[data[i][0]] = false;
 			}
+
+			if (sameKeys) {
+				if (sameKeyValue == null) {
+					sameKeyValue = data[i][0];
+				} else {
+					if (sameKeyValue !== data[i][0]) {
+						sameKeys = false;
+					}
+				}
+			}
+		}
+
+		if (sameKeys) {
+			console.log('All items in graph have the same key - invalidating graph');
+			return {};
 		}
 
 		let keys = Object.keys(sameValues);
