@@ -691,12 +691,12 @@ class RestController {
 		for (let i = 0; i < data.length; i++) {
 			rawDate = data[i][0]; //the key is a date
 
-			let index; //the first digit index
+			let index = null; //the first digit index
 			let lastIndex; //the last digit index
 			for (let j = 0; j < rawDate.length; j++) {
-				if (/\d/.test(rawDate[j])) {
+				if (/(\d)/.test(rawDate[j]) || /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(rawDate.substr(j, 3))) {
 					//if it is a number
-					if (!index) {
+					if (index == null) {
 						//if we don't have an index yet
 						index = j; //this is the first digit
 					}
@@ -709,7 +709,8 @@ class RestController {
 				temp[i] = rawDate;
 			} else {
 				//copy in index range
-				temp[i] = rawDate.substr(index - 1, lastIndex - index + 2);
+				// console.log("index: ", rawDate, rawDate[index], ' ', index);
+				temp[i] = rawDate.substr(index, lastIndex - index + 1);
 			}
 			// console.log(temp[i]);
 			// console.log(date.toDateString());
@@ -733,12 +734,12 @@ class RestController {
 			for (let i = 0; i < keys.length; i++) {
 				data[i] = [];
 
-				console.log(`KEYS[${i}]`, keys[i], new Date(keys[i]));
-
 				if (new RegExp('[a-zA-Z-.,/]').test(keys[i])) {
+					console.log(`STRING KEYS[${i}]`, keys[i], new Date(keys[i]));
 					//if contains text, don't do parseInt
 					data[i][0] = new Date(keys[i]).toDateString();
 				} else {
+					console.log(`EPOCH KEYS[${i}]`, parseInt(keys[i]), new Date(parseInt(keys[i])));
 					data[i][0] = new Date(parseInt(keys[i])).toDateString();
 				}
 				data[i][1] = tempMap[keys[i]];
