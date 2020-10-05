@@ -70,7 +70,8 @@ app.use(express.json());
 app.use(express.static(__dirname + staticPath));
 
 app.use((req, res, next) => {
-	if (!PRODUCTION) LogReqParams(req);
+	// if (!PRODUCTION)
+	LogReqParams(req);
 	next();
 });
 
