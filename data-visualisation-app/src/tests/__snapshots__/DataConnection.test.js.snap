@@ -2,6 +2,11 @@
 
 exports[`DataConnection component renders correctly 1`] = `
 <div>
+  <p
+    className="connectionHeader"
+  >
+    Manage Your Data Connections
+  </p>
   <div
     className="ant-list dataSourceList ant-list-split ant-list-something-after-last-item"
   >
@@ -31,7 +36,7 @@ exports[`DataConnection component renders correctly 1`] = `
                     className="ant-list-item-meta-avatar"
                   >
                     <span
-                      className="ant-avatar ant-avatar-circle ant-avatar-image"
+                      className="ant-avatar ant-avatar-square ant-avatar-image"
                       style={Object {}}
                     >
                       <img
@@ -46,7 +51,7 @@ exports[`DataConnection component renders correctly 1`] = `
                     <h4
                       className="ant-list-item-meta-title"
                     >
-                      https://services.odata.org/V2/Northwind/Northwind.sv
+                      https://services.odata.org/V2/Northwind/Northwind.svc
                     </h4>
                     <div
                       className="ant-list-item-meta-description"
