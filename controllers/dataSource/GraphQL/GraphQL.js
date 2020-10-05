@@ -51,12 +51,15 @@ class GraphQL {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity, fieldlist) {
-		console.log('FIELDLIST:', fieldlist);
+		if (GraphQL.logging) console.log('ENTITY:', entity);
+		if (GraphQL.logging) console.log('FIELDLIST:', fieldlist);
 
 		// console.log(GraphQL.entityDataStr(entity, fieldlist));
 
 		if (GraphQL.logging) console.log('GraphQL: ', src);
 		return new Promise((resolve, reject) => {
+			if (!fieldlist) reject('Field-list is undefined!');
+
 			let graphql = GraphQL.query(GraphQL.entityDataStr(entity, fieldlist));
 			axios
 				.post(src, graphql)
