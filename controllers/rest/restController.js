@@ -709,7 +709,7 @@ class RestController {
 				temp[i] = rawDate;
 			} else {
 				//copy in index range
-				console.log("index: ", rawDate, rawDate[index], ' ', index);
+				// console.log("index: ", rawDate, rawDate[index], ' ', index);
 				temp[i] = rawDate.substr(index, lastIndex - index + 1);
 			}
 			// console.log(temp[i]);
