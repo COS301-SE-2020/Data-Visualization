@@ -51,8 +51,10 @@ class GraphQL {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity, fieldlist) {
-		if (GraphQL.logging) console.log('ENTITY:', entity);
-		if (GraphQL.logging) console.log('FIELDLIST:', fieldlist);
+		// if (GraphQL.logging)
+		console.log('ENTITY:', entity);
+		// if (GraphQL.logging)
+		console.log('FIELDLIST:', fieldlist);
 
 		// console.log(GraphQL.entityDataStr(entity, fieldlist));
 
