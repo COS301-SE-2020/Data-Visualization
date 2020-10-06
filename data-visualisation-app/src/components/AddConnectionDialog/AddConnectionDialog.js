@@ -129,7 +129,7 @@ const AddConnectionDialog = (props) => {
         isDragAccept
     ]);
 
-    const [originalData] = useState(currentData);
+    const [originalData, setOriginalData] = useState(currentData);
     const dataBuffer = useRef([]);
     /** Currently mutable buffer index. */
     const currentBuffer = useRef(true);
@@ -247,6 +247,43 @@ const AddConnectionDialog = (props) => {
     /** --------------------------------------------- */
 
     /** -------------- Functions -------------- */
+
+    function initializeImporter() {
+
+        setVisible(true);
+        setImportDataMode(false);
+        setInspectColumnsOnly(false);
+        setAcceptableData(false);
+        setCurrentData([]);
+        setCurrentColumns([]);
+        setSkipPageReset(false);
+        setOriginalData([]);
+        dataBuffer.current = [];
+        currentBuffer.current = true;
+        storedPointers.current = {};
+        dataChanges.current = [];
+        primaryColumns.current = [];
+        setSelectablePrimaryColumns({
+                value: 'Select Column',
+                label: 'default'
+        });
+        currentPrimarySelection.current = 'default';
+        setPrimaryMessage('');
+        proposedTypes.current = [];
+        setImportError(false);
+        setFileError(false);
+        colNames.current = [];
+        selectedTypes.current = [];
+        setNonCSVFileFields([]);
+        setNonCSVFileTypes([]);
+        setNonCSVPrimaryKey('');
+        setLoading(false);
+        importedFileStringContents.current = '';
+        containerComponentRef.current = null;
+        setContainerComponentStyles({});
+        setContainerOuterTableStyles({overflow: 'scroll', border: '1px solid black', width: '100px'});
+
+    }
 
     function alignContainer(addMargin) {
 
@@ -774,7 +811,8 @@ const AddConnectionDialog = (props) => {
                             }} />
                     </Space>
                 </div>
-                <div style={{marginBottom: '40px'}}>
+                <div style={{marginBottom: '30px', marginTop: '10px'}}>
+                    <Button style={{float: 'left'}} onClick={initializeImporter}>Go Back</Button>
                     <Button type='primary' disabled={acceptableData} style={{float: 'right'}} onClick={() => {
 
                         function getColIndex(field) {
@@ -830,7 +868,7 @@ const AddConnectionDialog = (props) => {
                 <div className='csv__container'>
                     <div className='background__transparent'></div>
                     <div ref={containerComponentRef} style={containerComponentStyles} className='csv_importer'>
-                        <div style={{border: '1px solid blue', backgroundColor: 'red'}}>
+                        <div>
                             <div style={{float: 'left', fontSize: '16px', padding: '20px'}}>Inspect Data File</div>
                             <div style={{float: 'right', padding: '20px'}} onClick={props.changeState}><CloseOutlined /></div>
                         </div>
