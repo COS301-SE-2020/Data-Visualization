@@ -34,6 +34,11 @@ const CacheMaker = (function () {
 			this.entityData = {}; //Data => { 'src': {'entity': {timestamp, data:{items, associations, sets, types }}}}
 			this.defaultMaxTime = 1000 * 60 * 60 * 0.5; //ms => 30mins
 			this.maxTime = this.defaultMaxTime;
+			this.maxTimeLive = 1000 * 20; //ms => 20secs
+		}
+		isLiveData(src) {
+			if (this.metaData && this.metaData[src]) return this.metaData[src].isLiveData;
+			return false;
 		}
 
 		getMetaData(src) {
@@ -69,8 +74,10 @@ const CacheMaker = (function () {
 			return null;
 		}
 
-		validateMetadata(src) {
+		validateMetadata(src, isLiveData) {
 			if (this.metaData && this.metaData[src] && Object.keys(this.metaData[src]).length > 0) {
+				this.metaData[src].isLiveData = isLiveData;
+
 				if (Date.now() - this.metaData[src].timestamp >= this.maxTime) {
 					this.onMetadataTimedout(src, this.metaData[src]);
 					this.removeMetaData(src);
@@ -81,8 +88,12 @@ const CacheMaker = (function () {
 		}
 
 		validateEntityData(src, entity) {
+			if (!this.validateMetadata(src, this.isLiveData(src))) return false;
+
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && Object.keys(this.entityData[src][entity]).length > 0) {
-				if (Date.now() - this.entityData[src][entity].timestamp >= this.maxTime) {
+				const maxTime = this.metaData[src].isLiveData ? this.maxTimeLive : this.maxTime;
+
+				if (Date.now() - this.entityData[src][entity].timestamp >= maxTime) {
 					this.onEntityDataTimedout(src, entity, this.entityData[src][entity]);
 					this.removeEntityData(src, entity);
 					return false;
@@ -94,12 +105,13 @@ const CacheMaker = (function () {
 			}
 		}
 
-		setMetaData(src, data) {
+		setMetaData(src, data, isLiveData) {
 			if (!this.metaData) this.metaData = {};
 
 			// console.log('META', src, data);
 
 			this.metaData[src] = {
+				isLiveData,
 				timestamp: Date.now(),
 				data,
 			};

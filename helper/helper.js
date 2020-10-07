@@ -32,4 +32,11 @@ const LogReqParams = (req) => {
 	console.log('=====================================');
 };
 
-module.exports = { LogAuthUsers, LogAuthKeys, LogReqParams, error };
+const LogFetchedSources = (datasources) => {
+	console.log('================================================');
+	console.log('Meta Data retrieved for sources:');
+	console.log(datasources);
+	console.log('================================================');
+};
+
+module.exports = { LogAuthUsers, LogAuthKeys, LogReqParams, LogFetchedSources, error };

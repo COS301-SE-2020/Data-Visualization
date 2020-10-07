@@ -21,18 +21,14 @@
 const restController = require('../../controllers/rest/restController');
 
 const stringArray = {
-	data: [
-	'Red', 'Blue', 'Red', 'Green', 'Blue', 'Red',
-],
+	data: ['Red', 'Blue', 'Red', 'Green', 'Blue', 'Red'],
 };
 const boolArray = {
-	data: [
-	'true', 'false', 'false', 'true', 'true', 'true',
-],
+	data: ['true', 'false', 'false', 'true', 'true', 'true'],
 };
 const validDate = {
-	data: [['Tue Jul 16 1996', 156]]
-}
+	data: [['Tue Jul 16 1996', 156]],
+};
 
 describe('Testing in-class restController functions', function () {
 	test('Successfully transforms string data into graph data', () => {
@@ -54,39 +50,39 @@ describe('Testing in-class restController functions', function () {
 	});
 
 	test('Successfully transforms dates', () => {
-		let dates = {data: [['/Date(837475200000)/', 156]]};
+		let dates = { data: [['/Date(837475200000)/', 156]] };
 		let result = restController.dateConversion(dates);
-		console.log("RESULT: ", result);
+		// console.log("RESULT: ", result);
 		expect(result).toMatchObject(validDate);
 
-		dates = {data: [['1996-07-16', 156]]};
+		dates = { data: [['1996-07-16', 156]] };
 		result = restController.dateConversion(dates);
-		console.log("RESULT: ", result);
+		// console.log("RESULT: ", result);
 		expect(result).toMatchObject(validDate);
 
-		dates = {data: [['1996/07/16', 156]]};
+		dates = { data: [['1996/07/16', 156]] };
 		result = restController.dateConversion(dates);
-		console.log("RESULT: ", result);
+		// console.log("RESULT: ", result);
 		expect(result).toMatchObject(validDate);
 
-		dates = {data: [['Jul 16 1996', 156]]};
+		dates = { data: [['Jul 16 1996', 156]] };
 		result = restController.dateConversion(dates);
-		console.log("RESULT: ", result);
+		// console.log("RESULT: ", result);
 		expect(result).toMatchObject(validDate);
 
-		dates = {data: [['16 Jul 1996', 156]]};
+		dates = { data: [['16 Jul 1996', 156]] };
 		result = restController.dateConversion(dates);
-		console.log("RESULT: ", result);
+		// console.log("RESULT: ", result);
 		expect(result).toMatchObject(validDate);
 
-		dates = {data: [['Ja 28 2019', 156]]};
+		dates = { data: [['Ja 28 2019', 156]] };
 		result = restController.dateConversion(dates);
-		console.log("RESULT: ", result);
+		// console.log("RESULT: ", result);
 		expect(result).not.toMatchObject(validDate);
 
-		dates = {data: [['28 2019 Ja', 156]]};
+		dates = { data: [['28 2019 Ja', 156]] };
 		result = restController.dateConversion(dates);
-		console.log("RESULT: ", result);
+		// console.log("RESULT: ", result);
 		expect(result).not.toMatchObject(validDate);
 	});
 });

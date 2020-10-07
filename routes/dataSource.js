@@ -165,6 +165,7 @@ DataSourceRouteMeta.post('/metadata', (req, res) => {
 		Rest.getMetaData(
 			req.body.sourceurl,
 			req.body.sourcetype,
+			false,
 			(list) => res.status(200).json(list),
 			(err) => error(res, err)
 		);
@@ -174,7 +175,6 @@ DataSourceRouteMeta.post('/metadata', (req, res) => {
 DataSourceRouteMeta.post('/local-import', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.SourceType === undefined) error(res, { error: 'Source type undefined' }, 400);
-	else if (req.body.SourceName === undefined) error(res, { error: 'Source name undefined' }, 400);
 	else if (req.body.EntityName === undefined) error(res, { error: 'Entity name undefined' }, 400);
 	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
 	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
@@ -202,7 +202,6 @@ DataSourceRouteMeta.post('/local-import', (req, res) => {
 		if (success) {
 			Rest.importLocalSource(
 				req.body.SourceType,
-				req.body.SourceName,
 				req.body.EntityName,
 				req.body.PrimaryKey,
 				req.body.fields,

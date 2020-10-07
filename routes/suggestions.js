@@ -48,7 +48,7 @@ router.post('/params', (req, res) => {
 	} else if (!validateEntityStructure(req.body.selectedEntities)) {
 		error(res, {
 			error: 'The structure of the selected entities are invalid.',
-			hint: 'the structure should have the format of [ { datasource:string, datasourcetype:int, entityName:string }:object ]:array',
+			hint: 'the structure should have the format of [ { datasource:string, datasourcetype:int, entityName:string, isLiveData:bool }:object ]:array',
 			status: 400,
 		});
 	} else {
