@@ -113,8 +113,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDataSource(email, dataSourceURL, dataSourceType, done, error) {
-		Database.addDataSourceRemote(email, dataSourceURL, dataSourceType)
+	static addDataSource(email, dataSourceURL, dataSourceType, dataSourceName, isLiveData, done, error) {
+		Database.addDataSourceRemote(email, dataSourceURL, dataSourceType, dataSourceName, isLiveData)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
@@ -195,7 +195,7 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static importLocalSource(srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
+	static importLocalSource(srcType, srcName, EntityName, PrimaryKey, fields, types, data, done, error) {
 		let src = DataSource.generateLocalSourceFileName(srcType);
 
 		if (!PrimaryKey) PrimaryKey = '';
@@ -226,7 +226,7 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static importLocalSourceAuth(email, srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
+	static importLocalSourceAuth(email, srcType, srcName, EntityName, PrimaryKey, fields, types, data, done, error) {
 		const src = DataSource.generateLocalSourceFileName(srcType);
 
 		if (!PrimaryKey) PrimaryKey = '';
@@ -238,7 +238,7 @@ class RestController {
 
 		const meta = { entity: EntityName, prim: PrimaryKey, fields, types };
 
-		Database.addDataSourceLocal(email, src, srcType, meta, data)
+		Database.addDataSourceLocal(email, src, srcType, srcName, meta, data)
 			.then((result) => {
 				console.log('IMPORTED: ' + src);
 				done({ source: src, id: result.id });
