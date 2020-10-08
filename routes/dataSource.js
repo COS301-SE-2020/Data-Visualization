@@ -69,7 +69,7 @@ DataSourceRouteSrc.post('/add', (req, res) => {
 
 DataSourceRouteSrc.post('/update', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
-	else if (req.body.dataSourceID === undefined) error(res, { error: 'Data Source URL Undefined', status: 400 });
+	else if (req.body.dataSourceID === undefined) error(res, { error: 'Data Source ID Undefined', status: 400 });
 	else if (req.body.dataSourceName === undefined) error(res, { error: 'Data Source Name Undefined', status: 400 });
 	else {
 		Rest.updateDataSource(

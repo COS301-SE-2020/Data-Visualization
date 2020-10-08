@@ -22,7 +22,7 @@ import './EditConnectionDialog.scss';
 import { Form, Input, Button, Layout, Row, Col, Typography, Space, message } from 'antd';
 import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
-import { Modal} from 'antd';
+import { Modal, Spin} from 'antd';
 
 
 /**
@@ -31,17 +31,18 @@ import { Modal} from 'antd';
  */
 function EditConnectionDialog(props) {
 
-
+	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [visible, setVisible] = useState(true);
-
-
-
+	
     const onFinish = values => {
-    
-	  props.editItem(props.selectedItem, values);
+		setConfirmLoading(true);
 
-	  setVisible(false);
-	  props.changeState();
+		props.editItem(props.selectedItem, values);
+	
+		setConfirmLoading(false);
+		setVisible(false);
+		props.changeState();
+		
 	};
 	
 	const handleCancel = () => {
@@ -54,7 +55,7 @@ function EditConnectionDialog(props) {
 
 
 	return (
-
+			
 			<Modal
 					title= 'Edit Connection'
 					centered
@@ -65,6 +66,7 @@ function EditConnectionDialog(props) {
 						
 					]}
 				>
+					<Spin spinning={confirmLoading}></Spin>
 					<div className='edit-box'>
 
 						<Form
@@ -77,7 +79,7 @@ function EditConnectionDialog(props) {
 								name='nameField'
 								label = 'Name:'
 							>
-								<Input defaultValue= {props.selectedItem.name} />
+								<Input defaultValue= {props.selectedItem.sourcename} />
 							</Form.Item>
 
 

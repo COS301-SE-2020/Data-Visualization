@@ -312,7 +312,7 @@ function Suggestions(props) {
     const generateCharts = (graphTypes, selectedEntities, selectedFields, fittestGraphs)  =>{
        
         // console.log(graphTypes);
-        // console.log(selectedEntities);
+        console.log(selectedEntities);
         // console.log(selectedFields);
         // console.log(fittestGraphs);
 

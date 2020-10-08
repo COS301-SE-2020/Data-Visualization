@@ -171,8 +171,10 @@ class Entities extends React.Component {
               Obj['datasource'] = source.sourceurl;
               Obj['fields'] = request.user.dataSourceInfo.entityList[entityName];
               Obj['datasourcetype'] = source.sourcetype;
+              Obj['isLiveData'] = source.islivedata;
               
               request.user.entitiesToDisplay.push(Obj);
+              
             });
             callback(request.user.entitiesToDisplay);
           }

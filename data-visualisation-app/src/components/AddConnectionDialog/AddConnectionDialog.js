@@ -559,11 +559,11 @@ const AddConnectionDialog = (props) => {
 
         if(values.dataSourceItem === 'OData'){
             
-            props.addItem(values.name , values.uri, 0);
+            props.addItem(values.name , values.uri, 0, values.cacheURIdata);
         }
         else if(values.dataSourceItem === 'GraphQL'){
        
-            props.addItem(values.name , values.uri, 1);
+            props.addItem(values.name , values.uri, 1, values.cacheURIdata);
         }
 
         setVisible(false);
@@ -1028,7 +1028,7 @@ const AddConnectionDialog = (props) => {
                             name='cacheURIdata'
                             valuePropName='checked'
                             style={{textAlign: 'center'}}
-                            initialValue = {request.user.cacheURIdataBool}
+                            initialValue = {false}
                         >
 
                             <Checkbox>

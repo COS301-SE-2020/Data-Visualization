@@ -152,7 +152,7 @@ class DataConnection extends React.Component {
     * If user is logged in, delete on backend and front end.
     * If user is not logged in, add item only front end.
   */
-  addItem = (name ,uri, sourcetype) => {
+  addItem = (name ,uri, sourcetype, cacheURIdata) => {
 
     var id = generateID();
     let attempt = this;
@@ -160,7 +160,7 @@ class DataConnection extends React.Component {
       * If user is logged in, add item on backend and front end.
     */
     if(request.user.isLoggedIn){
-      request.dataSources.add(request.user.apikey, uri, sourcetype, function(result) {
+      request.dataSources.add(request.user.apikey, uri, sourcetype, name , cacheURIdata, function(result) {
        
         if (result === constants.RESPONSE_CODES.SUCCESS) {
 
@@ -169,7 +169,9 @@ class DataConnection extends React.Component {
             'email': request.user.email,
             'sourceurl': uri,
             'sourcetype': sourcetype,
-            'name' : name,
+            'sourcename' : name,
+	          'islivedata' : cacheURIdata, 
+            
           });
 
           attempt.setState(previousState => ({
@@ -190,7 +192,8 @@ class DataConnection extends React.Component {
         'email': request.user.email,
         'sourceurl': uri,
         'sourcetype' : sourcetype,
-        'name' : name,
+        'sourcename' : name,
+	      'islivedata' : cacheURIdata, 
       });
 
 
@@ -206,36 +209,39 @@ class DataConnection extends React.Component {
 
     console.log(item);
     console.log(values);
+    let attempt = this;
 
     if(values.nameField !== undefined){
       if(request.user.isLoggedIn){
-        // request.dataSources.add(request.user.apikey, uri, sourcetype, function(result) {
+
+
+        request.dataSources.update(request.user.apikey, item.id, values.nameField, function(result) {
          
-        //   if (result === constants.RESPONSE_CODES.SUCCESS) {
-  
-        //     request.user.dataSources.push({
-        //       'id': request.user.addedSourceID,
-        //       'email': request.user.email,
-        //       'sourceurl': uri,
-        //       'sourcetype': sourcetype,
-        //       'name' : name,
-        //     });
-  
-        //     attempt.setState(previousState => ({
-        //       data: request.user.dataSources,
-        //       list: request.user.dataSources
-        //     }));
-  
-        //   }
-        // });
+          if (result === constants.RESPONSE_CODES.SUCCESS) {
+           
+            console.log('here');
+            item.sourcename = values.nameField;
+            console.log(request.user.dataSources);
+
+            attempt.setState(previousState => ({
+              data: request.user.dataSources,
+              list: request.user.dataSources
+            }));
+
+
+          }
+        });
+       
+      //item.sourcename = values.nameField;
         
       }
       else{
         /**
           * User is not logged in, change item only front end.
         */
-       item.name = values.nameField;
-        
+       item.sourcename = values.nameField;
+
+       console.log( request.user.dataSources);
       }
     
     }
@@ -328,7 +334,7 @@ class DataConnection extends React.Component {
                   avatar={
                     <Avatar shape='square' src={item.sourceurl.slice(-3) === 'csv' ? csvIcon : item.sourceurl.slice(-3) === 'xml' ? xmlIcon : item.sourceurl.slice(-4) === 'json' ? jsonIcon : 'https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png'}/>
                   }
-                  title={item.name}
+                  title={item.sourcename}
                   description={item.sourceurl}
                 />
                 <div></div>
