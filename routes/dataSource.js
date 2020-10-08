@@ -52,12 +52,31 @@ DataSourceRouteSrc.post('/add', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
 	else if (req.body.dataSourceUrl === undefined) error(res, { error: 'Data Source URL Undefined', status: 400 });
 	else if (req.body.dataSourceType === undefined) error(res, { error: 'Data Source Type Undefined', status: 400 });
+	else if (req.body.dataSourceName === undefined) error(res, { error: 'Data Source Name Undefined', status: 400 });
+	else if (req.body.isLiveData === undefined) error(res, { error: 'Is Live Data Undefined', status: 400 });
 	else {
 		Rest.addDataSource(
 			req.body.email,
 			req.body.dataSourceUrl,
 			req.body.dataSourceType,
+			req.body.dataSourceName,
+			req.body.isLiveData,
 			(data) => res.status(200).json({ message: 'Successfully Added Data Source', ...data }),
+			(err) => error(res, err)
+		);
+	}
+});
+
+DataSourceRouteSrc.post('/update', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.dataSourceID === undefined) error(res, { error: 'Data Source URL Undefined', status: 400 });
+	else if (req.body.dataSourceName === undefined) error(res, { error: 'Data Source Name Undefined', status: 400 });
+	else {
+		Rest.updateDataSource(
+			req.body.email,
+			req.body.dataSourceID,
+			req.body.dataSourceName,
+			(data) => res.status(200).json({ message: 'Successfully Updated Data Source', ...data }),
 			(err) => error(res, err)
 		);
 	}
@@ -78,6 +97,7 @@ DataSourceRouteSrc.post('/remove', (req, res) => {
 DataSourceRouteSrc.post('/local-import', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined' }, 400);
 	else if (req.body.SourceType === undefined) error(res, { error: 'Source type undefined' }, 400);
+	else if (req.body.SourceName === undefined) error(res, { error: 'Source name undefined' }, 400);
 	else if (req.body.EntityName === undefined) error(res, { error: 'Entity name undefined' }, 400);
 	else if (req.body.PrimaryKey === undefined) error(res, { error: 'Primary key undefined' }, 400);
 	else if (req.body.fields === undefined) error(res, { error: 'Fields are undefined' }, 400);
@@ -105,6 +125,7 @@ DataSourceRouteSrc.post('/local-import', (req, res) => {
 			Rest.importLocalSourceAuth(
 				req.body.email,
 				req.body.SourceType,
+				req.body.SourceName,
 				req.body.EntityName,
 				req.body.PrimaryKey,
 				req.body.fields,
@@ -159,6 +180,7 @@ DataSourceRouteMeta.post('/metadata', (req, res) => {
 		Rest.getMetaData(
 			req.body.sourceurl,
 			req.body.sourcetype,
+			false,
 			(list) => res.status(200).json(list),
 			(err) => error(res, err)
 		);

@@ -36,6 +36,8 @@ const ITEM_ALREADY_EXISTS_ERROR = 'userAlreadyExists'; //eslint-disable-line
 
 const DATA_SOURCE_URL = 'http://data.source.url/mock/mock.cvs';
 const DATA_SOURCE_TYPE = 999;
+const DATA_SOURCE_NAME = 'DATA_SOURCE_NAME';
+const DATA_SOURCE_ISLIVE = false;
 
 const DASHBOARD_NAME = 'Dashboard Name';
 const DASHBOARD_DESC = 'Dashboard Description';
@@ -128,11 +130,13 @@ describe('Testing with an existing user', () => {
 		});
 
 		test('Adding a data source', () => {
-			return Database.addDataSourceRemote(EMAIL, DATA_SOURCE_URL, DATA_SOURCE_TYPE).then((response) => {
+			return Database.addDataSourceRemote(EMAIL, DATA_SOURCE_URL, DATA_SOURCE_TYPE, DATA_SOURCE_NAME, DATA_SOURCE_ISLIVE).then((response) => {
 				DATA_SOURCE_ID = response.id;
 				expect(response.email).toBe(EMAIL);
 				expect(response.sourceurl).toBe(DATA_SOURCE_URL);
 				expect(response.sourcetype).toBe(DATA_SOURCE_TYPE);
+				expect(response.sourcename).toBe(DATA_SOURCE_NAME);
+				expect(response.islivedata).toBe(DATA_SOURCE_ISLIVE);
 			});
 		});
 

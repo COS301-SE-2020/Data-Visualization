@@ -51,12 +51,17 @@ class GraphQL {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity, fieldlist) {
+		// if (GraphQL.logging)
+		console.log('ENTITY:', entity);
+		// if (GraphQL.logging)
 		console.log('FIELDLIST:', fieldlist);
 
 		// console.log(GraphQL.entityDataStr(entity, fieldlist));
 
 		if (GraphQL.logging) console.log('GraphQL: ', src);
 		return new Promise((resolve, reject) => {
+			if (!fieldlist) reject('Field-list is undefined!');
+
 			let graphql = GraphQL.query(GraphQL.entityDataStr(entity, fieldlist));
 			axios
 				.post(src, graphql)
@@ -122,15 +127,31 @@ class GraphQL {
 			// console.log(entityMap[entity].fields.map((field) => field.name + ' : ' + field.kind));
 
 			let IDfound = false;
-			items[entity] = entityMap[entity].fields
-				.filter((field) => allowedTypes.includes(field.type.name))
-				.map((field) => {
-					if (!IDfound && field.type.name === 'ID') {
-						IDfound = true;
-						prims[entity] = field.name;
-					}
-					return field.name;
-				});
+
+			items[entity] = entityMap[entity].fields.filter((field) => allowedTypes.includes(field.type.name));
+
+			const fieldNames = items[entity].map((field) => field.name);
+
+			const ids = [this.ArrayIndex(fieldNames, 'id'), this.ArrayIndex(fieldNames, '_id'), this.ArrayIndex(fieldNames, '__id')];
+
+			if (ids[0] >= 0) {
+				IDfound = true;
+				prims[entity] = fieldNames[ids[0]];
+			} else if (ids[1] >= 0) {
+				IDfound = true;
+				prims[entity] = fieldNames[ids[1]];
+			} else if (ids[2] >= 0) {
+				IDfound = true;
+				prims[entity] = fieldNames[ids[2]];
+			}
+
+			items[entity] = items[entity].map((field) => {
+				if (!IDfound && field.type.name.toLowerCase().includes('id')) {
+					IDfound = true;
+					prims[entity] = field.name;
+				}
+				return field.name;
+			});
 
 			types[entity] = entityMap[entity].fields.map((field) => field.type.name);
 		});
@@ -180,6 +201,25 @@ class GraphQL {
 		// console.log(sets, items);
 
 		return { items, associations, sets, types, prims };
+	}
+
+	static ArrayIndex(array, str) {
+		let found = false;
+		let index = -1;
+
+		for (let i = 0; !found && i < array.length; ++i) {
+			// console.log(array[i].toLowerCase(), str.toLowerCase(), '\t' + (array[i].toLowerCase() === str.toLowerCase()));
+
+			if (array[i].toLowerCase() === str.toLowerCase()) {
+				index = i;
+				found = true;
+			}
+		}
+
+		// if (found) console.log('ArrayIndex()', str, array);
+
+		if (found) return index;
+		return -1;
 	}
 
 	static query(strQuery) {

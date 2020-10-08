@@ -53,7 +53,7 @@ class DataSource {
 	 * @param typelist
 	 * @returns a promise of Odata
 	 */
-	static updateMetaData(src, type, entityName, primaryKey, fieldlist, typelist) {
+	static updateMetaData(src, type, isLiveData, entityName, primaryKey, fieldlist, typelist) {
 		//src, type, data, entityName, primaryKey, fieldlist, typelist
 
 		return new Promise((resolve, reject) => {
@@ -87,7 +87,7 @@ class DataSource {
 					} else {
 						mdata = DataSource.parseMetadataRemote(mdata, type);
 					}
-					Cache.setMetaData(src, mdata);
+					Cache.setMetaData(src, mdata, isLiveData);
 					resolve();
 				})
 				.catch((err) => reject({ error: err, status: 500 }));
@@ -139,11 +139,11 @@ class DataSource {
 	 * @param src the source where this Odata must be retrieved from
 	 * @returns a promise of Odata
 	 */
-	static getMetaData(src, type, entityName, primaryKey, fieldlist, typelist) {
+	static getMetaData(src, type, isLiveData, entityName, primaryKey, fieldlist, typelist) {
 		return new Promise((resolve, reject) => {
-			if (Cache.validateMetadata(src)) resolve(Cache.getMetaData(src));
+			if (Cache.validateMetadata(src, isLiveData)) resolve(Cache.getMetaData(src));
 			else {
-				DataSource.updateMetaData(src, type, entityName, primaryKey, fieldlist, typelist)
+				DataSource.updateMetaData(src, type, isLiveData, entityName, primaryKey, fieldlist, typelist)
 					.then(() => resolve(Cache.getMetaData(src)))
 					.catch((err) => reject({ error: err, status: 500 }));
 			}
@@ -156,7 +156,7 @@ class DataSource {
 	 */
 	static getEntityList(src, type) {
 		return new Promise((resolve, reject) => {
-			if (Cache.validateMetadata(src)) {
+			if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
 				const data = Cache.getEntityList(src);
 				resolve(formatList(src, data));
 			} else {
@@ -182,7 +182,7 @@ class DataSource {
 	static getEntityData(src, type, entity, field, primaryKey = null) {
 		// if (isGraphQL) entity = set;
 		return new Promise(async (resolve, reject) => {
-			if (!Cache.validateMetadata(src)) {
+			if (!Cache.validateMetadata(src, Cache.isLiveData(src))) {
 				await DataSource.updateMetaData(src).catch((err) => reject({ error: err, status: 500 }));
 			}
 
@@ -210,7 +210,7 @@ class DataSource {
 	static getEntityDataAll(src, type, entity) {
 		// if (isGraphQL) entity = set;
 		return new Promise(async (resolve, reject) => {
-			if (!Cache.validateMetadata(src)) {
+			if (!Cache.validateMetadata(src, Cache.isLiveData(src))) {
 				await DataSource.updateMetaData(src).catch((err) => reject({ error: err, status: 500 }));
 			}
 
