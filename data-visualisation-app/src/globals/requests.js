@@ -423,12 +423,14 @@ const request = {
 		setIsLoggedIn: null,
 		dataSources: [
 			{
-				id: 6,
+				id: 1,
 				email: 'elna@gmail.com',
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				sourcetype: 0,
+				name: 'Northwind',
 			}
 		],
+		cacheURIdataBool: true,
 		addedSourceID: '',
 		dataSourceInfo: [],
 		entities : [],
