@@ -237,10 +237,11 @@ const useStyles = makeStyles((theme) => ({
 function IGALoading() {
     return <div className='igaloadingLO' >
         <div style={{marginTop: '5vh'}}>
-            <div style={{marginBottom: '-30vw', fontSize: '20px'}}>
+            
+            <SuggestionsGraphic style={{width: '30vh', height: '20vh'}} />
+            <div style={{marginTop: '50px', marginBottom: '100px', fontSize: '20px'}}>
                 Generating chart suggestions by the IGA...
             </div>
-            <SuggestionsGraphic style={{width: '15vw'}} />
         </div>
     </div>;
 }
@@ -602,7 +603,7 @@ function Suggestions(props) {
                                         </Grid>;
                             }) :
                                 <div id = 'noSuggestionMessage'>
-                                    <NoSuggestions style={{height: '20vh'}}/>
+                                    <NoSuggestions style={{height: '20vh', width: '80%'}}/>
                                     <br/>
                                     <br/>
                                     <div>We could not display any suggestions for the selected entity.</div>
@@ -622,7 +623,7 @@ function Suggestions(props) {
                     </Form>
 
                     
-
+                    
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
                     {/* <Button id = 'moreLikeThisButton' className={request.user.isLoggedIn ? 'loggedInMoreLikeThis' : 'loggedOutMoreLikeThis'} type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More like this</Button> */}
                     <div className="blob-div" >

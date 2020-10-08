@@ -119,7 +119,7 @@ class Entities extends React.Component {
   componentDidMount() {
     entityIDs = []; 
     
-
+    showAll = false;
     request.user.selectedFields = [];
     request.user.graphTypes = ['bar','line', 'pie', 'scatter'];
 
@@ -171,10 +171,12 @@ class Entities extends React.Component {
               Obj['datasource'] = source.sourceurl;
               Obj['fields'] = request.user.dataSourceInfo.entityList[entityName];
               Obj['datasourcetype'] = source.sourcetype;
+              Obj['datasourcename'] = source.sourcename;
               Obj['isLiveData'] = source.islivedata;
+
               
               request.user.entitiesToDisplay.push(Obj);
-              
+
             });
             callback(request.user.entitiesToDisplay);
           }
@@ -215,7 +217,7 @@ class Entities extends React.Component {
                 onFinish={this.onFinish}
              >
       
-               <Card className = 'titleCard' title='Select Entities From Your Datasources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
+               <Card className = 'titleCard' title='Select Entities From Your Data Sources' headStyle={{backgroundColor: 'rgba(255, 255, 255, 0.4)', border: 0, textAlign: 'center'}}>
                  <Checkbox onChange={this.handleChange}>Check All</Checkbox>
                 </Card>
                
@@ -256,7 +258,7 @@ class Entities extends React.Component {
                                  <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                                }
                                title={item.entityName}
-                               description={item.datasource.slice(item.datasource.length - 13)}
+                               description={item.datasourcename}
                              />
                              <div></div>
                            </Skeleton>
@@ -312,7 +314,7 @@ class Entities extends React.Component {
                 onFinish={this.onFinish} 
              >
               
-               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Datasources' style= {{width:'80%', margin: '0 auto', marginTop: '20px', backgroundColor: 'transparent'}} headStyle={{ border: 0, textAlign: 'center'}}>
+               <Card className = 'titleCard' bordered = {false} title='Select Entities From Your Data Sources' style= {{width:'80%', margin: '0 auto', marginTop: '20px', backgroundColor: 'transparent'}} headStyle={{ border: 0, textAlign: 'center'}}>
                <Checkbox onChange={this.handleChange}  >Check All</Checkbox>
                <List
                  className='entitesList'
@@ -321,7 +323,7 @@ class Entities extends React.Component {
                  loadMore={loadMore}
                  dataSource = {list}
                  
-                 renderItem={item => (
+                 renderItem={item => ( 
                    <Fragment>
                        <Card.Grid hoverable = {false} className='entities__entity' id = {'card-'+item.entityName+item.datasource}  style= {{cursor: 'pointer', margin: '10px', marginLeft: '50px', width:'28%',  backgroundColor: 'transparent'}}  onClick={() => {
                           var tempItem = {};
@@ -358,7 +360,7 @@ class Entities extends React.Component {
                                  <Avatar src='https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png' />
                                }
                                title={item.entityName}
-                               description={item.datasource.slice(item.datasource.length - 13)}
+                               description={item.datasourcename}
                              />
                              <div></div>
                            </Skeleton>

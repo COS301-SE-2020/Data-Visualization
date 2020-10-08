@@ -34,14 +34,25 @@ function EditConnectionDialog(props) {
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [visible, setVisible] = useState(true);
 	
-    const onFinish = values => {
+    const  onFinish = async (values) => {
 		setConfirmLoading(true);
 
-		props.editItem(props.selectedItem, values);
+	  	props.editItem(props.selectedItem, values);
 	
-		setConfirmLoading(false);
-		setVisible(false);
-		props.changeState();
+		if(request.user.isLoggedIn){
+
+			setTimeout(function(){ 
+				setConfirmLoading(false);
+				setVisible(false);
+				props.changeState();
+			 }, 1400);
+		  }
+		  else{
+			setConfirmLoading(false);
+			setVisible(false);
+			props.changeState();
+		  }
+		
 		
 	};
 	

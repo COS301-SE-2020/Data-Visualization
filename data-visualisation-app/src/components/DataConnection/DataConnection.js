@@ -93,7 +93,7 @@ class DataConnection extends React.Component {
   getData = callback => {
     if(request.user.isLoggedIn){
       request.dataSources.list(request.user.apikey, function(result) {
-        console.log(result);
+  
         
         if (result === constants.RESPONSE_CODES.SUCCESS) {
 
@@ -118,7 +118,7 @@ class DataConnection extends React.Component {
     if(request.user.isLoggedIn){
       
       request.dataSources.delete(itemToDelete.id, request.user.apikey, function(result) {
-        console.log(result);
+
         if (result === constants.RESPONSE_CODES.SUCCESS) {
 
         }
@@ -205,10 +205,9 @@ class DataConnection extends React.Component {
     
   }
 
+
   editItem = (item, values) => {
 
-    console.log(item);
-    console.log(values);
     let attempt = this;
 
     if(values.nameField !== undefined){
@@ -218,10 +217,8 @@ class DataConnection extends React.Component {
         request.dataSources.update(request.user.apikey, item.id, values.nameField, function(result) {
          
           if (result === constants.RESPONSE_CODES.SUCCESS) {
-           
-            console.log('here');
+       
             item.sourcename = values.nameField;
-            console.log(request.user.dataSources);
 
             attempt.setState(previousState => ({
               data: request.user.dataSources,
@@ -241,7 +238,7 @@ class DataConnection extends React.Component {
         */
        item.sourcename = values.nameField;
 
-       console.log( request.user.dataSources);
+       //console.log( request.user.dataSources);
       }
     
     }
