@@ -274,8 +274,6 @@ class Database {
 		return new Promise((resolve, reject) => {
 			Database.sendQuery('UPDATE datasource SET sourceName=$3 WHERE ( email = $1) AND ( ID = $2) RETURNING *;', [email, dataSourceID, dataSourceName])
 				.then((result) => {
-					console.log(result.rows);
-
 					if (result.rows.length > 0) resolve(result.rows[0]);
 					else reject(result);
 				})
