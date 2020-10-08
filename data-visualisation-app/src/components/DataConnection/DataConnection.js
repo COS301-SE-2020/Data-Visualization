@@ -312,7 +312,8 @@ class DataConnection extends React.Component {
               key={item.id}
               actions={
                 [
-                  <Button id = 'editButton' onClick={() => {
+                  <Button id = 'deleteButton' className = 'onCard' onClick={() => {this.deleteItem(item);}} >Delete</Button>,
+                  <Button id = 'editButton' className = 'onCard' onClick={() => {
                     
                     
                     this.setState({
@@ -322,8 +323,8 @@ class DataConnection extends React.Component {
                     this.changeEditState();
                    
                   
-                  }} >Edit</Button>,
-                  <Button id = 'deleteButton' onClick={() => {this.deleteItem(item);}} >Delete</Button>
+                  }} >Edit</Button>
+                 
                 ]
               }>
               <Skeleton avatar title={false} loading={item.loading} active>
@@ -332,7 +333,7 @@ class DataConnection extends React.Component {
                     <Avatar shape='square' src={item.sourceurl.slice(-3) === 'csv' ? csvIcon : item.sourceurl.slice(-3) === 'xml' ? xmlIcon : item.sourceurl.slice(-4) === 'json' ? jsonIcon : 'https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png'}/>
                   }
                   title={item.sourcename}
-                  description={item.sourceurl}
+                  //description={item.sourceurl}
                 />
                 <div></div>
               </Skeleton>

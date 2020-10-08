@@ -324,8 +324,11 @@ $borderW: 2px;
 @media only screen and (max-width: 600px) {
  
   #noSuggestionMessage{
-    
     font-size: 14pt !important;
+  }
+  #noSuggestionMessageLI{
+    font-size: 14pt !important;
+    left: 50% !important;
   }
  
 }
@@ -342,8 +345,24 @@ $borderW: 2px;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   text-align: center;
-  font-size: 20pt;
+  font-size: 15pt;
 }
+
+#noSuggestionMessageLI{
+  margin: 0;
+   position: absolute;   
+   top: 10%;
+
+  left: 57%;
+  top: 50%;
+  //position: fixed;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 15pt;
+}
+
+
 
 .chartDiv{
 

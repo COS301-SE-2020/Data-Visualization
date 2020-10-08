@@ -239,7 +239,7 @@ function IGALoading() {
         <div style={{marginTop: '5vh'}}>
             
             <SuggestionsGraphic style={{width: '30vh', height: '20vh'}} />
-            <div style={{marginTop: '50px', marginBottom: '100px', fontSize: '20px'}}>
+            <div style={{marginTop: '50px', marginBottom: '100px', fontSize: '15pt'}}>
                 Generating chart suggestions by the IGA...
             </div>
         </div>
@@ -602,7 +602,7 @@ function Suggestions(props) {
                                             </div>
                                         </Grid>;
                             }) :
-                                <div id = 'noSuggestionMessage'>
+                                <div id = {request.user.isLoggedIn ? 'noSuggestionMessageLI' : 'noSuggestionMessage'}>
                                     <NoSuggestions style={{height: '20vh', width: '80%'}}/>
                                     <br/>
                                     <br/>
