@@ -264,6 +264,26 @@ class Database {
 	}
 
 	/**
+	 * This function is to update a data source
+	 * @param email the users email
+	 * @param dataSourceID the data source id
+	 * @param dataSourceName the data source name
+	 * @returns a promise
+	 */
+	static async updateDataSource(email, dataSourceID, dataSourceName) {
+		return new Promise((resolve, reject) => {
+			Database.sendQuery('UPDATE datasource SET sourceName=$3 WHERE ( email = $1) AND ( ID = $2) RETURNING *;', [email, dataSourceID, dataSourceName])
+				.then((result) => {
+					console.log(result.rows);
+
+					if (result.rows.length > 0) resolve(result.rows[0]);
+					else reject(result);
+				})
+				.catch((result) => reject(result));
+		});
+	}
+
+	/**
 	 * This function is to remove a data source
 	 * @param email the users email
 	 * @param dataSourceID the data source id

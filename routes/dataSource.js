@@ -67,6 +67,21 @@ DataSourceRouteSrc.post('/add', (req, res) => {
 	}
 });
 
+DataSourceRouteSrc.post('/update', (req, res) => {
+	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
+	else if (req.body.dataSourceID === undefined) error(res, { error: 'Data Source URL Undefined', status: 400 });
+	else if (req.body.dataSourceName === undefined) error(res, { error: 'Data Source Name Undefined', status: 400 });
+	else {
+		Rest.updateDataSource(
+			req.body.email,
+			req.body.dataSourceID,
+			req.body.dataSourceName,
+			(data) => res.status(200).json({ message: 'Successfully Updated Data Source', ...data }),
+			(err) => error(res, err)
+		);
+	}
+});
+
 DataSourceRouteSrc.post('/remove', (req, res) => {
 	if (Object.keys(req.body).length === 0) error(res, { error: 'Body Undefined', status: 400 });
 	else {

@@ -39,7 +39,7 @@ const Database = require('../database');
 const DataSource = require('../dataSource');
 const ExportsController = require('../exports');
 const { GraphSuggesterController } = require('../graphSuggester');
-const { addSeriesData } = require('../graphSuggester/graphSuggesterController/graphSuggesterController');
+// const { addSeriesData } = require('../graphSuggester/graphSuggesterController/graphSuggesterController');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
  * handles these requests appropriately by getting or setting the requested data from or to the models.
@@ -119,6 +119,22 @@ class RestController {
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
+
+	/**
+	 * This function updates a data source.
+	 * @param email the users email
+	 * @param dataSourceID the data sources id
+	 * @param dataSourceName the new data sources name
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static updateDataSource(email, dataSourceID, dataSourceName, done, error) {
+		Database.updateDataSource(email, dataSourceID, dataSourceName)
+			.then((data) => done(data))
+			.catch((err) => error && error(err));
+	}
+
 	/**
 	 * This function removes a data source.
 	 * @param email the users email
