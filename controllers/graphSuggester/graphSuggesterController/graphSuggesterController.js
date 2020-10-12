@@ -25,6 +25,7 @@
  * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display even better graphs
  * 11/09/2020	 Marco Lombaard						Added function to add a series to a suggestion
  * 16/09/2020	 Marco Lombaard						Pie charts convert to bar charts if they have too much data
+ * 12/10/2020	 Marco Lombaard						Added blacklist function to blacklist bad fields
  *
  * Test Cases: none
  *
@@ -526,7 +527,8 @@ class GraphSuggesterController {
 	 * This function populates the graph with its data
 	 * @param suggestion the chart object
 	 * @param data the chart data to populate with
-	 * @return suggestion the full chart with data
+	 * @return suggestion the full chart with data - if it is null, the field will be blacklisted in restController, if
+	 * an empty object then it won't be blacklisted.
 	 */
 	static assembleGraph(suggestion, { data }) {
 		//console.log(data);
@@ -585,7 +587,7 @@ class GraphSuggesterController {
 
 		if (sameKeys) {
 			console.log('All items in graph have the same key - invalidating graph');
-			return {};
+			return null;	//returning null blacklists the field
 		}
 
 		let keys = Object.keys(sameValues);
@@ -594,19 +596,23 @@ class GraphSuggesterController {
 			proportion = sameValues[keys[i]] / data.length;
 			if (proportion > 0.8) {
 				//if more than 80% of the same value exists, boring graph
-				if (hasValues.length <= 5 && hasValues.length >= 2 && keys.length > 1 && graphSuggesterAI.graphTypes.includes('pie')) {
-					//if we have less or equal to 5 non-zero values, with some variance, return a pie chart of the values
-					let params = suggestion['dataset']['source'][0];
-					let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']); //new chart
-					for (let i = 0; i < hasValues.length; i++) {
-						replacement['dataset']['source'].push(hasValues[i]); //add the values to the data field
+				if (hasValues.length <= 5 && hasValues.length >= 2 && keys.length > 1) {
+					if (graphSuggesterAI.graphTypes.includes('pie')) {
+						//if we have less or equal to 5 non-zero values, with some variance, return a pie chart of the values
+						let params = suggestion['dataset']['source'][0];
+						let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']); //new chart
+						for (let i = 0; i < hasValues.length; i++) {
+							replacement['dataset']['source'].push(hasValues[i]); //add the values to the data field
+						}
+						return replacement; //return the new chart
+					} else {
+						return {}; //returning empty to flag that it is a bad suggestion, but to not blacklist the field
 					}
-					return replacement; //return the new chart
 				}
 				//else we can't make it less boring
 				console.log('Too many items in graph have the same value - invalidating graph');
 				// console.log('data: ', data);
-				return {};
+				return null; //returning null to flag it is a bad suggestion and blacklist the field
 			}
 		}
 
@@ -671,6 +677,20 @@ class GraphSuggesterController {
 			data: [original.name, series1.name, series2.name],
 		};
 		return suggestion;
+	}
+
+	/**
+	 * In an attempt to improve suggestion generation, suggestions that generate null suggestions are blacklisted
+	 * @param source the source to access the entity
+	 * @param entity the entity to access the field
+	 * @param field the field to blacklist
+	 */
+	static blacklist(source, entity, field) {
+		if (!this.metadata || !this.metadata[source] || !this.metadata[source][entity] || !this.metadata[source][entity][field]) {
+			console.log("Cannot blacklist entity: ", entity, " and field: ", field, " of source: ", source, ", as they do not exist");
+		} else {
+			delete this.metadata[source][entity][field];
+		}
 	}
 }
 GraphSuggesterController.acceptedEntities = {};
