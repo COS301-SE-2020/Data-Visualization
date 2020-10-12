@@ -721,7 +721,7 @@ class GraphSuggesterController {
 		} else {
 			let index = this.metadata[source].items[entity].indexOf(field);
 
-			console.log(index, this.metadata[source]);
+			// console.log(index, this.metadata[source]);
 
 			if (index < 0) {
 				console.log('Cannot blacklist field: ', field, 'of entity: ', entity, ' of source: ', source, ', as it does not exist');

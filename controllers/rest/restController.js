@@ -327,7 +327,7 @@ class RestController {
 			let randEntity;
 			let suggestion;
 
-			const maxTime = 1; //10;
+			const maxTime = 10;
 			let timer = 0;
 			let timedout = false;
 
@@ -336,13 +336,14 @@ class RestController {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
 
-					// console.log('RandEntity:', randEntity);
+					console.log('RandEntity:', randEntity);
 
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
+
+					if (!suggestion) {
+						this.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
+					}
 				} else timedout = true;
-				if (!suggestion) {
-					this.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
-				}
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
@@ -450,13 +451,13 @@ class RestController {
 	}
 
 	static blacklistEntity(src, type, entity, set) {
-		DataSource.blacklistEntity(src, type, entity, set);
-		// GraphSuggesterController.blacklistEntity(src, entity, set);
+		// DataSource.blacklistEntity(src, type, entity, set);
+		GraphSuggesterController.blacklistEntity(src, entity, set);
 	}
 
 	static blacklistField(src, type, entity, set, field) {
-		DataSource.blacklistField(src, type, entity, set, field);
-		// GraphSuggesterController.blacklistField(src, entity, set, field);
+		// DataSource.blacklistField(src, type, entity, set, field);
+		GraphSuggesterController.blacklistField(src, entity, set, field);
 	}
 
 	/**************** DASHBOARD ****************/

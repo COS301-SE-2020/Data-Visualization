@@ -193,7 +193,7 @@ const CacheMaker = (function () {
 					this.removeEntityData(src, entity);
 				}
 			} else {
-				console.log('Cannot remove field: ', src, entity);
+				console.log('Cannot remove entity: ', src, entity);
 			}
 		}
 
