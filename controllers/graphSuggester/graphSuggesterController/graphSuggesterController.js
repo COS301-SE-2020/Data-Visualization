@@ -124,6 +124,7 @@ class GraphSuggesterController {
 			// eslint-disable-next-line eqeqeq
 			if (suggestion == null) {
 				console.log('Received null suggestion');
+				this.blacklist(source, entity, null);
 				return null;
 			}
 			//graph, params, xEntries, yEntries, graphName
@@ -686,10 +687,19 @@ class GraphSuggesterController {
 	 * @param field the field to blacklist
 	 */
 	static blacklist(source, entity, field) {
-		if (!this.metadata || !this.metadata[source] || !this.metadata[source][entity] || !this.metadata[source][entity][field]) {
-			console.log("Cannot blacklist entity: ", entity, " and field: ", field, " of source: ", source, ", as they do not exist");
+		if (!this.metadata || !this.metadata[source] || !this.metadata[source][entity]) {
+			console.log("Cannot blacklist entity: ", entity, " of source: ", source, ", as it does not exist");
 		} else {
-			delete this.metadata[source][entity][field];
+			if (!field) {
+				delete this.metadata[source][entity];
+			} else if (this.metadata[source][entity][field]) {
+				delete this.metadata[source][entity][field];
+				if (Object.keys(this.metadata[source][entity]).length === 0) { //entity without fields is a useless entity
+					delete this.metadata[source][entity];
+				}
+			} else {
+				console.log("Cannot blacklist field: ", field, "of entity: ", entity, " of source: ", source, ", as it does not exist");
+			}
 		}
 	}
 }
