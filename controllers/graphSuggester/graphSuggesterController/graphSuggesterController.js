@@ -686,8 +686,8 @@ class GraphSuggesterController {
 	/**
 	 * In an attempt to improve suggestion generation, entity suggestions that generate null suggestions are blacklisted
 	 * @param source the source to access the entity
-	 * @param entity the entity to access the field
-	 * @param field the field to blacklist
+	 * @param entity the entity to remove
+	 * @param set the set to find the entity to remove
 	 */
 	static blacklistEntity(source, entity, set) {
 		if (!this.metadata || !this.metadata[source] || !this.metadata[source].items[entity]) {
@@ -700,6 +700,11 @@ class GraphSuggesterController {
 
 			const setIndex = this.metaData[source].sets.indexOf(set);
 			if (setIndex >= 0) this.metaData[source].sets.splice(setIndex, 1);
+
+			let index = this.acceptedEntities.indexOf(entity);
+			if (index > 0) {
+				this.acceptedEntities.splice(index, 1);
+			}
 		}
 	}
 
@@ -707,6 +712,7 @@ class GraphSuggesterController {
 	 * In an attempt to improve suggestion generation, field suggestions that generate null suggestions are blacklisted
 	 * @param source the source to access the entity
 	 * @param entity the entity to access the field
+	 * @param set the set to remove the entity from
 	 * @param field the field to blacklist
 	 */
 	static blacklistField(source, entity, set, field) {
