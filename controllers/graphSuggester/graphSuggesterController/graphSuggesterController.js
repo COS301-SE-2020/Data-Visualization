@@ -26,6 +26,7 @@
  * 11/09/2020	 Marco Lombaard						Added function to add a series to a suggestion
  * 16/09/2020	 Marco Lombaard						Pie charts convert to bar charts if they have too much data
  * 12/10/2020	 Marco Lombaard						Added blacklist function to blacklist bad fields
+ * 12/10/2020	 Marco Lombaard						Added blacklistEntity function to blacklist bad entities, renamed blacklist to blacklistField
  *
  * Test Cases: none
  *
@@ -681,27 +682,36 @@ class GraphSuggesterController {
 	}
 
 	/**
-	 * In an attempt to improve suggestion generation, suggestions that generate null suggestions are blacklisted
+	 * In an attempt to improve suggestion generation, entity suggestions that generate null suggestions are blacklisted
 	 * @param source the source to access the entity
 	 * @param entity the entity to access the field
 	 * @param field the field to blacklist
 	 */
-	static blacklist(source, entity, field) {
+	static blacklistEntity(source, entity) {
 		if (!this.metadata || !this.metadata[source] || !this.metadata[source][entity]) {
 			console.log("Cannot blacklist entity: ", entity, " of source: ", source, ", as it does not exist");
 		} else {
-			if (!field) {
+			delete this.metadata[source][entity];
+		}
+	}
+
+	/**
+	 * In an attempt to improve suggestion generation, field suggestions that generate null suggestions are blacklisted
+	 * @param source the source to access the entity
+	 * @param entity the entity to access the field
+	 * @param field the field to blacklist
+	 */
+	static blacklistField(source, entity, field) {
+		if (!this.metadata || !this.metadata[source] || !this.metadata[source][entity] || this.metadata[source][entity][field]) {
+			console.log("Cannot blacklist field: ", field, "of entity: ", entity, " of source: ", source, ", as it does not exist");
+		} else {
+			delete this.metadata[source][entity][field];
+			if (Object.keys(this.metadata[source][entity]).length === 0) { //entity without fields is a useless entity
 				delete this.metadata[source][entity];
-			} else if (this.metadata[source][entity][field]) {
-				delete this.metadata[source][entity][field];
-				if (Object.keys(this.metadata[source][entity]).length === 0) { //entity without fields is a useless entity
-					delete this.metadata[source][entity];
-				}
-			} else {
-				console.log("Cannot blacklist field: ", field, "of entity: ", entity, " of source: ", source, ", as it does not exist");
 			}
 		}
 	}
+
 }
 GraphSuggesterController.acceptedEntities = {};
 GraphSuggesterController.metadata = [];
