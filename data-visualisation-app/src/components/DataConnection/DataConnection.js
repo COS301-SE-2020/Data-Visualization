@@ -294,7 +294,10 @@ class DataConnection extends React.Component {
           
         </div>
       ) : null;
-   
+
+      let mobileView = false;
+      const mql = window.matchMedia('(max-width: 1000px)');
+      mobileView = mql.matches;
 
     return (
      <div>
@@ -328,12 +331,13 @@ class DataConnection extends React.Component {
                 ]
               }>
               <Skeleton avatar title={false} loading={item.loading} active>
-                <List.Item.Meta
+                <List.Item.Meta 
                   avatar={
                     <Avatar shape='square' src={item.sourceurl.slice(-3) === 'csv' ? csvIcon : item.sourceurl.slice(-3) === 'xml' ? xmlIcon : item.sourceurl.slice(-4) === 'json' ? jsonIcon : 'https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png'}/>
                   }
                   title={item.sourcename}
                   //description={item.sourceurl}
+                  description={`${mobileView ? '' : item.sourceurl}`}
                 />
                 <div></div>
               </Skeleton>
