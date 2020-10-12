@@ -31,7 +31,7 @@ class CSV {
 			let data = [];
 
 			console.log('=====================================');
-			console.log(inputdata);
+			// console.log(inputdata);
 
 			inputdata.forEach((datarow, d) => {
 				let obj = {};

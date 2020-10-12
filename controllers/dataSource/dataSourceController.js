@@ -245,10 +245,24 @@ class DataSource {
 
 	static blacklistField(src, srcType, entity, set, field) {
 		if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
-			console.log('REMOVING FIELD:', src, srcType, entity, set, field);
+			console.log('REMOVING FIELD:', src, entity, field);
 			Cache.removeField(src, entity, set, field);
 		}
 	}
+
+	static blacklistEntity(src, srcType, entity, set) {
+		if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
+			console.log('REMOVING ENTITY:', src, entity);
+			Cache.removeEntity(src, entity, set);
+		}
+	}
+
+	// static blacklistForecast(src, srcType, entity, set, field) {
+	// 	if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
+	// 		console.log('DISABLE FORECASTING:', src, entity, field);
+	// 		Cache.disableForecast(src, entity, set, field);
+	// 	}
+	// }
 
 	static isLocal(type) {
 		if (type < 0 || type >= DataSource.isLocalSource.length) type = 0;
