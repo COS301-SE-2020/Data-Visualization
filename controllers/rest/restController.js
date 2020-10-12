@@ -340,14 +340,13 @@ class RestController {
 
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
+				if (!suggestion) DataSource.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
-				DataSource.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
 				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
 				done({});
 			} else if (!suggestion) {
-				DataSource.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
 				console.log('error: Request Could not generate chart suggestion, try selecting different entities');
 				done({});
 			} else {
