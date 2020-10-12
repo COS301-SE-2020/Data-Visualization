@@ -125,7 +125,7 @@ class GraphSuggesterController {
 			// eslint-disable-next-line eqeqeq
 			if (suggestion == null) {
 				console.log('Received null suggestion');
-				this.blacklist(source, entity, null);
+				this.blacklistEntity(source, entity);
 				return null;
 			}
 			//graph, params, xEntries, yEntries, graphName
