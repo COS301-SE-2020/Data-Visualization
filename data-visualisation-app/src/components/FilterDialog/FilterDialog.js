@@ -111,7 +111,7 @@ const FilterDialog = (props) => {
         if(values.fieldSelect !== undefined){
             request.user.selectedFields = values.fieldSelect;
         }
-        console.log(values.graphSelect);
+
         request.user.graphTypes = ['bar','line', 'pie', 'scatter', 'effectScatter'];
         if(values.graphSelect !== undefined && values.graphSelect.length !== 0){
             request.user.graphTypes = values.graphSelect;
