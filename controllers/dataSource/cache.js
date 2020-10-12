@@ -58,6 +58,9 @@ const CacheMaker = (function () {
 				// eslint-disable-next-line eqeqeq
 				if (primaryKey == null) {
 					prim = this.metaData[src].data.prims[entity];
+					if (!this.metaData[src].items[entity].include(prim)) {
+						prim = this.metaData[src].items[entity][0];
+					}
 				} else {
 					prim = primaryKey;
 				}
@@ -175,7 +178,7 @@ const CacheMaker = (function () {
 		}
 
 		removeEntity(src, entity, set) {
-			if (this.validateMetadata(src, Cache.isLiveData(src))) {
+			if (this.validateMetadata(src, this.isLiveData(src))) {
 				let primEntity = this.metaData[src].data.prims[entity] ? entity : set;
 
 				delete this.metaData[src].data.items[entity];

@@ -108,6 +108,8 @@ class DataSource {
 				fieldList = meta.items[entity];
 			}
 
+			console.log('LIST', type, fieldList);
+
 			if (!inputdata && DataSource.isLocal(type)) {
 				inputdata = await Database.getDataSourceLocalData(src);
 
