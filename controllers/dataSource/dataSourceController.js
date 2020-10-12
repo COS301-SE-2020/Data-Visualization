@@ -243,6 +243,13 @@ class DataSource {
 		return DataSource.sources[type];
 	}
 
+	static blacklistField(src, srcType, entity, set, field) {
+		if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
+			console.log('REMOVING FIELD:', src, srcType, entity, set, field);
+			Cache.removeField(src, entity, set, field);
+		}
+	}
+
 	static isLocal(type) {
 		if (type < 0 || type >= DataSource.isLocalSource.length) type = 0;
 		return DataSource.isLocalSource[type];

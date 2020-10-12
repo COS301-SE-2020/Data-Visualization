@@ -409,6 +409,7 @@ class RestController {
 						}
 
 						LogSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType, charttype);
+
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
