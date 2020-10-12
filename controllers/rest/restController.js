@@ -327,25 +327,35 @@ class RestController {
 			let randEntity;
 			let suggestion;
 
-			const maxTime = 1; //10;
+			const maxTime = 10;
 			let timer = 0;
 			let timedout = false;
+			let invalidMetadata = false;
 
 			do {
 				if (timer < maxTime) {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
 
-					// console.log('RandEntity:', randEntity);
+					console.log('RandEntity:', randEntity);
+					if (randEntity) {
+						suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 
-					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
+						if (!suggestion) {
+							this.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
+						}
+					} else invalidMetadata = true;
 				} else timedout = true;
-			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
+			} while (!suggestion && !timedout && !invalidMetadata); // eslint-disable-line eqeqeq
 
-			if (timedout) {
-				done({});
+			if (invalidMetadata) {
 				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
+				error && error({ error: 'Could not generate graphs from selected entities.', hint: 'Try selecting differewnt entities.' });
+			} else if (timedout) {
+				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
+				done({});
 			} else if (!suggestion) {
+				console.log('error: Request Could not generate chart suggestion, try selecting different entities');
 				done({});
 			} else {
 				// console.log('SUGGESTION: ', suggestion);
@@ -354,12 +364,12 @@ class RestController {
 				let field = suggestion.field;
 				let primaryKey = suggestion.primaryKey;
 				let option = suggestion.option;
-				// console.log('randEntity.datasource = >', randEntity.datasource);
-				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
-				// console.log('randEntity.entityName = >', randEntity.entityName);
-				// console.log('randEntity.entitySet = >', randEntity.entitySet);
-				// console.log('field = >', field);
-				// console.log('fieldtype = >', fieldType);
+				console.log('randEntity.datasource = >', randEntity.datasource);
+				console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
+				console.log('randEntity.entityName = >', randEntity.entityName);
+				console.log('randEntity.entitySet = >', randEntity.entitySet);
+				console.log('field = >', field);
+				console.log('fieldtype = >', fieldType);
 				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field, primaryKey)
 					.then(async (data) => {
 						let isForecasting = false;
@@ -385,8 +395,7 @@ class RestController {
 								// console.log('ERROR', err);
 
 								const errReport = err.data ? err.data.error : null;
-
-								console.log('Time Series Forecast failed...', errReport);
+								console.log('Time Series Forecast failed...');
 							});
 
 							// console.log(forecastResults);
@@ -409,23 +418,31 @@ class RestController {
 						}
 
 						LogSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType, charttype);
+
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
+							this.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
 							done({});
 						} else {
 							let chart = GraphSuggesterController.assembleGraph(option, data);
 
 							// console.log('BEFORE:', chart);
 
-							if (isForecasting && forecast && trimmedSet) {
+							if (chart && isForecasting && forecast && trimmedSet) {
 								// console.log('Forecast:', forecast);
 								chart = GraphSuggesterController.addSeriesData(chart, { forecast, trimmedSet });
 							}
 
 							GraphSuggesterController.suggestionsMade++;
 
-							done(chart);
+							// eslint-disable-next-line eqeqeq
+							if (chart == null) {
+								this.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
+								done({});
+							} else {
+								done(chart);
+							}
 						}
 					})
 					.catch((err) => {
@@ -434,8 +451,20 @@ class RestController {
 					});
 			}
 		} else {
-			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status: 500 });
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to /suggestions/params first' });
 		}
+	}
+
+	static blacklistEntity(src, type, entity, set) {
+		// console.log('REMOVING ENTITY:', src, entity);
+		// DataSource.blacklistEntity(src, type, entity, set);
+		GraphSuggesterController.blacklistEntity(src, entity, set);
+	}
+
+	static blacklistField(src, type, entity, set, field) {
+		// console.log('REMOVING FIELD:', src, entity, field);
+		// DataSource.blacklistField(src, type, entity, set, field);
+		GraphSuggesterController.blacklistField(src, entity, set, field);
 	}
 
 	/**************** DASHBOARD ****************/

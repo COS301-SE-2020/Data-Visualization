@@ -25,6 +25,8 @@
  * 11/09/2020	 Marco Lombaard						Modified constructOption and assembleGraph to display even better graphs
  * 11/09/2020	 Marco Lombaard						Added function to add a series to a suggestion
  * 16/09/2020	 Marco Lombaard						Pie charts convert to bar charts if they have too much data
+ * 12/10/2020	 Marco Lombaard						Added blacklist function to blacklist bad fields
+ * 12/10/2020	 Marco Lombaard						Added blacklistEntity function to blacklist bad entities, renamed blacklist to blacklistField
  *
  * Test Cases: none
  *
@@ -346,20 +348,23 @@ class GraphSuggesterController {
 		//the current options array works for line, bar, scatter, effectScatter charts
 		//it is also the default options array
 		if (!graph.includes('pie')) {
+			option.grid = {
+				top: 30,
+				bottom: 130,
+				left: 60,
+			};
+
 			option.xAxis = {
 				type: 'category', //TODO change this so the type(s) get decided by frontend or by the AI
 				name: xEntries,
 				nameLocation: 'center',
-				nameGap: 90,
+				nameGap: 115,
 				nameTextStyle: {
 					fontSize: 15,
 				},
 				axisLabel: {
 					rotate: 330,
-					padding: [20, 0, 0, -20],
-				},
-				grid: {
-					bottom: 110,
+					padding: [20, 0, 0, -10],
 				},
 			};
 
@@ -473,6 +478,9 @@ class GraphSuggesterController {
 
 			entity['entityName'] = source[Math.floor(Math.random() * source.length)]; //select a random entity from the source
 
+			console.log('accpeted entities:', source);
+			console.log('field list:', this.metadata[key].items[entity['entityName']]);
+
 			// eslint-disable-next-line eqeqeq
 			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {
 				console.log('Entity metadata is not defined');
@@ -526,7 +534,8 @@ class GraphSuggesterController {
 	 * This function populates the graph with its data
 	 * @param suggestion the chart object
 	 * @param data the chart data to populate with
-	 * @return suggestion the full chart with data
+	 * @return suggestion the full chart with data - if it is null, the field will be blacklisted in restController, if
+	 * an empty object then it won't be blacklisted.
 	 */
 	static assembleGraph(suggestion, { data }) {
 		//console.log(data);
@@ -585,7 +594,7 @@ class GraphSuggesterController {
 
 		if (sameKeys) {
 			console.log('All items in graph have the same key - invalidating graph');
-			return {};
+			return null; //returning null blacklists the field
 		}
 
 		let keys = Object.keys(sameValues);
@@ -594,19 +603,23 @@ class GraphSuggesterController {
 			proportion = sameValues[keys[i]] / data.length;
 			if (proportion > 0.8) {
 				//if more than 80% of the same value exists, boring graph
-				if (hasValues.length <= 5 && hasValues.length >= 2 && keys.length > 1 && graphSuggesterAI.graphTypes.includes('pie')) {
-					//if we have less or equal to 5 non-zero values, with some variance, return a pie chart of the values
-					let params = suggestion['dataset']['source'][0];
-					let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']); //new chart
-					for (let i = 0; i < hasValues.length; i++) {
-						replacement['dataset']['source'].push(hasValues[i]); //add the values to the data field
+				if (hasValues.length <= 5 && hasValues.length >= 2 && keys.length > 1) {
+					if (graphSuggesterAI.graphTypes.includes('pie')) {
+						//if we have less or equal to 5 non-zero values, with some variance, return a pie chart of the values
+						let params = suggestion['dataset']['source'][0];
+						let replacement = this.constructOption('pie', params, params[0], params[1], suggestion['title']['text']); //new chart
+						for (let i = 0; i < hasValues.length; i++) {
+							replacement['dataset']['source'].push(hasValues[i]); //add the values to the data field
+						}
+						return replacement; //return the new chart
+					} else {
+						return {}; //returning empty to flag that it is a bad suggestion, but to not blacklist the field
 					}
-					return replacement; //return the new chart
 				}
 				//else we can't make it less boring
 				console.log('Too many items in graph have the same value - invalidating graph');
 				// console.log('data: ', data);
-				return {};
+				return null; //returning null to flag it is a bad suggestion and blacklist the field
 			}
 		}
 
@@ -671,6 +684,84 @@ class GraphSuggesterController {
 			data: [original.name, series1.name, series2.name],
 		};
 		return suggestion;
+	}
+
+	static blacklistSource(source) {
+		if (!this.metadata || !this.metadata[source]) {
+			console.log('Cannot blacklist source: ', source);
+		} else {
+			console.log('REMOVING SOURCE:', source);
+
+			delete this.metadata[source];
+			delete this.acceptedEntities[source];
+		}
+	}
+
+	/**
+	 * In an attempt to improve suggestion generation, entity suggestions that generate null suggestions are blacklisted
+	 * @param source the source to access the entity
+	 * @param entity the entity to remove
+	 * @param set the set to find the entity to remove
+	 */
+	static blacklistEntity(source, entity, set) {
+		if (!this.metadata || !this.metadata[source] || !this.metadata[source].items[entity]) {
+			console.log('Cannot blacklist entity: ', entity, ' of source: ', source, ', as it does not exist');
+		} else {
+			console.log('REMOVING ENTITY:', source, entity);
+
+			//entity without fields is a useless entity
+			delete this.metadata[source].items[entity];
+			delete this.metadata[source].types[entity];
+			delete this.metadata[source].associations[entity];
+
+			const setIndex = this.metadata[source].sets.indexOf(set);
+			if (setIndex >= 0) this.metadata[source].sets.splice(setIndex, 1);
+
+			let index = this.acceptedEntities[source].indexOf(entity);
+			if (index >= 0) {
+				this.acceptedEntities[source].splice(index, 1);
+			}
+
+			if (Object.keys(this.metadata[source].items).filter((item) => this.acceptedEntities[source].includes(item)).length <= 0) {
+				this.blacklistSource(source);
+			}
+		}
+	}
+
+	/**
+	 * In an attempt to improve suggestion generation, field suggestions that generate null suggestions are blacklisted
+	 * @param source the source to access the entity
+	 * @param entity the entity to access the field
+	 * @param set the set to remove the entity from
+	 * @param field the field to blacklist
+	 */
+	static blacklistField(source, entity, set, field) {
+		if (!this.metadata) {
+			console.log('Metadata not set');
+		} else if (!this.metadata[source]) {
+			console.log('No source: ', source, ' to blacklist field: ', field);
+		} else if (!this.metadata[source].items[entity]) {
+			console.log('Entity: ', entity, ' cannot be removed as it does not exist in source: ', source);
+		} else if (!this.metadata[source].items[entity].length === 0) {
+			console.log('Cannot blacklist field: ', field, 'of entity: ', entity, ' of source: ', source, ', as no fields exist');
+		} else {
+			console.log('REMOVING FIELD:', source, entity, field);
+
+			let index = this.metadata[source].items[entity].indexOf(field);
+
+			// console.log(index, this.metadata[source]);
+
+			if (index < 0) {
+				console.log('Cannot blacklist field: ', field, 'of entity: ', entity, ' of source: ', source, ', as it does not exist');
+			} else {
+				this.metadata[source].items[entity].splice(index, 1);
+				this.metadata[source].types[entity].splice(index, 1);
+
+				if (this.metadata[source].items[entity].length === 0) {
+					this.blacklistEntity(source, entity, set);
+				}
+			}
+		}
 	}
 }
 GraphSuggesterController.acceptedEntities = {};

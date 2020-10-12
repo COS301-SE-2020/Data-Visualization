@@ -108,6 +108,8 @@ class DataSource {
 				fieldList = meta.items[entity];
 			}
 
+			console.log('LIST', type, fieldList);
+
 			if (!inputdata && DataSource.isLocal(type)) {
 				inputdata = await Database.getDataSourceLocalData(src);
 
@@ -242,6 +244,26 @@ class DataSource {
 	static Data(type) {
 		return DataSource.sources[type];
 	}
+
+	static blacklistField(src, srcType, entity, set, field) {
+		if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
+			console.log('REMOVING FIELD:', src, entity, field);
+			Cache.removeField(src, entity, set, field);
+		}
+	}
+
+	static blacklistEntity(src, srcType, entity, set) {
+		if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
+			Cache.removeEntity(src, entity, set);
+		}
+	}
+
+	// static blacklistForecast(src, srcType, entity, set, field) {
+	// 	if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
+	// 		console.log('DISABLE FORECASTING:', src, entity, field);
+	// 		Cache.disableForecast(src, entity, set, field);
+	// 	}
+	// }
 
 	static isLocal(type) {
 		if (type < 0 || type >= DataSource.isLocalSource.length) type = 0;

@@ -58,6 +58,9 @@ const CacheMaker = (function () {
 				// eslint-disable-next-line eqeqeq
 				if (primaryKey == null) {
 					prim = this.metaData[src].data.prims[entity];
+					if (!this.metaData[src].items[entity].include(prim)) {
+						prim = this.metaData[src].items[entity][0];
+					}
 				} else {
 					prim = primaryKey;
 				}
@@ -85,6 +88,26 @@ const CacheMaker = (function () {
 				}
 				return true;
 			} else return false;
+		}
+
+		validateMetadataAll(src, entity, set, field) {
+			// validate(this.validateMetadata(src, this.isLiveData(src)));
+			// validate(this.metaData[src].data.items[entity]);
+			// validate(this.metaData[src].data.types[entity]);
+			// validate(this.metaData[src].data.prims[entity]);
+			// validate(this.metaData[src].data.prims[set]);
+			// validate(this.metaData[src].data.prims[entity] || this.metaData[src].data.prims[set]);
+			// validate(this.metaData[src].data.items[entity].indexOf(field) >= 0);
+			// validate(this.metaData[src].data.sets.indexOf(set) >= 0);
+
+			return (
+				this.validateMetadata(src, this.isLiveData(src)) &&
+				this.metaData[src].data.items[entity] &&
+				this.metaData[src].data.types[entity] &&
+				(this.metaData[src].data.prims[entity] || this.metaData[src].data.prims[set]) &&
+				this.metaData[src].data.items[entity].indexOf(field) >= 0 &&
+				this.metaData[src].data.sets.indexOf(set) >= 0
+			);
 		}
 
 		validateEntityData(src, entity) {
@@ -136,6 +159,44 @@ const CacheMaker = (function () {
 			};
 		}
 
+		removeField(src, entity, set, field) {
+			if (this.validateMetadataAll(src, entity, set, field)) {
+				let index = this.metaData[src].data.items[entity].indexOf(field);
+
+				// console.log('BEFORE', this.metaData[src].data);
+
+				this.metaData[src].data.items[entity].splice(index, 1);
+				this.metaData[src].data.types[entity].splice(index, 1);
+
+				if (this.metaData[src].data.items[entity].length <= 0) {
+					this.removeEntity(src, entity, set);
+				}
+				// console.log('AFTER', this.metaData[src].data);
+			} else {
+				console.log('Cannot remove field: ', src, entity || set, field);
+			}
+		}
+
+		removeEntity(src, entity, set) {
+			if (this.validateMetadata(src, this.isLiveData(src))) {
+				let primEntity = this.metaData[src].data.prims[entity] ? entity : set;
+
+				delete this.metaData[src].data.items[entity];
+				delete this.metaData[src].data.types[entity];
+				delete this.metaData[src].data.associations[entity];
+				if (this.metaData[src].data.prims[primEntity]) delete this.metaData[src].data.prims[primEntity];
+
+				const setIndex = this.metaData[src].data.sets.indexOf(set);
+				if (setIndex >= 0) this.metaData[src].data.sets.splice(setIndex, 1);
+
+				if (this.validateEntityData(src, entity)) {
+					this.removeEntityData(src, entity);
+				}
+			} else {
+				console.log('Cannot remove entity: ', src, entity);
+			}
+		}
+
 		removeMetaData(src) {
 			this.metaData[src] = {};
 		}
@@ -170,5 +231,10 @@ const CacheMaker = (function () {
 		},
 	};
 })();
+
+function validate(bool) {
+	if (bool) console.log('TRUE');
+	else console.log('FALSE');
+}
 
 module.exports = CacheMaker.getInstance();

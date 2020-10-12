@@ -1,9 +1,10 @@
 function error(res, err) {
 	const status = err.status || 400;
 	const message = err.error || 'Unkown Error';
+	const hint = err.hint || 'No hint provided';
 
 	console.error(err);
-	res.status(status).json({ error: message });
+	res.status(status).json({ error: message, hint });
 }
 
 const LogAuthUsers = (users) => {
