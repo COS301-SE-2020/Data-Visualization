@@ -327,7 +327,7 @@ class RestController {
 			let randEntity;
 			let suggestion;
 
-			const maxTime = 1; //10;
+			const maxTime = 10;
 			let timer = 0;
 			let timedout = false;
 
@@ -336,14 +336,14 @@ class RestController {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
 
-					// console.log('RandEntity:', randEntity);
+					console.log('RandEntity:', randEntity);
 
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
+
+					if (!suggestion) {
+						this.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
+					}
 				} else timedout = true;
-				if (!suggestion) {
-					DataSource.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
-					GraphSuggesterController.blacklistEntity(randEntity.datasource, randEntity.entityName);
-				}
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
@@ -359,12 +359,12 @@ class RestController {
 				let field = suggestion.field;
 				let primaryKey = suggestion.primaryKey;
 				let option = suggestion.option;
-				// console.log('randEntity.datasource = >', randEntity.datasource);
-				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
-				// console.log('randEntity.entityName = >', randEntity.entityName);
-				// console.log('randEntity.entitySet = >', randEntity.entitySet);
-				// console.log('field = >', field);
-				// console.log('fieldtype = >', fieldType);
+				console.log('randEntity.datasource = >', randEntity.datasource);
+				console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
+				console.log('randEntity.entityName = >', randEntity.entityName);
+				console.log('randEntity.entitySet = >', randEntity.entitySet);
+				console.log('field = >', field);
+				console.log('fieldtype = >', fieldType);
 				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field, primaryKey)
 					.then(async (data) => {
 						let isForecasting = false;
@@ -417,8 +417,7 @@ class RestController {
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
-							DataSource.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
-							GraphSuggesterController.blacklistField(randEntity.datasource, randEntity.entityName, field);
+							this.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
 							done({});
 						} else {
 							let chart = GraphSuggesterController.assembleGraph(option, data);
@@ -434,8 +433,7 @@ class RestController {
 
 							// eslint-disable-next-line eqeqeq
 							if (chart == null) {
-								DataSource.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
-								GraphSuggesterController.blacklistField(randEntity.datasource, randEntity.entityName, field);
+								this.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
 								done({});
 							} else {
 								done(chart);
@@ -450,6 +448,16 @@ class RestController {
 		} else {
 			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status: 500 });
 		}
+	}
+
+	static blacklistEntity(src, type, entity, set) {
+		// DataSource.blacklistEntity(src, type, entity, set);
+		GraphSuggesterController.blacklistEntity(src, entity, set);
+	}
+
+	static blacklistField(src, type, entity, set, field) {
+		// DataSource.blacklistField(src, type, entity, set, field);
+		GraphSuggesterController.blacklistField(src, entity, set, field);
 	}
 
 	/**************** DASHBOARD ****************/
