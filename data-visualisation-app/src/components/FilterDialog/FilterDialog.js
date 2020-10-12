@@ -111,12 +111,12 @@ const FilterDialog = (props) => {
         if(values.fieldSelect !== undefined){
             request.user.selectedFields = values.fieldSelect;
         }
-        
+
         request.user.graphTypes = ['bar','line', 'pie', 'scatter', 'effectScatter'];
-        if(values.graphSelect !== undefined){
+        if(values.graphSelect !== undefined && values.graphSelect.length !== 0){
             request.user.graphTypes = values.graphSelect;
         }
-        
+
 
         //API call (to send options and reload suggestions)
         console.log('Success:', values);

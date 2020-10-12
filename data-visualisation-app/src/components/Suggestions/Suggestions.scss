@@ -321,14 +321,48 @@ $borderW: 2px;
 
 
 
-
+@media only screen and (max-width: 600px) {
+ 
+  #noSuggestionMessage{
+    font-size: 14pt !important;
+  }
+  #noSuggestionMessageLI{
+    font-size: 14pt !important;
+    left: 50% !important;
+  }
+ 
+}
 
 
 #noSuggestionMessage{
   margin: 0;
    position: absolute;   
-   top: 10%;           
+   top: 10%;
+
+  left: 50%;
+  top: 50%;
+  //position: fixed;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 15pt;
 }
+
+#noSuggestionMessageLI{
+  margin: 0;
+   position: absolute;   
+   top: 10%;
+
+  left: 57%;
+  top: 50%;
+  //position: fixed;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 15pt;
+}
+
+
 
 .chartDiv{
 
@@ -415,12 +449,12 @@ $borderW: 2px;
   //background-color: #FAFFFD;
   background-color: white;
   cursor: pointer;
-  padding: 15px 20px 20px 20px;
+  padding: 0px 20px 20px 20px;
   transition: border-color 0.1s linear;
   -webkit-box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
   -moz-box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
   box-shadow: 6px 16px 27px -17px rgba(0,0,0,0.75);
-  padding-bottom: 50px;
+  //padding-bottom: 50px;
  
 }
 

@@ -147,13 +147,6 @@ describe('Testing Meta Data storage functionality', () => {
 			expect(values[1]).not.toBeTruthy();
 		});
 	});
-
-	test('Testing when removing Entity Data stored in the Cache', () => {
-		Cache.setEntityData(SRC_URL, SRC_ENTITY, DATA);
-		expect(Cache.validateEntityData(SRC_URL, SRC_ENTITY)).toBeTruthy();
-		Cache.removeEntityData(SRC_URL, SRC_ENTITY);
-		expect(Cache.validateEntityData(SRC_URL, SRC_ENTITY)).not.toBeTruthy();
-	});
 });
 
 afterAll((done) => {

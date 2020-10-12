@@ -34,11 +34,12 @@
  * Assumptions: None
  * Constraints: None
  */
+const helper = require('../../helper/helper');
 const Database = require('../database');
 const DataSource = require('../dataSource');
 const ExportsController = require('../exports');
 const { GraphSuggesterController } = require('../graphSuggester');
-const { addSeriesData } = require('../graphSuggester/graphSuggesterController/graphSuggesterController');
+// const { addSeriesData } = require('../graphSuggester/graphSuggesterController/graphSuggesterController');
 /**
  * Purpose: This class is responsible for any requests from the roots and then
  * handles these requests appropriately by getting or setting the requested data from or to the models.
@@ -113,11 +114,27 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @return a promise
 	 */
-	static addDataSource(email, dataSourceURL, dataSourceType, done, error) {
-		Database.addDataSourceRemote(email, dataSourceURL, dataSourceType)
+	static addDataSource(email, dataSourceURL, dataSourceType, dataSourceName, isLiveData, done, error) {
+		Database.addDataSourceRemote(email, dataSourceURL, dataSourceType, dataSourceName, isLiveData)
 			.then((data) => done(data))
 			.catch((err) => error && error(err));
 	}
+
+	/**
+	 * This function updates a data source.
+	 * @param email the users email
+	 * @param dataSourceID the data sources id
+	 * @param dataSourceName the new data sources name
+	 * @param done a promise that is returned if the request was successful
+	 * @param error a promise that is returned if the request was unsuccessful
+	 * @return a promise
+	 */
+	static updateDataSource(email, dataSourceID, dataSourceName, done, error) {
+		Database.updateDataSource(email, dataSourceID, dataSourceName)
+			.then((data) => done(data))
+			.catch((err) => error && error(err));
+	}
+
 	/**
 	 * This function removes a data source.
 	 * @param email the users email
@@ -140,8 +157,8 @@ class RestController {
 	 * @param error a promise that is returned if the request was unsuccessful
 	 * @returns a promise of Odata
 	 */
-	static getMetaData(src, type, done, error) {
-		DataSource.getMetaData(src, type)
+	static getMetaData(src, type, isLiveData, done, error) {
+		DataSource.getMetaData(src, type, isLiveData)
 			.then((user) => done(user))
 			.catch((err) => error && error(err));
 	}
@@ -205,7 +222,7 @@ class RestController {
 			} while (fields.indexOf(PrimaryKey) >= 0);
 		}
 
-		DataSource.updateMetaData(src, srcType, EntityName, PrimaryKey, fields, types)
+		DataSource.updateMetaData(src, srcType, false, EntityName, PrimaryKey, fields, types)
 			.then(() => {
 				DataSource.updateEntityData(src, srcType, EntityName, fields, data)
 					.then(() => {
@@ -226,7 +243,7 @@ class RestController {
 	 * @param done a promise that is returned if the request was successful
 	 * @param error a promise that is returned if the request was unsuccessful
 	 */
-	static importLocalSourceAuth(email, srcType, EntityName, PrimaryKey, fields, types, data, done, error) {
+	static importLocalSourceAuth(email, srcType, srcName, EntityName, PrimaryKey, fields, types, data, done, error) {
 		const src = DataSource.generateLocalSourceFileName(srcType);
 
 		if (!PrimaryKey) PrimaryKey = '';
@@ -238,7 +255,7 @@ class RestController {
 
 		const meta = { entity: EntityName, prim: PrimaryKey, fields, types };
 
-		Database.addDataSourceLocal(email, src, srcType, meta, data)
+		Database.addDataSourceLocal(email, src, srcType, srcName, meta, data)
 			.then((result) => {
 				console.log('IMPORTED: ' + src);
 				done({ source: src, id: result.id });
@@ -266,22 +283,30 @@ class RestController {
 			GraphSuggesterController.setGraphTypes(graphTypes);
 
 			//construct array of sources from entities with no duplicates
-			let index = 0;
-			let datasourceTypes = [];
-			const datasources = entities.map((entity) => {
-				datasourceTypes[index++] = entity.datasourcetype;
-				return entity.datasource;
+
+			let sourceMap = {};
+
+			entities.forEach((entity) => {
+				entity.isLiveData = entity.isLiveData || false;
+				if (entity.datasource in sourceMap) {
+					sourceMap[entity.datasource].isLiveData = sourceMap[entity.datasource].isLiveData || entity.isLiveData;
+				} else sourceMap[entity.datasource] = entity;
 			});
 
-			// console.log(datasourceTypes, datasources);
+			let datasources = [];
+			let datasourceTypes = [];
+			let datasourceIsLive = [];
 
-			Promise.all(datasources.map((src, i) => DataSource.getMetaData(src, datasourceTypes[i])))
+			Object.keys(sourceMap).forEach((key) => {
+				datasources.push(sourceMap[key].datasource);
+				datasourceTypes.push(sourceMap[key].datasourcetype);
+				datasourceIsLive.push(sourceMap[key].isLiveData);
+			});
+
+			Promise.all(datasources.map((src, i) => DataSource.getMetaData(src, datasourceTypes[i], datasourceIsLive[i])))
 				.then((metaDataList) => {
 					metaDataList.forEach((Meta, i) => GraphSuggesterController.setMetadata(datasources[i], datasourceTypes[i], Meta));
-					console.log('================================================');
-					console.log('Meta Data retrieved for sources:');
-					console.log([...new Set(datasources)]);
-					console.log('================================================');
+					helper.LogFetchedSources(datasources);
 					done();
 				})
 				.catch((err) => {
@@ -347,9 +372,9 @@ class RestController {
 						} else if (fieldType.toLowerCase().includes('bool')) {
 							data = this.boolsToGraphData(data);
 						} else if (primaryKey && primaryKey.toLowerCase().includes('date')) {
-							console.log('DATE before', data);
+							// console.log('DATE before', data);
 							data = this.dateConversion(data);
-							console.log('DATE after', data);
+							// console.log('DATE after', data);
 
 							const count = Math.ceil(data.length * 0.2);
 							isForecasting = true;
@@ -383,7 +408,7 @@ class RestController {
 							charttype = suggestion.option.series[0].type;
 						}
 
-						outputSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType, charttype);
+						LogSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType, charttype);
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
@@ -735,11 +760,11 @@ class RestController {
 				data[i] = [];
 
 				if (new RegExp('[a-zA-Z-.,/]').test(keys[i])) {
-					console.log(`STRING KEYS[${i}]`, keys[i], new Date(keys[i]));
+					// console.log(`STRING KEYS[${i}]`, keys[i], new Date(keys[i]));
 					//if contains text, don't do parseInt
 					data[i][0] = new Date(keys[i]).toDateString();
 				} else {
-					console.log(`EPOCH KEYS[${i}]`, parseInt(keys[i]), new Date(parseInt(keys[i])));
+					// console.log(`EPOCH KEYS[${i}]`, parseInt(keys[i]), new Date(parseInt(keys[i])));
 					data[i][0] = new Date(parseInt(keys[i])).toDateString();
 				}
 				data[i][1] = tempMap[keys[i]];
@@ -881,7 +906,7 @@ function extractTitleData(title) {
 	} else return title;
 }
 
-function outputSuggestionMeta(src, srctype, item, set, field, fieldtype, charttype) {
+function LogSuggestionMeta(src, srctype, item, set, field, fieldtype, charttype) {
 	console.log('=====================================');
 	console.log('GENERATED SUGGESTION');
 	console.log('SRC:        ', src);

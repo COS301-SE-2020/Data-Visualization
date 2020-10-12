@@ -85,6 +85,7 @@ export const URL = {
 	DATASOURCE: {
 		LIST: URL_ROOT.DATASOURCE + '/src/list',
 		ADD: URL_ROOT.DATASOURCE + '/src/add',
+		UPDATE: URL_ROOT.DATASOURCE + '/src/update',
 		REMOVE: URL_ROOT.DATASOURCE + '/src/remove',
 		ENTITIES:  URL_ROOT.DATASOURCE + '/meta/entities',
 		FIELDS:  URL_ROOT.DATASOURCE + '/meta/fields',

@@ -129,7 +129,7 @@ const AddConnectionDialog = (props) => {
         isDragAccept
     ]);
 
-    const [originalData] = useState(currentData);
+    const [originalData, setOriginalData] = useState(currentData);
     const dataBuffer = useRef([]);
     /** Currently mutable buffer index. */
     const currentBuffer = useRef(true);
@@ -160,7 +160,7 @@ const AddConnectionDialog = (props) => {
     const containerComponentRef = useRef(null);
     const [containerComponentStyles, setContainerComponentStyles] = useState({});
     const [containerOuterTableStyles, setContainerOuterTableStyles] = useState({overflow: 'scroll', border: '1px solid black', width: '100px'});
-
+    
     /** --------------------------------------------- */
 
 
@@ -247,6 +247,43 @@ const AddConnectionDialog = (props) => {
     /** --------------------------------------------- */
 
     /** -------------- Functions -------------- */
+
+    function initializeImporter() {
+
+        setVisible(true);
+        setImportDataMode(false);
+        setInspectColumnsOnly(false);
+        setAcceptableData(false);
+        setCurrentData([]);
+        setCurrentColumns([]);
+        setSkipPageReset(false);
+        setOriginalData([]);
+        dataBuffer.current = [];
+        currentBuffer.current = true;
+        storedPointers.current = {};
+        dataChanges.current = [];
+        primaryColumns.current = [];
+        setSelectablePrimaryColumns({
+                value: 'Select Column',
+                label: 'default'
+        });
+        currentPrimarySelection.current = 'default';
+        setPrimaryMessage('');
+        proposedTypes.current = [];
+        setImportError(false);
+        setFileError(false);
+        colNames.current = [];
+        selectedTypes.current = [];
+        setNonCSVFileFields([]);
+        setNonCSVFileTypes([]);
+        setNonCSVPrimaryKey('');
+        setLoading(false);
+        importedFileStringContents.current = '';
+        containerComponentRef.current = null;
+        setContainerComponentStyles({});
+        setContainerOuterTableStyles({overflow: 'scroll', border: '1px solid black', width: '100px'});
+
+    }
 
     function alignContainer(addMargin) {
 
@@ -518,19 +555,19 @@ const AddConnectionDialog = (props) => {
      * Update props value.
      */
     const onFinish = values => {
-        var ulteredURI;
+        console.log(values);
 
         if(values.dataSourceItem === 'OData'){
-            ulteredURI = values.uri;
-            props.addItem(ulteredURI, 0);
+            
+            props.addItem(values.name , values.uri, 0, values.cacheURIdata);
         }
         else if(values.dataSourceItem === 'GraphQL'){
-            ulteredURI = values.uri;
-            props.addItem(ulteredURI, 1);
+       
+            props.addItem(values.name , values.uri, 1, values.cacheURIdata);
         }
 
-        props.changeState();
         setVisible(false);
+        props.changeState();
     };
 
     /**
@@ -544,9 +581,10 @@ const AddConnectionDialog = (props) => {
      * Actions for cancel
      */
     function handleCancel() {
-        props.changeState();
         setVisible(false);
+        props.changeState();
     }
+    
 
     /**  React component for individual cell values within table component.
      */
@@ -774,7 +812,8 @@ const AddConnectionDialog = (props) => {
                             }} />
                     </Space>
                 </div>
-                <div style={{marginBottom: '40px'}}>
+                <div style={{marginBottom: '30px', marginTop: '10px'}}>
+                    <Button style={{float: 'left'}} onClick={initializeImporter}>Go Back</Button>
                     <Button type='primary' disabled={acceptableData} style={{float: 'right'}} onClick={() => {
 
                         function getColIndex(field) {
@@ -830,7 +869,7 @@ const AddConnectionDialog = (props) => {
                 <div className='csv__container'>
                     <div className='background__transparent'></div>
                     <div ref={containerComponentRef} style={containerComponentStyles} className='csv_importer'>
-                        <div style={{border: '1px solid blue', backgroundColor: 'red'}}>
+                        <div>
                             <div style={{float: 'left', fontSize: '16px', padding: '20px'}}>Inspect Data File</div>
                             <div style={{float: 'right', padding: '20px'}} onClick={props.changeState}><CloseOutlined /></div>
                         </div>
@@ -957,13 +996,22 @@ const AddConnectionDialog = (props) => {
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
                     >
+
+                        <Form.Item
+                            name='name'
+                            rules={[{ required: true, message: 'Please select a data source name' }]}
+                        >
+                            <Input placeholder='Data source name'/>
+                        </Form.Item>
+
+
                         <Form.Item
                             name='dataSourceItem'
-                            rules={[{ required: true, message: 'Please select your currentData source type' }]}
+                            rules={[{ required: true, message: 'Please select a data source type' }]}
                         >
                             <Select
                                 name='dataSourceType'
-                                placeholder='Please select a data source type'>
+                                placeholder='Data source type'>
                                 <Option value='OData'>OData</Option>
                                 <Option value='GraphQL'>GraphQL</Option>
                             </Select>
@@ -971,16 +1019,32 @@ const AddConnectionDialog = (props) => {
 
                         <Form.Item
                             name='uri'
-                            rules={[{ required: true, message: 'Please input your a currentData source URI' }]}
+                            rules={[{ required: true, message: 'Data source URI' }]}
                         >
                             <Input placeholder='Please insert data source uri'/>
                         </Form.Item>
 
+                        <Form.Item
+                            name='cacheURIdata'
+                            valuePropName='checked'
+                            style={{textAlign: 'center'}}
+                            initialValue = {false}
+                        >
+
+                            <Checkbox>
+                                Cache data
+                            </Checkbox>
+
+                        </Form.Item>
+
+            
+                        
                         <Form.Item style={{textAlign: 'center'}}>
                             <Button type='primary'  htmlType='submit'>
                                 Add
                             </Button>
                         </Form.Item>
+
                     </Form>
 
                     <div style={{textAlign: 'center'}}>

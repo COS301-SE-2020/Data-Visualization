@@ -173,7 +173,7 @@ class Database {
 	 */
 	static async getDataSourceList(email) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('SELECT id,email,sourceurl,sourcetype FROM datasource WHERE ( email = $1);', [email])
+			Database.sendQuery('SELECT id,email,sourceurl,sourcetype,sourcename,islivedata FROM datasource WHERE ( email = $1);', [email])
 				.then((result) => resolve(result.rows))
 				.catch((result) => reject(result));
 		});
@@ -184,9 +184,15 @@ class Database {
 	 * @param sourceURL the data source url to add
 	 * @returns a promise
 	 */
-	static async addDataSourceRemote(email, sourceURL, sourceType) {
+	static async addDataSourceRemote(email, sourceURL, sourceType, sourceName, isLiveData) {
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType) VALUES ($1,$2,$3) RETURNING *;', [email, sourceURL, sourceType])
+			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType, sourceName, isLiveData) VALUES ($1,$2,$3,$4,$5) RETURNING *;', [
+				email,
+				sourceURL,
+				sourceType,
+				sourceName,
+				isLiveData,
+			])
 				.then((result) => {
 					if (result.rows.length > 0) resolve(result.rows[0]);
 					else reject(result);
@@ -201,7 +207,7 @@ class Database {
 	 * @param sourceURL the data source url to add
 	 * @returns a promise
 	 */
-	static async addDataSourceLocal(email, sourceURL, sourceType, sourceMeta, sourceData) {
+	static async addDataSourceLocal(email, sourceURL, sourceType, sourceName, sourceMeta, sourceData) {
 		if (sourceType === 3) {
 			sourceData = Buffer.from(sourceData).toString('base64');
 		} else {
@@ -210,12 +216,14 @@ class Database {
 		// console.log(sourceData);
 
 		return new Promise((resolve, reject) => {
-			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType, sourceMeta, sourceData) VALUES ($1,$2,$3,$4,$5) RETURNING *;', [
+			Database.sendQuery('INSERT INTO datasource (email, sourceurl, sourceType, sourceName, sourceMeta, sourceData, isLiveData) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *;', [
 				email,
 				sourceURL,
 				sourceType,
+				sourceName,
 				JSON.stringify(sourceMeta),
 				sourceData,
+				false,
 			])
 				.then(async (result) => {
 					if (result.rows.length > 0) resolve(result.rows[0]);
@@ -250,6 +258,24 @@ class Database {
 
 					if (result.rows.length > 0) resolve(data);
 					else reject('This data-source does not exist');
+				})
+				.catch((result) => reject(result));
+		});
+	}
+
+	/**
+	 * This function is to update a data source
+	 * @param email the users email
+	 * @param dataSourceID the data source id
+	 * @param dataSourceName the data source name
+	 * @returns a promise
+	 */
+	static async updateDataSource(email, dataSourceID, dataSourceName) {
+		return new Promise((resolve, reject) => {
+			Database.sendQuery('UPDATE datasource SET sourceName=$3 WHERE ( email = $1) AND ( ID = $2) RETURNING *;', [email, dataSourceID, dataSourceName])
+				.then((result) => {
+					if (result.rows.length > 0) resolve(result.rows[0]);
+					else reject(result);
 				})
 				.catch((result) => reject(result));
 		});

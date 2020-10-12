@@ -19,7 +19,7 @@
  * Assumptions: None
  * Constraints: None
  */
-const { LogAuthUsers, LogAuthKeys } = require('../../helper/helper');
+const Helper = require('../../helper/helper');
 
 const AuthenticationMaker = (function () {
 	let instance = null;
@@ -104,11 +104,11 @@ const AuthenticationMaker = (function () {
 		}
 
 		logAuthUsers() {
-			if (this.logging) LogAuthUsers(this.loggedUsers);
+			if (this.logging) Helper.LogAuthUsers(this.loggedUsers);
 		}
 
 		logAuthKeys() {
-			if (this.logging) LogAuthKeys(this.emailToApikey);
+			if (this.logging) Helper.LogAuthKeys(this.emailToApikey);
 		}
 
 		/**

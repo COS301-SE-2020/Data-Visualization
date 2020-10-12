@@ -540,7 +540,7 @@ function EditChart(props) {
      */
     function parseRGBToHex(value) {
         if (typeof value === 'undefined' || value === '') {
-            return '#c23531';
+            return '#7d8edb';
         } if (value.substring(0, 1) === '#') {
             return value;
         } else if (value.substring(0, 1) === 'r') {
@@ -732,7 +732,7 @@ function EditChart(props) {
                         seriesProperty.push({name: 'Series 1'});
                         prevGridData.current.grid[tmp]['rowspan'] = 2;
 
-                        let ECHART_DEFAULT_COLOURS = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
+                        let ECHART_DEFAULT_COLOURS = ['#7d8edb','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
 
                         if (optionsBuffer.current[+currentBuffer.current].series[0].hasOwnProperty('encode') && optionsBuffer.current[+currentBuffer.current].series[0].encode.hasOwnProperty('itemName')) {
 
@@ -753,7 +753,7 @@ function EditChart(props) {
                             });
                         } else {
 
-                            optionsBuffer.current[+currentBuffer.current].series[0].color = '#c23531';
+                            optionsBuffer.current[+currentBuffer.current].series[0].color = '#7d8edb';
                             newSeriesProperty.push({
                                 name: optionsBuffer.current[+currentBuffer.current].dataset.source[0][0],
                                 label: {
@@ -761,7 +761,7 @@ function EditChart(props) {
                                     directory: ['series', 0, 'name']
                                 },
                                 color: {
-                                    hexvalue: '#c23531',
+                                    hexvalue: '#7d8edb',
                                     directory: ['series', 0, 'color']
                                 },
                                 type: {
@@ -1854,7 +1854,7 @@ function EditChart(props) {
                                 </tbody>
                             </table>
                         </Collapse.Panel>
-                        <Collapse.Panel header="Link" key="2">
+                        <Collapse.Panel header="Subtext" key="2">
                             <table className='properties'>
                                 <tbody>
                                 <tr className='properties'>

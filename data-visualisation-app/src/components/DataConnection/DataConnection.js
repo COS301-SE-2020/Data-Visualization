@@ -29,9 +29,12 @@ import request from '../../globals/requests';
 import * as constants from '../../globals/constants';
 import './DataConnection.scss';
 import AddConnectionDialog from '../AddConnectionDialog';
+import EditConnectionDialog from '../EditConnectionDialog';
 import csvIcon from '../../assets/img/csv.svg';
 import jsonIcon from '../../assets/img/json.svg';
 import xmlIcon from '../../assets/img/xml.svg';
+import { Form, Input, Layout, Row, Col, Typography, Space, message } from 'antd';
+import { Modal} from 'antd';
 
 /**
   * takes no arguments and returns a random string of length 10.
@@ -64,6 +67,9 @@ class DataConnection extends React.Component {
     data: [],
     list: [],
     addConnection : false,
+    editConnection : false,
+    setEditVisible : true,
+    seletedItem: null,
   };
 
 
@@ -87,7 +93,7 @@ class DataConnection extends React.Component {
   getData = callback => {
     if(request.user.isLoggedIn){
       request.dataSources.list(request.user.apikey, function(result) {
-        console.log(result);
+  
         
         if (result === constants.RESPONSE_CODES.SUCCESS) {
 
@@ -112,7 +118,7 @@ class DataConnection extends React.Component {
     if(request.user.isLoggedIn){
       
       request.dataSources.delete(itemToDelete.id, request.user.apikey, function(result) {
-        console.log(result);
+
         if (result === constants.RESPONSE_CODES.SUCCESS) {
 
         }
@@ -140,21 +146,21 @@ class DataConnection extends React.Component {
   }
 
 
+
   /**
     * Adds item to the 'list'.
     * If user is logged in, delete on backend and front end.
     * If user is not logged in, add item only front end.
   */
-  addItem = (uri, sourcetype) => {
+  addItem = (name ,uri, sourcetype, cacheURIdata) => {
 
     var id = generateID();
     let attempt = this;
-    console.log(sourcetype);
     /**
       * If user is logged in, add item on backend and front end.
     */
     if(request.user.isLoggedIn){
-      request.dataSources.add(request.user.apikey, uri, sourcetype, function(result) {
+      request.dataSources.add(request.user.apikey, uri, sourcetype, name , cacheURIdata, function(result) {
        
         if (result === constants.RESPONSE_CODES.SUCCESS) {
 
@@ -163,6 +169,9 @@ class DataConnection extends React.Component {
             'email': request.user.email,
             'sourceurl': uri,
             'sourcetype': sourcetype,
+            'sourcename' : name,
+	          'islivedata' : cacheURIdata, 
+            
           });
 
           attempt.setState(previousState => ({
@@ -183,6 +192,8 @@ class DataConnection extends React.Component {
         'email': request.user.email,
         'sourceurl': uri,
         'sourcetype' : sourcetype,
+        'sourcename' : name,
+	      'islivedata' : cacheURIdata, 
       });
 
 
@@ -194,6 +205,46 @@ class DataConnection extends React.Component {
     
   }
 
+
+  editItem = (item, values) => {
+
+    let attempt = this;
+
+    if(values.nameField !== undefined){
+      if(request.user.isLoggedIn){
+
+
+        request.dataSources.update(request.user.apikey, item.id, values.nameField, function(result) {
+         
+          if (result === constants.RESPONSE_CODES.SUCCESS) {
+       
+            item.sourcename = values.nameField;
+
+            attempt.setState(previousState => ({
+              data: request.user.dataSources,
+              list: request.user.dataSources
+            }));
+
+
+          }
+        });
+       
+      //item.sourcename = values.nameField;
+        
+      }
+      else{
+        /**
+          * User is not logged in, change item only front end.
+        */
+       item.sourcename = values.nameField;
+
+       //console.log( request.user.dataSources);
+      }
+    
+    }
+    
+  }
+
  
   /**
     * handles the addConnection state
@@ -201,6 +252,15 @@ class DataConnection extends React.Component {
   changeAddState = () => {
     this.setState({
       addConnection : !this.state.addConnection,
+    });
+  };
+  
+   /**
+    * handles the editConnection state
+  */
+  changeEditState = () => {
+    this.setState({
+      editConnection : !this.state.editConnection,
     });
   };
 
@@ -252,7 +312,19 @@ class DataConnection extends React.Component {
               key={item.id}
               actions={
                 [
-                  <Button id = 'deleteButton' onClick={() => {this.deleteItem(item);}} >Delete</Button>
+                  <Button id = 'deleteButton' className = 'onCard' onClick={() => {this.deleteItem(item);}} >Delete</Button>,
+                  <Button id = 'editButton' className = 'onCard' onClick={() => {
+                    
+                    
+                    this.setState({
+                      selectedItem : item,
+                    });
+
+                    this.changeEditState();
+                   
+                  
+                  }} >Edit</Button>
+                 
                 ]
               }>
               <Skeleton avatar title={false} loading={item.loading} active>
@@ -260,8 +332,8 @@ class DataConnection extends React.Component {
                   avatar={
                     <Avatar shape='square' src={item.sourceurl.slice(-3) === 'csv' ? csvIcon : item.sourceurl.slice(-3) === 'xml' ? xmlIcon : item.sourceurl.slice(-4) === 'json' ? jsonIcon : 'https://15f76u3xxy662wdat72j3l53-wpengine.netdna-ssl.com/wp-content/uploads/2018/03/OData-connector-e1530608193386.png'}/>
                   }
-                  title={item.sourceurl}
-                  description={item.id}
+                  title={item.sourcename}
+                  //description={item.sourceurl}
                 />
                 <div></div>
               </Skeleton>
@@ -276,6 +348,13 @@ class DataConnection extends React.Component {
               <AddConnectionDialog changeState = {this.changeAddState} addItem = {this.addItem}/>
             
             :
+
+            this.state.editConnection ?
+
+              <EditConnectionDialog changeState = {this.changeEditState} editItem = {this.editItem} selectedItem = {this.state.selectedItem}/>
+            
+            :
+
             null
         }
         </main>

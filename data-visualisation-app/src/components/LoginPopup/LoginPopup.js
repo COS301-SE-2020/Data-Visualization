@@ -385,10 +385,12 @@ function LoginPopup(props) {
         
         request.user.dataSources = [
           {
-            'id': 6,
-            'email': 'doofenshmirtz.evil.inc.cos@gmail.com',
-            'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc',
-            'sourcetype': 0,
+            id: 1,
+            email: 'doofenshmirtz.evil.inc.cos@gmail.com',
+            sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
+            sourcetype: 0,
+            sourcename: 'Northwind',
+            islivedata: 'true',
           }
         ];
         dispatch({ isLoggedIn: false }); 
