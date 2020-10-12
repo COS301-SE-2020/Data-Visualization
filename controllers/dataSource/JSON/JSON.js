@@ -31,33 +31,32 @@ class JSON {
 		let data = [];
 		for (let value of Object.values(inputData)) {
 			let obj = {};
-			if(fieldList.length !== Object.keys(value).length){
-				for(let i = 0; i < fieldList.length; i++){
+			if (fieldList.length !== Object.keys(value).length) {
+				for (let i = 0; i < fieldList.length; i++) {
 					obj = value;
-					if(!(Object.keys(value).indexOf(fieldList[i]) > -1)){
-						obj[fieldList[i]] = "null";
+					if (!(Object.keys(value).indexOf(fieldList[i]) > -1)) {
+						obj[fieldList[i]] = 'null';
 					}
 				}
-			}
-			else{
+			} else {
 				obj = value;
 			}
 			data.push(obj);
 		}
-		for (let value of Object.values(data)) {
-			console.log(value);
-		}
+		// for (let value of Object.values(data)) {
+		// 	console.log(value);
+		// }
 		return new Promise((resolve, reject) => resolve(inputData));
 	}
 
 	static parseMetadata(entity, primaryKey, fieldList, typeList) {
-		if(fieldList.length > typeList.length) {
+		if (fieldList.length > typeList.length) {
 			const index = typeList.length;
 			for (let i = index; i < fieldList.length; ++i) {
 				typeList.push('string');
 			}
-		} else if (fieldList.length < typeList.length){
-			typeList = typeList.slice(0, fieldList.length)
+		} else if (fieldList.length < typeList.length) {
+			typeList = typeList.slice(0, fieldList.length);
 		}
 		let items = {};
 		items[entity] = fieldList;

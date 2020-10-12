@@ -340,12 +340,17 @@ class RestController {
 
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
+				if (!suggestion) {
+					DataSource.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
+					GraphSuggesterController.blacklistEntity(randEntity.datasource, randEntity.entityName);
+				}
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
-				done({});
 				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
+				done({});
 			} else if (!suggestion) {
+				console.log('error: Request Could not generate chart suggestion, try selecting different entities');
 				done({});
 			} else {
 				// console.log('SUGGESTION: ', suggestion);
@@ -385,8 +390,7 @@ class RestController {
 								// console.log('ERROR', err);
 
 								const errReport = err.data ? err.data.error : null;
-
-								console.log('Time Series Forecast failed...', errReport);
+								console.log('Time Series Forecast failed...');
 							});
 
 							// console.log(forecastResults);
@@ -409,23 +413,33 @@ class RestController {
 						}
 
 						LogSuggestionMeta(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field, fieldType, charttype);
+
 						// eslint-disable-next-line eqeqeq
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
+							DataSource.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
+							GraphSuggesterController.blacklistField(randEntity.datasource, randEntity.entityName, field);
 							done({});
 						} else {
 							let chart = GraphSuggesterController.assembleGraph(option, data);
 
 							// console.log('BEFORE:', chart);
 
-							if (isForecasting && forecast && trimmedSet) {
+							if (chart && isForecasting && forecast && trimmedSet) {
 								// console.log('Forecast:', forecast);
 								chart = GraphSuggesterController.addSeriesData(chart, { forecast, trimmedSet });
 							}
 
 							GraphSuggesterController.suggestionsMade++;
 
-							done(chart);
+							// eslint-disable-next-line eqeqeq
+							if (chart == null) {
+								DataSource.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
+								GraphSuggesterController.blacklistField(randEntity.datasource, randEntity.entityName, field);
+								done({});
+							} else {
+								done(chart);
+							}
 						}
 					})
 					.catch((err) => {
