@@ -125,7 +125,6 @@ class GraphSuggesterController {
 			// eslint-disable-next-line eqeqeq
 			if (suggestion == null) {
 				console.log('Received null suggestion');
-				this.blacklistEntity(source, entity);
 				return null;
 			}
 			//graph, params, xEntries, yEntries, graphName
@@ -349,12 +348,10 @@ class GraphSuggesterController {
 		//the current options array works for line, bar, scatter, effectScatter charts
 		//it is also the default options array
 		if (!graph.includes('pie')) {
-
 			option.grid = {
-				top : 30,
+				top: 30,
 				bottom: 130,
 				left: 60,
-		
 			};
 
 			option.xAxis = {
@@ -368,7 +365,7 @@ class GraphSuggesterController {
 				axisLabel: {
 					rotate: 330,
 					padding: [20, 0, 0, -10],
-				},	
+				},
 			};
 
 			option.yAxis = {
@@ -594,7 +591,7 @@ class GraphSuggesterController {
 
 		if (sameKeys) {
 			console.log('All items in graph have the same key - invalidating graph');
-			return null;	//returning null blacklists the field
+			return null; //returning null blacklists the field
 		}
 
 		let keys = Object.keys(sameValues);
@@ -692,11 +689,17 @@ class GraphSuggesterController {
 	 * @param entity the entity to access the field
 	 * @param field the field to blacklist
 	 */
-	static blacklistEntity(source, entity) {
-		if (!this.metadata || !this.metadata[source] || !this.metadata[source][entity]) {
-			console.log("Cannot blacklist entity: ", entity, " of source: ", source, ", as it does not exist");
+	static blacklistEntity(source, entity, set) {
+		if (!this.metadata || !this.metadata[source] || !this.metadata[source].items[entity]) {
+			console.log('Cannot blacklist entity: ', entity, ' of source: ', source, ', as it does not exist');
 		} else {
-			delete this.metadata[source][entity];
+			//entity without fields is a useless entity
+			delete this.metadata[source].items[entity];
+			delete this.metaData[source].types[entity];
+			delete this.metaData[source].associations[entity];
+
+			const setIndex = this.metaData[source].sets.indexOf(set);
+			if (setIndex >= 0) this.metaData[source].sets.splice(setIndex, 1);
 		}
 	}
 
@@ -706,32 +709,32 @@ class GraphSuggesterController {
 	 * @param entity the entity to access the field
 	 * @param field the field to blacklist
 	 */
-	static blacklistField(source, entity, field) {
+	static blacklistField(source, entity, set, field) {
 		if (!this.metadata) {
-			console.log("Metadata not set");
-		} else if(!this.metadata[source]){
-			console.log("No source: ", source, " to blacklist field: ", field);
-		} else if(!this.metadata[source][entity]){
-			console.log("Entity: ", entity, " cannot be removed as it does not exist in source: ", source);
-		} else if (!this.metadata[source][entity]['items']) {
-			console.log("Cannot blacklist field: ", field, "of entity: ", entity, " of source: ", source, ", as no fields exist");
+			console.log('Metadata not set');
+		} else if (!this.metadata[source]) {
+			console.log('No source: ', source, ' to blacklist field: ', field);
+		} else if (!this.metadata[source].items[entity]) {
+			console.log('Entity: ', entity, ' cannot be removed as it does not exist in source: ', source);
+		} else if (!this.metadata[source].items[entity].length === 0) {
+			console.log('Cannot blacklist field: ', field, 'of entity: ', entity, ' of source: ', source, ', as no fields exist');
 		} else {
-			let index = this.metadata[source][entity]['items'].indexOf(field);
+			let index = this.metadata[source].items[entity].indexOf(field);
+
+			console.log(index, this.metadata[source]);
 
 			if (index < 0) {
-				console.log("Cannot blacklist field: ", field, "of entity: ", entity, " of source: ", source, ", as it does not exist");
+				console.log('Cannot blacklist field: ', field, 'of entity: ', entity, ' of source: ', source, ', as it does not exist');
 			} else {
-				this.metadata[source][entity]['items'].splice(index, 1);
-				this.metadata[source][entity]['types'].splice(index, 1);
+				this.metadata[source].items[entity].splice(index, 1);
+				this.metadata[source].types[entity].splice(index, 1);
 
-				if (Object.keys(this.metadata[source][entity]['items']).length === 0) { //entity without fields is a useless entity
-					delete this.metadata[source][entity];
+				if (this.metadata[source].items[entity].length === 0) {
+					this.blacklistEntity(source, entity, set);
 				}
-
 			}
 		}
 	}
-
 }
 GraphSuggesterController.acceptedEntities = {};
 GraphSuggesterController.metadata = [];
