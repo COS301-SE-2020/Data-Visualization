@@ -340,7 +340,10 @@ class RestController {
 
 					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 				} else timedout = true;
-				if (!suggestion) DataSource.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
+				if (!suggestion) {
+					DataSource.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
+					GraphSuggesterController.blacklistEntity(randEntity.datasource, randEntity.entityName);
+				}
 			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
 
 			if (timedout) {
@@ -415,6 +418,7 @@ class RestController {
 						if (data == null) {
 							console.log('No data for entity:', randEntity.entityName, 'and field:', field);
 							DataSource.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
+							GraphSuggesterController.blacklistField(randEntity.datasource, randEntity.entityName, field);
 							done({});
 						} else {
 							let chart = GraphSuggesterController.assembleGraph(option, data);
@@ -431,6 +435,7 @@ class RestController {
 							// eslint-disable-next-line eqeqeq
 							if (chart == null) {
 								DataSource.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
+								GraphSuggesterController.blacklistField(randEntity.datasource, randEntity.entityName, field);
 								done({});
 							} else {
 								done(chart);
