@@ -346,21 +346,26 @@ class GraphSuggesterController {
 		//the current options array works for line, bar, scatter, effectScatter charts
 		//it is also the default options array
 		if (!graph.includes('pie')) {
+
+			option.grid = {
+				top : 30,
+				bottom: 130,
+				left: 60,
+		
+			};
+
 			option.xAxis = {
 				type: 'category', //TODO change this so the type(s) get decided by frontend or by the AI
 				name: xEntries,
 				nameLocation: 'center',
-				nameGap: 90,
+				nameGap: 115,
 				nameTextStyle: {
 					fontSize: 15,
 				},
 				axisLabel: {
 					rotate: 330,
-					padding: [20, 0, 0, -20],
-				},
-				grid: {
-					bottom: 110,
-				},
+					padding: [20, 0, 0, -10],
+				},	
 			};
 
 			option.yAxis = {

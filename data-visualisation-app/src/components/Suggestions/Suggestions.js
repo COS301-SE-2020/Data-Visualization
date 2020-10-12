@@ -179,8 +179,8 @@ function Suggestion(props) {
                 </Grid>
             </div>
             {/*<ReactEcharts option={props.chartData.options} style={{height: '300px', width: '100%'}} />*/}
-            <ReactEcharts ref={refEChartsComponent} option={props.chartData.options} />
-            <div style={{marginTop: '10px', height: '40px'}}>
+            <ReactEcharts ref={refEChartsComponent} option={props.chartData.options} style={{height: '40vh'}}  />
+            <div style={{marginTop: '20px', height: '40px'}}>
                 {/*<Grid container spacing={3}>*/}
                 {/*    <Grid item xs={2}>*/}
                 {/*        <ShareAltOutlined />*/}
