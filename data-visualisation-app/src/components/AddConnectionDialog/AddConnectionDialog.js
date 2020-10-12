@@ -1032,7 +1032,7 @@ const AddConnectionDialog = (props) => {
                         >
 
                             <Checkbox>
-                                Cache data
+                                Live data
                             </Checkbox>
 
                         </Form.Item>
