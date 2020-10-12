@@ -160,27 +160,37 @@ const CacheMaker = (function () {
 			if (this.validateMetadataAll(src, entity, set, field)) {
 				let index = this.metaData[src].data.items[entity].indexOf(field);
 
-				let primEntity = '';
-				if (this.metaData[src].data.prims[entity]) primEntity = entity;
-				else primEntity = set;
-
 				// console.log('BEFORE', this.metaData[src].data);
 
 				this.metaData[src].data.items[entity].splice(index, 1);
 				this.metaData[src].data.types[entity].splice(index, 1);
 
 				if (this.metaData[src].data.items[entity].length <= 0) {
-					delete this.metaData[src].data.items[entity];
-					delete this.metaData[src].data.types[entity];
-					delete this.metaData[src].data.associations[entity];
-					if (this.metaData[src].data.prims[primEntity]) delete this.metaData[src].data.prims[primEntity];
-
-					const setIndex = this.metaData[src].data.sets.indexOf(set);
-					if (index >= 0) this.metaData[src].data.sets.splice(setIndex, 1);
+					this.removeEntity(src, entity, set);
 				}
 				// console.log('AFTER', this.metaData[src].data);
 			} else {
 				console.log('Cannot remove field: ', src, entity || set, field);
+			}
+		}
+
+		removeEntity(src, entity, set) {
+			if (this.validateMetadata(src, Cache.isLiveData(src))) {
+				let primEntity = this.metaData[src].data.prims[entity] ? entity : set;
+
+				delete this.metaData[src].data.items[entity];
+				delete this.metaData[src].data.types[entity];
+				delete this.metaData[src].data.associations[entity];
+				if (this.metaData[src].data.prims[primEntity]) delete this.metaData[src].data.prims[primEntity];
+
+				const setIndex = this.metaData[src].data.sets.indexOf(set);
+				if (setIndex >= 0) this.metaData[src].data.sets.splice(setIndex, 1);
+
+				if (this.validateEntityData(src, entity)) {
+					this.removeEntityData(src, entity);
+				}
+			} else {
+				console.log('Cannot remove field: ', src, entity);
 			}
 		}
 
