@@ -1,0 +1,194 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddDashboard component AddDashboard renders correctly 1`] = `
+<main
+  className="ant-layout-content"
+  style={
+    Object {
+      "overflow": "hidden",
+    }
+  }
+>
+  <div
+    className="ant-row"
+    style={
+      Object {
+        "marginBottom": 8,
+        "marginLeft": -8,
+        "marginRight": -8,
+        "marginTop": -8,
+      }
+    }
+  >
+    <div
+      className="ant-col ant-col-8 ant-col-offset-8"
+      style={
+        Object {
+          "paddingBottom": 8,
+          "paddingLeft": 8,
+          "paddingRight": 8,
+          "paddingTop": 8,
+        }
+      }
+    >
+      <div
+        className="add-dashboard-box"
+      >
+        <h4
+          className="ant-typography"
+          style={
+            Object {
+              "WebkitLineClamp": null,
+              "marginBottom": "30px",
+            }
+          }
+        >
+          Create New Dashboard
+        </h4>
+        <form
+          className="ant-form ant-form-horizontal"
+          id="basic"
+          onSubmit={[Function]}
+        >
+          <div
+            className="ant-row ant-form-item"
+            onChange={[Function]}
+            placeholder="Consumer"
+            style={Object {}}
+          >
+            <div
+              className="ant-col ant-col-8 ant-form-item-label"
+              style={Object {}}
+            >
+              <label
+                className="ant-form-item-required"
+                htmlFor="basic_adderField"
+                title="Name:"
+              >
+                Name
+              </label>
+            </div>
+            <div
+              className="ant-col ant-col-16 ant-form-item-control"
+              style={Object {}}
+            >
+              <div
+                className="ant-form-item-control-input"
+              >
+                <div
+                  className="ant-form-item-control-input-content"
+                >
+                  <input
+                    className="ant-input"
+                    id="basic_adderField"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    onFocus={[Function]}
+                    onKeyDown={[Function]}
+                    type="text"
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="ant-row ant-form-item"
+            onChange={[Function]}
+            placeholder="Short Description"
+            style={Object {}}
+          >
+            <div
+              className="ant-col ant-col-8 ant-form-item-label"
+              style={Object {}}
+            >
+              <label
+                className="ant-form-item-required"
+                htmlFor="basic_adderField1"
+                title="Description:"
+              >
+                Description
+              </label>
+            </div>
+            <div
+              className="ant-col ant-col-16 ant-form-item-control"
+              style={Object {}}
+            >
+              <div
+                className="ant-form-item-control-input"
+              >
+                <div
+                  className="ant-form-item-control-input-content"
+                >
+                  <textarea
+                    className="ant-input"
+                    id="basic_adderField1"
+                    onChange={[Function]}
+                    onKeyDown={[Function]}
+                    style={Object {}}
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="ant-row ant-form-item"
+            style={Object {}}
+          >
+            <div
+              className="ant-col ant-col-32 ant-col-offset-8 ant-form-item-control"
+              style={Object {}}
+            >
+              <div
+                className="ant-form-item-control-input"
+              >
+                <div
+                  className="ant-form-item-control-input-content"
+                >
+                  <div
+                    className="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      className="ant-space-item"
+                      style={
+                        Object {
+                          "marginRight": 10,
+                        }
+                      }
+                    >
+                      <button
+                        className="ant-btn ant-btn-primary"
+                        onClick={[Function]}
+                        type="submit"
+                      >
+                        <span>
+                          Create
+                        </span>
+                      </button>
+                    </div>
+                    <div
+                      className="ant-space-item"
+                      style={Object {}}
+                    >
+                      <button
+                        className="ant-btn"
+                        onClick={[Function]}
+                        type="button"
+                      >
+                        <span>
+                          Cancel
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+`;

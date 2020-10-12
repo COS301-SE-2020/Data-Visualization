@@ -22,7 +22,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ReactEcharts from 'echarts-for-react';
-import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined} from '@ant-design/icons';
+import {PlusCircleOutlined, CheckOutlined, ShareAltOutlined, BookOutlined, StarOutlined, FilterOutlined, DownOutlined} from '@ant-design/icons';
 import {Typography, Menu, Dropdown, Button, message, Form, Checkbox, Space} from 'antd';
 import FilterDialog from '../FilterDialog';
 import './Suggestions.scss';
@@ -31,13 +31,22 @@ import * as constants from '../../globals/constants';
 import { createForm } from 'rc-form';
 import EditChart from '../EditChart';
 import {EDITCHART_MODES} from '../../globals/constants';
+import { ReactComponent as SuggestionsGraphic } from './../../assets/svg/prgress.svg';
+import { ReactComponent as NoSuggestions } from './../../assets/svg/no_suggestions.svg';
 
 const renderChart = {index: -1};
 
-
-
 function Suggestion(props) {
     const [isAdded, setIsAdded] = useState(false);
+    const refEChartsComponent = useRef(null);
+    const EXPORT_MIME_TYPES = {
+        1: 'image/png',
+        2: 'image/jpg'
+    };
+    const EXPORT_MIME_EXTENSIONS = {
+        1: '.png',
+        2: '.jpg'
+    };
 
     function onAddChartToDashboard(chart, dashboard) {
 
@@ -73,8 +82,69 @@ function Suggestion(props) {
                 }
             });
         }
+    }
 
+    function noDropdownButtonClick(key) {
+        if (key === '0') {
+            let rawCSV = 'data:text/csv;charset=utf-8,Series,Dimension,';
 
+            let dataLength;
+            if (props.chartData.options.hasOwnProperty('series')) {
+                for (let s = 0; s < props.chartData.options.series.length; s++) {
+                    if (props.chartData.options.series[s].hasOwnProperty('data')) {
+                        dataLength = props.chartData.options.series[s].data.length;
+                    } else if (props.chartData.options.series[s].hasOwnProperty('encode')) {
+                        if (props.chartData.options.dataset.hasOwnProperty('source')) {
+                            dataLength = props.chartData.options.dataset.source.length-1;
+                        }
+                    }
+                }
+            }
+
+            for (let i = 1; i < dataLength+1; i++) {
+                rawCSV += 'Data Value ' + i.toString();
+                if (i === dataLength)
+                    rawCSV += '\r\n';
+                else
+                    rawCSV += ',';
+
+            }
+
+            if (props.chartData.options.hasOwnProperty('dataset')) {
+
+                const dimensionNames = ['X-Axis', 'Y-Axis'];
+
+                for (let dimension = 0; dimension < 2; dimension++) {
+                    rawCSV += 'Series 1,';
+
+                    for (let i = 1; i < dataLength+1; i++) {
+
+                        if (i === 1) {
+                            rawCSV += dimensionNames[dimension] + ',';
+                        }
+
+                        rawCSV += (props.chartData.options.dataset.source[i][dimension] == null ? '' : props.chartData.options.dataset.source[i][dimension]);
+                        if (i === dataLength)
+                            rawCSV += '\r\n';
+                        else
+                            rawCSV += ',';
+                    }
+                }
+            }
+
+            let csvEncodedURI = encodeURI(rawCSV);
+            let a = document.createElement('a');
+            a.setAttribute('href', csvEncodedURI);
+            a.setAttribute('download', props.chartData.title + '.csv');
+            document.body.appendChild(a);
+
+            a.click();
+        } else {
+            let elementDownloadLink = document.createElement('a');
+            elementDownloadLink.download = props.chartData.title + EXPORT_MIME_EXTENSIONS[key];
+            elementDownloadLink.href = refEChartsComponent.current.echartsElement.firstChild.firstChild.toDataURL(EXPORT_MIME_TYPES[key]);
+            elementDownloadLink.click();
+        }
     }
 
     return (
@@ -109,8 +179,8 @@ function Suggestion(props) {
                 </Grid>
             </div>
             {/*<ReactEcharts option={props.chartData.options} style={{height: '300px', width: '100%'}} />*/}
-            <ReactEcharts option={props.chartData.options} />
-            <div style={{marginTop: '10px', height: '40px'}}>
+            <ReactEcharts ref={refEChartsComponent} option={props.chartData.options} style={{height: '40vh'}}  />
+            <div style={{marginTop: '20px', height: '40px'}}>
                 {/*<Grid container spacing={3}>*/}
                 {/*    <Grid item xs={2}>*/}
                 {/*        <ShareAltOutlined />*/}
@@ -123,64 +193,22 @@ function Suggestion(props) {
                 {/*    </Grid>*/}
                 {/*    <Grid item xs={6}>*/}
                 <Space size={9} align="center">
-                        <Button style={{float: 'right'}} onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; props.setShowEditChart(true);}}>Customize</Button>
-                        <Button style={{float: 'right'}} onClick={() => {
-                           
-                            let rawCSV = 'data:text/csv;charset=utf-8,Series,Dimension,';
 
-                            let dataLength;
-                            if (props.chartData.options.hasOwnProperty('series')) {
-                                for (let s = 0; s < props.chartData.options.series.length; s++) {
-                                    if (props.chartData.options.series[s].hasOwnProperty('data')) {
-                                        dataLength = props.chartData.options.series[s].data.length;
-                                    } else if (props.chartData.options.series[s].hasOwnProperty('encode')) {
-                                        if (props.chartData.options.dataset.hasOwnProperty('source')) {
-                                            dataLength = props.chartData.options.dataset.source.length-1;
-                                        }
-                                    }
-                                }
-                            }
+                    <Button style={{float: 'right'}} onClick={() => {props.editChartParameters.current.directory = [props.id]; props.editChartParameters.current.options = props.chartData.options; props.setShowEditChart(true);}}>Customize</Button>
 
-                            for (let i = 1; i < dataLength+1; i++) {
-                                rawCSV += 'Data Value ' + i.toString();
-                                if (i === dataLength)
-                                    rawCSV += '\r\n';
-                                else
-                                    rawCSV += ',';
-
-                            }
-
-                            if (props.chartData.options.hasOwnProperty('dataset')) {
-
-                                const dimensionNames = ['X-Axis', 'Y-Axis'];
-
-                                for (let dimension = 0; dimension < 2; dimension++) {
-                                    rawCSV += 'Series 1,';
-
-                                    for (let i = 1; i < dataLength+1; i++) {
-
-                                        if (i === 1) {
-                                            rawCSV += dimensionNames[dimension] + ',';
-                                        }
-
-                                        rawCSV += (props.chartData.options.dataset.source[i][dimension] == null ? '' : props.chartData.options.dataset.source[i][dimension]);
-                                        if (i === dataLength)
-                                            rawCSV += '\r\n';
-                                        else
-                                            rawCSV += ',';
-                                    }
-                                }
-                            }
-
-                            let csvEncodedURI = encodeURI(rawCSV);
-                            let a = document.createElement('a');
-                            a.setAttribute('href', csvEncodedURI);
-                            a.setAttribute('download', props.chartData.title + '.csv');
-                            document.body.appendChild(a);
-
-                            a.click();
-
-                        }}>Export CSV</Button>
+                <Dropdown
+                    overlay={(
+                        <Menu onClick={(e) => {noDropdownButtonClick(e.key);}}>
+                            <Menu.Item key="1" >
+                                Export PNG
+                            </Menu.Item>
+                            <Menu.Item key="2" >
+                                Export JPG
+                            </Menu.Item>
+                        </Menu>
+                    )}>
+                    <Button style={{float: 'right'}} onClick={() => {noDropdownButtonClick('0');}}>Export CSV <DownOutlined /></Button>
+                </Dropdown>
                 </Space>
                 {/*    </Grid>*/}
                 {/*</Grid>*/}
@@ -207,7 +235,15 @@ const useStyles = makeStyles((theme) => ({
 
 
 function IGALoading() {
-    return <div className={request.user.isLoggedIn ? 'igaloadingLI' : 'igaloadingLO'} >{constants.LOADER} <br/> <br/> <br/> Generating chart suggestions by the IGA...</div>;
+    return <div className='igaloadingLO' >
+        <div style={{marginTop: '5vh'}}>
+            
+            <SuggestionsGraphic style={{width: '30vh', height: '20vh'}} />
+            <div style={{marginTop: '50px', marginBottom: '100px', fontSize: '15pt'}}>
+                Generating chart suggestions by the IGA...
+            </div>
+        </div>
+    </div>;
 }
 
 /**
@@ -276,8 +312,8 @@ function Suggestions(props) {
 
     const generateCharts = (graphTypes, selectedEntities, selectedFields, fittestGraphs)  =>{
        
-        // console.log(graphTypes);
-        // console.log(selectedEntities);
+        //console.log(graphTypes);
+        console.log(selectedEntities);
         // console.log(selectedFields);
         // console.log(fittestGraphs);
 
@@ -565,7 +601,13 @@ function Suggestions(props) {
                                                 <SuggestionMemo id={index} chartData={achart} dashboardSelection={dashboardSelection} setDashboardSelection={setDashboardSelection} currentCharts={currentCharts} dashboardList={dashboardList} editChartParameters={editChartParameters} setShowEditChart={props.setShowEditChart} />
                                             </div>
                                         </Grid>;
-                            }) : <p id = 'noSuggestionMessage'>We could not display any suggestions for the selected entity.</p> )
+                            }) :
+                                <div id = {request.user.isLoggedIn ? 'noSuggestionMessageLI' : 'noSuggestionMessage'}>
+                                    <NoSuggestions style={{height: '20vh', width: '80%'}}/>
+                                    <br/>
+                                    <br/>
+                                    <div>We could not display any suggestions for the selected entity.</div>
+                                </div> )
                             
                             }
 
@@ -581,7 +623,7 @@ function Suggestions(props) {
                     </Form>
 
                     
-
+                    
                     <Button id = 'filterButton' type = 'secondary' shape = 'round' icon={<FilterOutlined/>} onClick={() => setFilterState(true)}></Button>
                     {/* <Button id = 'moreLikeThisButton' className={request.user.isLoggedIn ? 'loggedInMoreLikeThis' : 'loggedOutMoreLikeThis'} type = 'primary' shape = 'round' htmlType="submit" form="my-form"  size = 'large' onClick={moreLikeThis}>More like this</Button> */}
                     <div className="blob-div" >
