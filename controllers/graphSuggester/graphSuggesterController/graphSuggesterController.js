@@ -478,6 +478,9 @@ class GraphSuggesterController {
 
 			entity['entityName'] = source[Math.floor(Math.random() * source.length)]; //select a random entity from the source
 
+			console.log('accpeted entities:', source);
+			console.log('field list:', this.metadata[key].items[entity['entityName']]);
+
 			// eslint-disable-next-line eqeqeq
 			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {
 				console.log('Entity metadata is not defined');
@@ -683,6 +686,17 @@ class GraphSuggesterController {
 		return suggestion;
 	}
 
+	static blacklistSource(source) {
+		if (!this.metadata || !this.metadata[source]) {
+			console.log('Cannot blacklist source: ', source);
+		} else {
+			console.log('REMOVING SOURCE:', source);
+
+			delete this.metadata[source];
+			delete this.acceptedEntities[source];
+		}
+	}
+
 	/**
 	 * In an attempt to improve suggestion generation, entity suggestions that generate null suggestions are blacklisted
 	 * @param source the source to access the entity
@@ -693,17 +707,23 @@ class GraphSuggesterController {
 		if (!this.metadata || !this.metadata[source] || !this.metadata[source].items[entity]) {
 			console.log('Cannot blacklist entity: ', entity, ' of source: ', source, ', as it does not exist');
 		} else {
+			console.log('REMOVING ENTITY:', source, entity);
+
 			//entity without fields is a useless entity
 			delete this.metadata[source].items[entity];
-			delete this.metaData[source].types[entity];
-			delete this.metaData[source].associations[entity];
+			delete this.metadata[source].types[entity];
+			delete this.metadata[source].associations[entity];
 
-			const setIndex = this.metaData[source].sets.indexOf(set);
-			if (setIndex >= 0) this.metaData[source].sets.splice(setIndex, 1);
+			const setIndex = this.metadata[source].sets.indexOf(set);
+			if (setIndex >= 0) this.metadata[source].sets.splice(setIndex, 1);
 
-			let index = this.acceptedEntities.indexOf(entity);
-			if (index > 0) {
-				this.acceptedEntities.splice(index, 1);
+			let index = this.acceptedEntities[source].indexOf(entity);
+			if (index >= 0) {
+				this.acceptedEntities[source].splice(index, 1);
+			}
+
+			if (Object.keys(this.metadata[source].items).filter((item) => this.acceptedEntities[source].includes(item)).length <= 0) {
+				this.blacklistSource(source);
 			}
 		}
 	}
@@ -725,6 +745,8 @@ class GraphSuggesterController {
 		} else if (!this.metadata[source].items[entity].length === 0) {
 			console.log('Cannot blacklist field: ', field, 'of entity: ', entity, ' of source: ', source, ', as no fields exist');
 		} else {
+			console.log('REMOVING FIELD:', source, entity, field);
+
 			let index = this.metadata[source].items[entity].indexOf(field);
 
 			// console.log(index, this.metadata[source]);

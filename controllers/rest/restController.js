@@ -330,6 +330,7 @@ class RestController {
 			const maxTime = 10;
 			let timer = 0;
 			let timedout = false;
+			let invalidMetadata = false;
 
 			do {
 				if (timer < maxTime) {
@@ -337,16 +338,20 @@ class RestController {
 					randEntity = GraphSuggesterController.selectEntity();
 
 					console.log('RandEntity:', randEntity);
+					if (randEntity) {
+						suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 
-					suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
-
-					if (!suggestion) {
-						this.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
-					}
+						if (!suggestion) {
+							this.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
+						}
+					} else invalidMetadata = true;
 				} else timedout = true;
-			} while (!suggestion && !timedout); // eslint-disable-line eqeqeq
+			} while (!suggestion && !timedout && !invalidMetadata); // eslint-disable-line eqeqeq
 
-			if (timedout) {
+			if (invalidMetadata) {
+				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
+				error && error({ error: 'Could not generate graphs from selected entities.', hint: 'Try selecting differewnt entities.' });
+			} else if (timedout) {
 				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
 				done({});
 			} else if (!suggestion) {
@@ -446,16 +451,18 @@ class RestController {
 					});
 			}
 		} else {
-			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to [domain]/suggestions/params first', status: 500 });
+			error && error({ error: 'Suggestion Parameters have not been set!', hint: 'make a request to /suggestions/params first' });
 		}
 	}
 
 	static blacklistEntity(src, type, entity, set) {
+		// console.log('REMOVING ENTITY:', src, entity);
 		// DataSource.blacklistEntity(src, type, entity, set);
 		GraphSuggesterController.blacklistEntity(src, entity, set);
 	}
 
 	static blacklistField(src, type, entity, set, field) {
+		// console.log('REMOVING FIELD:', src, entity, field);
 		// DataSource.blacklistField(src, type, entity, set, field);
 		GraphSuggesterController.blacklistField(src, entity, set, field);
 	}

@@ -254,7 +254,6 @@ class DataSource {
 
 	static blacklistEntity(src, srcType, entity, set) {
 		if (Cache.validateMetadata(src, Cache.isLiveData(src))) {
-			console.log('REMOVING ENTITY:', src, entity);
 			Cache.removeEntity(src, entity, set);
 		}
 	}
