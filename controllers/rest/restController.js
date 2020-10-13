@@ -350,7 +350,8 @@ class RestController {
 
 			if (invalidMetadata) {
 				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
-				error && error({ error: 'Could not generate graphs from selected entities.', hint: 'Try selecting differewnt entities.' });
+				done({});
+				//error && error({ error: 'Could not generate graphs from selected entities.', hint: 'Try selecting differewnt entities.' });
 			} else if (timedout) {
 				console.log('error: Request Timed out, could not generate chart, try selecting different entities');
 				done({});
