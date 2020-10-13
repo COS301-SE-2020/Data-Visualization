@@ -243,4 +243,23 @@ describe('Testing functions in the graphSuggesterController class', function () 
 
 		expect(suggestion).toMatchObject(chart);
 	});
+
+	test('MergeSort works correctly', () => {
+		let arr = [["yes", 1], ["no", 2], ["maybe", 0], ["red", -1]];
+		let compare = [["red", -1], ["maybe", 0], ["yes", 1], ["no", 2]];
+		let sorted = graphSuggesterController.mergeSort(arr, 0, arr.length);
+		expect(sorted).toMatchObject(compare);
+	});
+
+	test('sort works correctly', () => {
+		let arr = [["yes", 1], ["no", 2], ["maybe", 0], ["red", -1]];
+		let compare = [["red", -1], ["maybe", 0], ["yes", 1], ["no", 2]];
+		let sorted = graphSuggesterController.sort(arr, 1);
+
+		expect(sorted).toMatchObject(compare);
+
+		sorted = graphSuggesterController.sort(arr, -1);
+
+		expect(sorted).toMatchObject(compare.reverse());
+	});
 });

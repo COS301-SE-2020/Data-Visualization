@@ -537,7 +537,7 @@ class GraphSuggesterController {
 	 * @return suggestion the full chart with data - if it is null, the field will be blacklisted in restController, if
 	 * an empty object then it won't be blacklisted.
 	 */
-	static assembleGraph(suggestion, { data }) {
+	static assembleGraph(suggestion, { data }, shouldSort = true) {
 		//console.log(data);
 		// eslint-disable-next-line eqeqeq
 		if (!suggestion || !suggestion['dataset'] || !suggestion['dataset']['source']) {
@@ -633,8 +633,18 @@ class GraphSuggesterController {
 				//pie charts shouldn't have too many values, use a bar chart instead
 				let params = suggestion['dataset']['source'][0];
 				//create a new bar chart
+				let values;
+
+				if (shouldSort) {
+					values = this.sort(data, -1);
+				} else {
+					values = data;
+				}
+
 				let replacement = this.constructOption('bar', params, params[0], params[1], suggestion['title']['text']);
-				replacement['dataset']['source'] = suggestion['dataset']['source'];
+
+				replacement['dataset']['source'] = params.concat(values);
+
 				return replacement;
 			}
 		}
@@ -646,6 +656,11 @@ class GraphSuggesterController {
 		if (suggestion['legend']) {
 			//if we have defined a legend, we have pie chart
 			suggestion['legend']['selected'] = selectedFields; //set the selection to the first 5 nonnull values
+		}
+
+		let values
+		if (shouldSort && chartType.includes('bar')) { //bar charts should preferably be sorted
+			values = this.sort(data, -1);
 		}
 
 		//console.log('suggestion w/ data', suggestion);
@@ -684,6 +699,69 @@ class GraphSuggesterController {
 			data: [original.name, series1.name, series2.name],
 		};
 		return suggestion;
+	}
+
+	/**
+	 * A function to sort the data from large to small
+	 * @param data the data to sort
+	 * @param order the order to sort the data in. -1 is descending, 1 is ascending
+	 * @returns sorted the sorted data
+	 */
+	static sort(data, order = 1) {
+		let sorted = this.mergeSort(data, 0, data.length);
+		if (order === -1) {
+			sorted = sorted.reverse();
+		}
+		return sorted;
+	}
+
+	/**
+	 * A mergesort for 2D data
+	 * @param dataArray the 2D data
+	 * @param first the first item in the data to start sorting from
+	 * @param last the last item in the data to start sorting from
+	 * @returns combined the combined arrays after sorting
+	 */
+	static mergeSort(dataArray, first, last) {
+		if (first > last) {
+			return [];
+		} else if (first === last) {
+			return dataArray.slice(first, last + 1);
+		} else {
+			let middle = Math.trunc((last + first) / 2);
+			let left = this.mergeSort(dataArray, first, middle);
+			let right = this.mergeSort(dataArray, middle + 1, last);
+			let combined = [];
+
+			let i = 0;
+			let j = 0;
+			let k = 0;
+
+			while (i < left.length && j < right.length) {
+				if (left[i][1] <= right[j][1]) {
+					combined[k] = left[i];
+					k++;
+					i++;
+				} else {
+					combined[k] = right[j];
+					k++;
+					j++;
+				}
+			}
+
+			while (i < left.length) {
+				combined[k] = left[i];
+				k++;
+				i++;
+			}
+
+			while (j < right.length) {
+				combined[k] = right[j];
+				k++;
+				j++;
+			}
+			return combined;
+		}
 	}
 
 	static blacklistSource(source) {
