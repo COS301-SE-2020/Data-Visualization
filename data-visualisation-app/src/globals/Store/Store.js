@@ -5,10 +5,12 @@ const defaultGlobalState = {
 	isLoggedIn : false,
 	dataSources : [
 			{
-				'id': 6,
+				'id': 9999,
 				'email': 'doofenshmirtz.evil.inc.cos@gmail.com',
 				'sourceurl': 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				'sourcetype': 0,
+				'sourcename': 'Northwind',
+				'islivedata': false,
 			}
 		],
 	num: 2,

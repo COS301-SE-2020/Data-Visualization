@@ -424,7 +424,7 @@ const request = {
 		setIsLoggedIn: null,
 		dataSources: [
 			{
-				id: 1,
+				id: 9999,
 				email: 'doofenshmirtz.evil.inc.cos@gmail.com',
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				sourcetype: 0,
@@ -700,7 +700,8 @@ const request = {
 									id: request.user.dataSources.length,
 									email: '',
 									sourceurl: res.data.source,
-									sourcetype: SourceType
+									sourcetype: SourceType,
+									sourcename: EntityName,
 								});
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
