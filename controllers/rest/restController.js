@@ -299,7 +299,7 @@ class RestController {
 
 			Object.keys(sourceMap).forEach((key) => {
 				datasources.push(sourceMap[key].datasource);
-				datasourceTypes.push(sourceMap[key].datasourcetype);
+				datasourceTypes.push(parseInt(sourceMap[key].datasourcetype));
 				datasourceIsLive.push(sourceMap[key].isLiveData);
 			});
 
@@ -337,7 +337,7 @@ class RestController {
 					timer++;
 					randEntity = GraphSuggesterController.selectEntity();
 
-					console.log('RandEntity:', randEntity);
+					// console.log('RandEntity:', randEntity);
 					if (randEntity) {
 						suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 
@@ -365,12 +365,12 @@ class RestController {
 				let field = suggestion.field;
 				let primaryKey = suggestion.primaryKey;
 				let option = suggestion.option;
-				console.log('randEntity.datasource = >', randEntity.datasource);
-				console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
-				console.log('randEntity.entityName = >', randEntity.entityName);
-				console.log('randEntity.entitySet = >', randEntity.entitySet);
-				console.log('field = >', field);
-				console.log('fieldtype = >', fieldType);
+				// console.log('randEntity.datasource = >', randEntity.datasource);
+				// console.log('randEntity.datasourcetype = >', randEntity.datasourcetype);
+				// console.log('randEntity.entityName = >', randEntity.entityName);
+				// console.log('randEntity.entitySet = >', randEntity.entitySet);
+				// console.log('field = >', field);
+				// console.log('fieldtype = >', fieldType);
 				DataSource.getEntityData(randEntity.datasource, randEntity.datasourcetype, randEntity.entitySet, field, primaryKey)
 					.then(async (data) => {
 						let isForecasting = false;
@@ -450,7 +450,7 @@ class RestController {
 						}
 					})
 					.catch((err) => {
-						console.log(err);
+						helper.errorLog(err);
 						done({});
 					});
 			}
