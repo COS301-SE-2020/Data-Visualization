@@ -385,7 +385,7 @@ function LoginPopup(props) {
         
         request.user.dataSources = [
           {
-            id: 1,
+            id: 9999,
             email: 'doofenshmirtz.evil.inc.cos@gmail.com',
             sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
             sourcetype: 0,
