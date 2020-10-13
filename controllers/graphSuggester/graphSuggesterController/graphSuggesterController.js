@@ -478,8 +478,8 @@ class GraphSuggesterController {
 
 			entity['entityName'] = source[Math.floor(Math.random() * source.length)]; //select a random entity from the source
 
-			console.log('accpeted entities:', source);
-			console.log('field list:', this.metadata[key].items[entity['entityName']]);
+			// console.log('accpeted entities:', source);
+			// console.log('field list:', this.metadata[key].items[entity['entityName']]);
 
 			// eslint-disable-next-line eqeqeq
 			if (!this.metadata[entity['datasource']] || this.metadata[entity['datasource']] == null) {

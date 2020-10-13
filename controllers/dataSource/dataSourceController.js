@@ -131,7 +131,7 @@ class DataSource {
 	}
 
 	static async getGraphQLFieldList(src, entity) {
-		let meta = await this.getMetaData(src);
+		let meta = await this.getMetaData(src, 1, Cache.isLiveData(src));
 		console.log('datasource metadata: ', meta.items);
 		return meta.items[entity];
 	}
