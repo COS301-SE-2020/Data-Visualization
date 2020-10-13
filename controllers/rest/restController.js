@@ -375,6 +375,7 @@ class RestController {
 						let isForecasting = false;
 						let forecast = null;
 						let trimmedSet = null;
+						let shouldSort = true;
 
 						if (fieldType.toLowerCase().includes('string')) {
 							//string data requires additional processing
@@ -385,6 +386,8 @@ class RestController {
 							// console.log('DATE before', data);
 							data = this.dateConversion(data);
 							// console.log('DATE after', data);
+
+							shouldSort = false;
 
 							const count = Math.ceil(data.length * 0.2);
 							isForecasting = true;
@@ -425,7 +428,7 @@ class RestController {
 							this.blacklistField(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet, field);
 							done({});
 						} else {
-							let chart = GraphSuggesterController.assembleGraph(option, data);
+							let chart = GraphSuggesterController.assembleGraph(option, data, shouldSort);
 
 							// console.log('BEFORE:', chart);
 
