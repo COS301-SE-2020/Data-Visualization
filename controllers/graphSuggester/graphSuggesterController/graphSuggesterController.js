@@ -577,6 +577,13 @@ class GraphSuggesterController {
 			return suggestion;
 		}
 
+		for (let i = 0; i < data.length; i++) {
+			let trimmed = data[i][0].substring(0, 27);	//trim labels to 30 chars
+			if (trimmed < data[i][0].length) {
+				data[i][0] = trimmed.concat('...');
+			}
+		}
+
 		let selectedFields = {};
 
 		let count = 0;
