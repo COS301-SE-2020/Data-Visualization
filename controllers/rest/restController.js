@@ -299,7 +299,7 @@ class RestController {
 
 			Object.keys(sourceMap).forEach((key) => {
 				datasources.push(sourceMap[key].datasource);
-				datasourceTypes.push(sourceMap[key].datasourcetype);
+				datasourceTypes.push(parseInt(sourceMap[key].datasourcetype));
 				datasourceIsLive.push(sourceMap[key].isLiveData);
 			});
 

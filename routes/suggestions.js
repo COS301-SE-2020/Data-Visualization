@@ -67,7 +67,10 @@ router.post('/params', (req, res) => {
 router.post('/graphs', (req, res) => {
 	Rest.getSuggestions(
 		(list) => res.status(200).json(list),
-		(err) => error(res, err)
+		(err) => {
+			console.log(err);
+			res.status(200).json({});
+		}
 	);
 });
 

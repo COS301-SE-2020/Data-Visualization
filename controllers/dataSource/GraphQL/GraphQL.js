@@ -34,13 +34,30 @@ class GraphQL {
 	static getMetaData(src) {
 		if (GraphQL.logging) console.log('GraphQL: ', src);
 		return new Promise((resolve, reject) => {
+			// console.log('================\n', GraphQL.metadataStr(), '===================\n');
+
 			axios
 				.post(src, GraphQL.query(GraphQL.metadataStr()))
 				.then((res) => {
 					const { __schema: schema } = res.data.data;
 					resolve(schema);
 				})
-				.catch((err) => reject(err));
+				.catch((err) => {
+					if (err.isAxiosError) {
+						// console.log(err.response);
+						try {
+							reject({
+								sourceType: 'GraphQL',
+								statusText: err.response.statusText,
+								requestUrl: err.response.config.url,
+								requestBody: JSON.parse(err.response.config.data).query,
+								errors: err.response.data.errors,
+							});
+						} catch (e) {
+							reject(err);
+						}
+					} else reject(err);
+				});
 		});
 	}
 
@@ -54,11 +71,17 @@ class GraphQL {
 		if (GraphQL.logging) console.log('GraphQL: ', src);
 		if (GraphQL.logging) console.log('ENTITY:', entity);
 		if (GraphQL.logging) console.log('FIELDLIST:', fieldlist);
-
 		if (GraphQL.logging) console.log(GraphQL.entityDataStr(entity, fieldlist));
 
 		return new Promise((resolve, reject) => {
-			if (!fieldlist) reject('Field-list is undefined!');
+			if (!fieldlist)
+				reject({
+					sourceType: 'GraphQL',
+					message: 'Field-list is undefined!',
+					sourceUrl: src,
+					entity: entity,
+					fieldlist: fieldlist,
+				});
 			else {
 				let graphql = GraphQL.query(GraphQL.entityDataStr(entity, fieldlist));
 				axios
@@ -103,6 +126,7 @@ class GraphQL {
 				if (meta.types[t] && meta.types[t].fields && Array.isArray(meta.types[t].fields)) {
 					for (let i = 0; i < meta.types[t].fields.length; ++i) {
 						if (meta.types[t].fields[i] && meta.types[t].fields[i].type) {
+							// eslint-disable-next-line eqeqeq
 							while (typeof meta.types[t].fields[i].type.name !== 'undefined' && meta.types[t].fields[i].type.name == null) {
 								meta.types[t].fields[i].type = meta.types[t].fields[i].type.ofType;
 							}
@@ -118,6 +142,19 @@ class GraphQL {
 
 		const allowedTypes = ['Int', 'String', 'Float', 'Boolean', 'Date', 'ID'];
 		const pruneNames = ['Query', '__Schema', '__Type', '__Field', '__InputValue', '__EnumValue', '__Directive'];
+
+		let pruneEntities = [];
+
+		const blacklist = entityMap['Query'].fields.map((field) => {
+			return {
+				name: field.name,
+				count: field.args.filter((arg) => arg.type.kind === 'NON_NULL').length,
+			};
+		});
+
+		blacklist.forEach((entity) => {
+			if (entity.count > 0) pruneEntities.push(entity.name);
+		});
 
 		let sets = [];
 		let setTypeList = [];
@@ -213,6 +250,36 @@ class GraphQL {
 
 		// console.log(sets, setTypeNames, setTypeList, Object.keys(items));
 		// console.log(sets, items);
+
+		// console.log(Object.keys(items));
+
+		tempItems = {};
+		tempAssociations = {};
+		tempTypes = {};
+		tempPrims = {};
+
+		Object.keys(items).forEach((key, i) => {
+			// const field = items[key];
+			// const type = types[key];
+			// const association = associations[key];
+			// const prim = prims[key];
+
+			if (!pruneEntities.includes(key)) {
+				tempItems[key] = items[key];
+				tempAssociations[key] = associations[key];
+				tempTypes[key] = types[key];
+				tempPrims[key] = prims[key];
+			}
+		});
+
+		items = tempItems;
+		associations = tempAssociations;
+		types = tempTypes;
+		prims = tempPrims;
+
+		// console.log({ items, associations, sets, types, prims });
+
+		// console.log(Object.keys(items));
 
 		return { items, associations, sets, types, prims };
 	}

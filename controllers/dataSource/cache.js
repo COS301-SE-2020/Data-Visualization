@@ -51,6 +51,8 @@ const CacheMaker = (function () {
 		}
 
 		getEntityData(src, entity, field, primaryKey = null) {
+			// console.log(src, entity, Object.keys(this.entityData[src]), this.metaData[src]);
+
 			if (this.entityData && this.entityData[src] && this.entityData[src][entity] && this.entityData[src][entity].data && Object.keys(this.entityData[src][entity].data).length > 0) {
 				const data = this.entityData[src][entity].data;
 
@@ -58,8 +60,8 @@ const CacheMaker = (function () {
 				// eslint-disable-next-line eqeqeq
 				if (primaryKey == null) {
 					prim = this.metaData[src].data.prims[entity];
-					if (!this.metaData[src].items[entity].include(prim)) {
-						prim = this.metaData[src].items[entity][0];
+					if (!this.metaData[src].data.items[entity].includes(prim)) {
+						prim = this.metaData[src].data.items[entity][0];
 					}
 				} else {
 					prim = primaryKey;

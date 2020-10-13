@@ -90,7 +90,7 @@ class DataSource {
 					Cache.setMetaData(src, mdata, isLiveData);
 					resolve();
 				})
-				.catch((err) => reject({ error: err, status: 500 }));
+				.catch((err) => reject(err));
 		});
 	}
 
@@ -106,8 +106,6 @@ class DataSource {
 			if (type === 1) {
 				fieldList = await this.getGraphQLFieldList(src, entity);
 			}
-
-			// console.log('LIST', type, fieldList);
 
 			if (!inputdata && DataSource.isLocal(type)) {
 				inputdata = await Database.getDataSourceLocalData(src);
