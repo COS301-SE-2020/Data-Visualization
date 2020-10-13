@@ -33,8 +33,8 @@ import EditConnectionDialog from '../EditConnectionDialog';
 import csvIcon from '../../assets/img/csv.svg';
 import jsonIcon from '../../assets/img/json.svg';
 import xmlIcon from '../../assets/img/xml.svg';
-import { Form, Input, Layout, Row, Col, Typography, Space, message } from 'antd';
-import { Modal} from 'antd';
+//import { Form, Input, Layout, Row, Col, Typography, Space, message } from 'antd';
+//import { Modal} from 'antd';
 
 /**
   * takes no arguments and returns a random string of length 10.
