@@ -59,16 +59,17 @@ class GraphQL {
 		if (GraphQL.logging) console.log('GraphQL: ', src);
 		return new Promise((resolve, reject) => {
 			if (!fieldlist) reject('Field-list is undefined!');
-
-			let graphql = GraphQL.query(GraphQL.entityDataStr(entity, fieldlist));
-			axios
-				.post(src, graphql)
-				.then((res) => {
-					let data = res.data.data;
-					let key = Object.keys(data)[0];
-					resolve(data[key]);
-				})
-				.catch((err) => reject(err));
+			else {
+				let graphql = GraphQL.query(GraphQL.entityDataStr(entity, fieldlist));
+				axios
+					.post(src, graphql)
+					.then((res) => {
+						let data = res.data.data;
+						let key = Object.keys(data)[0];
+						resolve(data[key]);
+					})
+					.catch((err) => reject(err));
+			}
 		});
 	}
 

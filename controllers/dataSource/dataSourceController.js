@@ -104,8 +104,7 @@ class DataSource {
 		// eslint-disable-next-line no-async-promise-executor
 		return new Promise(async (resolve, reject) => {
 			if (type === 1) {
-				let meta = await this.getMetaData(src);
-				fieldList = meta.items[entity];
+				fieldList = await this.getGraphQLFieldList(src, entity);
 			}
 
 			console.log('LIST', type, fieldList);
@@ -132,8 +131,8 @@ class DataSource {
 	}
 
 	static async getGraphQLFieldList(src, entity) {
-		let meta = await this.getMetaData(src);
-		//console.log('datasource metadata: ', meta);
+		let meta = await this.getMetaData(src, 1, Cache.isLiveData(src));
+		// console.log('datasource metadata: ', meta.items);
 		return meta.items[entity];
 	}
 	/**
