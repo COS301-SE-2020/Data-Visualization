@@ -636,7 +636,7 @@ class GraphSuggesterController {
 				let values;
 
 				if (shouldSort) {
-					values = this.sort(data, -1);
+					values = this.sort(data, 1);
 				} else {
 					values = data;
 				}
