@@ -3,8 +3,13 @@ function error(res, err) {
 	const message = err.error || 'Unkown Error';
 	const hint = err.hint || 'No hint provided';
 
-	console.error(err);
+	errorLog(err);
+
 	res.status(status).json({ error: message, hint });
+}
+
+function errorLog(error) {
+	console.log('LOGGING ERROR: ', require('util').inspect(error, false, null, true));
 }
 
 const LogAuthUsers = (users) => {
@@ -40,4 +45,4 @@ const LogFetchedSources = (datasources) => {
 	console.log('================================================');
 };
 
-module.exports = { LogAuthUsers, LogAuthKeys, LogReqParams, LogFetchedSources, error };
+module.exports = { LogAuthUsers, LogAuthKeys, LogReqParams, LogFetchedSources, error, errorLog };

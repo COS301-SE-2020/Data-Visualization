@@ -51,12 +51,12 @@ class GraphQL {
 	 * @returns a promise of the entities data
 	 */
 	static getEntityData(src, entity, fieldlist) {
+		if (GraphQL.logging) console.log('GraphQL: ', src);
 		if (GraphQL.logging) console.log('ENTITY:', entity);
 		if (GraphQL.logging) console.log('FIELDLIST:', fieldlist);
 
-		// console.log(GraphQL.entityDataStr(entity, fieldlist));
+		if (GraphQL.logging) console.log(GraphQL.entityDataStr(entity, fieldlist));
 
-		if (GraphQL.logging) console.log('GraphQL: ', src);
 		return new Promise((resolve, reject) => {
 			if (!fieldlist) reject('Field-list is undefined!');
 			else {
@@ -68,7 +68,22 @@ class GraphQL {
 						let key = Object.keys(data)[0];
 						resolve(data[key]);
 					})
-					.catch((err) => reject(err));
+					.catch((err) => {
+						if (err.isAxiosError) {
+							// console.log(err.response);
+							try {
+								reject({
+									sourceType: 'GraphQL',
+									statusText: err.response.statusText,
+									requestUrl: err.response.config.url,
+									requestBody: JSON.parse(err.response.config.data).query,
+									errors: err.response.data.errors,
+								});
+							} catch (e) {
+								reject(err);
+							}
+						} else reject(err);
+					});
 			}
 		});
 	}

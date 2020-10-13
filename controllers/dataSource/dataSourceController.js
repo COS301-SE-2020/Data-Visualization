@@ -107,7 +107,7 @@ class DataSource {
 				fieldList = await this.getGraphQLFieldList(src, entity);
 			}
 
-			console.log('LIST', type, fieldList);
+			// console.log('LIST', type, fieldList);
 
 			if (!inputdata && DataSource.isLocal(type)) {
 				inputdata = await Database.getDataSourceLocalData(src);
@@ -124,11 +124,17 @@ class DataSource {
 					Cache.setEntityData(src, entity, data);
 					resolve();
 				})
-				.catch((err) => {
-					reject({ error: err, status: 500 });
-				});
+				.catch((err) => reject(err));
 		});
 	}
+
+	/*
+	launch
+	upcoming:Date
+
+	rocket
+	stages: RocketFirstStage
+	*/
 
 	static async getGraphQLFieldList(src, entity) {
 		let meta = await this.getMetaData(src, 1, Cache.isLiveData(src));
