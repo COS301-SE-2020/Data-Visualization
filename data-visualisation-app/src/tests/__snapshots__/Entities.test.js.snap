@@ -33,7 +33,7 @@ exports[`DataConnection component renders correctly 1`] = `
           <div
             className="ant-card-head-title"
           >
-            Select Entities From Your Datasources
+            Select Entities From Your Data Sources
           </div>
         </div>
       </div>

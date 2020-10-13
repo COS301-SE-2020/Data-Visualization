@@ -51,12 +51,12 @@ exports[`DataConnection component renders correctly 1`] = `
                     <h4
                       className="ant-list-item-meta-title"
                     >
-                      https://services.odata.org/V2/Northwind/Northwind.svc
+                      Northwind
                     </h4>
                     <div
                       className="ant-list-item-meta-description"
                     >
-                      6
+                      https://services.odata.org/V2/Northwind/Northwind.svc
                     </div>
                   </div>
                 </div>
@@ -66,13 +66,28 @@ exports[`DataConnection component renders correctly 1`] = `
                 >
                   <li>
                     <button
-                      className="ant-btn"
+                      className="ant-btn onCard"
                       id="deleteButton"
                       onClick={[Function]}
                       type="button"
                     >
                       <span>
                         Delete
+                      </span>
+                    </button>
+                    <em
+                      className="ant-list-item-action-split"
+                    />
+                  </li>
+                  <li>
+                    <button
+                      className="ant-btn onCard"
+                      id="editButton"
+                      onClick={[Function]}
+                      type="button"
+                    >
+                      <span>
+                        Edit
                       </span>
                     </button>
                   </li>
