@@ -146,7 +146,8 @@ function Suggestion(props) {
             elementDownloadLink.click();
         }
     }
-
+    const mql = window.matchMedia('(max-width: 700px)');
+    let mobileView = mql.matches;
     return (
         <div>
             <div style={{marginBottom: '30px'}}>
@@ -179,7 +180,7 @@ function Suggestion(props) {
                 </Grid>
             </div>
             {/*<ReactEcharts option={props.chartData.options} style={{height: '300px', width: '100%'}} />*/}
-            <ReactEcharts ref={refEChartsComponent} option={props.chartData.options} style={{height: '40vh'}}  />
+            <ReactEcharts ref={refEChartsComponent} option={props.chartData.options} style={mobileView ? {height: '330px'} : {height: '410px'}}  />
             <div style={{marginTop: '20px', height: '40px'}}>
                 {/*<Grid container spacing={3}>*/}
                 {/*    <Grid item xs={2}>*/}
