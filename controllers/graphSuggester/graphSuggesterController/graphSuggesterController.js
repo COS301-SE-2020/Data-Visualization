@@ -457,28 +457,43 @@ class GraphSuggesterController {
 		//console.log(this.metadata);
 		let keys = Object.keys(this.acceptedEntities); //list the sources(sources are keys to acceptedEntities)
 
-		let source;
 		let entity = {};
 
 		if (keys && keys.length > 0) {
 			//if a filter was set
-			let num = Math.floor(Math.random() * keys.length);
-			let key = keys[num]; //pick a source index
 
-			// eslint-disable-next-line eqeqeq
-			if (key == null || !key) {
-				console.log('Selected source key was undefined/null, key index: ', num);
-				console.log('Source Keys: ', keys);
+			//the maximum combined index of entities over all sources(first source's first entity at 0, last source's last entity at max)
+			let max = 0;
+
+			for (let key = 0; key < keys.length; key++) {
+				max += Object.keys(this.acceptedEntities[keys[key]]).length;
+			}
+
+			let num = Math.floor(Math.random() * max);
+
+			let selectedIndex;
+			let sourceKey;
+
+			for (let k = 0; k < keys.length; k++) {
+				let entityKeys = this.acceptedEntities[keys[k]];
+				if (num < entityKeys.length) {
+					sourceKey = keys[k];
+					selectedIndex = num;
+					break;
+				} else {
+					num -= entityKeys.length;
+				}
+			}
+
+			if ((!selectedIndex && selectedIndex !== 0) || !sourceKey) {
+				console.log("Failed to select a key in 'if' clause for selectEntity(), sourceKey: ", sourceKey, " selectedIndex: ", selectedIndex);
 				return null;
 			}
 
-			entity['datasource'] = key;
+			entity['datasource'] = sourceKey;
+			entity['entityName'] = this.acceptedEntities[sourceKey][selectedIndex];
 
-			source = this.acceptedEntities[key]; //select the source entities
-
-			entity['entityName'] = source[Math.floor(Math.random() * source.length)]; //select a random entity from the source
-
-			// console.log('accpeted entities:', source);
+			// console.log('accepted entities:', source);
 			// console.log('field list:', this.metadata[key].items[entity['entityName']]);
 
 			// eslint-disable-next-line eqeqeq
@@ -499,17 +514,35 @@ class GraphSuggesterController {
 			//else just pick from all options
 			keys = Object.keys(this.metadata); //list the sources(sources are keys to acceptedEntities)
 
-			let num = Math.floor(Math.random() * keys.length);
-			let key = keys[num]; //pick a metadata source index
-			// eslint-disable-next-line eqeqeq
-			if (key == null || !key) {
-				console.log('Selected source key was undefined/null, key index: ', num);
-				console.log('Source Keys: ', keys);
+			//the maximum combined index of entities over all sources(first source's first entity at 0, last source's last entity at max)
+			let max = 0;
+
+			for (let key = 0; key < keys.length; key++) {
+				max += Object.keys(this.metadata[keys[key]]).length;
+			}
+
+			let num = Math.floor(Math.random() * max);
+
+			let selectedEntity;
+			let sourceKey;
+
+			for (let k = 0; k < keys.length; k++) {
+				let entityKeys = Object.keys(this.metadata[keys[k]]['items']);
+				if (num < entityKeys.length) {
+					sourceKey = keys[k];
+					selectedEntity = entityKeys[num];
+					break;
+				} else {
+					num -= entityKeys.length;
+				}
+			}
+
+			if (!selectedEntity || !sourceKey) {
+				console.log("Failed to select a key in 'else' clause for selectEntity(), sourceKey: ", sourceKey, " selectedEntity: ", selectedEntity);
 				return null;
 			}
-			entity['datasource'] = key;
 
-			let source = this.metadata[key];
+			let source = this.metadata[sourceKey];
 
 			if (source && source['items']) {
 				source = source['items']; //source entities are listed in 'items' - select it
@@ -520,11 +553,10 @@ class GraphSuggesterController {
 
 			keys = Object.keys(source); //select the entity keys
 
-			const index = Math.floor(Math.random() * keys.length);
-
-			entity['entityName'] = keys[index]; //select a random entity key
-			entity['entitySet'] = this.metadata[entity['datasource']].sets[index]; //store the set item name for database querying
-			entity['datasourcetype'] = this.metadata[entity['datasource']].type;
+			entity['datasource'] = sourceKey;
+			entity['entityName'] = selectedEntity;
+			entity['entitySet'] = this.metadata[sourceKey].sets[keys.indexOf(selectedEntity)]; //store the set item name for database querying
+			entity['datasourcetype'] = this.metadata[sourceKey].type;
 
 			return entity;
 		}
