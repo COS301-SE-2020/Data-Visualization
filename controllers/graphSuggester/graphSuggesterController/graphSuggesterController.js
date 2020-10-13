@@ -636,14 +636,14 @@ class GraphSuggesterController {
 				let values;
 
 				if (shouldSort) {
-					values = this.sort(data, -1);
+					values = this.sort(data, 1);
 				} else {
 					values = data;
 				}
 
 				let replacement = this.constructOption('bar', params, params[0], params[1], suggestion['title']['text']);
 
-				replacement['dataset']['source'] = params.concat(values);
+				replacement['dataset']['source'] = [params].concat(values);
 
 				return replacement;
 			}
@@ -658,9 +658,11 @@ class GraphSuggesterController {
 			suggestion['legend']['selected'] = selectedFields; //set the selection to the first 5 nonnull values
 		}
 
-		let values
+		let values;
 		if (shouldSort && chartType.includes('bar')) { //bar charts should preferably be sorted
-			values = this.sort(data, -1);
+			values = this.sort(data, 1);
+			let params = suggestion['dataset']['source'][0];
+			suggestion['dataset']['source'] = [params].concat(values);
 		}
 
 		//console.log('suggestion w/ data', suggestion);
