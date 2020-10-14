@@ -112,14 +112,11 @@ const FilterDialog = (props) => {
             request.user.selectedFields = values.fieldSelect;
         }
 
-        request.user.graphTypes = ['bar','line', 'pie', 'scatter', 'effectScatter'];
+        request.user.graphTypes = ['bar','line', 'pie', 'scatter'];
         if(values.graphSelect !== undefined && values.graphSelect.length !== 0){
             request.user.graphTypes = values.graphSelect;
         }
 
-
-        //API call (to send options and reload suggestions)
-        console.log('Success:', values);
 
         handleFilterCancel();
         message.success('Filter settings set');
@@ -164,7 +161,7 @@ const FilterDialog = (props) => {
                             tagRender={tagRender}
                             style={{ width: '100%' }}
                             options={graphTypes}
-                            defaultValue={request.user.graphTypes}
+                            defaultValue={[]}
                         />
                     </Form.Item>
 

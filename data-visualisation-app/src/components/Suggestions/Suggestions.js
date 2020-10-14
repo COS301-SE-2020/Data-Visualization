@@ -305,6 +305,9 @@ function Suggestions(props) {
             }
         }
 
+        console.log(request.user.graphTypes);
+        console.log(request.user.selectedFields);
+
         generateCharts(request.user.graphTypes, request.user.selectedEntities, request.user.selectedFields, request.user.fittestGraphs );
         request.user.fittestGraphs = [];
         //scrollToBottom();
