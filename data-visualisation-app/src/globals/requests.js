@@ -77,8 +77,8 @@ const API = {
 		set: (graphTypes, selectedEntities, selectedFields, fittestGraph) => axios.post(constants.URL.SUGGESTIONS.SET, {graphTypes, selectedEntities, selectedFields, fittestGraph}),
 		chart: () => axios.post(constants.URL.SUGGESTIONS.GRAPHS, {}),
 		graph: (sourceurl) => axios.post(constants.URL.SUGGESTIONS.GRAPHS, { sourceurl}),
-		csv: (SourceType, EntityName, PrimaryKey, fields, types, data) => axios.post(constants.URL.DATASOURCE.CSV, {SourceType, EntityName, PrimaryKey, fields, types, data}),
-		csvAuthorized: (apikey, SourceType, EntityName, PrimaryKey, fields, types, data) => axios.post(constants.URL.DATASOURCE.CSV_AUTHORIZED, {apikey, SourceType, EntityName, PrimaryKey, fields, types, data})
+		csv: (SourceType, EntityName, PrimaryKey, fields, types, data) => axios.post(constants.URL.DATASOURCE.CSV, {SourceType, EntityName, SourceName: EntityName, PrimaryKey, fields, types, data}),
+		csvAuthorized: (apikey, SourceType, EntityName, PrimaryKey, fields, types, data) => axios.post(constants.URL.DATASOURCE.CSV_AUTHORIZED, {apikey, SourceType, EntityName, SourceName: EntityName, PrimaryKey, fields, types, data})
 	},
 };
 
