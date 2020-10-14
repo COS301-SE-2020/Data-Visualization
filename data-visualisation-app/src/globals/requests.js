@@ -65,8 +65,9 @@ const API = {
 	},
 	dataSources: {
 		list: (apikey) => axios.post(constants.URL.DATASOURCE.LIST, { apikey }),
-		add: (apikey, dataSourceUrl, dataSourceType) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceUrl, dataSourceType }),
+		add: (apikey, dataSourceUrl, dataSourceType , dataSourceName, isLiveData) => axios.post(constants.URL.DATASOURCE.ADD, { apikey, dataSourceUrl, dataSourceType, dataSourceName, isLiveData }),
 		delete: (dataSourceID, apikey) => axios.post(constants.URL.DATASOURCE.REMOVE, { dataSourceID, apikey }),
+		update: (apikey, dataSourceID, dataSourceName) => axios.post(constants.URL.DATASOURCE.UPDATE, { apikey, dataSourceID, dataSourceName }),
 	},
 	entities: {
 		list: (sourceurl, sourcetype) => axios.post(constants.URL.DATASOURCE.ENTITIES, { sourceurl, sourcetype }),
@@ -423,10 +424,12 @@ const request = {
 		setIsLoggedIn: null,
 		dataSources: [
 			{
-				id: 6,
-				email: 'elna@gmail.com',
+				id: 9999,
+				email: 'doofenshmirtz.evil.inc.cos@gmail.com',
 				sourceurl: 'https://services.odata.org/V2/Northwind/Northwind.svc',
 				sourcetype: 0,
+				sourcename: 'Northwind',
+				islivedata: false,
 			}
 		],
 		addedSourceID: '',
@@ -476,10 +479,10 @@ const request = {
 		 *  @param dataSourceUrl Fully qualified url of the new data source.
 		 *  @param callback Function called at end of execution.
 		 */
-		add: (apikey, dataSourceUrl, sourcetype, callback) => {
+		add: (apikey, dataSourceUrl, sourcetype, dataSourceName , isLiveData, callback) => {
 			if (request.user.isLoggedIn) {
 				API.dataSources
-					.add(apikey, dataSourceUrl, sourcetype)
+					.add(apikey, dataSourceUrl, sourcetype, dataSourceName, isLiveData)
 					.then((res) => {
 						console.debug('Response from dataSources.add:', res);
 						if (callback !== undefined) {
@@ -519,6 +522,28 @@ const request = {
 
 								//delete from request.user.dataSources array
 								//request.user.dataSources = res.data;
+								callback(constants.RESPONSE_CODES.SUCCESS);
+							} else {
+								callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
+							}
+						}
+					})
+					.catch((err) => console.error(err));
+			} else {
+				callback(constants.RESPONSE_CODES.LOGGED_OUT_ERROR);
+			}
+		},
+
+		update: (apikey, dataSourceID, dataSourceName, callback) => {
+
+			if (request.user.isLoggedIn) {
+				API.dataSources
+					.update(apikey, dataSourceID, dataSourceName)
+					.then((res) => {
+						
+						if (callback !== undefined) {
+							if (successfulResponse(res)) {
+
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
 								callback(constants.RESPONSE_CODES.BAD_REQUEST_NETWORK_ERROR);
@@ -660,8 +685,9 @@ const request = {
 		 *  @param callback Function called at end of execution.
 		 */
 		importFile: (SourceType, EntityName, PrimaryKey, fields, types, data, callback) => {
-			console.debug('Requesting suggestion.importFile with:', EntityName, PrimaryKey, fields, types, data);
+			console.debug('Requesting suggestion.csv with:', EntityName, PrimaryKey, fields, types, data);
 			if (!request.user.isLoggedIn) {
+
 				API.suggestion
 					.csv(SourceType, EntityName, PrimaryKey, fields, types, data)
 					.then((res) => {
@@ -674,7 +700,8 @@ const request = {
 									id: request.user.dataSources.length,
 									email: '',
 									sourceurl: res.data.source,
-									sourcetype: SourceType
+									sourcetype: SourceType,
+									sourcename: EntityName,
 								});
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
@@ -696,8 +723,7 @@ const request = {
 									id: res.data.id,
 									email: '',
 									sourceurl: res.data.source,
-									sourcetype: SourceType,
-									sourcename: EntityName,
+									sourcetype: SourceType
 								});
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
