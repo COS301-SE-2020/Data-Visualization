@@ -122,7 +122,7 @@ function Dashboard(props) {
 
 					defaultLayout.current = defaultLayout.current && nonemptycount !== request.cache.graph.list.length;
 
-					if (!defaultLayout && newChartIndex > -1) {
+					if (!defaultLayout.current && newChartIndex > -1) {
 						request.cache.graph.list[newChartIndex].metadata.x = bestX;
 						request.cache.graph.list[newChartIndex].metadata.y = bestY;
 						request.cache.graph.list[newChartIndex].metadata.w = 4;
@@ -147,53 +147,62 @@ function Dashboard(props) {
 
 
 	useEffect(() => {
-		request.graph.list(props.dashboardID, function(result) {
-			if (result === constants.RESPONSE_CODES.SUCCESS) {
-				if (request.cache.graph.list !== null && request.cache.graph.list.length > 0) {
 
-					let newChartIndex = -1, nonemptycount = 0;
-					let bestX = Number.MAX_VALUE, bestY = Number.MIN_VALUE;
-					for (let c = 0; c < request.cache.graph.list.length; c++) {
-						if (Object.keys(request.cache.graph.list[c].metadata).length === 0 && request.cache.graph.list[c].metadata.constructor === Object) {
-							if (newChartIndex === -1) {
-								newChartIndex = c;
-								defaultLayout.current = false;
-							} else {
-								defaultLayout.current = true;
-								break;
-							}
-						} else {
-							nonemptycount++;
-							if (request.cache.graph.list[c].metadata.x < bestX)
-								bestX = request.cache.graph.list[c].metadata.x;
-							if (request.cache.graph.list[c].metadata.y + request.cache.graph.list[c].metadata.h > bestY)
-								bestY = request.cache.graph.list[c].metadata.y + request.cache.graph.list[c].metadata.h;
-						}
-					}
+		initialize();
 
-					defaultLayout.current = defaultLayout.current && nonemptycount !== request.cache.graph.list.length;
-
-					if (!defaultLayout && newChartIndex > -1) {
-						request.cache.graph.list[newChartIndex].metadata.x = bestX;
-						request.cache.graph.list[newChartIndex].metadata.y = bestY;
-						request.cache.graph.list[newChartIndex].metadata.w = 4;
-						request.cache.graph.list[newChartIndex].metadata.h = HEIGHT_DEFAULT;
-
-						// todo: update graph metadata
-					}
-					constructLayout(request.cache.graph.list.length);
-
-					showAllCharts(true);
-
-					setHasCharts(true);
-					setIsLoading(false);
-
-				} else {
-					setIsLoading(false);
-					setHasCharts(false);
-				}
-			}
-		});
+		// request.graph.list(props.dashboardID, function(result) {
+		// 	if (result === constants.RESPONSE_CODES.SUCCESS) {
+		// 		if (request.cache.graph.list !== null && request.cache.graph.list.length > 0) {
+		//
+		// 			console.debug('whawt is the list that i recieve', request.cache.graph.list)
+		//
+		// 			let newChartIndex = -1, nonemptycount = 0;
+		// 			let bestX = Number.MAX_VALUE, bestY = Number.MIN_VALUE;
+		// 			for (let c = 0; c < request.cache.graph.list.length; c++) {
+		// 				if (Object.keys(request.cache.graph.list[c].metadata).length === 0 && request.cache.graph.list[c].metadata.constructor === Object) {
+		// 					console.debug('ther  i sno metadata')
+		// 					if (newChartIndex === -1) {
+		// 						newChartIndex = c;
+		// 						defaultLayout.current = false;
+		// 					} else {
+		// 						defaultLayout.current = true;
+		// 						break;
+		// 					}
+		// 				} else {
+		// 					console.debug('there is metadata')
+		// 					nonemptycount++;
+		// 					if (request.cache.graph.list[c].metadata.x < bestX)
+		// 						bestX = request.cache.graph.list[c].metadata.x;
+		// 					if (request.cache.graph.list[c].metadata.y + request.cache.graph.list[c].metadata.h > bestY)
+		// 						bestY = request.cache.graph.list[c].metadata.y + request.cache.graph.list[c].metadata.h;
+		// 				}
+		// 			}
+		//
+		// 			defaultLayout.current = defaultLayout.current && nonemptycount !== request.cache.graph.list.length;
+		//
+		// 			console.debug('!defaultLayout ', !defaultLayout)
+		// 			console.debug('newChartIndex > -1', newChartIndex > -1)
+		// 			if (!defaultLayout.current && newChartIndex > -1) {
+		// 				request.cache.graph.list[newChartIndex].metadata.x = bestX;
+		// 				request.cache.graph.list[newChartIndex].metadata.y = bestY;
+		// 				request.cache.graph.list[newChartIndex].metadata.w = 4;
+		// 				request.cache.graph.list[newChartIndex].metadata.h = HEIGHT_DEFAULT;
+		//
+		// 				// todo: update graph metadata
+		// 			}
+		// 			constructLayout(request.cache.graph.list.length);
+		//
+		// 			showAllCharts(true);
+		//
+		// 			setHasCharts(true);
+		// 			setIsLoading(false);
+		//
+		// 		} else {
+		// 			setIsLoading(false);
+		// 			setHasCharts(false);
+		// 		}
+		// 	}
+		// });
 	}, []);
 
 	function constructLayout(totalItems) {
@@ -204,29 +213,58 @@ function Dashboard(props) {
 			xs: [],
 			xxs: []
 		};
-		if (totalItems === 1) {
-			layoutParameters.lg.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.md.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.sm.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.xs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.xxs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-		} else if (totalItems === 2) {
-			layoutParameters.lg.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.lg.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
-
-			layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
-
-			layoutParameters.sm.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.sm.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
-
-			layoutParameters.xs.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.xs.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
-
-			layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
-			layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
-		} else {
-			if (defaultLayout) {
+		// if (totalItems === 1) {
+		//
+		// 	if (defaultLayout.current) {
+		// 		layoutParameters.lg.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.md.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.sm.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.xs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.xxs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 	} else {
+		// 		layoutParameters.lg.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.md.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.sm.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.xs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.xxs.push({w: 12, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 	}
+		// } else if (totalItems === 2) {
+		//
+		// 	if (defaultLayout.current) {
+		// 		layoutParameters.lg.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.lg.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		//
+		// 		layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		//
+		// 		layoutParameters.sm.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.sm.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		//
+		// 		layoutParameters.xs.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.xs.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		//
+		// 		layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		// 	} else {
+		// 		layoutParameters.lg.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.lg.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		//
+		// 		layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		//
+		// 		layoutParameters.sm.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.sm.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		//
+		// 		layoutParameters.xs.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.xs.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		//
+		// 		layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 0, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '0'});
+		// 		layoutParameters.xxs.push({w: 6, h: HEIGHT_DEFAULT, x: 6, y: 0, minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: '1'});
+		// 	}
+		//
+		// } else {
+			// if (defaultLayout) {
+			if (defaultLayout.current) {
 				for (let n = 0; n < totalItems; n++) {
 					layoutParameters.lg.push({w: 4, h: HEIGHT_DEFAULT, x: (n % 3)*4, y: HEIGHT_DEFAULT * Math.floor(n / 3), minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
 					layoutParameters.md.push({w: 6, h: HEIGHT_DEFAULT, x: (n % 2)*6, y: HEIGHT_DEFAULT * Math.floor(n / 2), minH: HEIGHT_DEFAULT, minW: 2, moved: false, static: false, i: n.toString()});
@@ -244,7 +282,7 @@ function Dashboard(props) {
 				}
 			}
 			// setLayoutGrid({...layoutParameters});
-		}
+		// }
 
 		setLayoutGrid({...layoutParameters});
 	}
