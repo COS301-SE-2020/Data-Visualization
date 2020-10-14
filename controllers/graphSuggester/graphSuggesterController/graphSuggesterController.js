@@ -687,7 +687,7 @@ class GraphSuggesterController {
 				let values;
 
 				if (shouldSort) {
-					values = this.sort(data, 1);
+					values = this.sort(data, -1);
 				} else {
 					values = data;
 				}
@@ -711,7 +711,7 @@ class GraphSuggesterController {
 
 		let values;
 		if (shouldSort && chartType.includes('bar')) { //bar charts should preferably be sorted
-			values = this.sort(data, 1);
+			values = this.sort(data, -1);
 			let params = suggestion['dataset']['source'][0];
 			suggestion['dataset']['source'] = [params].concat(values);
 		}
