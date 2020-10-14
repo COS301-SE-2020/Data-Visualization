@@ -146,6 +146,35 @@ function SignUpDialog(props) {
   };
 
 
+ 
+
+
+  const validatePassword = (rule, value, callback) => {
+
+    let valid = true;
+    let re;
+
+    if (value !== '' && value) {
+      if (value.length < 8) valid = false; //password must be 8 letters
+      re = /[0-9]/;
+      if (!re.test(value)) valid = false; // password password must contain at least one number (0-9)
+      re = /[a-z]/;
+      if (!re.test(value)) valid = false; // password must contain at least one lowercase letter (a-z)!
+      re = /[A-Z]/;
+      if (!re.test(value)) valid = false; // password must contain at least one capital letter
+      re = /[!@#$%^&*]/;
+      if (!re.test(value)) valid = false; // password must contain at least one special character
+    } else valid = false; //confirm password incorrect
+
+    if (value && value !== 'Secret' && !valid) {
+
+      callback('Password is too weak');
+    } else {
+      callback();
+    }
+  };
+
+
   return (
     <div >
       <Modal
@@ -157,7 +186,7 @@ function SignUpDialog(props) {
             
             ]}
           >
-        <Spin spinning={confirmLoading}></Spin>
+        <Spin spinning={confirmLoading}>
         <Form
           {...formItemLayout}
           form={form}
@@ -212,6 +241,7 @@ function SignUpDialog(props) {
                 required: true,
                 message: 'Please input your password!',
               },
+              { validator: validatePassword },
             ]}
             hasFeedback
           >
@@ -259,7 +289,7 @@ function SignUpDialog(props) {
             </Button>
           </Form.Item>
         </Form>
-        <Spin spinning={confirmLoading}></Spin>
+        </Spin>
       </Modal>
       
     </div>
