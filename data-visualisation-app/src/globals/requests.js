@@ -696,7 +696,8 @@ const request = {
 									id: res.data.id,
 									email: '',
 									sourceurl: res.data.source,
-									sourcetype: SourceType
+									sourcetype: SourceType,
+									sourcename: EntityName,
 								});
 								callback(constants.RESPONSE_CODES.SUCCESS);
 							} else {
