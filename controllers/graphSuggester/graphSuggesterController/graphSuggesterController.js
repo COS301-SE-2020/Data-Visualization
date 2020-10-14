@@ -465,8 +465,18 @@ class GraphSuggesterController {
 			//the maximum combined index of entities over all sources(first source's first entity at 0, last source's last entity at max)
 			let max = 0;
 
+			let validEntities = {};
+			let filteredFields = graphSuggesterAI.acceptedFields;
+
 			for (let key = 0; key < keys.length; key++) {
-				max += Object.keys(this.acceptedEntities[keys[key]]).length;
+				let entities = this.acceptedEntities[keys[key]];
+				validEntities[keys[key]] = [];
+				for (let i = 0; i < entities.length; i++) {
+					if (this.metadata[keys[key]].items[entities[i]] && (!filteredFields || filteredFields.length === 0 || this.metadata[keys[key]].items[entities[i]].some(item => filteredFields.includes(item)))){
+						validEntities[keys[key]].push(entities[i]);
+						max++;
+					}
+				}
 			}
 
 			let num = Math.floor(Math.random() * max);
@@ -474,8 +484,11 @@ class GraphSuggesterController {
 			let selectedIndex;
 			let sourceKey;
 
+			keys = Object.keys(validEntities);
+			console.log(validEntities);
+
 			for (let k = 0; k < keys.length; k++) {
-				let entityKeys = this.acceptedEntities[keys[k]];
+				let entityKeys = validEntities[keys[k]];
 				if (num < entityKeys.length) {
 					sourceKey = keys[k];
 					selectedIndex = num;
@@ -491,7 +504,7 @@ class GraphSuggesterController {
 			}
 
 			entity['datasource'] = sourceKey;
-			entity['entityName'] = this.acceptedEntities[sourceKey][selectedIndex];
+			entity['entityName'] = validEntities[sourceKey][selectedIndex];
 
 			// console.log('accepted entities:', source);
 			// console.log('field list:', this.metadata[key].items[entity['entityName']]);

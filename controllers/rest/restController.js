@@ -341,9 +341,9 @@ class RestController {
 					if (randEntity) {
 						suggestion = GraphSuggesterController.getSuggestions(randEntity.entityName, randEntity.datasource);
 
-						if (!suggestion) {
-							this.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
-						}
+						// if (!suggestion) {
+						// 	this.blacklistEntity(randEntity.datasource, randEntity.datasourcetype, randEntity.entityName, randEntity.entitySet);
+						// }
 					} else invalidMetadata = true;
 				} else timedout = true;
 			} while (!suggestion && !timedout && !invalidMetadata); // eslint-disable-line eqeqeq
