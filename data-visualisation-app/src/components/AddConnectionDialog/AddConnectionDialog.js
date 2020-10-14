@@ -24,7 +24,7 @@
  * Imports
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Button, Modal, Input, Select, Divider, Checkbox, Cascader, Result, message, Space} from 'antd';
+import {Button, Modal, Spin, Input, Select, Divider, Checkbox, Cascader, Result, message, Space} from 'antd';
 import { Form } from 'antd';
 import {useTable, usePagination} from 'react-table';
 import './AddConnectionDialog.scss';
@@ -46,7 +46,7 @@ const AddConnectionDialog = (props) => {
     const { Option } = Select;
 
     /** -------------- State, Reference, Memo Variables -------------- */
-
+    const [confirmLoading, setConfirmLoading] = useState(false);
     const [visible, setVisible] = useState(true);
     const [importDataMode, setImportDataMode] = useState(false);
     const [inspectColumnsOnly, setInspectColumnsOnly] = useState(false);
@@ -555,6 +555,7 @@ const AddConnectionDialog = (props) => {
      * Update props value.
      */
     const onFinish = values => {
+        setConfirmLoading(true);
         console.log(values);
 
         if(values.dataSourceItem === 'OData'){
@@ -566,8 +567,11 @@ const AddConnectionDialog = (props) => {
             props.addItem(values.name , values.uri, 1, values.cacheURIdata);
         }
 
-        setVisible(false);
-        props.changeState();
+        setTimeout(function(){ 
+            setVisible(false);
+            props.changeState();
+         }, 1400);
+        
     };
 
     /**
@@ -581,6 +585,7 @@ const AddConnectionDialog = (props) => {
      * Actions for cancel
      */
     function handleCancel() {
+        setConfirmLoading(false);
         setVisible(false);
         props.changeState();
     }
@@ -989,6 +994,7 @@ const AddConnectionDialog = (props) => {
 
                     ]}
                 >
+                    <Spin spinning={confirmLoading}></Spin>
                     <Form
                         {...layout}
                         name='basic'
