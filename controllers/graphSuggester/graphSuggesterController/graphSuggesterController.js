@@ -485,7 +485,6 @@ class GraphSuggesterController {
 			let sourceKey;
 
 			keys = Object.keys(validEntities);
-			console.log(validEntities);
 
 			for (let k = 0; k < keys.length; k++) {
 				let entityKeys = validEntities[keys[k]];
