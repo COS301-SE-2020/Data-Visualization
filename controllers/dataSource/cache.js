@@ -67,6 +67,10 @@ const CacheMaker = (function () {
 					prim = primaryKey;
 				}
 
+				if (!data || !prim || !field) {
+					return null;
+				}
+
 				return data.map((item, i) => [item[prim], item[field]]);
 			}
 			return null;
